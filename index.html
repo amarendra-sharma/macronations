@@ -19,9 +19,12 @@
   --gold:#b87408;--gold2:#c8820a;--gold3:#a86200;
   --white:#1a202e;--muted:#64748b;--border:rgba(15,61,158,0.12);
   --green:#0d7a5f;--red:#c0392b;--amber:#b45309;
+  --card:rgba(255,255,255,0.9);--card2:rgba(240,244,251,0.9);
   --font-head:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;--font-cert:'Cinzel',serif;
 }
 html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--font-body);font-size:14px;-webkit-text-size-adjust:100%}
+
+/* ---- NAV ---- */
 .app{display:flex;flex-direction:column;min-height:100vh}
 .nav{background:var(--nav);border-bottom:1px solid var(--border);box-shadow:0 1px 3px rgba(15,61,158,0.08);position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 16px;height:56px;gap:12px}
 .nav-logo{display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;text-decoration:none}
@@ -32,28 +35,15 @@ html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--
 .nav-tabs::-webkit-scrollbar{display:none}
 .nav-tab{padding:6px 12px;border:none;background:none;color:var(--muted);font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap}
 .nav-tab:hover{color:var(--blue);background:rgba(15,61,158,0.06)}.nav-tab.on{color:var(--blue);background:rgba(15,61,158,0.08)}
-.main{flex:1;padding:20px 16px;max-width:1100px;margin:0 auto;width:100%}
-.page{display:none}.page.on{display:block}
-.page-title{font-family:var(--font-head);font-size:26px;color:var(--blue);margin-bottom:4px}
-.page-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
-.card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(15,61,158,0.06)}
-.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:20px}
-.metric{background:var(--card2-bg);border-radius:10px;padding:14px;border:1px solid var(--border)}
-.metric-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
-.metric-val{font-size:22px;font-weight:500;font-family:var(--font-mono)}
-.tab-row{display:flex;gap:2px;margin-bottom:18px;border-bottom:2px solid rgba(15,61,158,0.1);overflow-x:auto;scrollbar-width:none}
-.tab{padding:8px 14px;border:none;background:none;color:var(--muted);font-family:var(--font-body);font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;font-weight:500}
-.tab:hover{color:var(--blue)}.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
-.sub-page{display:none}.sub-page.on{display:block}
-.notice{padding:12px 14px;border-radius:8px;font-size:13px;margin:10px 0;line-height:1.5}
-.notice-err{background:rgba(192,57,43,0.08);color:var(--red);border:1px solid rgba(192,57,43,0.2)}
-.btn{padding:9px 18px;border-radius:10px;font-family:var(--font-body);font-size:14px;cursor:pointer;border:none;transition:all .15s;font-weight:500}
-.btn-gold{background:var(--blue);color:#fff}.btn-gold:hover{background:var(--blue2)}
-.loading{color:var(--muted);font-size:13px;padding:24px 0;text-align:center}
-</style>
-</head>
-<body>
-<div class="app">
+.nav-right{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:6px;border:none;background:none}
+.hamburger span{display:block;width:20px;height:2px;background:var(--muted);border-radius:2px;transition:all .2s}
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(15,61,158,0.15);backdrop-filter:blur(4px);z-index:199}
+.mobile-menu.on{display:flex;align-items:flex-end}
+.mobile-menu-inner{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom))}
+.mobile-menu-item{display:block;width:100%;padding:14px 16px;border:none;background:none;font-family:var(--font-body);font-size:15px;font-weight:500;color:var(--white);text-align:left;cursor:pointer;border-radius:10px;margin-bottom:4px}
+.mobile-menu-item:hover,.mobile-menu-item.on{background:rgba(15,61,158,0.08);color:var(--blue)}
+.mobile-menu-divider{height:1px;background:var(--border);margin:12px 0}
 
 /* ---- LAYOUT ---- */
 .main{flex:1;padding:20px 16px;max-width:1100px;margin:0 auto;width:100%}
@@ -292,7 +282,13 @@ html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--
 
 <!-- NAV -->
 <nav class="nav">
-  <a class="nav-logo" href="#" onclick="showPage('home',this);return false">
+  <a class="nav-logo" href="#" onclick="showPage('home',document.querySelector('.nav-tab'));return false">
+    <svg class="nav-logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="40" rx="10" fill="#0f3d9e"/>
+      <path d="M8 28 L14 16 L20 22 L26 12 L32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="32" cy="12" r="3" fill="#f5c842"/>
+      <path d="M8 32 H32" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
     <span class="nav-logo-text">Macro<span>Nations</span></span>
   </a>
   <div class="nav-tabs" id="nav-tabs">
@@ -301,91 +297,155 @@ html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--
     <button class="nav-tab" onclick="showPage('rankings',this)">Rankings</button>
     <button class="nav-tab" onclick="showPage('champions',this)">Champions</button>
     <button class="nav-tab" onclick="showPage('legal',this)">Legal</button>
+    <a class="nav-tab" href="macronations-brochure.html" target="_blank" style="text-decoration:none">How it works ↗</a>
   </div>
   <div class="nav-right" id="nav-right">
     <button class="btn btn-ghost btn-sm" onclick="openModal('modal-login')">Sign in</button>
     <button class="btn btn-gold btn-sm" onclick="openModal('modal-register')">Join free</button>
   </div>
+  <button class="hamburger" id="hamburger-btn" onclick="openMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu" onclick="closeMobileMenuIfBg(event)">
+  <div class="mobile-menu-inner" id="mobile-menu-inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#0f3d9e"/><path d="M8 28 L14 16 L20 22 L26 12 L32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="32" cy="12" r="3" fill="#f5c842"/></svg>
+        <span style="font-family:var(--font-head);font-size:16px;color:var(--blue)">MacroNations</span>
+      </div>
+      <button onclick="closeMobileMenu()" style="border:none;background:none;font-size:20px;cursor:pointer;color:var(--muted);padding:4px">✕</button>
+    </div>
+    <div id="mobile-nav-items">
+      <button class="mobile-menu-item on" onclick="mobileNav('home',this)">Home</button>
+      <button class="mobile-menu-item" onclick="mobileNav('tournaments',this)">Tournaments</button>
+      <button class="mobile-menu-item" onclick="mobileNav('rankings',this)">Rankings</button>
+      <button class="mobile-menu-item" onclick="mobileNav('champions',this)">Champions</button>
+      <button class="mobile-menu-item" onclick="mobileNav('legal',this)">Legal</button>
+      <a class="mobile-menu-item" href="macronations-brochure.html" target="_blank" style="text-decoration:none;display:block">How it works ↗</a>
+    </div>
+    <div class="mobile-menu-divider"></div>
+    <div id="mobile-auth-items">
+      <button class="mobile-menu-item" onclick="closeMobileMenu();openModal('modal-login')">Sign in</button>
+      <button class="mobile-menu-item" style="background:var(--blue);color:#fff;font-weight:500" onclick="closeMobileMenu();openModal('modal-register')">Join free</button>
+    </div>
+  </div>
+</div>
 
 <div class="main" id="main-content">
 
-  <!-- HOME -->
-  <div class="page on" id="page-home">
-    <h1 class="page-title">Manage an economy.<br><span>Win the world.</span></h1>
-    <p class="page-sub">The premier macroeconomic policy simulation for students.</p>
-  </div>
-
-  <!-- TOURNAMENTS -->
-  <div class="page" id="page-tournaments">
-    <h1 class="page-title">Tournaments</h1>
-    <p class="page-sub">Join a tournament or browse upcoming ones.</p>
-  </div>
-
-  <!-- RANKINGS -->
-  <div class="page" id="page-rankings">
-    <h1 class="page-title">Global Rankings</h1>
-    <p class="page-sub">Live standings updated after every round.</p>
-  </div>
-
-  <!-- CHAMPIONS -->
-  <div class="page" id="page-champions">
-    <h1 class="page-title">Hall of Champions</h1>
-    <p class="page-sub">Every season champion — preserved forever.</p>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div class="page" id="page-dashboard">
-    <div class="tab-row">
-      <button class="tab on" onclick="showSub('dash-overview',this)">Overview</button>
-      <button class="tab" onclick="showSub('dash-policy',this)">Policy</button>
-      <button class="tab" onclick="showSub('dash-crisis',this)">Crisis</button>
+<!-- HOME -->
+<div class="page on" id="page-home">
+  <div class="hero">
+    <div class="hero-logo">
+      <svg class="hero-logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="#0f3d9e"/>
+        <path d="M8 28 L14 16 L20 22 L26 12 L32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="32" cy="12" r="3" fill="#f5c842"/>
+        <path d="M8 32 H32" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
     </div>
-    <div class="sub-page on" id="dash-overview">Dashboard Overview</div>
-    <div class="sub-page" id="dash-policy">Policy Settings</div>
-    <div class="sub-page" id="dash-crisis">Crisis Management</div>
+    <div class="hero-title">Manage an economy.<br><span>Win the world.</span></div>
+    <p class="hero-sub">The premier macroeconomic policy simulation for students. Compete in real time. Win cash prizes. Become champion.</p>
+    <div class="hero-btns">
+      <button class="btn btn-gold" onclick="openModal('modal-register')">Start competing</button>
+      <button class="btn btn-ghost" onclick="showPage('tournaments',document.querySelectorAll('.nav-tab')[1])">Browse tournaments</button>
+    </div>
   </div>
-
-  <!-- LEGAL -->
-  <div class="page" id="page-legal">
-    <h1 class="page-title">Legal</h1>
-    <p class="page-sub">Terms of Service, Privacy, etc.</p>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-lbl">Students</div><div class="metric-val blue" id="stat-students">0</div></div>
+    <div class="metric"><div class="metric-lbl">Tournaments</div><div class="metric-val blue" id="stat-tournaments">0</div></div>
+    <div class="metric"><div class="metric-lbl">Countries</div><div class="metric-val blue" id="stat-countries">0</div></div>
+    <div class="metric"><div class="metric-lbl">Prize pool</div><div class="metric-val blue" id="stat-prizepool">$0</div></div>
   </div>
-
+  <div class="three-col">
+    <div class="card"><div class="card-title" style="color:var(--blue);margin-bottom:8px">Real simulation</div><p style="color:#475569;font-size:13px;line-height:1.6">15-step macro engine: Keynesian multiplier, Phillips Curve, Okun's Law, Reinhart-Rogoff debt threshold.</p></div>
+    <div class="card"><div class="card-title" style="color:var(--blue);margin-bottom:8px">Cash prizes</div><p style="color:#475569;font-size:13px;line-height:1.6">Up to 10% of entry fees returned as prizes. 70% to winner, 30% to runner-up. Paid by MacroNations LLC.</p></div>
+    <div class="card"><div class="card-title" style="color:var(--blue);margin-bottom:8px">Certificates</div><p style="color:#475569;font-size:13px;line-height:1.6">All finishers receive participation certificates. Winners, runner-ups, and playoff qualifiers get special awards.</p></div>
+  </div>
 </div>
-<script>
-// ====================== CORE TAB FUNCTIONS ======================
-function showPage(id, btn) {
-  console.log("Main tab clicked:", id);
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
-  const page = document.getElementById('page-' + id);
-  if (page) page.classList.add('on');
 
-  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('on'));
-  if (btn) btn.classList.add('on');
-}
+<!-- TOURNAMENTS -->
+<div class="page" id="page-tournaments">
+  <div class="page-title">Tournaments</div>
+  <p class="page-sub">Join a tournament or browse upcoming ones. One team per player per season.</p>
+  <div id="tournaments-list"><div class="loading"><span class="spinner"></span>Loading...</div></div>
+</div>
 
-function showSub(id, btn) {
-  console.log("Sub tab clicked:", id);
-  document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('on'));
-  const sub = document.getElementById(id);
-  if (sub) sub.classList.add('on');
+<!-- RANKINGS -->
+<div class="page" id="page-rankings">
+  <div class="page-title">Global Rankings</div>
+  <p class="page-sub">Live standings updated after every round.</p>
+  <div id="rankings-list"><div class="loading"><span class="spinner"></span>Loading...</div></div>
+</div>
 
-  if (btn) {
-    btn.parentElement.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-  }
-}
+<!-- CHAMPIONS -->
+<div class="page" id="page-champions">
+  <div class="page-title">Hall of Champions</div>
+  <p class="page-sub">Every season champion — preserved forever.</p>
+  <div id="champions-list"><div class="loading"><span class="spinner"></span>Loading...</div></div>
+</div>
 
-function openModal(id) {
-  alert("Modal opened: " + id + "\n\nFull modal UI can be expanded as needed.");
-}
+<!-- DASHBOARD -->
+<div class="page" id="page-dashboard">
+  <div class="tab-row">
+    <button class="tab on" onclick="showSub('dash-overview',this)">Overview</button>
+    <button class="tab" onclick="showSub('dash-policy',this)">Policy</button>
+    <button class="tab" onclick="showSub('dash-crisis',this)">Crisis</button>
+    <button class="tab" onclick="showSub('dash-advisor',this)">Advisor</button>
+    <button class="tab" onclick="showSub('dash-rankings',this)">Rankings</button>
+    <button class="tab" onclick="showSub('dash-payment',this)">Payment</button>
+    <button class="tab" onclick="showSub('dash-certificates',this)">Certificates</button>
+  </div>
+  <div class="sub-page on" id="dash-overview"></div>
+  <div class="sub-page" id="dash-policy"></div>
+  <div class="sub-page" id="dash-crisis"></div>
+  <div class="sub-page" id="dash-advisor"></div>
+  <div class="sub-page" id="dash-rankings"></div>
+  <div class="sub-page" id="dash-payment"></div>
+  <div class="sub-page" id="dash-certificates"></div>
+</div>
 
-// Initialize
-console.log("✅ Ultra-complete MacroNations index.html loaded. Tabs and sub-tabs are functional.");
-</script>
-</body>
-</html>
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="tab-row">
+    <button class="tab on" onclick="showSub('admin-overview',this)">Overview</button>
+    <button class="tab" onclick="showSub('admin-tournaments',this)">Tournaments</button>
+    <button class="tab" onclick="showSub('admin-teams',this)">Teams</button>
+    <button class="tab" onclick="showSub('admin-rounds',this)">Rounds</button>
+    <button class="tab" onclick="showSub('admin-playoffs',this)">Playoffs</button>
+    <button class="tab" onclick="showSub('admin-payments',this)">Payments</button>
+    <button class="tab" onclick="showSub('admin-waivers',this)">Waivers</button>
+    <button class="tab" onclick="showSub('admin-notify',this)">Notifications</button>
+    <button class="tab" onclick="showSub('admin-analytics',this)">Analytics</button>
+  </div>
+  <div class="sub-page on" id="admin-overview"></div>
+  <div class="sub-page" id="admin-tournaments"></div>
+  <div class="sub-page" id="admin-teams"></div>
+  <div class="sub-page" id="admin-rounds"></div>
+  <div class="sub-page" id="admin-playoffs"></div>
+  <div class="sub-page" id="admin-payments"></div>
+  <div class="sub-page" id="admin-waivers"></div>
+  <div class="sub-page" id="admin-notify"></div>
+  <div class="sub-page" id="admin-analytics"></div>
+</div>
+
+<!-- LEGAL -->
+<div class="page" id="page-legal">
+  <div class="legal-nav">
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('terms')">Terms</button>
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('prizes')">Prize Rules</button>
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('privacy')">Privacy</button>
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('disclaimer')">Disclaimer</button>
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('copyright')">Copyright</button>
+  </div>
+  <div id="legal-content"></div>
+</div>
+
+</div><!-- /main -->
+
 <!-- FOOTER -->
 <div class="footer">
   <div class="footer-logo">
