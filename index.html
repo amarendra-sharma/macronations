@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MacroNations — The Global Macroeconomics Tournament</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f7fb;--bg2:#eef1f8;--bg3:#e4e9f4;
+  --nav:#ffffff;--card-bg:#ffffff;--card2-bg:#f0f4fb;
+  --blue:#0f3d9e;--blue2:#1245b8;--blue3:#e8effe;--blue-dark:#0a2d82;
+  --gold:#b87408;--gold2:#c8820a;--gold3:#a86200;
+  --white:#1a202e;--muted:#64748b;--border:rgba(15,61,158,0.12);
+  --green:#0d7a5f;--red:#c0392b;--amber:#b45309;
+  --card:rgba(255,255,255,0.9);--card2:rgba(240,244,251,0.9);
+  --font-head:'DM Serif Display',serif;--font-body:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;--font-cert:'Cinzel',serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--font-body);font-size:14px;-webkit-text-size-adjust:100%}
+
+/* ---- NAV ---- */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.nav{background:var(--nav);border-bottom:1px solid var(--border);box-shadow:0 1px 3px rgba(15,61,158,0.08);position:sticky;top:0;z-index:100;display:flex;align-items:center;padding:0 16px;height:56px;gap:12px}
+.nav-logo{display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0;text-decoration:none}
+.nav-logo-svg{width:32px;height:32px;flex-shrink:0}
+.nav-logo-text{font-family:var(--font-head);font-size:18px;color:var(--blue);letter-spacing:.3px;white-space:nowrap}
+.nav-logo-text span{color:#0f172a}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.nav-tab{padding:6px 12px;border:none;background:none;color:var(--muted);font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer;border-radius:6px;transition:all .15s;white-space:nowrap}
+.nav-tab:hover{color:var(--blue);background:rgba(15,61,158,0.06)}.nav-tab.on{color:var(--blue);background:rgba(15,61,158,0.08)}
+.nav-right{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:6px;border:none;background:none}
+.hamburger span{display:block;width:20px;height:2px;background:var(--muted);border-radius:2px;transition:all .2s}
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(15,61,158,0.15);backdrop-filter:blur(4px);z-index:199}
+.mobile-menu.on{display:flex;align-items:flex-end}
+.mobile-menu-inner{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:20px;padding-bottom:max(20px,env(safe-area-inset-bottom))}
+.mobile-menu-item{display:block;width:100%;padding:14px 16px;border:none;background:none;font-family:var(--font-body);font-size:15px;font-weight:500;color:var(--white);text-align:left;cursor:pointer;border-radius:10px;margin-bottom:4px}
+.mobile-menu-item:hover,.mobile-menu-item.on{background:rgba(15,61,158,0.08);color:var(--blue)}
+.mobile-menu-divider{height:1px;background:var(--border);margin:12px 0}
+
+/* ---- LAYOUT ---- */
+.main{flex:1;padding:20px 16px;max-width:1100px;margin:0 auto;width:100%}
+.page{display:none}.page.on{display:block}
+.page-title{font-family:var(--font-head);font-size:26px;color:var(--blue);margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+
+/* ---- CARDS ---- */
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(15,61,158,0.06)}
+.card-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.card-title{font-size:15px;font-weight:500}
+
+/* ---- METRICS ---- */
+.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.metric{background:var(--card2-bg);border-radius:10px;padding:14px;border:1px solid var(--border)}
+.metric-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.metric-val{font-size:22px;font-weight:500;font-family:var(--font-mono)}
+.metric-val.green{color:var(--green)}.metric-val.amber{color:var(--amber)}.metric-val.blue{color:var(--blue)}
+
+/* ---- TABLE ---- */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px;border:1px solid var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;min-width:500px}
+.tbl th{padding:9px 14px;text-align:left;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid rgba(15,61,158,0.1);background:#f8faff;white-space:nowrap}
+.tbl td{padding:11px 14px;border-bottom:1px solid rgba(15,61,158,0.06);vertical-align:middle}
+.tbl tr:hover td{background:rgba(15,61,158,0.03)}.tbl tr:last-child td{border-bottom:none}
+
+/* ---- BADGES ---- */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-green{background:rgba(13,122,95,0.1);color:var(--green)}
+.badge-amber{background:rgba(180,83,9,0.1);color:var(--amber)}
+.badge-red{background:rgba(192,57,43,0.1);color:var(--red)}
+.badge-blue{background:rgba(15,61,158,0.1);color:var(--blue)}
+.badge-gold{background:rgba(15,61,158,0.1);color:var(--blue)}
+.badge-gray{background:rgba(100,116,139,0.1);color:var(--muted)}
+
+/* ---- NOTICES ---- */
+.notice{padding:12px 14px;border-radius:8px;font-size:13px;margin:10px 0;line-height:1.5}
+.notice-info{background:rgba(15,61,158,0.06);color:#0a2d82;border:1px solid rgba(15,61,158,0.15)}
+.notice-ok{background:rgba(13,122,95,0.08);color:var(--green);border:1px solid rgba(13,122,95,0.2)}
+.notice-warn{background:rgba(180,83,9,0.08);color:var(--amber);border:1px solid rgba(180,83,9,0.2)}
+.notice-err{background:rgba(192,57,43,0.08);color:var(--red);border:1px solid rgba(192,57,43,0.2)}
+
+/* ---- FORMS ---- */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;font-weight:500}
+.field input,.field select,.field textarea{width:100%;background:#f8faff;border:1.5px solid rgba(15,61,158,0.2);border-radius:8px;padding:9px 12px;color:#1a202e;font-family:var(--font-body);font-size:14px;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(15,61,158,0.1)}
+.field select option{background:#fff;color:#1a202e}.field textarea{height:80px;resize:vertical}
+
+/* ---- MODALS ---- */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,61,158,0.15);backdrop-filter:blur(4px);z-index:200;align-items:flex-end;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:#fff;border:1px solid var(--border);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(15,61,158,0.15);padding-bottom:max(24px,env(safe-area-inset-bottom))}
+@media(min-width:600px){
+  .modal-bg{align-items:center}
+  .modal{border-radius:16px;max-height:90vh}
+}
+.modal-title{font-family:var(--font-head);font-size:20px;color:var(--blue);margin-bottom:18px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+
+/* ---- BUTTONS ---- */
+.btn{padding:9px 18px;border-radius:10px;font-family:var(--font-body);font-size:14px;cursor:pointer;border:none;transition:all .15s;font-weight:500;-webkit-tap-highlight-color:transparent}
+.btn-gold{background:var(--blue);color:#fff}.btn-gold:hover{background:var(--blue2)}.btn-gold:active{transform:scale(0.97)}
+.btn-ghost{background:#fff;color:var(--blue);border:1.5px solid rgba(15,61,158,0.25)}.btn-ghost:hover{background:var(--blue3)}
+.btn-sm{padding:6px 14px;font-size:12px;border-radius:8px}
+.btn-danger{background:rgba(192,57,43,0.08);color:var(--red);border:1px solid rgba(192,57,43,0.25);cursor:pointer;font-family:var(--font-body);font-size:12px;padding:6px 12px;border-radius:8px}
+.btn-success{background:rgba(13,122,95,0.08);color:var(--green);border:1px solid rgba(13,122,95,0.2);cursor:pointer;font-family:var(--font-body);font-size:12px;padding:6px 12px;border-radius:8px}
+.btn-info{background:rgba(15,61,158,0.08);color:var(--blue);border:1px solid rgba(15,61,158,0.2);cursor:pointer;font-family:var(--font-body);font-size:12px;padding:6px 12px;border-radius:8px}
+.btn-stripe{background:#635bff;color:#fff;font-family:var(--font-body);font-size:14px;padding:9px 18px;border-radius:10px;border:none;cursor:pointer;font-weight:500}
+.btn-cert{background:linear-gradient(135deg,#0f3d9e,#0a2d82);color:#fff;font-family:var(--font-body);font-size:13px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-weight:500;display:inline-flex;align-items:center;gap:6px}
+
+/* ---- TABS ---- */
+.tab-row{display:flex;gap:2px;margin-bottom:18px;border-bottom:2px solid rgba(15,61,158,0.1);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tab-row::-webkit-scrollbar{display:none}
+.tab{padding:8px 14px;border:none;background:none;color:var(--muted);font-family:var(--font-body);font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;font-weight:500;-webkit-tap-highlight-color:transparent}
+.tab:hover{color:var(--blue)}.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.sub-page{display:none}.sub-page.on{display:block}
+
+/* ---- GRID LAYOUTS ---- */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.three-col{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+
+/* ---- HERO ---- */
+.hero{text-align:center;padding:48px 20px 40px;background:linear-gradient(160deg,#eef3ff 0%,#f5f7fb 60%,#e8f0fe 100%);border-radius:16px;margin-bottom:24px;border:1px solid rgba(15,61,158,0.1)}
+.hero-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
+.hero-logo-svg{width:56px;height:56px}
+.hero-title{font-family:var(--font-head);font-size:44px;color:#0f172a;line-height:1.1;margin-bottom:10px}
+.hero-title span{color:var(--blue)}
+.hero-sub{font-size:16px;color:#475569;max-width:500px;margin:0 auto 24px;line-height:1.7}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ---- MISC ---- */
+.inv-code{font-family:var(--font-mono);letter-spacing:3px;color:var(--blue);background:rgba(15,61,158,0.06);border:1px solid rgba(15,61,158,0.2);padding:5px 14px;border-radius:8px;display:inline-block;font-size:14px}
+.flash{position:fixed;bottom:20px;right:16px;z-index:999;max-width:340px}
+.flash-msg{background:#fff;border:1px solid var(--border);box-shadow:0 4px 20px rgba(15,61,158,0.12);border-radius:10px;padding:12px 16px;margin-top:8px;font-size:13px;animation:slideIn .25s ease;color:var(--white)}
+.flash-msg.ok{border-color:rgba(13,122,95,0.3);color:var(--green)}.flash-msg.err{border-color:rgba(192,57,43,0.3);color:var(--red)}.flash-msg.warn{border-color:rgba(180,83,9,0.3);color:var(--amber)}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(15,61,158,0.2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading{color:var(--muted);font-size:13px;padding:24px 0;text-align:center}
+
+/* ---- PRIZE POOL ---- */
+.prize-pool{background:linear-gradient(135deg,rgba(15,61,158,0.06),rgba(15,61,158,0.02));border:1px solid rgba(15,61,158,0.2);border-radius:12px;padding:18px;margin-bottom:14px}
+.prize-pool-title{font-family:var(--font-head);font-size:17px;color:var(--blue);margin-bottom:4px}
+.prize-pool-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.prize-amounts{display:flex;gap:10px;flex-wrap:wrap}
+.prize-item{flex:1;min-width:100px;background:#fff;border:1px solid rgba(15,61,158,0.15);border-radius:8px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(15,61,158,0.08)}
+.prize-item-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.prize-item-amt{font-size:20px;font-weight:500;font-family:var(--font-mono);color:var(--blue)}
+.prize-item-pct{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* ---- SCORES ---- */
+.score-ring{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pillar{text-align:center;flex:1;min-width:72px}
+.pillar-val{font-size:24px;font-weight:500;font-family:var(--font-mono)}
+.pillar-lbl{font-size:11px;color:var(--muted);margin-top:3px}
+.pillar-bar{height:4px;background:rgba(15,61,158,0.1);border-radius:2px;margin-top:5px}
+.pillar-fill{height:100%;border-radius:2px}
+
+/* ---- RANK BADGES ---- */
+.rank-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:500;font-family:var(--font-mono)}
+.rank-1{background:rgba(180,116,8,0.15);color:#b87408}.rank-2{background:rgba(100,116,139,0.15);color:#475569}.rank-3{background:rgba(180,83,9,0.12);color:var(--amber)}.rank-n{background:#f1f5f9;color:var(--muted)}
+
+/* ---- CRISIS ---- */
+.crisis-card{border:1px solid rgba(192,57,43,0.25);background:rgba(192,57,43,0.04);border-radius:12px;padding:16px;margin-bottom:12px}
+.crisis-title{font-size:15px;font-weight:500;color:var(--red);margin-bottom:6px}
+.crisis-body{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px}
+.crisis-opt{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.crisis-opt:hover,.crisis-opt:active{border-color:var(--blue);background:rgba(15,61,158,0.04)}.crisis-opt.chosen{border-color:var(--green);background:rgba(13,122,95,0.06)}
+
+/* ---- SCHEDULE ---- */
+.schedule-bar{background:#f8faff;border:1px solid rgba(15,61,158,0.1);border-radius:8px;padding:12px;margin-bottom:8px}
+.schedule-round{display:flex;align-items:center;gap:12px}
+.schedule-num{width:28px;height:28px;border-radius:50%;background:rgba(15,61,158,0.1);color:var(--blue);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);flex-shrink:0}
+.schedule-info{flex:1}
+.schedule-date{font-size:13px;font-weight:500}
+.schedule-status{font-size:11px;color:var(--muted);margin-top:2px}
+.countdown{font-family:var(--font-mono);font-size:12px;color:var(--blue);background:rgba(15,61,158,0.08);padding:3px 8px;border-radius:4px;white-space:nowrap}
+
+/* ---- AI CHAT ---- */
+.ai-chat{background:#f8faff;border:1px solid rgba(15,61,158,0.1);border-radius:10px;padding:14px;margin-bottom:10px;font-size:13px;line-height:1.7;color:#475569}
+.ai-chat.user{background:rgba(15,61,158,0.06);border:1px solid rgba(15,61,158,0.15);color:var(--blue);margin-left:30px}
+.ai-label{font-size:11px;color:var(--blue);font-weight:500;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+
+/* ---- PAYMENT STATUS ---- */
+.pay-status-paid{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--green);background:rgba(13,122,95,0.08);border:1px solid rgba(13,122,95,0.2);padding:3px 9px;border-radius:20px}
+.pay-status-unpaid{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--amber);background:rgba(180,83,9,0.08);border:1px solid rgba(180,83,9,0.2);padding:3px 9px;border-radius:20px}
+
+/* ---- LEGAL ---- */
+.legal-content{max-width:760px;line-height:1.8;color:#475569}
+.legal-content h1{font-family:var(--font-head);font-size:30px;color:var(--blue);margin-bottom:8px}
+.legal-content h2{font-size:15px;font-weight:500;color:#1e293b;margin:24px 0 8px}
+.legal-content p{margin-bottom:12px;font-size:13px}
+.legal-content ul{margin:8px 0 12px 20px;font-size:13px}
+.legal-content li{margin-bottom:5px}
+.legal-content .last-updated{font-size:12px;color:var(--muted);margin-bottom:24px}
+.legal-content a{color:var(--blue)}
+.legal-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+
+/* ---- PLAYOFFS ---- */
+.bracket{overflow-x:auto;padding-bottom:12px}
+.bracket-round{display:flex;flex-direction:column;gap:16px;min-width:160px}
+.bracket-match{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(15,61,158,0.06)}
+.bracket-team{padding:8px 12px;font-size:13px;font-weight:500;display:flex;justify-content:space-between;align-items:center}
+.bracket-team:first-child{border-bottom:1px solid var(--border)}
+.bracket-team.winner{background:rgba(13,122,95,0.08);color:var(--green)}
+.bracket-team.loser{color:var(--muted);text-decoration:line-through}
+
+/* ---- CERTIFICATE ---- */
+.cert-container{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 32px rgba(15,61,158,0.15);margin-bottom:16px}
+
+/* ---- FOOTER ---- */
+.footer{background:#fff;border-top:1px solid var(--border);padding:20px 16px;text-align:center;font-size:12px;color:var(--muted)}
+.footer a{color:var(--muted);text-decoration:none;margin:0 6px}.footer a:hover{color:var(--blue)}
+.footer-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+
+/* ---- SLIDER ---- */
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.slider-lbl{font-size:12px;color:var(--muted);min-width:180px}
+.slider-row input[type=range]{flex:1;accent-color:var(--blue);height:4px}
+.slider-val{font-size:13px;font-weight:500;font-family:var(--font-mono);min-width:64px;text-align:right;color:var(--blue)}
+
+/* ---- MOBILE RESPONSIVE ---- */
+@media(max-width:640px){
+  .nav{height:52px;padding:0 12px}
+  .nav-tabs{display:none}
+  .nav-right{display:none}
+  .hamburger{display:flex}
+  .main{padding:14px 12px}
+  .metric-grid{grid-template-columns:1fr 1fr}
+  .metric-val{font-size:18px}
+  .form-grid{grid-template-columns:1fr}
+  .psc-top{flex-wrap:wrap}
+  div[style*='grid-template-columns:1fr 1fr'][style*='gap:10px']{grid-template-columns:1fr!important}
+  .two-col{grid-template-columns:1fr}
+  .three-col{grid-template-columns:1fr}
+  .hero{padding:32px 16px 28px;border-radius:12px}
+  .hero-title{font-size:30px}
+  .hero-sub{font-size:14px}
+  .prize-amounts{flex-direction:row}
+  .prize-item{min-width:80px}
+  .slider-lbl{min-width:120px;font-size:11px}
+  .page-title{font-size:22px}
+  .score-ring{gap:10px}
+  .pillar-val{font-size:20px}
+  .tab{padding:7px 10px;font-size:12px}
+  .card{padding:14px}
+  .btn{padding:10px 16px;font-size:14px}
+  .hero-logo-svg{width:44px;height:44px}
+  .hero-title{margin-bottom:8px}
+  .legal-nav{gap:6px}
+  .legal-nav .btn{font-size:11px;padding:5px 10px}
+  .psc{margin-bottom:8px}
+}
+@media(max-width:380px){
+  .metric-grid{grid-template-columns:1fr 1fr}
+  .prize-item-amt{font-size:16px}
+  .hero-title{font-size:26px}
+}
+
+        .psc{background:#fff;border:1px solid rgba(15,61,158,0.1);border-radius:12px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 4px rgba(15,61,158,0.05);transition:box-shadow .2s}
+        .psc:hover{box-shadow:0 4px 16px rgba(15,61,158,0.1)}
+        .psc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+        .psc-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+        .psc-lbl{font-size:13px;font-weight:500;color:#1a202e}
+        .psc-hint{font-size:11px;color:var(--muted);margin-top:1px}
+        .psc-val{font-family:var(--font-mono);font-size:13px;font-weight:500;padding:4px 10px;border-radius:6px;min-width:68px;text-align:center;flex-shrink:0}
+        .psc-range{width:100%;height:8px;border-radius:4px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+        .psc-range::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;cursor:pointer;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25)}
+        .psc-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;cursor:pointer;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.25)}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="#" onclick="showPage('home',document.querySelector('.nav-tab'));return false">
+    <svg class="nav-logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="40" height="40" rx="10" fill="#0f3d9e"/>
+      <path d="M8 28 L14 16 L20 22 L26 12 L32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="32" cy="12" r="3" fill="#f5c842"/>
+      <path d="M8 32 H32" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span class="nav-logo-text">Macro<span>Nations</span></span>
+  </a>
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab on" onclick="showPage('home',this)">Home</button>
+    <button class="nav-tab" onclick="showPage('tournaments',this)">Tournaments</button>
+    <button class="nav-tab" onclick="showPage('rankings',this)">Rankings</button>
+    <button class="nav-tab" onclick="showPage('champions',this)">Champions</button>
+    <button class="nav-tab" onclick="showPage('legal',this)">Legal</button>
+    <a class="nav-tab" href="macronations-brochure.html" target="_blank" style="text-decoration:none">How it works ↗</a>
+  </div>
+  <div class="nav-right" id="nav-right">
+    <button class="btn btn-ghost btn-sm" onclick="openModal('modal-login')">Sign in</button>
+    <button class="btn btn-gold btn-sm" onclick="openModal('modal-register')">Join free</button>
+  </div>
+  <button class="hamburger" id="hamburger-btn" onclick="openMobileMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu" onclick="closeMobileMenuIfBg(event)">
+  <div class="mobile-menu-inner" id="mobile-menu-inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#0f3d9e"/><path d="M8 28 L14 16 L20 22 L26 12 L32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="32" cy="12" r="3" fill="#f5c842"/></svg>
+        <span style="font-family:var(--font-head);font-size:16px;color:var(--blue)">MacroNations</span>
+      </div>
+      <button onclick="closeMobileMenu()" style="border:none;background:none;font-size:20px;cursor:pointer;color:var(--muted);padding:4px">✕</button>
+    </div>
+    <div id="mobile-nav-items">
+      <button class="mobile-menu-item on" onclick="mobileNav('home',this)">Home</button>
+      <button class="mobile-menu-item" onclick="mobileNav('tournaments',this)">Tournaments</button>
+      <button class="mobile-menu-item" onclick="mobileNav('rankings',this)">Rankings</button>
+      <button class="mobile-menu-item" onclick="mobileNav('champions',this)">Champions</button>
+      <button class="mobile-menu-item" onclick="mobileNav('legal',this)">Legal</button>
+      <a class="mobile-menu-item" href="macronations-brochure.html" target="_blank" style="text-decoration:none;display:block">How it works ↗</a>
+    </div>
+    <div class="mobile-menu-divider"></div>
+    <div id="mobile-auth-items">
+      <button class="mobile-menu-item" onclick="closeMobileMenu();openModal('modal-login')">Sign in</button>
+      <button class="mobile-menu-item" style="background:var(--blue);color:#fff;font-weight:500" onclick="closeMobileMenu();openModal('modal-register')">Join free</button>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="main-content">
+
+<!-- HOME -->
+<div class="page on" id="page-home">
+  <div class="hero">
+    <div class="hero-logo">
+      <svg class="hero-logo-svg" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="40" height="40" rx="10" fill="#0f3d9e"/>
+        <path d="M8 28 L14 16 L20 22 L26 12 L32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="32" cy="12" r="3" fill="#f5c842"/>
+        <path d="M8 32 H32" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="hero-title">Manage an economy.<br><span>Win the world.</span></div>
+    <p class="hero-sub">The premier macroeconomic policy simulation for students. Compete in real time. Win cash prizes. Become champion.</p>
+    <div class="hero-btns">
+      <button class="btn btn-gold" onclick="openModal('modal-register')">Start competing</button>
+      <button class="btn btn-ghost" onclick="showPage('tournaments',document.querySelectorAll('.nav-tab')[1])">Browse tournaments</button>
+    </div>
+  </div>
+  <div class="metric-grid">
+    <div class="metric"><div class="metric-lbl">Students</div><div class="metric-val blue" id="stat-students">0</div></div>
+    <div class="metric"><div class="metric-lbl">Tournaments</div><div class="metric-val blue" id="stat-tournaments">0</div></div>
+    <div class="metric"><div class="metric-lbl">Countries</div><div class="metric-val blue" id="stat-countries">0</div></div>
+    <div class="metric"><div class="metric-lbl">Prize pool</div><div class="metric-val blue" id="stat-prizepool">$0</div></div>
+  </div>
+  <div class="three-col">
+    <div class="card"><div class="card-title" style="color:var(--blue);margin-bottom:8px">Real simulation</div><p style="color:#475569;font-size:13px;line-height:1.6">15-step macro engine: Keynesian multiplier, Phillips Curve, Okun's Law, Reinhart-Rogoff debt threshold.</p></div>
+    <div class="card"><div class="card-title" style="color:var(--blue);margin-bottom:8px">Cash prizes</div><p style="color:#475569;font-size:13px;line-height:1.6">Up to 10% of entry fees returned as prizes. 70% to winner, 30% to runner-up. Paid by MacroNations LLC.</p></div>
+    <div class="card"><div class="card-title" style="color:var(--blue);margin-bottom:8px">Certificates</div><p style="color:#475569;font-size:13px;line-height:1.6">All finishers receive participation certificates. Winners, runner-ups, and playoff qualifiers get special awards.</p></div>
+  </div>
+</div>
+
+<!-- TOURNAMENTS -->
+<div class="page" id="page-tournaments">
+  <div class="page-title">Tournaments</div>
+  <p class="page-sub">Join a tournament or browse upcoming ones. One team per player per season.</p>
+  <div id="tournaments-list"><div class="loading"><span class="spinner"></span>Loading...</div></div>
+</div>
+
+<!-- RANKINGS -->
+<div class="page" id="page-rankings">
+  <div class="page-title">Global Rankings</div>
+  <p class="page-sub">Live standings updated after every round.</p>
+  <div id="rankings-list"><div class="loading"><span class="spinner"></span>Loading...</div></div>
+</div>
+
+<!-- CHAMPIONS -->
+<div class="page" id="page-champions">
+  <div class="page-title">Hall of Champions</div>
+  <p class="page-sub">Every season champion — preserved forever.</p>
+  <div id="champions-list"><div class="loading"><span class="spinner"></span>Loading...</div></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="page" id="page-dashboard">
+  <div class="tab-row">
+    <button class="tab on" onclick="showSub('dash-overview',this)">Overview</button>
+    <button class="tab" onclick="showSub('dash-policy',this)">Policy</button>
+    <button class="tab" onclick="showSub('dash-crisis',this)">Crisis</button>
+    <button class="tab" onclick="showSub('dash-advisor',this)">Advisor</button>
+    <button class="tab" onclick="showSub('dash-rankings',this)">Rankings</button>
+    <button class="tab" onclick="showSub('dash-payment',this)">Payment</button>
+    <button class="tab" onclick="showSub('dash-certificates',this)">Certificates</button>
+  </div>
+  <div class="sub-page on" id="dash-overview"></div>
+  <div class="sub-page" id="dash-policy"></div>
+  <div class="sub-page" id="dash-crisis"></div>
+  <div class="sub-page" id="dash-advisor"></div>
+  <div class="sub-page" id="dash-rankings"></div>
+  <div class="sub-page" id="dash-payment"></div>
+  <div class="sub-page" id="dash-certificates"></div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="tab-row">
+    <button class="tab on" onclick="showSub('admin-overview',this)">Overview</button>
+    <button class="tab" onclick="showSub('admin-tournaments',this)">Tournaments</button>
+    <button class="tab" onclick="showSub('admin-teams',this)">Teams</button>
+    <button class="tab" onclick="showSub('admin-rounds',this)">Rounds</button>
+    <button class="tab" onclick="showSub('admin-playoffs',this)">Playoffs</button>
+    <button class="tab" onclick="showSub('admin-payments',this)">Payments</button>
+    <button class="tab" onclick="showSub('admin-waivers',this)">Waivers</button>
+    <button class="tab" onclick="showSub('admin-notify',this)">Notifications</button>
+    <button class="tab" onclick="showSub('admin-analytics',this)">Analytics</button>
+  </div>
+  <div class="sub-page on" id="admin-overview"></div>
+  <div class="sub-page" id="admin-tournaments"></div>
+  <div class="sub-page" id="admin-teams"></div>
+  <div class="sub-page" id="admin-rounds"></div>
+  <div class="sub-page" id="admin-playoffs"></div>
+  <div class="sub-page" id="admin-payments"></div>
+  <div class="sub-page" id="admin-waivers"></div>
+  <div class="sub-page" id="admin-notify"></div>
+  <div class="sub-page" id="admin-analytics"></div>
+</div>
+
+<!-- LEGAL -->
+<div class="page" id="page-legal">
+  <div class="legal-nav">
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('terms')">Terms</button>
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('prizes')">Prize Rules</button>
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('privacy')">Privacy</button>
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('disclaimer')">Disclaimer</button>
+    <button class="btn btn-ghost btn-sm" onclick="showLegal('copyright')">Copyright</button>
+  </div>
+  <div id="legal-content"></div>
+</div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">
+    <svg width="24" height="24" viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#0f3d9e"/><path d="M8 28 L14 16 L20 22 L26 12 L32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="32" cy="12" r="3" fill="#f5c842"/></svg>
+    <span style="font-family:var(--font-head);color:var(--blue);font-size:14px">MacroNations</span>
+  </div>
+  &copy; 2025 MacroNations LLC — A New York Limited Liability Company &nbsp;|&nbsp;
+  <a href="#" onclick="showPage('legal',null);showLegal('terms')">Terms</a>
+  <a href="#" onclick="showPage('legal',null);showLegal('prizes')">Prize Rules</a>
+  <a href="#" onclick="showPage('legal',null);showLegal('privacy')">Privacy</a>
+  <a href="#" onclick="showPage('legal',null);showLegal('disclaimer')">Disclaimer</a>
+  <a href="#" onclick="showPage('legal',null);showLegal('copyright')">Copyright</a>
+  &nbsp;|&nbsp; <a href="/cdn-cgi/l/email-protection#04777174746b767044696567766b6a65706d6b6a772a676b69"><span class="__cf_email__" data-cfemail="0b787e7b7b64797f4b666a687964656a7f6264657825686466">[email&#160;protected]</span></a>
+</div>
+</div><!-- /app -->
+
+<!-- MODALS -->
+<div class="modal-bg" id="modal-login">
+  <div class="modal">
+    <div class="modal-title">Sign in</div>
+    <div class="field"><label>Email</label><input type="email" id="li-email" placeholder="you@university.edu" autocomplete="email"></div>
+    <div class="field"><label>Password</label><input type="password" id="li-pass" placeholder="Your password" autocomplete="current-password"></div>
+    <div id="li-err" style="display:none" class="notice notice-err"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-login')">Cancel</button>
+      <button class="btn btn-gold" id="li-btn" onclick="doLogin()">Sign in</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center">No account? <span style="color:var(--blue);cursor:pointer;font-weight:500" onclick="closeModal('modal-login');openModal('modal-register')">Register free</span></p>
+    <p style="font-size:12px;color:var(--muted);margin-top:6px;text-align:center">By signing in you agree to our <a href="#" onclick="closeModal('modal-login');showPage('legal',null);showLegal('terms')" style="color:var(--blue)">Terms of Service</a></p>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-register">
+  <div class="modal">
+    <div class="modal-title">Create account</div>
+    <div class="form-grid">
+      <div class="field"><label>Full name</label><input type="text" id="reg-name" placeholder="Your name" autocomplete="name"></div>
+      <div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="you@university.edu" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input type="password" id="reg-pass" placeholder="Min 8 characters" autocomplete="new-password"></div>
+      <div class="field"><label>Username</label><input type="text" id="reg-user" placeholder="e.g. keynes_united"></div>
+      <div class="field"><label>Country</label><input type="text" id="reg-country" placeholder="e.g. United States"></div>
+      <div class="field"><label>Institution</label><input type="text" id="reg-inst" placeholder="e.g. Harvard University"></div>
+    </div>
+    <div class="field"><label>Role</label>
+      <select id="reg-role"><option value="student">Student</option><option value="professor">Professor / Instructor</option></select>
+    </div>
+    <div id="reg-err" style="display:none" class="notice notice-err"></div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">By creating an account you agree to our <a href="#" style="color:var(--blue)" onclick="closeModal('modal-register');showPage('legal',null);showLegal('terms')">Terms</a> and <a href="#" style="color:var(--blue)" onclick="closeModal('modal-register');showPage('legal',null);showLegal('privacy')">Privacy Policy</a>.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-register')">Cancel</button>
+      <button class="btn btn-gold" id="reg-btn" onclick="doRegister()">Create account</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-create-tournament">
+  <div class="modal">
+    <div class="modal-title">Create tournament</div>
+    <div class="form-grid">
+      <div class="field" style="grid-column:1/-1"><label>Tournament name</label><input type="text" id="ct-name" placeholder="e.g. Fall 2025 Open Championship"></div>
+      <div class="field"><label>Tier</label>
+        <select id="ct-tier"><option value="open">Open (global)</option><option value="national">National</option><option value="university">University</option><option value="class">Class</option></select>
+      </div>
+      <div class="field"><label>Season year</label><input type="number" id="ct-year" value="2025" min="2025" max="2035"></div>
+      <div class="field"><label>Rounds</label>
+        <select id="ct-rounds"><option value="5">5 rounds</option><option value="8">8 rounds</option><option value="10" selected>10 rounds</option></select>
+      </div>
+      <div class="field"><label>Entry fee ($)</label><input type="number" id="ct-fee" value="0" min="0" step="1"></div>
+      <div class="field"><label>Max teams</label><input type="number" id="ct-maxteams" value="32" min="4" max="256"></div>
+      <div class="field"><label>Round 1 start date</label><input type="date" id="ct-start"></div>
+      <div class="field"><label>Days between rounds</label><input type="number" id="ct-interval" value="7" min="1" max="30"></div>
+      <div class="field" style="grid-column:1/-1"><label>Description</label><textarea id="ct-desc" placeholder="Describe this tournament..."></textarea></div>
+    </div>
+    <div id="ct-err" style="display:none" class="notice notice-err"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-create-tournament')">Cancel</button>
+      <button class="btn btn-gold" id="ct-btn" onclick="doCreateTournament()">Create tournament</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-create-team">
+  <div class="modal">
+    <div class="modal-title">Join or create a team</div>
+    <div id="ct-team-tourn" style="font-size:13px;color:var(--muted);margin-bottom:14px"></div>
+    <div class="tab-row" style="margin-bottom:14px">
+      <button class="tab on" onclick="showTeamTab('create',this)">Create new team</button>
+      <button class="tab" onclick="showTeamTab('join',this)">Join with code</button>
+    </div>
+    <div id="team-create-form"><div class="field"><label>Team name</label><input type="text" id="team-name" placeholder="e.g. Keynes United"></div></div>
+    <div id="team-join-form" style="display:none"><div class="field"><label>Invite code</label><input type="text" id="team-code" placeholder="8-character code" style="font-family:var(--font-mono);letter-spacing:3px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"></div></div>
+    <div id="team-err" style="display:none" class="notice notice-err"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-create-team')">Cancel</button>
+      <button class="btn btn-gold" id="team-btn" onclick="doTeamAction()">Continue</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-waiver">
+  <div class="modal">
+    <div class="modal-title">Grant fee waiver</div>
+    <div class="field"><label>User email</label><input type="email" id="wv-email" placeholder="student@university.edu"></div>
+    <div class="field"><label>Tournament</label><select id="wv-tourn"></select></div>
+    <div class="field"><label>Discount %</label>
+      <select id="wv-disc"><option value="100">100% (full waiver)</option><option value="50">50%</option><option value="25">25%</option></select>
+    </div>
+    <div class="field"><label>Reason</label><input type="text" id="wv-reason" placeholder="e.g. financial hardship"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-waiver')">Cancel</button>
+      <button class="btn btn-gold" onclick="doGrantWaiver()">Grant waiver</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-mark-paid">
+  <div class="modal">
+    <div class="modal-title">Mark payment</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Team: <strong id="mp-team-name" style="color:var(--white)"></strong></p>
+    <div class="field"><label>Payment method</label>
+      <select id="mp-method"><option value="stripe">Stripe (online)</option><option value="bank">Bank transfer</option><option value="cash">Cash / other</option></select>
+    </div>
+    <div class="field"><label>Reference (optional)</label><input type="text" id="mp-ref" placeholder="e.g. Stripe charge ID"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-mark-paid')">Cancel</button>
+      <button class="btn btn-gold" onclick="confirmMarkPaid()">Mark as paid</button>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE PREVIEW MODAL -->
+<div class="modal-bg" id="modal-cert">
+  <div class="modal" style="max-width:680px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="modal-title" style="margin-bottom:0">Certificate</div>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-cert')">Close</button>
+    </div>
+    <div id="cert-preview"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+      <button class="btn-cert" onclick="downloadCert()">Download PNG</button>
+    </div>
+  </div>
+</div>
+
+<div class="flash" id="flash-container"></div>
+<canvas id="cert-canvas" style="display:none"></canvas>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Global error handler - shows what's breaking
+window.onerror = function(msg, src, line, col, err) {
+  console.error('MacroNations JS Error:', msg, 'line:', line, err);
+  // Show error in a non-destructive banner at top
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#fee;color:#c00;padding:10px 16px;font-size:13px;font-family:monospace;z-index:9999;border-bottom:2px solid #fcc';
+  banner.innerHTML = 'JS Error (line '+line+'): '+msg+' <button onclick="this.parentElement.remove()" style="float:right;border:none;background:none;cursor:pointer;color:#c00;font-size:16px">&times;</button>';
+  document.body.prepend(banner);
+  return false;
+};
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const SUPABASE_URL = 'https://rtaiivegcqqmdchpguzn.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0YWlpdmVnY3FxbWRjaHBndXpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMzQ3NTEsImV4cCI6MjA4OTcxMDc1MX0.5BrafKPYNNyR_xpgbr3a6LWztaCOeBVbDktsFMCMH5Y';
+const STRIPE_PK   = 'pk_test_51TDnG76jWACt2AG74vl55LlSfIOgrglIKWeK3b8maUvopHehwhGDICcJB2sP1ymEknmKxoOZYC3yMIVxNWY7vuck00n3V4Qr8V';
+const STRIPE_SK   = 'STRIPE_SECRET_KEY_PLACEHOLDER';
+const RESEND_KEY  = 're_YP5diRZG_L6BPomNdKxnXutQK4iBBesqE';
+const FROM_EMAIL  = 'support@macronations.com';
+const PRIZE_WINNER_PCT = 70;
+const PRIZE_RUNNER_PCT = 30;
+const PRIZE_POOL_MAX_PCT = 10;
+const CURRENT_YEAR = new Date().getFullYear();
+// ============================================================
+
+// ---- Supabase helpers ----
+async function sbGet(t,p=''){const r=await fetch(`${SUPABASE_URL}/rest/v1/${t}?${p}`,{headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,Accept:'application/json'}});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbPost(t,b){const r=await fetch(`${SUPABASE_URL}/rest/v1/${t}`,{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbPatch(t,f,b){const r=await fetch(`${SUPABASE_URL}/rest/v1/${t}?${f}`,{method:'PATCH',headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function sbDelete(t,f){const r=await fetch(`${SUPABASE_URL}/rest/v1/${t}?${f}`,{method:'DELETE',headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`}});if(!r.ok)throw new Error(await r.text());}
+
+// ---- Prize helpers ----
+function calcPrizePool(fee,n){const t=fee*n,pool=Math.floor(t*PRIZE_POOL_MAX_PCT/100);return{total:t,pool,winner:Math.floor(pool*PRIZE_WINNER_PCT/100),runner:Math.floor(pool*PRIZE_RUNNER_PCT/100)};}
+function fmt$(n){return'$'+Number(n).toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});}
+
+// ---- Schedule helpers ----
+function buildSchedule(start,rounds,interval){const s=[];const d=new Date(start);for(let i=1;i<=rounds;i++){const x=new Date(d);x.setDate(d.getDate()+(i-1)*interval);s.push({round:i,date:x.toISOString().split('T')[0]});}return s;}
+function countdownTo(ds){const t=new Date(ds),n=new Date(),diff=t-n;if(diff<=0)return'Due now';const days=Math.floor(diff/86400000),hrs=Math.floor((diff%86400000)/3600000);if(days>0)return`${days}d ${hrs}h`;const mins=Math.floor((diff%3600000)/60000);return`${hrs}h ${mins}m`;}
+
+// ---- Simulation engine ----
+const SIM={FISCAL_MULT:1.4,TAX_MULT:-1.1,MONETARY_SENS:0.8,PHILLIPS:0.5,NAIRU:4.5,OKUN:2.0,DEBT_DRAG:0.02,RD_MULT:0.8,EDU_HDI:0.002};
+function simRound(state,policy,crises){
+  const s=JSON.parse(JSON.stringify(state));
+  const cGdp=crises.reduce((a,c)=>a+(c.gdp_shock||0),0),cUnemp=crises.reduce((a,c)=>a+(c.unemp_shock||0),0),cInf=crises.reduce((a,c)=>a+(c.inf_shock||0),0),cFin=crises.reduce((a,c)=>a+(c.fin_shock||0),0);
+  const rateChg=(policy.interest_rate_delta||0)/100;
+  s.interest_rate=Math.max(0,state.interest_rate+rateChg);
+  const monEffect=-SIM.MONETARY_SENS*rateChg;
+  const taxImpact=((policy.income_tax||30)-30)*0.01+((policy.corp_tax||21)-21)*0.008;
+  const fiscalEffect=SIM.FISCAL_MULT*(policy.spending_change||0)+SIM.TAX_MULT*taxImpact;
+  const avgBurden=((policy.income_tax||30)*0.4+(policy.corp_tax||21)*0.3+(policy.vat||15)*0.3)/100;
+  const laffEff=1-Math.abs(avgBurden-0.4)/0.4;
+  s.tax_revenue=20+avgBurden*60*laffEff;s.gov_spending=27+(policy.spending_change||0);s.budget_balance=s.tax_revenue-s.gov_spending;
+  const interest_pmts=state.interest_rate*state.debt/100;s.debt=Math.max(0,state.debt-s.budget_balance+interest_pmts);
+  const edEff=((policy.education||5)-5)*0.1,rdEff=((policy.rd||2)-2)*SIM.RD_MULT,infraEff=((policy.infra||3)-3)*0.15;
+  const structBoost=(edEff+rdEff+infraEff)*0.15;s.potential=Math.min(6,Math.max(0.5,state.potential+rdEff*0.1+edEff*0.05));
+  const debtDrag=s.debt>90?-SIM.DEBT_DRAG*(s.debt-90)/10:0,tariffEff=-((policy.tariff||5)-5)*0.05,noise=(Math.random()-0.5)*0.6;
+  s.gdp_growth=Math.max(-15,Math.min(15,state.gdp_growth*0.4+state.potential*0.3+monEffect+fiscalEffect*0.3+structBoost+debtDrag+tariffEff*0.3+cGdp+noise));
+  s.unemployment=Math.max(0.5,Math.min(30,state.unemployment-(s.gdp_growth-s.potential)/SIM.OKUN+cUnemp+(Math.random()-0.5)*0.2));
+  s.inflation=Math.max(-2,Math.min(30,state.inflation*0.6+(-SIM.PHILLIPS*(s.unemployment-SIM.NAIRU))+((policy.tariff||5)-5)*0.03+(-rateChg*0.8)+cInf+(Math.random()-0.5)*0.3));
+  s.stock=Math.max(100,state.stock*(1+(s.gdp_growth*1.2-rateChg*15)/100+cFin/100+(Math.random()-0.5)*0.04));
+  s.fin_health=Math.max(0,Math.min(100,state.fin_health+cFin*5+s.gdp_growth*1.5-rateChg*2+(Math.random()-0.5)*2));
+  const giniRed=((policy.income_tax||30)-30)*0.4/100+((policy.healthcare||6)-6)*0.15+((policy.education||5)-5)*0.1;
+  s.gini=Math.max(20,Math.min(65,state.gini-giniRed+(s.unemployment-state.unemployment)*0.5));
+  s.hdi=Math.max(0.3,Math.min(0.99,state.hdi+(SIM.EDU_HDI*(policy.education||5)+0.001*(policy.healthcare||6)+0.0005*s.gdp_growth-0.002*s.unemployment)/100));
+  s.productivity=Math.max(0,Math.min(8,state.productivity+rdEff*0.1+edEff*0.05));
+  return s;
+}
+function computeScores(s){
+  const gdp=Math.max(0,Math.min(200,Math.max(0,Math.min(40,(s.gdp_growth+2)*5))+Math.max(0,Math.min(30,(10-s.unemployment)*3))+Math.max(0,Math.min(20,20-Math.abs(s.inflation-2)*4))+Math.max(0,Math.min(15,7.5+s.budget_balance*2))+Math.max(0,Math.min(15,s.productivity*5))+Math.max(0,Math.min(20,(120-s.debt)/3))+Math.max(0,Math.min(20,(s.stock/5000)*10))));
+  const stab=Math.max(0,Math.min(200,(Math.max(0,Math.min(25,(100-s.debt)/4))+Math.max(0,Math.min(25,25-Math.abs(s.inflation-2)*5))+Math.max(0,Math.min(25,(10-s.unemployment)*2.5))+s.fin_health/4)*2));
+  const eq=Math.max(0,Math.min(200,(65-s.gini)*3));
+  const sus=Math.max(0,Math.min(200,(90-s.debt)*2+s.hdi*50));
+  const inn=Math.max(0,Math.min(200,s.productivity*30+s.hdi*80));
+  return{gdp,stability:stab,equality:eq,sustainability:sus,innovation:inn,total:gdp+stab+eq+sus+inn};
+}
+function defaultEconomy(){return{gdp_growth:2.5,inflation:2.0,unemployment:5.0,interest_rate:4.5,debt:60,budget_balance:-2,tax_revenue:25,gov_spending:27,gini:35,hdi:0.75,stock:5000,fin_health:75,productivity:1.5,potential:2.5,currency:100};}
+
+const CRISES=[
+  {id:'banking',name:'Banking crisis',desc:'Major banks face insolvency. Credit markets frozen.',gdp_shock:-3,unemp_shock:2,inf_shock:1,fin_shock:-25,opts:[{label:'Bank bailout',eff:85,cost:'High fiscal cost'},{label:'Nationalise banks',eff:65,cost:'Medium cost'},{label:'Let them fail',eff:45,cost:'Short-term pain'}]},
+  {id:'pandemic',name:'Pandemic outbreak',desc:'A major pandemic disrupts labour markets and trade.',gdp_shock:-4,unemp_shock:3,inf_shock:-1,fin_shock:-10,opts:[{label:'Emergency spending',eff:80,cost:'Large deficit'},{label:'Targeted support',eff:65,cost:'Moderate deficit'},{label:'Minimal intervention',eff:40,cost:'Low cost'}]},
+  {id:'trade',name:'Global trade war',desc:'Major trading partners impose severe tariffs.',gdp_shock:-2,unemp_shock:1,inf_shock:2,fin_shock:-8,opts:[{label:'Negotiate bilateral deal',eff:75,cost:'Political capital'},{label:'Impose counter-tariffs',eff:55,cost:'Consumer prices rise'},{label:'Absorb the shock',eff:35,cost:'Competitiveness falls'}]},
+  {id:'debt',name:'Sovereign debt crisis',desc:'Bond markets lose confidence. Borrowing costs spike.',gdp_shock:-2.5,unemp_shock:1.5,inf_shock:0.5,fin_shock:-15,opts:[{label:'IMF bailout + austerity',eff:70,cost:'Spending cuts required'},{label:'Debt restructuring',eff:60,cost:'Creditworthiness hit'},{label:'Default',eff:30,cost:'Severe long-run damage'}]},
+];
+
+// ---- State ----
+let currentUser=null,currentTeamId=null,currentTournamentId=null,teamModalTournamentId=null,teamModalMode='create',markPaidTeamId=null,currentCertData=null;
+
+// ---- UI helpers ----
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function mkId(){return Math.random().toString(36).slice(2,10).toUpperCase();}
+function flash(msg,type='ok'){const c=document.getElementById('flash-container');const d=document.createElement('div');d.className='flash-msg '+type;d.textContent=msg;c.appendChild(d);setTimeout(()=>d.remove(),4500);}
+function setLoading(id,on,orig){const b=document.getElementById(id);if(!b)return;b.disabled=on;b.innerHTML=on?`<span class="spinner"></span>Loading...`:orig;}
+function openModal(id){document.getElementById(id).classList.add('on');}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
+
+// ---- Mobile menu ----
+function openMobileMenu(){document.getElementById('mobile-menu').classList.add('on');}
+function closeMobileMenu(){document.getElementById('mobile-menu').classList.remove('on');}
+function closeMobileMenuIfBg(e){if(e.target===document.getElementById('mobile-menu'))closeMobileMenu();}
+function mobileNav(id,btn){
+  document.querySelectorAll('.mobile-menu-item').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  closeMobileMenu();showPage(id,null);
+  // sync desktop tabs
+  const desktopTab=Array.from(document.querySelectorAll('.nav-tab')).find(t=>t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+id+"'"));
+  if(desktopTab){document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('on'));desktopTab.classList.add('on');}
+}
+
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+  if(btn){document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  if(id==='tournaments')renderTournaments();
+  if(id==='rankings')renderRankings();
+  if(id==='champions')renderChampions();
+  if(id==='dashboard')renderDashboard();
+  if(id==='admin')renderAdmin();
+  if(id==='legal')showLegal('terms');
+  window.scrollTo(0,0);
+}
+
+function showSub(id,btn){
+  const parent=document.getElementById(id).parentElement;
+  parent.querySelectorAll('.sub-page').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  if(btn){btn.closest('.tab-row').querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  const map={'dash-overview':renderDashOverview,'dash-policy':renderDashPolicy,'dash-crisis':renderDashCrisis,'dash-advisor':renderDashAdvisor,'dash-rankings':renderDashRankings,'dash-payment':renderDashPayment,'dash-certificates':renderDashCertificates,'admin-overview':renderAdminOverview,'admin-tournaments':renderAdminTournaments,'admin-teams':renderAdminTeams,'admin-rounds':renderAdminRounds,'admin-playoffs':renderAdminPlayoffs,'admin-payments':renderAdminPayments,'admin-waivers':renderAdminWaivers,'admin-notify':renderAdminNotify,'admin-analytics':renderAdminAnalytics};
+  if(map[id])map[id]();
+}
+
+function showTeamTab(mode,btn){
+  teamModalMode=mode;
+  btn.closest('.tab-row').querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  document.getElementById('team-create-form').style.display=mode==='create'?'block':'none';
+  document.getElementById('team-join-form').style.display=mode==='join'?'block':'none';
+}
+
+// ---- CERTIFICATES ----
+function makeCertSVG(data){
+  const {type,recipient,teamName,tournamentName,rank,score,date,rounds} = data;
+  const typeLabels={participation:'Certificate of Participation',winner:'Champion Certificate',runner:'Runner-Up Certificate',playoff:'Playoff Qualifier Certificate'};
+  const typeColors={participation:'#0f3d9e',winner:'#b87408',runner:'#475569',playoff:'#5b21b6'};
+  const accent=typeColors[type]||'#0f3d9e';
+  const label=typeLabels[type]||'Certificate';
+
+  // Truncate long names gracefully
+  const truncate=(s,max)=>s&&s.length>max?s.slice(0,max-1)+'…':s||'';
+  const recipientDisplay=truncate(recipient,38);
+  const teamDisplay=truncate(teamName,40);
+  const tournDisplay=truncate(tournamentName,52);
+
+  const typeMsg={
+    participation:`This certifies that the bearer successfully participated in ${tournDisplay}, completing ${rounds} rounds of competitive macroeconomic policy simulation as a member of ${teamDisplay}.`,
+    winner:`This certifies that ${teamDisplay} achieved 1st place in ${tournDisplay} with a final cumulative score of ${Math.round(score)} out of 1,000 points, demonstrating exceptional macroeconomic policy leadership.`,
+    runner:`This certifies that ${teamDisplay} achieved 2nd place in ${tournDisplay} with a final cumulative score of ${Math.round(score)} out of 1,000 points, demonstrating outstanding macroeconomic reasoning and strategy.`,
+    playoff:`This certifies that ${teamDisplay} qualified for the playoff bracket of ${tournDisplay}, ranking among the top competitors out of all participating teams.`
+  };
+  const msg=typeMsg[type]||'';
+
+  // Word-wrap message into lines of ~70 chars
+  function wrapText(text,maxLen){
+    const words=text.split(' ');const lines=[];let line='';
+    words.forEach(w=>{if((line+' '+w).trim().length<=maxLen)line=(line+' '+w).trim();else{lines.push(line);line=w;}});
+    if(line)lines.push(line);return lines;
+  }
+  const msgLines=wrapText(msg,68);
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 510" style="width:100%;border-radius:12px;display:block">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8faff"/>
+      <stop offset="50%" style="stop-color:#f0f4fb"/>
+      <stop offset="100%" style="stop-color:#eaf0fc"/>
+    </linearGradient>
+    <linearGradient id="top-bar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:${accent}"/>
+      <stop offset="50%" style="stop-color:${accent}cc"/>
+      <stop offset="100%" style="stop-color:${accent}"/>
+    </linearGradient>
+    <linearGradient id="seal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:${accent}22"/>
+      <stop offset="100%" style="stop-color:${accent}08"/>
+    </linearGradient>
+    <filter id="shadow-soft"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="${accent}" flood-opacity="0.12"/></filter>
+    <filter id="shadow-logo"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="${accent}" flood-opacity="0.3"/></filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="720" height="510" fill="url(#bg-grad)" rx="16"/>
+
+  <!-- Decorative border frame -->
+  <rect x="12" y="12" width="696" height="486" fill="none" stroke="${accent}" stroke-width="0.5" stroke-opacity="0.25" rx="12"/>
+  <rect x="20" y="20" width="680" height="470" fill="none" stroke="${accent}" stroke-width="0.5" stroke-opacity="0.12" rx="10"/>
+
+  <!-- Top accent bar -->
+  <rect width="720" height="6" fill="url(#top-bar)" rx="0"/>
+  <rect y="6" width="720" height="2" fill="${accent}" opacity="0.08"/>
+
+  <!-- Bottom bar -->
+  <rect y="502" width="720" height="8" fill="url(#top-bar)" rx="0" opacity="0.6"/>
+
+  <!-- Corner ornaments -->
+  ${[['32','32'],['688','32'],['32','478'],['688','478']].map(([cx,cy],i)=>`
+    <circle cx="${cx}" cy="${cy}" r="6" fill="${accent}" opacity="0.15"/>
+    <circle cx="${cx}" cy="${cy}" r="3" fill="${accent}" opacity="0.3"/>
+    <line x1="${cx+(i%2===0?10:-10)}" y1="${cy}" x2="${cx+(i%2===0?30:-30)}" y2="${cy}" stroke="${accent}" stroke-width="1" opacity="0.2"/>
+    <line x1="${cx}" y1="${cy+(i<2?10:-10)}" x2="${cx}" y2="${cy+(i<2?30:-30)}" stroke="${accent}" stroke-width="1" opacity="0.2"/>
+  `).join('')}
+
+  <!-- Watermark pattern -->
+  <text x="360" y="280" font-family="DM Serif Display,serif" font-size="90" fill="${accent}" text-anchor="middle" opacity="0.03" transform="rotate(-20,360,280)">MacroNations</text>
+
+  <!-- Logo block -->
+  <rect x="320" y="30" width="80" height="80" rx="18" fill="${accent}" filter="url(#shadow-logo)"/>
+  <path d="M338 90 L348 68 L360 78 L372 58 L382 90" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <circle cx="382" cy="58" r="4.5" fill="#f5c842"/>
+  <line x1="338" y1="94" x2="382" y2="94" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- MacroNations wordmark -->
+  <text x="360" y="128" font-family="DM Serif Display,Georgia,serif" font-size="17" fill="${accent}" text-anchor="middle" letter-spacing="1.5" font-weight="400">MacroNations</text>
+  <text x="360" y="141" font-family="DM Sans,sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle" letter-spacing="3">MACRONATIONS.COM</text>
+
+  <!-- Divider -->
+  <line x1="80" y1="155" x2="640" y2="155" stroke="${accent}" stroke-width="0.75" stroke-opacity="0.2"/>
+  <circle cx="360" cy="155" r="3" fill="${accent}" opacity="0.3"/>
+
+  <!-- Certificate type label -->
+  <text x="360" y="185" font-family="Cinzel,Georgia,serif" font-size="19" fill="${accent}" text-anchor="middle" letter-spacing="3">${label.toUpperCase()}</text>
+
+  <!-- Decorative line under type -->
+  <line x1="160" y1="196" x2="260" y2="196" stroke="${accent}" stroke-width="0.75" stroke-opacity="0.3"/>
+  <rect x="264" y="193" width="192" height="5" fill="${accent}" opacity="0.08" rx="2"/>
+  <line x1="460" y1="196" x2="560" y2="196" stroke="${accent}" stroke-width="0.75" stroke-opacity="0.3"/>
+
+  <!-- PRESENTED TO -->
+  <text x="360" y="222" font-family="DM Sans,sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle" letter-spacing="4">PRESENTED TO</text>
+
+  <!-- Recipient name — large, centered, truncated -->
+  <text x="360" y="260" font-family="DM Serif Display,Georgia,serif" font-size="${recipientDisplay.length>28?26:32}" fill="#0f172a" text-anchor="middle">${recipientDisplay}</text>
+
+  <!-- Decorative underline for name -->
+  <line x1="200" y1="270" x2="520" y2="270" stroke="${accent}" stroke-width="1" stroke-opacity="0.2"/>
+
+  <!-- Message text (word-wrapped) -->
+  ${msgLines.map((line,i)=>`<text x="360" y="${298+i*17}" font-family="DM Sans,sans-serif" font-size="12" fill="#475569" text-anchor="middle">${line}</text>`).join('')}
+
+  <!-- Score badge for winner/runner -->
+  ${type==='winner'||type==='runner'?`
+  <rect x="270" y="${310+msgLines.length*17}" width="180" height="32" rx="8" fill="${accent}" opacity="0.1"/>
+  <text x="360" y="${330+msgLines.length*17}" font-family="DM Mono,monospace" font-size="13" fill="${accent}" text-anchor="middle" font-weight="500">Final score: ${Math.round(score)} / 1,000</text>
+  `:''}
+
+  <!-- Date -->
+  <text x="360" y="430" font-family="DM Sans,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">${date}</text>
+
+  <!-- Signature lines -->
+  <line x1="120" y1="458" x2="280" y2="458" stroke="#cbd5e1" stroke-width="0.75"/>
+  <text x="200" y="470" font-family="DM Sans,sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Tournament Director</text>
+  <text x="200" y="481" font-family="DM Sans,sans-serif" font-size="9" fill="#cbd5e1" text-anchor="middle">MacroNations LLC</text>
+
+  <line x1="440" y1="458" x2="600" y2="458" stroke="#cbd5e1" stroke-width="0.75"/>
+  <text x="520" y="470" font-family="DM Sans,sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Verified &amp; Issued by MacroNations</text>
+  <text x="520" y="481" font-family="DM Sans,sans-serif" font-size="9" fill="#cbd5e1" text-anchor="middle">macronations.com</text>
+
+  <!-- Champion seal -->
+  ${type==='winner'?`
+  <circle cx="360" cy="458" r="28" fill="url(#seal-grad)" stroke="${accent}" stroke-width="1.5" opacity="0.8"/>
+  <circle cx="360" cy="458" r="22" fill="none" stroke="${accent}" stroke-width="0.5" opacity="0.4"/>
+  <text x="360" y="451" font-family="Cinzel,serif" font-size="7.5" fill="${accent}" text-anchor="middle" opacity="0.9" letter-spacing="1">CHAMPION</text>
+  <text x="360" y="462" font-family="DM Mono,monospace" font-size="8" fill="${accent}" text-anchor="middle" opacity="0.8">&#9733; 2025 &#9733;</text>
+  <text x="360" y="473" font-family="Cinzel,serif" font-size="6" fill="${accent}" text-anchor="middle" opacity="0.7" letter-spacing="1">MACRONATIONS</text>
+  `:''}
+  ${type==='runner'?`
+  <circle cx="360" cy="458" r="24" fill="url(#seal-grad)" stroke="#64748b" stroke-width="1" opacity="0.6"/>
+  <text x="360" y="453" font-family="Cinzel,serif" font-size="7" fill="#475569" text-anchor="middle" opacity="0.8">RUNNER-UP</text>
+  <text x="360" y="464" font-family="DM Mono,monospace" font-size="7" fill="#475569" text-anchor="middle" opacity="0.7">2025</text>
+  `:''}
+</svg>`;
+}
+
+function showCertificate(certData){
+  currentCertData = certData;
+  const svg = makeCertSVG(certData);
+  currentCertSVGString = svg;
+  document.getElementById('cert-preview').innerHTML = svg;
+  openModal('modal-cert');
+}
+
+function downloadCert(){
+  if(!currentCertData) return;
+  const svg = currentCertSVGString;
+  const canvas = document.getElementById('cert-canvas');
+  canvas.width = 1360; canvas.height = 960;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  const svgBlob = new Blob([svg], {type:'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(svgBlob);
+  img.onload = () => {
+    ctx.fillStyle = '#f8faff';
+    ctx.fillRect(0,0,1360,960);
+    ctx.drawImage(img, 0, 0, 1360, 960);
+    const link = document.createElement('a');
+    link.download = `macronations-certificate-${currentCertData.type}-${currentCertData.recipient.replace(/\s+/g,'-')}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    URL.revokeObjectURL(url);
+    flash('Certificate downloaded!');
+  };
+  img.src = url;
+}
+
+// ---- Auth ----
+async function doLogin(){
+  const email=document.getElementById('li-email').value.trim(),pass=document.getElementById('li-pass').value;
+  const errEl=document.getElementById('li-err');errEl.style.display='none';
+  setLoading('li-btn',true,'Sign in');
+  try{
+    const users=await sbGet('mn_users',`email=eq.${encodeURIComponent(email)}&password=eq.${encodeURIComponent(pass)}&select=*`);
+    if(!users.length){errEl.style.display='block';errEl.textContent='Invalid email or password';return;}
+    currentUser=users[0];closeModal('modal-login');afterLogin();flash('Welcome back, '+currentUser.name+'!');
+  }catch(e){errEl.style.display='block';errEl.textContent='Error: '+e.message;}
+  finally{setLoading('li-btn',false,'Sign in');}
+}
+
+async function doRegister(){
+  const name=document.getElementById('reg-name').value.trim(),email=document.getElementById('reg-email').value.trim(),pass=document.getElementById('reg-pass').value,username=document.getElementById('reg-user').value.trim(),country=document.getElementById('reg-country').value.trim(),inst=document.getElementById('reg-inst').value.trim(),role=document.getElementById('reg-role').value;
+  const errEl=document.getElementById('reg-err');errEl.style.display='none';
+  if(!name||!email||!pass||!username){errEl.style.display='block';errEl.textContent='Please fill all required fields';return;}
+  if(pass.length<8){errEl.style.display='block';errEl.textContent='Password must be at least 8 characters';return;}
+  setLoading('reg-btn',true,'Create account');
+  try{
+    const existing=await sbGet('mn_users',`email=eq.${encodeURIComponent(email)}&select=id`);
+    if(existing.length){errEl.style.display='block';errEl.textContent='Email already registered';return;}
+    const all=await sbGet('mn_users','select=id');const isFirst=all.length===0;
+    const user={id:mkId(),name,email,password:pass,username,country,institution:inst,role:isFirst?'admin':role,is_admin:isFirst};
+    const created=await sbPost('mn_users',user);
+    currentUser=created[0];closeModal('modal-register');afterLogin();
+    flash('Welcome to MacroNations, '+name+'!'+(isFirst?' You are the platform admin.':''));
+  }catch(e){errEl.style.display='block';errEl.textContent='Error: '+e.message;}
+  finally{setLoading('reg-btn',false,'Create account');}
+}
+
+function afterLogin(){
+  const nr=document.getElementById('nav-right');
+  nr.innerHTML=`<span style="font-size:13px;color:var(--muted);display:none" class="desktop-only">Hi, ${currentUser.name.split(' ')[0]}</span>${currentUser.is_admin||currentUser.role==='admin'||currentUser.role==='professor'?`<button class="btn btn-ghost btn-sm" onclick="showPage('admin',null);addAdminTab()">Admin</button>`:''}<button class="btn btn-gold btn-sm" onclick="showPage('dashboard',null);addDashTab()">Dashboard</button><button class="btn btn-ghost btn-sm" onclick="doLogout()">Out</button>`;
+  addDashTab();
+  if(currentUser.is_admin||currentUser.role==='admin'||currentUser.role==='professor')addAdminTab();
+  // mobile menu
+  const mobileAuthEl=document.getElementById('mobile-auth-items');
+  mobileAuthEl.innerHTML=`<button class="mobile-menu-item" onclick="closeMobileMenu();showPage('dashboard',null);addDashTab()">My game</button>${currentUser.is_admin||currentUser.role==='admin'||currentUser.role==='professor'?`<button class="mobile-menu-item" onclick="closeMobileMenu();showPage('admin',null);addAdminTab()">Admin</button>`:''}<button class="mobile-menu-item" onclick="doLogout()">Sign out</button>`;
+  sbGet('teams',`members=cs.{"${currentUser.id}"}&select=id,tournament_id&limit=1`).then(ts=>{if(ts.length){currentTeamId=ts[0].id;currentTournamentId=ts[0].tournament_id;}}).catch(()=>{});
+  loadHomeStats();
+}
+
+function doLogout(){
+  currentUser=null;currentTeamId=null;currentTournamentId=null;
+  document.getElementById('nav-right').innerHTML=`<button class="btn btn-ghost btn-sm" onclick="openModal('modal-login')">Sign in</button><button class="btn btn-gold btn-sm" onclick="openModal('modal-register')">Join free</button>`;
+  document.getElementById('mobile-auth-items').innerHTML=`<button class="mobile-menu-item" onclick="closeMobileMenu();openModal('modal-login')">Sign in</button><button class="mobile-menu-item" style="background:var(--blue);color:#fff;font-weight:500" onclick="closeMobileMenu();openModal('modal-register')">Join free</button>`;
+  ['dashboard','admin'].forEach(id=>{const b=document.querySelector('[data-tab='+id+']');if(b)b.remove();const mb=document.querySelector('[data-mobile-tab='+id+']');if(mb)mb.remove();});
+  showPage('home',document.querySelector('.nav-tab'));flash('Signed out');
+}
+
+function addDashTab(){
+  if(!document.querySelector('[data-tab=dashboard]')){
+    const t=document.createElement('button');t.className='nav-tab';t.textContent='My game';t.dataset.tab='dashboard';t.onclick=()=>showPage('dashboard',t);document.getElementById('nav-tabs').appendChild(t);
+    const m=document.createElement('button');m.className='mobile-menu-item';m.textContent='My game';m.dataset.mobileTab='dashboard';m.onclick=()=>mobileNav('dashboard',m);document.getElementById('mobile-nav-items').appendChild(m);
+  }
+}
+function addAdminTab(){
+  if(!document.querySelector('[data-tab=admin]')){
+    const t=document.createElement('button');t.className='nav-tab';t.textContent='Admin';t.dataset.tab='admin';t.onclick=()=>showPage('admin',t);document.getElementById('nav-tabs').appendChild(t);
+    const m=document.createElement('button');m.className='mobile-menu-item';m.textContent='Admin';m.dataset.mobileTab='admin';m.onclick=()=>mobileNav('admin',m);document.getElementById('mobile-nav-items').appendChild(m);
+  }
+}
+
+// ---- Home stats ----
+async function loadHomeStats(){
+  try{
+    const [users,tournaments,teams]=await Promise.all([
+      sbGet('mn_users','select=id,country').catch(()=>[]),
+      sbGet('tournaments','select=id,status,entry_fee').catch(()=>[]),
+      sbGet('teams','select=members,tournament_id').catch(()=>[])
+    ]);
+    const active=tournaments.filter(t=>t.status==='active'||t.status==='registration');
+    const totalPool=active.reduce((a,t)=>{const n=teams.filter(x=>x.tournament_id===t.id).length;return a+calcPrizePool(t.entry_fee||0,n).pool;},0);
+    const participants=teams.reduce((a,t)=>a+(t.members?t.members.length:0),0);
+    const countries=new Set(users.map(u=>u.country).filter(Boolean));
+    const se=document.getElementById('stat-students'); if(se) se.textContent=participants.toLocaleString();
+    const te=document.getElementById('stat-tournaments'); if(te) te.textContent=tournaments.length.toLocaleString();
+    const ce=document.getElementById('stat-countries'); if(ce) ce.textContent=countries.size.toLocaleString();
+    const pe=document.getElementById('stat-prizepool'); if(pe) pe.textContent=totalPool>0?fmt$(totalPool):'$0';
+  }catch(e){console.warn('Stats error:',e);}
+}
+
+// ---- Tournaments ----
+async function renderTournaments(){
+  const el=document.getElementById('tournaments-list');
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [tournaments,teams]=await Promise.all([sbGet('tournaments','select=*&order=created_at.desc'),sbGet('teams','select=id,tournament_id,members')]);
+    if(!tournaments.length){
+      el.innerHTML='<div class="notice notice-info">No open tournaments yet.'+(currentUser&&currentUser.role==='professor'?' <strong>As a professor, you can create one:</strong> go to the Admin tab → Create class tournament.':' Check back soon or contact support@macronations.com.')+'</div>';
+      return;
+    }
+    const sc={active:'badge-green',registration:'badge-blue',completed:'badge-gray',upcoming:'badge-amber'};
+    el.innerHTML=tournaments.map(t=>{
+      const tTeams=teams.filter(x=>x.tournament_id===t.id);
+      const myTeam=currentUser&&tTeams.find(x=>x.members&&x.members.includes(currentUser.id));
+      const prizes=calcPrizePool(t.entry_fee||0,tTeams.length);
+      const nextRound=t.schedule&&t.schedule.find(s=>s.round===(t.current_round||0)+1);
+      return `<div class="card">
+        <div class="card-hd">
+          <div><div class="card-title">${esc(t.name)}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${esc(t.tier)} &middot; ${t.rounds_total} rounds &middot; Season ${t.season_year||CURRENT_YEAR}</div></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span class="badge ${sc[t.status]||'badge-gray'}">${t.status}</span>
+            ${myTeam?'<span class="badge badge-green">Joined</span>':currentUser&&(t.status==='registration'||t.status==='active')?`<button class="btn btn-gold btn-sm" onclick="openTeamModal('${t.id}','${esc(t.name)}')">Join / Create team</button>`:!currentUser?`<button class="btn btn-ghost btn-sm" onclick="openModal('modal-login')">Sign in to join</button>`:''}
+          </div>
+        </div>
+        ${t.entry_fee>0?`<div class="prize-pool" style="margin-bottom:12px">
+          <div class="prize-pool-title">Prize pool</div>
+          <div class="prize-pool-sub">Up to ${PRIZE_POOL_MAX_PCT}% of entry fees &middot; ${tTeams.length} teams &middot; Updates live</div>
+          <div class="prize-amounts">
+            <div class="prize-item"><div class="prize-item-lbl">Total pool</div><div class="prize-item-amt">${fmt$(prizes.pool)}</div></div>
+            <div class="prize-item"><div class="prize-item-lbl">1st place</div><div class="prize-item-amt">${fmt$(prizes.winner)}</div><div class="prize-item-pct">${PRIZE_WINNER_PCT}%</div></div>
+            <div class="prize-item"><div class="prize-item-lbl">2nd place</div><div class="prize-item-amt">${fmt$(prizes.runner)}</div><div class="prize-item-pct">${PRIZE_RUNNER_PCT}%</div></div>
+          </div>
+        </div>`:''}
+        ${t.description?`<p style="font-size:13px;color:#475569;line-height:1.6;margin-bottom:12px">${esc(t.description)}</p>`:''}
+        <div style="display:flex;gap:16px;font-size:12px;color:var(--muted);flex-wrap:wrap;align-items:center">
+          <span>Entry: <strong style="color:var(--white)">${t.entry_fee>0?fmt$(t.entry_fee):'Free'}</strong></span>
+          <span>Teams: <strong style="color:var(--white)">${tTeams.length}/${t.max_teams}</strong></span>
+          <span>Round: <strong style="color:var(--white)">${t.current_round||0}/${t.rounds_total}</strong></span>
+          ${nextRound?`<span class="countdown">${countdownTo(nextRound.date)} remaining</span>`:''}
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+function openTeamModal(tid,tname){
+  if(!currentUser){openModal('modal-login');return;}
+  teamModalTournamentId=tid;
+  document.getElementById('ct-team-tourn').textContent='Tournament: '+tname;
+  document.getElementById('team-err').style.display='none';
+  document.getElementById('team-name').value='';document.getElementById('team-code').value='';
+  openModal('modal-create-team');
+}
+
+async function doTeamAction(){
+  const errEl=document.getElementById('team-err');errEl.style.display='none';
+  setLoading('team-btn',true,'Continue');
+  try{
+    if(teamModalMode==='create'){
+      const name=document.getElementById('team-name').value.trim();
+      if(!name){errEl.style.display='block';errEl.textContent='Enter a team name';return;}
+      const tourn=await sbGet('tournaments',`id=eq.${teamModalTournamentId}&select=season_year`);
+      const seasonYear=(tourn[0]&&tourn[0].season_year)||CURRENT_YEAR;
+      const yearTourns=await sbGet('tournaments',`season_year=eq.${seasonYear}&select=id`);
+      for(const t of yearTourns){const ex=await sbGet('teams',`tournament_id=eq.${t.id}&members=cs.{"${currentUser.id}"}&select=id`);if(ex.length){errEl.style.display='block';errEl.textContent=`You are already on a team in the ${seasonYear} season. One team per season per player.`;return;}}
+      const team={id:mkId(),name,tournament_id:teamModalTournamentId,captain_id:currentUser.id,members:[currentUser.id],invite_code:mkId(),fee_paid:false};
+      const eco={id:mkId(),team_id:team.id,tournament_id:teamModalTournamentId,current:defaultEconomy(),snapshots:[],current_round:0,scores_history:[]};
+      await sbPost('teams',team);await sbPost('economies',eco);
+      currentTeamId=team.id;currentTournamentId=teamModalTournamentId;
+      closeModal('modal-create-team');flash('Team "'+name+'" created! Invite code: '+team.invite_code);addDashTab();
+    }else{
+      const code=document.getElementById('team-code').value.trim().toUpperCase();
+      const ts=await sbGet('teams',`invite_code=eq.${code}&tournament_id=eq.${teamModalTournamentId}&select=*`);
+      if(!ts.length){errEl.style.display='block';errEl.textContent='Invalid invite code';return;}
+      const team=ts[0];
+      if(team.members.includes(currentUser.id)){errEl.style.display='block';errEl.textContent='Already in this team';return;}
+      if(team.members.length>=5){errEl.style.display='block';errEl.textContent='Team is full (max 5)';return;}
+      const tourn=await sbGet('tournaments',`id=eq.${teamModalTournamentId}&select=season_year`);
+      const sy=(tourn[0]&&tourn[0].season_year)||CURRENT_YEAR;
+      const yt=await sbGet('tournaments',`season_year=eq.${sy}&select=id`);
+      for(const t of yt){const ex=await sbGet('teams',`tournament_id=eq.${t.id}&members=cs.{"${currentUser.id}"}&select=id`);if(ex.length){errEl.style.display='block';errEl.textContent=`Already on a team in the ${sy} season.`;return;}}
+      await sbPatch('teams',`id=eq.${team.id}`,{members:[...team.members,currentUser.id]});
+      currentTeamId=team.id;currentTournamentId=team.tournament_id;
+      closeModal('modal-create-team');flash('Joined team "'+team.name+'"!');addDashTab();
+    }
+    renderTournaments();
+  }catch(e){errEl.style.display='block';errEl.textContent='Error: '+e.message;}
+  finally{setLoading('team-btn',false,'Continue');}
+}
+
+// ---- Dashboard ----
+function renderDashboard(){showSub('dash-overview',document.querySelector('#page-dashboard .tab'));renderDashOverview();}
+
+async function renderDashOverview(){
+  const el=document.getElementById('dash-overview');
+  if(!currentUser){el.innerHTML='<div class="notice notice-warn">Please sign in.</div>';return;}
+  if(!currentTeamId){el.innerHTML='<div class="notice notice-info">You haven\'t joined a tournament yet. <a href="#" onclick="showPage(\'tournaments\',null)" style="color:var(--blue)">Browse tournaments</a> to get started.</div>';return;}
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [ecos,teams,tourns,crises,decisions]=await Promise.all([sbGet('economies',`team_id=eq.${currentTeamId}&select=*`),sbGet('teams',`id=eq.${currentTeamId}&select=*`),sbGet('tournaments',`id=eq.${currentTournamentId}&select=*`),sbGet('crises_active',`team_id=eq.${currentTeamId}&select=*`),sbGet('decisions',`team_id=eq.${currentTeamId}&select=*&order=round.desc&limit=20`)]);
+    const eco=ecos[0],team=teams[0],tourn=tourns[0];
+    if(!eco||!team||!tourn){el.innerHTML='<div class="notice notice-info">Economy not found.</div>';return;}
+    const s=eco.current,scores=computeScores(s);
+    const crisis=crises.find(c=>c.round===tourn.current_round&&!c.resolved);
+    const hasSubmitted=decisions.find(d=>d.round===tourn.current_round&&d.is_final);
+    const allTeams=await sbGet('teams',`tournament_id=eq.${tourn.id}&select=id`);
+    const prizes=calcPrizePool(tourn.entry_fee||0,allTeams.length);
+    const nextRound=tourn.schedule&&tourn.schedule.find(s=>s.round===(tourn.current_round||0)+1);
+    el.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+        <div><div class="page-title">${esc(team.name)}</div><div style="font-size:13px;color:var(--muted)">${esc(tourn.name)} &middot; Round ${tourn.current_round||0}/${tourn.rounds_total}</div></div>
+        <div style="text-align:right"><div style="font-size:26px;font-weight:500;font-family:var(--font-mono);color:var(--blue)">${Math.round(scores.total)}</div><div style="font-size:11px;color:var(--muted)">total score</div></div>
+      </div>
+      ${!team.fee_paid&&tourn.entry_fee>0?`<div class="notice notice-warn" style="margin-bottom:14px">Entry fee of ${fmt$(tourn.entry_fee)} unpaid. Go to <strong>Payment</strong> tab.</div>`:''}
+      ${crisis?`<div class="notice notice-err" style="margin-bottom:14px">Active crisis: <strong>${esc(crisis.name)}</strong> — go to Crisis tab.</div>`:''}
+      ${!hasSubmitted&&tourn.current_round>0&&tourn.status==='active'?`<div class="notice notice-warn" style="margin-bottom:14px">Round ${tourn.current_round} open.${nextRound?` Deadline: ${nextRound.date} (${countdownTo(nextRound.date)})`:''}</div>`:''}
+      <div class="metric-grid">
+        <div class="metric"><div class="metric-lbl">GDP growth</div><div class="metric-val ${s.gdp_growth>=3?'green':''}">${s.gdp_growth.toFixed(1)}%</div></div>
+        <div class="metric"><div class="metric-lbl">Inflation</div><div class="metric-val ${Math.abs(s.inflation-2)<1?'green':''}">${s.inflation.toFixed(1)}%</div></div>
+        <div class="metric"><div class="metric-lbl">Unemployment</div><div class="metric-val ${s.unemployment<5?'green':''}">${s.unemployment.toFixed(1)}%</div></div>
+        <div class="metric"><div class="metric-lbl">Debt/GDP</div><div class="metric-val ${s.debt>90?'amber':''}">${s.debt.toFixed(1)}%</div></div>
+      </div>
+      <div class="card"><div class="card-title" style="margin-bottom:14px">Score breakdown</div>
+        <div class="score-ring">${[['GDP',scores.gdp,'#0d7a5f'],['Stability',scores.stability,'#0f3d9e'],['Equality',scores.equality,'#be185d'],['Sustain.',scores.sustainability,'#b45309'],['Innovation',scores.innovation,'#5b21b6']].map(([l,v,c])=>`<div class="pillar"><div class="pillar-val" style="color:${c}">${Math.round(v)}</div><div class="pillar-lbl">${l}</div><div class="pillar-bar"><div class="pillar-fill" style="width:${v/2}%;background:${c}"></div></div><div style="font-size:10px;color:var(--muted);margin-top:2px">/200</div></div>`).join('')}
+          <div class="pillar" style="border-left:1px solid var(--border);padding-left:16px"><div class="pillar-val" style="color:var(--blue);font-size:30px">${Math.round(scores.total)}</div><div class="pillar-lbl">Total</div><div style="font-size:10px;color:var(--muted);margin-top:2px">/1000</div></div>
+        </div>
+      </div>
+      ${tourn.entry_fee>0&&prizes.pool>0?`<div class="prize-pool"><div class="prize-pool-title">Current prize pool</div><div class="prize-pool-sub">Live &middot; updates as teams register</div><div class="prize-amounts"><div class="prize-item"><div class="prize-item-lbl">Total pool</div><div class="prize-item-amt">${fmt$(prizes.pool)}</div></div><div class="prize-item"><div class="prize-item-lbl">1st place</div><div class="prize-item-amt">${fmt$(prizes.winner)}</div></div><div class="prize-item"><div class="prize-item-lbl">2nd place</div><div class="prize-item-amt">${fmt$(prizes.runner)}</div></div></div></div>`:''}
+      <div class="two-col">
+        <div class="card"><div class="card-title" style="margin-bottom:10px">Economy</div><div class="tbl-wrap"><table class="tbl" style="min-width:0"><tbody>
+          ${[['Interest rate',s.interest_rate.toFixed(1)+'%'],['HDI',s.hdi.toFixed(3)],['Gini',s.gini.toFixed(1)],['Stock index',Math.round(s.stock).toLocaleString()],['Budget',s.budget_balance.toFixed(1)+'% GDP'],['Productivity',s.productivity.toFixed(2)+'%']].map(([l,v])=>`<tr><td style="color:var(--muted)">${l}</td><td style="text-align:right;font-family:var(--font-mono)">${v}</td></tr>`).join('')}
+        </tbody></table></div></div>
+        <div class="card"><div class="card-title" style="margin-bottom:10px">Team</div><div class="tbl-wrap"><table class="tbl" style="min-width:0"><tbody>
+          <tr><td style="color:var(--muted)">Invite code</td><td style="text-align:right"><span class="inv-code">${team.invite_code}</span></td></tr>
+          <tr><td style="color:var(--muted)">Members</td><td style="text-align:right">${team.members.length}/5</td></tr>
+          <tr><td style="color:var(--muted)">Payment</td><td style="text-align:right">${team.fee_paid?'<span class="pay-status-paid">&#10003; Paid</span>':tourn.entry_fee>0?'<span class="pay-status-unpaid">Unpaid</span>':'<span class="badge badge-green">Free</span>'}</td></tr>
+          <tr><td style="color:var(--muted)">Status</td><td style="text-align:right"><span class="badge ${tourn.status==='active'?'badge-green':'badge-gray'}">${tourn.status}</span></td></tr>
+        </tbody></table></div></div>
+      </div>`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function renderDashCertificates(){
+  const el=document.getElementById('dash-certificates');
+  if(!currentUser){el.innerHTML='<div class="notice notice-warn">Sign in to view your certificates.</div>';return;}
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    // Get all tournaments the user participated in
+    const allTeams=await sbGet('teams',`members=cs.{"${currentUser.id}"}&select=*`);
+    if(!allTeams.length){el.innerHTML='<div class="page-title" style="font-size:20px;margin-bottom:16px">My Certificates</div><div class="notice notice-info">Complete a tournament to earn certificates. All participants receive a certificate of participation when their tournament ends.</div>';return;}
+    const tournIds=allTeams.map(t=>t.tournament_id);
+    const certs=[];
+    for(const team of allTeams){
+      const tourns=await sbGet('tournaments',`id=eq.${team.tournament_id}&select=*`);
+      const tourn=tourns[0];if(!tourn)continue;
+      const eco=await sbGet('economies',`team_id=eq.${team.id}&select=current,scores_history`);
+      const score=eco[0]?computeScores(eco[0].current).total:0;
+      // Get all teams in tournament sorted by score to determine rank
+      const allTournEcos=await sbGet('economies',`tournament_id=eq.${team.tournament_id}&select=team_id,current`);
+      const ranked=allTournEcos.map(e=>({tid:e.team_id,score:computeScores(e.current).total})).sort((a,b)=>b.score-a.score);
+      const rank=ranked.findIndex(r=>r.tid===team.id)+1;
+      const today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+      // Participation cert (available when tournament completed or active with rounds played)
+      if(tourn.status==='completed'||tourn.current_round>0){
+        certs.push({type:'participation',recipient:currentUser.name,teamName:team.name,tournamentName:tourn.name,rank,score,date:today,rounds:tourn.current_round||tourn.rounds_total,status:tourn.status,tournStatus:tourn.status});
+      }
+      // Winner cert
+      if(rank===1&&tourn.status==='completed'){
+        certs.push({type:'winner',recipient:currentUser.name,teamName:team.name,tournamentName:tourn.name,rank,score,date:today,rounds:tourn.rounds_total,tournStatus:'completed'});
+      }
+      // Runner-up cert
+      if(rank===2&&tourn.status==='completed'){
+        certs.push({type:'runner',recipient:currentUser.name,teamName:team.name,tournamentName:tourn.name,rank,score,date:today,rounds:tourn.rounds_total,tournStatus:'completed'});
+      }
+      // Playoff qualifier (if playoff data exists)
+      const playoffs=await sbGet('tournaments',`id=eq.${team.tournament_id}&select=playoff_teams`);
+      if((playoffs[0]&&playoffs[0].playoff_teams)&&playoffs[0].playoff_teams.includes(team.id)){
+        certs.push({type:'playoff',recipient:currentUser.name,teamName:team.name,tournamentName:tourn.name,rank,score,date:today,rounds:tourn.rounds_total,tournStatus:tourn.status});
+      }
+    }
+    const typeLabel={participation:'Participation',winner:'Champion',runner:'Runner-Up',playoff:'Playoff Qualifier'};
+    const typeBadge={participation:'badge-blue',winner:'badge-amber',runner:'badge-gray',playoff:'badge-blue'};
+    const typeDesc={participation:'Awarded to all participants who complete the tournament.',winner:'Awarded to the 1st place team in the final standings.',runner:'Awarded to the 2nd place team in the final standings.',playoff:'Awarded to teams that qualify for the playoff bracket.'};
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:4px">My Certificates</div>
+      <p class="page-sub">Click any certificate to preview and download as PNG.</p>
+      ${certs.length===0?'<div class="notice notice-info">No certificates yet. Certificates are issued when tournaments complete.</div>':
+      certs.map(c=>`<div class="card" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <span class="badge ${typeBadge[c.type]}">${typeLabel[c.type]}</span>
+            <span style="font-size:12px;color:var(--muted)">${esc(c.tournamentName)}</span>
+          </div>
+          <div style="font-size:15px;font-weight:500">${typeLabel[c.type]} Certificate</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px">${typeDesc[c.type]}</div>
+        </div>
+        <button class="btn-cert" onclick='showCertificate(${JSON.stringify(c).replace(/'/g,"&#39;")})'>&#8964; Preview &amp; Download</button>
+      </div>`).join('')}
+      <div class="notice notice-info" style="margin-top:8px">Certificates for active tournaments update in real time. Once your tournament completes, a final certificate is issued with your official ranking.</div>`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function renderDashPolicy(){
+  const el=document.getElementById('dash-policy');
+  if(!currentTeamId){el.innerHTML='<div class="notice notice-info">Join a tournament to set policy.</div>';return;}
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [tourns,decisions,teams]=await Promise.all([sbGet('tournaments',`id=eq.${currentTournamentId}&select=*`),sbGet('decisions',`team_id=eq.${currentTeamId}&select=*&order=round.desc&limit=20`),sbGet('teams',`id=eq.${currentTeamId}&select=fee_paid`)]);
+    const tourn=tourns[0];if(!tourn){el.innerHTML='<div class="notice notice-warn">Tournament not found.</div>';return;}
+    if(tourn.entry_fee>0&&!(teams[0]&&teams[0].fee_paid)){el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:16px">Policy</div><div class="notice notice-warn">Entry fee unpaid. Go to the Payment tab to activate.</div>`;return;}
+    const existing=decisions.find(d=>d.round===tourn.current_round)||{};
+    const p=existing.policy||{};const submitted=!!existing.is_final;
+    const nextRound=tourn.schedule&&tourn.schedule.find(s=>s.round===(tourn.current_round||0)+1);
+    const sliders=[
+      {id:'p-spending',lbl:'Gov spending change',icon:'💰',color:'#0d7a5f',min:-5,max:10,step:1,val:p.spending_change||0,unit:'%',hint:'Fiscal multiplier 1.4×'},
+      {id:'p-income',lbl:'Income tax rate',icon:'👤',color:'#0f3d9e',min:10,max:70,step:1,val:p.income_tax||30,unit:'%',hint:'Laffer peak ~40% avg burden'},
+      {id:'p-corp',lbl:'Corporate tax rate',icon:'🏢',color:'#5b21b6',min:0,max:50,step:1,val:p.corp_tax||21,unit:'%',hint:'Affects investment & productivity'},
+      {id:'p-vat',lbl:'VAT / sales tax',icon:'🛒',color:'#b45309',min:0,max:30,step:1,val:p.vat||15,unit:'%',hint:'Affects consumption & inflation'},
+      {id:'p-rate',lbl:'Interest rate change',icon:'🏦',color:'#be185d',min:-200,max:200,step:25,val:p.interest_rate_delta||0,unit:'bps',hint:'±100bps ≈ ∓0.8pp inflation'},
+      {id:'p-edu',lbl:'Education spending',icon:'📚',color:'#0d7a5f',min:2,max:12,step:1,val:p.education||5,unit:'% GDP',hint:'Raises HDI & long-run potential'},
+      {id:'p-health',lbl:'Healthcare spending',icon:'🏥',color:'#0f3d9e',min:2,max:12,step:1,val:p.healthcare||6,unit:'% GDP',hint:'Reduces Gini & raises HDI'},
+      {id:'p-rd',lbl:'R&D spending',icon:'🔬',color:'#5b21b6',min:0,max:6,step:1,val:p.rd||2,unit:'% GDP',hint:'Compounds — invest early'},
+      {id:'p-infra',lbl:'Infrastructure',icon:'🛣️',color:'#b45309',min:0,max:8,step:1,val:p.infra||3,unit:'% GDP',hint:'Structural growth driver'},
+      {id:'p-tariff',lbl:'Import tariff rate',icon:'🌐',color:'#be185d',min:0,max:40,step:1,val:p.tariff||5,unit:'%',hint:'Raises prices, reduces trade'},
+    ];
+    el.innerHTML=`
+      <div class="page-title" style="font-size:20px;margin-bottom:4px">Policy — Round ${tourn.current_round||0}</div>
+      <p class="page-sub">${submitted?'<span style="color:var(--green);font-weight:500">✓ Submitted this round.</span>':tourn.status!=='active'?'<span style="color:var(--amber)">Tournament not active.</span>':'Move the sliders to set your policy, then submit.'}${nextRound?` &nbsp;·&nbsp; Deadline: <strong>${nextRound.date}</strong> <span class="countdown">${countdownTo(nextRound.date)}</span>`:''}</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+        ${sliders.map(sv=>{
+          const pct=((sv.val-sv.min)/(sv.max-sv.min)*100).toFixed(1);
+          return`<div class="psc">
+            <div class="psc-top">
+              <div class="psc-icon" style="background:${sv.color}18">${sv.icon}</div>
+              <div style="flex:1"><div class="psc-lbl">${sv.lbl}</div><div class="psc-hint">${sv.hint}</div></div>
+              <div class="psc-val" id="${sv.id}-v" style="background:${sv.color}15;color:${sv.color}">${sv.val}${sv.unit}</div>
+            </div>
+            <input type="range" class="psc-range" id="${sv.id}" min="${sv.min}" max="${sv.max}" step="${sv.step}" value="${sv.val}"
+              style="accent-color:${sv.color};background:linear-gradient(to right,${sv.color} ${pct}%,#e2e8f0 ${pct}%)"
+              oninput="document.getElementById('${sv.id}-v').textContent=this.value+'${sv.unit}';const p2=((this.value-${sv.min})/(${sv.max}-${sv.min})*100);this.style.background='linear-gradient(to right,${sv.color} '+p2+'%,#e2e8f0 '+p2+'%)'">
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="card">
+        <div class="field" style="margin-bottom:0"><label>Decision rationale — explain your economic reasoning</label>
+          <textarea id="p-rationale" placeholder="What economic logic guides your choices this round? The AI advisor reads your rationale." style="height:90px">${p.rationale||''}</textarea>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-gold" id="submit-policy-btn" onclick="submitPolicy()" ${tourn.status!=='active'?'disabled':''}>${submitted?'Update submission':'Submit policy decisions'}</button>
+        ${submitted?`<span class="notice notice-ok" style="padding:7px 12px;margin:0">✓ Submitted for round ${tourn.current_round}</span>`:''}
+      </div>``;}
+}
+
+async function submitPolicy(){
+  const btn=document.getElementById('submit-policy-btn');btn.disabled=true;btn.textContent='Submitting...';
+  try{
+    const tourns=await sbGet('tournaments',`id=eq.${currentTournamentId}&select=*`);
+    const tourn=tourns[0];if(!tourn||tourn.status!=='active'){flash('Tournament not active','err');return;}
+    const vals=id=>+document.getElementById(id).value;
+    const policy={spending_change:vals('p-spending'),income_tax:vals('p-income'),corp_tax:vals('p-corp'),vat:vals('p-vat'),interest_rate_delta:vals('p-rate'),education:vals('p-edu'),healthcare:vals('p-health'),rd:vals('p-rd'),infra:vals('p-infra'),tariff:vals('p-tariff'),rationale:document.getElementById('p-rationale').value};
+    const ex=await sbGet('decisions',`team_id=eq.${currentTeamId}&round=eq.${tourn.current_round}&select=id`);
+    if(ex.length)await sbPatch('decisions',`id=eq.${ex[0].id}`,{policy,is_final:true,submitted_at:new Date().toISOString()});
+    else await sbPost('decisions',{id:mkId(),team_id:currentTeamId,tournament_id:currentTournamentId,round:tourn.current_round,policy,is_final:true});
+    flash('Policy submitted for round '+tourn.current_round);renderDashPolicy();
+  }catch(e){flash('Error: '+e.message,'err');}
+  finally{btn.disabled=false;}
+}
+
+async function renderDashCrisis(){
+  const el=document.getElementById('dash-crisis');
+  if(!currentTeamId){el.innerHTML='<div class="notice notice-info">Join a tournament first.</div>';return;}
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [tourns,crises]=await Promise.all([sbGet('tournaments',`id=eq.${currentTournamentId}&select=*`),sbGet('crises_active',`team_id=eq.${currentTeamId}&select=*&order=round.desc`)]);
+    const tourn=tourns[0];
+    const crisis=crises.find(c=>c.round===(tourn&&tourn.current_round)&&!c.resolved);
+    if(!crisis){
+      const past=crises.filter(c=>c.resolved);
+      const justConfirmed=past.find(c=>c.round===(tourn&&tourn.current_round));
+      el.innerHTML=`
+        ${justConfirmed?`<div class="notice notice-ok" style="margin-bottom:14px">
+          <strong>Crisis response confirmed for round ${justConfirmed.round}.</strong><br>
+          You chose: <strong>${esc(justConfirmed.response)}</strong> — ${justConfirmed.effectiveness}% effective.<br>
+          Your GDP shock will be reduced from ${(CRISES.find(c=>c.id===justConfirmed.crisis_id)||CRISES[0]).gdp_shock}% to <strong>${((CRISES.find(c=>c.id===justConfirmed.crisis_id)||CRISES[0]).gdp_shock*(1-justConfirmed.effectiveness/100)).toFixed(2)}%</strong> when the admin runs the simulation.
+          <div style="margin-top:12px"><strong>Next step:</strong> Go to the Policy tab to submit your round ${(tourn&&tourn.current_round)} policy decisions.</div>
+          <div style="margin-top:10px"><button class="btn btn-gold btn-sm" onclick="showSub('dash-policy',document.querySelectorAll('#page-dashboard .tab')[1])">Go to Policy tab now →</button></div>
+        </div>`:
+        `<div class="notice notice-ok">No active crisis this round. Crises can fire on rounds 3, 6, and 9.</div>`}
+        <div class="card"><div class="card-title" style="margin-bottom:10px">Crisis history</div>
+        ${past.length===0?'<p style="color:var(--muted);font-size:13px">No past crises yet.</p>':
+        '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Round</th><th>Crisis</th><th>Response</th><th>Effectiveness</th><th>GDP shock applied</th></tr></thead><tbody>'+
+        past.map(c=>{
+          const def2=CRISES.find(x=>x.id===c.crisis_id)||CRISES[0];
+          const actualShock=(def2.gdp_shock*(1-(c.effectiveness||0)/100)).toFixed(2);
+          const fullShock=def2.gdp_shock;
+          return`<tr>
+            <td>${c.round}</td>
+            <td>${esc(c.name)}</td>
+            <td>${esc(c.response||'No response')}</td>
+            <td><span class="badge ${c.effectiveness>=70?'badge-green':c.effectiveness>=50?'badge-amber':'badge-red'}">${c.effectiveness||0}%</span></td>
+            <td style="font-family:var(--font-mono);color:${c.effectiveness>0?'var(--amber)':'var(--red)'}">
+              ${actualShock}% <span style="font-size:11px;color:var(--muted)">(full: ${fullShock}%)</span>
+            </td>
+          </tr>`;
+        }).join('')+'</tbody></table></div>'}</div>`;
+      return;
+    }
+    const def=CRISES.find(c=>c.id===crisis.crisis_id)||CRISES[0];
+    const chosenOpt=crisis.chosen_opt!==null&&crisis.chosen_opt!==undefined?def.opts[crisis.chosen_opt]:null;
+    el.innerHTML=`<div class="crisis-card">
+      <div style="font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">⚠ Active crisis — round ${crisis.round}</div>
+      <div class="crisis-title">${esc(crisis.name)}</div>
+      <div class="crisis-body">${esc(def.desc)}</div>
+
+      <div class="notice notice-warn" style="margin-bottom:14px;font-size:13px;line-height:1.7">
+        <strong>Two things you need to do this round:</strong><br>
+        1. Choose a crisis response below and click <strong>Confirm response</strong><br>
+        2. Go to the <strong>Policy tab</strong> and submit your policy decisions<br>
+        Your crisis response reduces the economic shock. Your policy decisions are still required separately.
+      </div>
+
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px">Without any response, your economy takes the full shock:</div>
+      <div class="metric-grid" style="margin-bottom:16px">
+        <div class="metric"><div class="metric-lbl">GDP shock</div><div class="metric-val" style="color:var(--red);font-size:18px">${def.gdp_shock}%</div></div>
+        <div class="metric"><div class="metric-lbl">Unemployment</div><div class="metric-val" style="color:var(--red);font-size:18px">+${def.unemp_shock}pp</div></div>
+        <div class="metric"><div class="metric-lbl">Inflation</div><div class="metric-val" style="color:var(--amber);font-size:18px">${def.inf_shock>=0?'+':''}${def.inf_shock}pp</div></div>
+        <div class="metric"><div class="metric-lbl">Fin. health</div><div class="metric-val" style="color:var(--red);font-size:18px">${def.fin_shock}</div></div>
+      </div>
+
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px">Select your response — each option reduces the damage differently:</div>
+      ${def.opts.map((o,i)=>{
+        const gdpActual=(def.gdp_shock*(1-o.eff/100)).toFixed(2);
+        const gdpSaved=(def.gdp_shock*(o.eff/100)).toFixed(2);
+        return`<div class="crisis-opt ${crisis.chosen_opt===i?'chosen':''}" onclick="chooseCrisisOpt('${crisis.id}',${i},${o.eff},'${o.label.replace(/'/g,"\'")}')">
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:500">${o.label}${crisis.chosen_opt===i?' <span style="color:var(--green);font-size:12px">✓ selected</span>':''}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:3px">${o.cost}</div>
+            <div style="font-size:12px;margin-top:6px">
+              GDP shock: <strong style="color:var(--red)">${def.gdp_shock}%</strong>
+              → <strong style="color:${o.eff>=70?'var(--green)':'var(--amber)'}">${gdpActual}%</strong>
+              <span style="color:var(--green)">(saves ${gdpSaved}%)</span>
+            </div>
+          </div>
+          <span class="badge ${o.eff>=70?'badge-green':o.eff>=55?'badge-amber':'badge-red'}" style="margin-left:10px;flex-shrink:0">${o.eff}% effective</span>
+        </div>`;
+      }).join('')}
+
+      ${chosenOpt?`
+        <div class="notice notice-ok" style="margin-top:14px;line-height:1.7">
+          <strong>Selected: ${esc(chosenOpt.label)}</strong><br>
+          Your GDP shock will be reduced from ${def.gdp_shock}% to <strong>${(def.gdp_shock*(1-chosenOpt.eff/100)).toFixed(2)}%</strong> when the round simulation runs.
+        </div>
+        <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+          <button class="btn btn-gold" onclick="confirmCrisisResponse('${crisis.id}')">Confirm this response</button>
+          <button class="btn btn-ghost" onclick="showSub('dash-policy',document.querySelectorAll('#page-dashboard .tab')[1])">Also submit policy →</button>
+        </div>
+      `:`<div class="notice notice-info" style="margin-top:12px">Select a response above then click Confirm.</div>`}
+    </div>`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function chooseCrisisOpt(cid,idx,eff,label){
+  try{
+    await sbPatch('crises_active',`id=eq.${cid}`,{chosen_opt:idx,effectiveness:eff,response:label});
+    renderDashCrisis();
+  }catch(e){flash('Error saving choice — try again','err');}
+}
+
+async function confirmCrisisResponse(cid){
+  try{
+    await sbPatch('crises_active',`id=eq.${cid}`,{resolved:true});
+    renderDashCrisis();
+    setTimeout(()=>flash('Crisis response confirmed. Now submit your policy decisions in the Policy tab.','warn'),600);
+  }catch(e){flash('Error: '+e.message,'err');}
+}
+
+
+async function renderDashAdvisor(){
+  const el=document.getElementById('dash-advisor');
+  if(!currentTeamId){el.innerHTML='<div class="notice notice-info">Join a tournament to access the AI advisor.</div>';return;}
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Loading your economic data...</div>';
+  try{
+    const [ecos,tourns,crises,decisions]=await Promise.all([
+      sbGet('economies',`team_id=eq.${currentTeamId}&select=*`),
+      sbGet('tournaments',`id=eq.${currentTournamentId}&select=*`),
+      sbGet('crises_active',`team_id=eq.${currentTeamId}&select=*&order=round.desc`),
+      sbGet('decisions',`team_id=eq.${currentTeamId}&select=*&order=round.desc&limit=5`)
+    ]);
+    const eco=ecos[0]; const s=(eco&&eco.current)||defaultEconomy();
+    const tourn=tourns[0]; const scores=computeScores(s);
+    const pillars=[scores.gdp,scores.stability,scores.equality,scores.sustainability,scores.innovation];
+    const pNames=['GDP','Stability','Equality','Sustainability','Innovation'];
+    const minIdx=pillars.indexOf(Math.min(...pillars));
+    const maxIdx=pillars.indexOf(Math.max(...pillars));
+    const activeCrisis=crises.find(c=>c.round===(tourn&&tourn.current_round)&&!c.resolved);
+    const recentCrisis=crises.find(c=>c.round===(tourn&&tourn.current_round)&&c.resolved);
+    const lastDecision=decisions[0];
+    const round=(tourn&&tourn.current_round)||0;
+
+    // Build comprehensive economic briefing
+    const debtStatus=s.debt>90?'CRITICAL — above 90% GDP threshold, triggering growth drag':s.debt>70?'elevated — watch carefully':s.debt<50?'healthy':'moderate';
+    const inflStatus=Math.abs(s.inflation-2)<0.5?'on target (near 2%)':s.inflation>4?'overheating — well above 2% target':s.inflation>2.5?'slightly above target':s.inflation<0?'deflationary — dangerous territory':'below target';
+    const unempStatus=s.unemployment<4?'very low — watch for wage inflation pressure':s.unemployment<5.5?'near NAIRU — healthy range':s.unemployment<7?'above NAIRU — output gap forming':'high — significant output gap';
+    const gdpStatus=s.gdp_growth>4?'strong':s.gdp_growth>2?'moderate — near trend':s.gdp_growth>0?'weak — below trend':'NEGATIVE — recession territory';
+
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:4px">AI policy advisor</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Round ${round} economic briefing. The advisor analyses your economy and raises questions — <em>you</em> decide the right policy response.</p>
+
+      ${activeCrisis?`<div class="card" style="border:2px solid rgba(192,57,43,0.3);background:rgba(192,57,43,0.04);margin-bottom:16px">
+        <div style="font-size:11px;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">⚠ Active crisis — requires your response</div>
+        <div style="font-size:15px;font-weight:500;color:var(--red);margin-bottom:6px">${esc(activeCrisis.name)}</div>
+        ${(()=>{const def=CRISES.find(c=>c.id===activeCrisis.crisis_id)||CRISES[0];return`
+          <p style="font-size:13px;color:#475569;line-height:1.7;margin-bottom:10px">${esc(def.desc)}</p>
+          <p style="font-size:13px;color:#475569;line-height:1.7"><strong>Advisor analysis:</strong> This crisis will hit your economy with a GDP shock of ${def.gdp_shock}% and push unemployment up ${def.unemp_shock}pp. Each response option carries a different trade-off:</p>
+          <ul style="font-size:13px;color:#475569;line-height:1.8;margin:10px 0 10px 18px">
+            ${def.opts.map(o=>`<li><strong>${o.label}</strong> (${o.eff}% effective at reducing shock) — ${o.cost}. Consider: how does this interact with your current debt level of ${s.debt.toFixed(0)}% and fiscal position?</li>`).join('')}
+          </ul>
+          <p style="font-size:13px;color:var(--blue);font-weight:500">What factors in your economy should guide your choice here?</p>
+        `})()}
+        <button class="btn btn-gold btn-sm" style="margin-top:10px" onclick="showSub('dash-crisis',document.querySelectorAll('#page-dashboard .tab')[2])">Go to Crisis tab to respond →</button>
+      </div>`:''}
+
+      ${recentCrisis?`<div class="notice notice-ok" style="margin-bottom:14px">
+        Crisis resolved this round: <strong>${esc(recentCrisis.name)}</strong> — you chose <strong>${esc(recentCrisis.response)}</strong> (${recentCrisis.effectiveness}% effective). 
+        GDP shock reduced to ${((CRISES.find(c=>c.id===recentCrisis.crisis_id)||CRISES[0]).gdp_shock*(1-recentCrisis.effectiveness/100)).toFixed(2)}%.
+        Consider: does your policy submission this round account for the residual economic damage?
+      </div>`:''}
+
+      <div class="card" style="margin-bottom:14px">
+        <div style="font-size:13px;font-weight:500;color:var(--blue);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px;font-size:11px">Round ${round} economic briefing</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          ${[
+            ['GDP growth',s.gdp_growth.toFixed(1)+'%',gdpStatus,s.gdp_growth>2?'green':s.gdp_growth<0?'red':'amber'],
+            ['Inflation',s.inflation.toFixed(1)+'%',inflStatus,Math.abs(s.inflation-2)<1?'green':s.inflation>4?'red':'amber'],
+            ['Unemployment',s.unemployment.toFixed(1)+'%',unempStatus,s.unemployment<5.5?'green':s.unemployment>7?'red':'amber'],
+            ['Gov debt / GDP',s.debt.toFixed(1)+'%',debtStatus,s.debt<70?'green':s.debt>90?'red':'amber'],
+            ['HDI',s.hdi.toFixed(3),'Human development index',s.hdi>0.8?'green':s.hdi<0.6?'red':'amber'],
+            ['Gini',s.gini.toFixed(1),'Inequality measure (lower=better)',s.gini<30?'green':s.gini>45?'red':'amber'],
+            ['Budget balance',s.budget_balance.toFixed(1)+'% GDP',s.budget_balance>0?'surplus — reducing debt':'deficit — adding to debt',s.budget_balance>0?'green':s.budget_balance<-4?'red':'amber'],
+            ['Interest rate',s.interest_rate.toFixed(2)+'%','Current policy rate',''],
+            ['Productivity',s.productivity.toFixed(2)+'%','Long-run growth driver',''],
+            ['Stock index',Math.round(s.stock).toLocaleString(),'Financial market health',''],
+          ].map(([lbl,val,desc,color])=>`<div style="background:#f8faff;border-radius:8px;padding:10px 12px;border:1px solid rgba(15,61,158,0.08)">
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">${lbl}</div>
+            <div style="font-size:18px;font-weight:500;font-family:var(--font-mono);color:${color==='green'?'var(--green)':color==='red'?'var(--red)':color==='amber'?'var(--amber)':'var(--blue)'}">${val}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4">${desc}</div>
+          </div>`).join('')}
+        </div>
+
+        <div style="margin-top:4px">
+          <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Score breakdown — Round ${round}</div>
+          ${[['GDP',scores.gdp,'#0d7a5f'],['Stability',scores.stability,'#0f3d9e'],['Equality',scores.equality,'#be185d'],['Sustainability',scores.sustainability,'#b45309'],['Innovation',scores.innovation,'#5b21b6']].map(([l,v,c])=>`
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <span style="font-size:12px;color:var(--muted);min-width:90px">${l}</span>
+            <div style="flex:1;height:6px;background:rgba(15,61,158,0.08);border-radius:3px;overflow:hidden"><div style="width:${v/2}%;height:100%;background:${c};border-radius:3px"></div></div>
+            <span style="font-size:12px;font-family:var(--font-mono);color:${c};min-width:36px;text-align:right">${Math.round(v)}</span>
+          </div>`).join('')}
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid rgba(15,61,158,0.1)">
+            <span style="font-size:13px;font-weight:500">Total score</span>
+            <span style="font-size:20px;font-weight:500;font-family:var(--font-mono);color:var(--blue)">${Math.round(scores.total)}/1000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-chat" style="margin-bottom:14px">
+        <div class="ai-label">Advisor analysis — Round ${round}</div>
+        Your strongest pillar is <strong style="color:${['#0d7a5f','#0f3d9e','#be185d','#b45309','#5b21b6'][maxIdx]}">${pNames[maxIdx]}</strong> (${Math.round(pillars[maxIdx])}/200). Your weakest is <strong style="color:var(--red)">${pNames[minIdx]}</strong> (${Math.round(pillars[minIdx])}/200).
+        <br><br>
+        ${s.debt>90?`<strong>Debt alert:</strong> At ${s.debt.toFixed(1)}% of GDP, you are above the 90% threshold. The simulation applies a compound growth drag each round you stay above it. Consider: is the benefit of your current spending level worth the compounding debt penalty? What combination of tax and spending changes would bring you below 90%?<br><br>`:''}
+        ${s.inflation>4?`<strong>Inflation concern:</strong> At ${s.inflation.toFixed(1)}%, inflation is well above the 2% target. The Phillips Curve suggests this reflects a tight labour market (unemployment at ${s.unemployment.toFixed(1)}%). What are the trade-offs between raising interest rates to cool inflation versus the impact on growth and unemployment?<br><br>`:''}
+        ${s.inflation<0.5?`<strong>Deflation risk:</strong> Inflation at ${s.inflation.toFixed(1)}% is dangerously low. Deflation discourages spending and investment. What tools does a government typically use to stimulate demand when monetary policy is near its lower bound?<br><br>`:''}
+        ${s.unemployment>7?`<strong>Unemployment concern:</strong> At ${s.unemployment.toFixed(1)}%, unemployment is significantly above the NAIRU of 4.5%. Okun's Law suggests each 1pp above NAIRU costs roughly 2pp of GDP growth. What combination of demand-side and supply-side policies could address this?<br><br>`:''}
+        ${scores.innovation<80?`<strong>Innovation deficit:</strong> Your innovation score is low (${Math.round(scores.innovation)}/200). This pillar rewards R&D and education investment that compounds over time — early investment produces larger long-run gains than late investment. What does this suggest about the optimal timing of your structural spending?<br><br>`:''}
+        The Laffer Curve in this simulation peaks around a 40% average tax burden. Your current burden is approximately ${((((lastDecision&&lastDecision.policy&&lastDecision.policy.income_tax)||30)*0.4+((lastDecision&&lastDecision.policy&&lastDecision.policy.corp_tax)||21)*0.3+((lastDecision&&lastDecision.policy&&lastDecision.policy.vat)||15)*0.3)).toFixed(0)}%. What does this imply for your revenue-maximising tax strategy?
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div style="font-size:13px;font-weight:500;margin-bottom:12px">Ask the advisor</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          ${['What are my biggest economic risks?','How should I think about my debt level?','What does the Phillips Curve tell me about my economy?','How do I improve my weakest pillar?','What are the trade-offs of raising interest rates now?','How does Okun's Law apply to my situation?'].map(q=>`<button class="btn btn-ghost btn-sm" onclick="addAdvisorQ('${q.replace(/'/g,"\'")}')">Q: ${q}</button>`).join('')}
+        </div>
+        <div id="advisor-qa" style="max-height:300px;overflow-y:auto"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <input type="text" id="advisor-input" placeholder="Ask a question about your economy..." style="flex:1;background:#f8faff;border:1.5px solid rgba(15,61,158,0.2);border-radius:8px;padding:9px 12px;color:#1a202e;font-family:var(--font-body);font-size:14px;outline:none" onkeydown="if(event.key==='Enter')sendAdvisor()">
+          <button class="btn btn-gold" onclick="sendAdvisor()">Ask</button>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px">The advisor raises questions and frames trade-offs. It does not tell you which sliders to move — that is your economic judgement call.</p>
+      </div>`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error loading advisor: ${esc(e.message)}</div>`;}
+}
+
+const ADVISOR_ANSWERS={
+  'risk':`Looking at your current indicators, the risks to watch are: (1) any pillar below 80/200 is vulnerable to falling further if you neglect it, (2) debt above 70% is approaching the danger zone, (3) inflation outside the 1.5–2.5% band creates score drag. Which of these applies most to your economy right now, and what do you know about the standard policy toolkit for each?`,
+  'debt':`The simulation applies a Reinhart-Rogoff style drag above 90% GDP — each round above that threshold compounds the growth penalty. To reduce debt you need a budget surplus: tax revenue must exceed spending. Consider: what combination of tax rates and spending levels gets you to surplus without triggering a recession? What does the Laffer Curve imply about the upper limit of your tax strategy?`,
+  'phillips':`The Phillips Curve in this simulation links your unemployment rate to inflation via: inflation = 0.6×expectations + (-0.5×unemployment gap) + cost-push factors. Your NAIRU is 4.5%. If your unemployment is below 4.5%, you should expect upward pressure on inflation. If above, downward pressure. How does your current unemployment rate compare to NAIRU, and what does that imply for your inflation trajectory without any policy change?`,
+  'weakest':`Improving a weak pillar requires understanding what drives it. GDP responds to fiscal stimulus and monetary ease. Stability rewards low inflation and manageable debt. Equality responds to progressive taxation and social spending. Sustainability rewards fiscal discipline and HDI growth. Innovation responds to R&D and education — with a compounding time lag. For your weakest pillar, what are the 2–3 levers most directly connected to it, and what trade-offs does moving them create for your other pillars?`,
+  'interest':`Raising interest rates in this simulation: reduces inflation by ~0.8pp per 100bps hike (via demand compression and exchange rate effects), slows GDP growth by ~0.8pp (via investment and consumption reduction), and puts downward pressure on unemployment over time. The key question is: is your current inflation driven by demand-pull (in which case rate hikes are appropriate) or cost-push (in which case rate hikes may not help and could cause stagflation)? How would you diagnose this from your current indicators?`,
+  'okun':`Okun's Law in this simulation: each 1 percentage point of unemployment above potential GDP growth costs approximately 2pp of GDP growth per round. Your potential growth rate is determined by your structural investments (R&D, education, infrastructure). With unemployment at its current level, what does Okun's Law imply about your output gap? And what does the output gap in turn imply about your inflation and budget balance?`,
+  'laffer':`The Laffer Curve in this simulation peaks around a 40% average tax burden (weighted across income, corporate, and VAT). Below 40%, raising taxes increases revenue. Above 40%, raising taxes reduces revenue because the economic drag outweighs the rate increase. Your current weighted burden is approximately set by your current slider positions. Are you on the left or right side of the curve? And how does the answer affect your strategy for maximising the stability and sustainability pillars?`,
+};
+
+function addAdvisorQ(q){document.getElementById('advisor-input').value=q;sendAdvisor();}
+
+function sendAdvisor(){
+  const inp=document.getElementById('advisor-input');const q=inp.value.trim();if(!q)return;
+  const qa=document.getElementById('advisor-qa');
+  const qD=document.createElement('div');qD.className='ai-chat user';qD.innerHTML=`<div class="ai-label" style="color:var(--blue)">You</div>${esc(q)}`;qa.appendChild(qD);
+  const key=Object.keys(ADVISOR_ANSWERS).find(k=>q.toLowerCase().includes(k));
+  const ans=key?ADVISOR_ANSWERS[key]:`That's a good question to explore. Think about which of your current economic indicators are most relevant to it — GDP growth, inflation, unemployment, debt, or the score pillars. What does standard macroeconomic theory suggest, and how might the current state of your economy affect which approach is optimal? The Policy tab is where you translate that reasoning into decisions.`;
+  const aD=document.createElement('div');aD.className='ai-chat';aD.innerHTML=`<div class="ai-label">Advisor</div>${ans}`;qa.appendChild(aD);
+  inp.value='';qa.scrollTop=qa.scrollHeight;
+}
+
+
+async function renderDashRankings(){
+  const el=document.getElementById('dash-rankings');
+  if(!currentTournamentId){el.innerHTML='<div class="notice notice-info">Join a tournament to see rankings.</div>';return;}
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [tourns,teams,ecos]=await Promise.all([sbGet('tournaments',`id=eq.${currentTournamentId}&select=*`),sbGet('teams',`tournament_id=eq.${currentTournamentId}&select=*`),sbGet('economies',`tournament_id=eq.${currentTournamentId}&select=team_id,current`)]);
+    const tourn=tourns[0];
+    const rows=teams.map(t=>{const eco=ecos.find(e=>e.team_id===t.id);return{team:t,score:eco?computeScores(eco.current).total:0};}).sort((a,b)=>b.score-a.score);
+    const myPos=rows.findIndex(r=>r.team.id===currentTeamId);
+    el.innerHTML=`<div class="card-title" style="margin-bottom:14px">${esc((tourn&&tourn.name)||'')} &mdash; Round ${(tourn&&tourn.current_round)||0}</div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Rank</th><th>Team</th><th>Members</th><th>Score</th></tr></thead><tbody>
+      ${rows.map((r,i)=>`<tr style="${r.team.id===currentTeamId?'background:rgba(15,61,158,0.04)':''}">
+        <td><span class="rank-badge rank-${i<3?i+1:'n'}">${i+1}</span></td>
+        <td style="font-weight:${r.team.id===currentTeamId?'500':'400'}">${esc(r.team.name)}${r.team.id===currentTeamId?' <span class="badge badge-blue" style="font-size:10px">You</span>':''}</td>
+        <td style="color:var(--muted)">${r.(team.members&&team.members.length)||1}</td>
+        <td style="font-family:var(--font-mono);font-weight:500;color:var(--blue)">${Math.round(r.score)}</td>
+      </tr>`).join('')}</tbody></table></div>
+      ${myPos>=0?`<div class="notice notice-info" style="margin-top:10px">You are ranked <strong>#${myPos+1}</strong> of ${rows.length} teams.</div>`:''}`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function renderDashPayment(){
+  const el=document.getElementById('dash-payment');
+  if(!currentTeamId){el.innerHTML='<div class="notice notice-info">Join a tournament first.</div>';return;}
+  el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [teams,tourns]=await Promise.all([sbGet('teams',`id=eq.${currentTeamId}&select=*`),sbGet('tournaments',`id=eq.${currentTournamentId}&select=*`)]);
+    const team=teams[0],tourn=tourns[0];
+    if(!team||!tourn){el.innerHTML='<div class="notice notice-warn">Data not found.</div>';return;}
+    if(tourn.entry_fee<=0){el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:14px">Payment</div><div class="notice notice-ok">This tournament is free — no payment required.</div>`;return;}
+    if(team.fee_paid){el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:14px">Payment</div><div class="notice notice-ok" style="margin-bottom:16px">Entry fee paid. Your team is fully activated.</div>`;return;}
+    const prizes=calcPrizePool(tourn.entry_fee,await sbGet('teams',`tournament_id=eq.${tourn.id}&select=id`).then(t=>t.length));
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:4px">Entry fee payment</div>
+      <p class="page-sub">Pay your entry fee to activate your team.</p>
+      <div class="card" style="margin-bottom:14px"><div class="tbl-wrap"><table class="tbl" style="min-width:0"><tbody>
+        <tr><td style="color:var(--muted)">Tournament</td><td style="font-weight:500">${esc(tourn.name)}</td></tr>
+        <tr><td style="color:var(--muted)">Team</td><td>${esc(team.name)}</td></tr>
+        <tr><td style="color:var(--muted)">Entry fee</td><td style="font-size:18px;font-weight:500;font-family:var(--font-mono);color:var(--blue)">${fmt$(tourn.entry_fee)}</td></tr>
+        <tr><td style="color:var(--muted)">Your prize contribution</td><td style="font-size:12px;color:var(--muted)">Contributes to ${fmt$(prizes.pool)} prize pool</td></tr>
+      </tbody></table></div></div>
+      <div class="card"><div class="card-title" style="margin-bottom:10px">Pay with Stripe</div>
+        <p style="font-size:13px;color:#475569;margin-bottom:14px;line-height:1.6">Click below to pay securely. After payment, notify your admin or wait for automatic confirmation once Stripe backend is connected.</p>
+        <button class="btn-stripe" onclick="flash('Stripe checkout requires Railway backend — email admin to confirm payment','warn')">Pay ${fmt$(tourn.entry_fee)} with Stripe</button>
+        <p style="font-size:11px;color:var(--muted);margin-top:10px">Secured by Stripe &middot; We never store your card details</p>
+      </div>
+      <div class="card"><div class="card-title" style="margin-bottom:8px">Paid another way?</div>
+        <p style="font-size:13px;color:#475569;margin-bottom:10px">Contact your tournament admin to confirm payment.</p>
+        <a href="mailto:support@macronations.com?subject=Payment%20confirmation%20-%20${encodeURIComponent(tourn.name)}&body=Team:%20${encodeURIComponent(team.name)}%0ATournament:%20${encodeURIComponent(tourn.name)}" class="btn btn-ghost btn-sm">Email admin</a>
+      </div>`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+// ---- Public pages ----
+async function renderRankings(){
+  const el=document.getElementById('rankings-list');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const ts=await sbGet('tournaments','status=in.(active,completed)&select=*&order=created_at.desc');
+    if(!ts.length){el.innerHTML='<div class="notice notice-info">No active tournaments yet.</div>';return;}
+    const [teams,ecos]=await Promise.all([sbGet('teams','select=id,name,tournament_id,members'),sbGet('economies','select=team_id,current')]);
+    el.innerHTML=ts.map(tourn=>{
+      const tTeams=teams.filter(t=>t.tournament_id===tourn.id);
+      const rows=tTeams.map(t=>{const eco=ecos.find(e=>e.team_id===t.id);return{team:t,score:eco?computeScores(eco.current).total:0};}).sort((a,b)=>b.score-a.score).slice(0,10);
+      const prizes=calcPrizePool(tourn.entry_fee||0,tTeams.length);
+      return `<div class="card"><div class="card-hd"><div><div class="card-title">${esc(tourn.name)}</div><div style="font-size:12px;color:var(--muted)">${tourn.entry_fee>0?`Prize pool: ${fmt$(prizes.pool)}`:'Free'}</div></div><span class="badge ${tourn.status==='active'?'badge-green':'badge-gray'}">${tourn.status}</span></div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Rank</th><th>Team</th><th>Score</th></tr></thead><tbody>
+        ${rows.length===0?'<tr><td colspan="3" style="color:var(--muted);padding:20px 14px">No teams yet</td></tr>':rows.map((r,i)=>`<tr><td><span class="rank-badge rank-${i<3?i+1:'n'}">${i+1}</span></td><td>${esc(r.team.name)}</td><td style="font-family:var(--font-mono);color:var(--blue)">${Math.round(r.score)}</td></tr>`).join('')}
+        </tbody></table></div></div>`;
+    }).join('');
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function renderChampions(){
+  const el=document.getElementById('champions-list');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const champs=await sbGet('champions','select=*&order=year.desc,score.desc');
+    if(!champs.length){el.innerHTML='<div class="notice notice-info">No champions yet — complete a tournament to crown a champion.</div>';return;}
+    const isAdmin=currentUser&&(currentUser.is_admin||currentUser.role==='admin');
+    el.innerHTML=champs.map((c,i)=>`<div class="card" style="border-top:3px solid ${i===0?'var(--blue)':'rgba(15,61,158,0.15)'}">
+      <div class="card-hd">
+        <div>
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${esc(c.season)} &middot; Champion</div>
+          <div class="card-title" style="font-size:17px;color:var(--blue)">${esc(c.team)}</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:2px">Captain: ${esc(c.captain)} &middot; ${esc(c.institution)} &middot; ${esc(c.country)}</div>
+        </div>
+        <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div style="font-size:26px;font-weight:500;font-family:var(--font-mono);color:var(--blue)">${(c.score!=null?c.score.toLocaleString:0)()}</div>
+          ${c.prize_won?`<div style="font-size:12px;color:var(--green);font-weight:500">${fmt$(c.prize_won)} prize</div>`:''}
+          <div style="font-size:11px;color:var(--muted)">${c.year}</div>
+          ${isAdmin?`<button class="btn-danger" style="margin-top:4px;font-size:11px;padding:3px 8px" onclick="revokeChampion('${c.id}','${esc(c.team)}')">Revoke</button>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function revokeChampion(id,teamName){
+  if(!confirm('Revoke champion record for "'+teamName+'"? This removes them from the Hall of Champions. Use this if the tournament was completed by mistake and then reopened.'))return;
+  try{
+    await sbDelete('champions',`id=eq.${id}`);
+    flash('Champion record revoked.');
+    renderChampions();
+  }catch(e){flash('Error: '+e.message,'err');}
+}
+
+
+async function renderRankings(){
+  const el=document.getElementById('rankings-list');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const ts=await sbGet('tournaments','status=in.(active,completed)&select=*&order=created_at.desc');
+    if(!ts.length){el.innerHTML='<div class="notice notice-info">No active tournaments yet.</div>';return;}
+    const [teams,ecos]=await Promise.all([sbGet('teams','select=id,name,tournament_id,members'),sbGet('economies','select=team_id,current')]);
+    el.innerHTML=ts.map(tourn=>{
+      const tTeams=teams.filter(t=>t.tournament_id===tourn.id);
+      const rows=tTeams.map(t=>{const eco=ecos.find(e=>e.team_id===t.id);return{team:t,score:eco?computeScores(eco.current).total:0};}).sort((a,b)=>b.score-a.score).slice(0,10);
+      const prizes=calcPrizePool(tourn.entry_fee||0,tTeams.length);
+      return `<div class="card"><div class="card-hd"><div><div class="card-title">${esc(tourn.name)}</div><div style="font-size:12px;color:var(--muted)">${tourn.entry_fee>0?`Prize pool: ${fmt$(prizes.pool)}`:'Free'}</div></div><span class="badge ${tourn.status==='active'?'badge-green':'badge-gray'}">${tourn.status}</span></div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Rank</th><th>Team</th><th>Score</th></tr></thead><tbody>
+        ${rows.length===0?'<tr><td colspan="3" style="color:var(--muted);padding:20px 14px">No teams yet</td></tr>':rows.map((r,i)=>`<tr><td><span class="rank-badge rank-${i<3?i+1:'n'}">${i+1}</span></td><td>${esc(r.team.name)}</td><td style="font-family:var(--font-mono);color:var(--blue)">${Math.round(r.score)}</td></tr>`).join('')}
+        </tbody></table></div></div>`;
+    }).join('');
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function renderChampions(){
+  const el=document.getElementById('champions-list');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const champs=await sbGet('champions','select=*&order=year.desc,score.desc');
+    if(!champs.length){el.innerHTML='<div class="notice notice-info">No champions yet — complete a tournament to crown a champion.</div>';return;}
+    el.innerHTML=champs.map((c,i)=>`<div class="card" style="border-top:3px solid ${i===0?'var(--blue)':'rgba(15,61,158,0.15)'}">
+      <div class="card-hd">
+        <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${esc(c.season)} &middot; Champion</div>
+        <div class="card-title" style="font-size:17px;color:var(--blue)">${esc(c.team)}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:2px">Captain: ${esc(c.captain)} &middot; ${esc(c.institution)} &middot; ${esc(c.country)}</div></div>
+        <div style="text-align:right"><div style="font-size:26px;font-weight:500;font-family:var(--font-mono);color:var(--blue)">${(c.score!=null?c.score.toLocaleString:0)()}</div>${c.prize_won?`<div style="font-size:12px;color:var(--green);font-weight:500">${fmt$(c.prize_won)} prize</div>`:''}<div style="font-size:11px;color:var(--muted)">${c.year}</div></div>
+      </div>
+    </div>`).join('');
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+// ---- Legal ----
+function showLegal(section){
+  const el=document.getElementById('legal-content');
+  const LOGO_SVG=`<svg width="28" height="28" viewBox="0 0 40 40" fill="none" style="vertical-align:middle;margin-right:6px"><rect width="40" height="40" rx="10" fill="#0f3d9e"/><path d="M8 28 L14 16 L20 22 L26 12 L32 28" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="32" cy="12" r="3" fill="#f5c842"/></svg>`;
+  const pages={
+    terms:`<div class="legal-content"><h1>${LOGO_SVG}Terms of Service</h1><p class="last-updated">Last updated: January 1, 2025</p><p>These Terms govern your access to MacroNations, operated by MacroNations LLC, a New York limited liability company ("Company", "we", "us"), accessible at macronations.com.</p><h2>1. Eligibility</h2><p>MacroNations is open to all participants worldwide. Participants under 18 in paid tournaments must have verifiable parental consent.</p><h2>2. Account registration</h2><p>You must provide accurate information and keep credentials confidential. You may not create multiple accounts or share accounts.</p><h2>3. One team per season</h2><p>Each registered user may participate on only one team per tournament season year (January 1 – December 31). Registering on multiple teams in the same season is grounds for disqualification.</p><h2>4. Entry fees and payments</h2><p>Entry fees are non-refundable except as required by law. Payments are processed through Stripe. MacroNations LLC does not store payment card information.</p><h2>5. Intellectual property</h2><p>The MacroNations platform, simulation engine, scoring system, branding, and all associated content are the exclusive property of MacroNations LLC and are protected by U.S. and international copyright law.</p><h2>6. Disclaimer of warranties</h2><p>MacroNations is provided "as is" for educational and competitive entertainment purposes. We do not guarantee that simulation results reflect real-world economic outcomes.</p><h2>7. Limitation of liability</h2><p>To the maximum extent permitted by law, MacroNations LLC shall not be liable for indirect, incidental, or consequential damages arising from your use of the platform.</p><h2>8. Governing law</h2><p>These Terms are governed by the laws of the State of New York, United States. Disputes shall be resolved in New York courts.</p><h2>9. Contact</h2><p><a href="mailto:support@macronations.com">support@macronations.com</a></p></div>`,
+    prizes:`<div class="legal-content"><h1>${LOGO_SVG}Prize Rules</h1><p class="last-updated">Last updated: January 1, 2025</p><h2>1. Prize pool structure</h2><p>For each paid tournament, the prize pool equals a maximum of <strong>10%</strong> of total entry fees collected. The prize pool updates in real time on the tournament page.</p><h2>2. Prize distribution</h2><ul><li><strong>1st place (Winner):</strong> 70% of the prize pool</li><li><strong>2nd place (Runner-up):</strong> 30% of the prize pool</li></ul><p>Prizes are distributed equally among all registered members of the winning team.</p><h2>3. Determining winners</h2><p>Final standings are determined by total cumulative score. Tiebreakers: (1) average GDP growth, (2) lowest deviation from 2% inflation, (3) final HDI, (4) lowest debt/GDP, (5) best crisis response score.</p><h2>4. Prize payment</h2><p>Winners will be contacted within 7 business days of tournament completion. Payment is made via bank transfer or Stripe. Recipients are responsible for all applicable taxes. MacroNations LLC will issue a 1099-MISC where required by law.</p><h2>5. Eligibility</h2><p>To claim a prize, winning team members must: have submitted decisions in at least 50% of rounds, not have been disqualified, and provide valid identity verification upon request.</p><h2>6. Disputes</h2><p>Prize disputes must be raised within 14 days of tournament completion by emailing <a href="mailto:support@macronations.com">support@macronations.com</a>.</p></div>`,
+    privacy:`<div class="legal-content"><h1>${LOGO_SVG}Privacy Policy</h1><p class="last-updated">Last updated: January 1, 2025</p><h2>1. Information we collect</h2><ul><li>Account information: name, email, password (hashed), username, country, institution, role</li><li>Tournament data: policy decisions, scores, rationale text, crisis responses</li><li>Payment information: processed through Stripe. We do not store card numbers.</li></ul><h2>2. How we use your information</h2><ul><li>To operate the tournament platform and calculate scores</li><li>To process entry fees and prize payments</li><li>To send tournament notifications you have opted into</li><li>To display your team name and score on public leaderboards</li></ul><h2>3. Data sharing</h2><p>We do not sell your personal data. We share data only with Stripe and Supabase as required for platform operation, or as required by law.</p><h2>4. Contact</h2><p><a href="mailto:support@macronations.com">support@macronations.com</a></p></div>`,
+    disclaimer:`<div class="legal-content"><h1>${LOGO_SVG}Disclaimer</h1><p class="last-updated">Last updated: January 1, 2025</p><h2>Educational purpose</h2><p>MacroNations is an educational simulation platform for students to understand macroeconomic policy through competitive gameplay. Nothing on this platform constitutes financial, investment, or policy advice.</p><h2>Simulation accuracy</h2><p>The simulation engine uses simplified economic models for educational purposes. Real economies are far more complex. MacroNations makes no representation that simulation results would occur in a real economy.</p><h2>Prize tournaments</h2><p>Participation in paid tournaments involves a financial risk equal to the entry fee paid. There is no guarantee of winning a prize. Tournament outcomes are determined by participant skill, not chance alone.</p><h2>Platform availability</h2><p>MacroNations does not guarantee uninterrupted availability. We are not liable for losses arising from platform downtime during tournament rounds.</p></div>`,
+    copyright:`<div class="legal-content"><h1>${LOGO_SVG}Copyright Notice</h1><p class="last-updated">Last updated: January 1, 2025</p><p>&copy; 2025 MacroNations LLC — A New York Limited Liability Company. All rights reserved.</p><h2>Ownership</h2><p>All content on macronations.com — including the platform design, simulation engine, scoring algorithms, tournament framework, written content, branding, and graphics — is the exclusive intellectual property of MacroNations LLC and is protected under United States copyright law and international copyright treaties.</p><h2>Prohibited use</h2><ul><li>Copy, reproduce, or distribute any part of the platform</li><li>Reverse engineer or extract the simulation engine or scoring algorithms</li><li>Create derivative works based on MacroNations content</li><li>Use MacroNations branding or logo without written permission</li></ul><h2>DMCA</h2><p>Copyright notices: <a href="mailto:support@macronations.com">support@macronations.com</a></p><p>MacroNations LLC &middot; New York, United States</p></div>`
+  };
+  el.innerHTML=pages[section]||pages['terms'];
+}
+
+// ---- Admin ----
+function renderAdmin(){showSub('admin-overview',document.querySelector('#page-admin .tab'));renderAdminOverview();}
+
+async function renderAdminOverview(){
+  const el=document.getElementById('admin-overview');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  const isProfessor=currentUser&&currentUser.role==='professor'&&!currentUser.is_admin;
+  try{
+    if(isProfessor){
+      // Professor view — show their own tournaments and quick create
+      const myTourns=await sbGet('tournaments',`created_by=eq.${currentUser.id}&select=*&order=created_at.desc`);
+      const allTeams=await sbGet('teams','select=id,tournament_id,members');
+      el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:4px">Professor panel</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">Welcome, Professor ${esc(currentUser.name.split(' ')[0])}. Create free class or university tournaments for your students, manage rounds, and view scores. Your students can also join any open paid tournament independently.</p>
+        <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+          <button class="btn btn-gold" onclick="openCreateTournament()">+ Create class tournament</button>
+          <button class="btn btn-ghost btn-sm" onclick="showSub('admin-tournaments',document.querySelectorAll('#page-admin .tab')[1])">Manage my tournaments</button>
+        </div>
+        <div class="notice notice-info" style="margin-bottom:20px">
+          <strong>How professor tournaments work:</strong><br>
+          1. Create a tournament — set it as "Class" tier with $0 entry fee<br>
+          2. Share the tournament link with your students — they register and join your tournament<br>
+          3. Use the <strong>Rounds</strong> tab to advance rounds on your own schedule<br>
+          4. All students see live scores. You see all policy decisions for grading/discussion.<br><br>
+          <strong>Want your students to compete for prizes too?</strong> They can independently join any open paid tournament. You can point them to the Tournaments page.
+        </div>
+        <div class="card-title" style="margin-bottom:12px">Your tournaments (${myTourns.length})</div>
+        ${myTourns.length===0?'<div class="notice notice-info">No tournaments created yet. Click "Create class tournament" above to get started.</div>':
+        myTourns.map(t=>{
+          const tTeams=allTeams.filter(x=>x.tournament_id===t.id);
+          const participants=tTeams.reduce((a,x)=>a+(x.members?x.members.length:0),0);
+          const sc={active:'badge-green',registration:'badge-blue',completed:'badge-gray',upcoming:'badge-amber'};
+          return`<div class="card"><div class="card-hd">
+            <div><div class="card-title">${esc(t.name)}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${t.tier} &middot; Round ${t.current_round||0}/${t.rounds_total} &middot; ${tTeams.length} teams &middot; ${participants} students</div></div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <span class="badge ${sc[t.status]||'badge-gray'}">${t.status}</span>
+              ${t.status==='registration'?`<button class="btn-success" onclick="setTournStatus('${t.id}','active')">Start</button>`:''}
+              ${t.status==='active'?`<button class="btn btn-gold btn-sm" onclick="showSub('admin-rounds',document.querySelectorAll('#page-admin .tab')[3])">Advance rounds</button>`:''}
+            </div>
+          </div></div>`;
+        }).join('')}`;
+      return;
+    }
+
+    // Full admin view
+    const [users,tournaments,teams,decisions,crises,waivers]=await Promise.all([sbGet('mn_users','select=id'),sbGet('tournaments','select=id,status'),sbGet('teams','select=id,members,fee_paid'),sbGet('decisions','is_final=eq.true&select=id'),sbGet('crises_active','resolved=eq.false&select=id'),sbGet('waivers','select=id')]);
+    const participants=teams.reduce((a,t)=>a+(t.members?t.members.length:0),0);
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:14px">Admin overview</div>
+      <div class="metric-grid"><div class="metric"><div class="metric-lbl">Users</div><div class="metric-val blue">${users.length}</div></div><div class="metric"><div class="metric-lbl">Tournaments</div><div class="metric-val blue">${tournaments.length}</div></div><div class="metric"><div class="metric-lbl">Teams</div><div class="metric-val blue">${teams.length}</div></div><div class="metric"><div class="metric-lbl">Participants</div><div class="metric-val blue">${participants}</div></div></div>
+      <div class="metric-grid"><div class="metric"><div class="metric-lbl">Submissions</div><div class="metric-val">${decisions.length}</div></div><div class="metric"><div class="metric-lbl">Active crises</div><div class="metric-val">${crises.length}</div></div><div class="metric"><div class="metric-lbl">Paid teams</div><div class="metric-val green">${teams.filter(t=>t.fee_paid).length}</div></div><div class="metric"><div class="metric-lbl">Active now</div><div class="metric-val green">${tournaments.filter(t=>t.status==='active').length}</div></div></div>
+      <div class="notice notice-info">First registered user is automatically the platform admin.</div>`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function renderAdminTournaments(){
+  const el=document.getElementById('admin-tournaments');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [tournaments,teams]=await Promise.all([sbGet('tournaments','select=*&order=created_at.desc'),sbGet('teams','select=id,tournament_id,members')]);
+    const sc={active:'badge-green',registration:'badge-blue',completed:'badge-gray',upcoming:'badge-amber'};
+    el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div class="page-title" style="font-size:20px">Tournaments</div>
+        <button class="btn btn-gold" onclick="openCreateTournament()">+ Create tournament</button>
+      </div>
+      ${tournaments.length===0?'<div class="notice notice-info">No tournaments yet.</div>':
+      '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Name</th><th>Season</th><th>Teams</th><th>Round</th><th>Fee</th><th>Prize</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+
+      tournaments.map(t=>{
+        const tTeams=teams.filter(x=>x.tournament_id===t.id);
+        const prizes=calcPrizePool(t.entry_fee||0,tTeams.length);
+        return `<tr><td style="font-weight:500">${esc(t.name)}</td><td style="color:var(--muted)">${t.season_year||CURRENT_YEAR}</td><td>${tTeams.length}/${t.max_teams}</td><td>${t.current_round||0}/${t.rounds_total}</td><td>${t.entry_fee>0?fmt$(t.entry_fee):'Free'}</td><td style="color:var(--blue);font-family:var(--font-mono)">${t.entry_fee>0?fmt$(prizes.pool):'—'}</td><td><span class="badge ${sc[t.status]||'badge-gray'}">${t.status}</span></td>
+          <td style="display:flex;gap:6px;flex-wrap:wrap">
+            ${t.status==='registration'?`<button class="btn-success" onclick="setTournStatus('${t.id}','active')">Start</button>`:''}
+            ${t.status==='active'?`<button class="btn-danger" onclick="confirmComplete('${t.id}')">Complete</button>`:''}${t.status==='completed'?`<button class="btn-info" onclick="reopenTournament('${t.id}')">&#8617; Reopen</button>`:''}
+            ${t.status==='upcoming'?`<button class="btn-info" onclick="setTournStatus('${t.id}','registration')">Open reg.</button>`:''}
+            <button class="btn-danger" onclick="deleteTournament('${t.id}')">Delete</button>
+          </td></tr>`;
+      }).join('')+'</tbody></table></div>'}`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+function openCreateTournament(){document.getElementById('ct-start').value=new Date().toISOString().split('T')[0];openModal('modal-create-tournament');}
+
+async function doCreateTournament(){
+  const name=document.getElementById('ct-name').value.trim();const errEl=document.getElementById('ct-err');errEl.style.display='none';
+  if(!name){errEl.style.display='block';errEl.textContent='Tournament name required';return;}
+  setLoading('ct-btn',true,'Create tournament');
+  try{
+    const startDate=document.getElementById('ct-start').value;
+    const rounds=+document.getElementById('ct-rounds').value;
+    const interval=+document.getElementById('ct-interval').value||7;
+    const schedule=startDate?buildSchedule(startDate,rounds,interval):[];
+    const t={id:mkId(),name,tier:document.getElementById('ct-tier').value,season_year:+document.getElementById('ct-year').value,rounds_total:rounds,entry_fee:+document.getElementById('ct-fee').value,max_teams:+document.getElementById('ct-maxteams').value,description:document.getElementById('ct-desc').value.trim(),status:'registration',current_round:0,created_by:currentUser.id,schedule};
+    await sbPost('tournaments',t);
+    closeModal('modal-create-tournament');flash('Tournament "'+name+'" created!');
+    renderAdminTournaments();loadHomeStats();
+    document.getElementById('ct-name').value='';document.getElementById('ct-desc').value='';
+  }catch(e){errEl.style.display='block';errEl.textContent='Error: '+e.message;}
+  finally{setLoading('ct-btn',false,'Create tournament');}
+}
+
+async function setTournStatus(id,status){
+  try{
+    const patch={status};
+    if(status==='active'){const t=await sbGet('tournaments',`id=eq.${id}&select=current_round`);if(t[0]&&!t[0].current_round)patch.current_round=1;}
+    await sbPatch('tournaments',`id=eq.${id}`,patch);
+    flash('Status → '+status);
+    if(status==='completed')await crownChampion(id);
+    renderAdminTournaments();loadHomeStats();
+  }catch(e){flash('Error: '+e.message,'err');}
+}
+
+function confirmComplete(id){
+  // Custom confirm dialog instead of browser confirm — shows full warning
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(15,61,158,0.15);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML=`<div style="background:#fff;border-radius:16px;padding:28px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(15,61,158,0.15)">
+    <div style="font-size:24px;margin-bottom:12px">⚠️</div>
+    <div style="font-family:var(--font-head);font-size:20px;color:var(--red);margin-bottom:12px">Complete this tournament?</div>
+    <p style="font-size:14px;color:#475569;line-height:1.7;margin-bottom:8px">This will <strong>end the tournament immediately</strong>. No more rounds can be advanced once it is marked complete.</p>
+    <p style="font-size:14px;color:#475569;line-height:1.7;margin-bottom:8px">The champion will be crowned based on current scores, and prize pool distribution will be finalised.</p>
+    <p style="font-size:13px;color:var(--amber);background:rgba(180,83,9,0.08);border:1px solid rgba(180,83,9,0.2);padding:10px 14px;border-radius:8px;margin-bottom:20px">If you still have rounds left to play, click Cancel and use <strong>Run & advance</strong> in the Rounds tab instead.</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="this.closest('[style*=fixed]').remove()">Cancel — keep playing</button>
+      <button class="btn btn-danger" style="background:var(--red);color:#fff;border:none" onclick="this.closest('[style*=fixed]').remove();setTournStatus('${id}','completed')">Yes, complete tournament</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+async function reopenTournament(id){
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(15,61,158,0.15);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML=`<div style="background:#fff;border-radius:16px;padding:28px;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(15,61,158,0.15)">
+    <div style="font-size:24px;margin-bottom:12px">↩️</div>
+    <div style="font-family:var(--font-head);font-size:20px;color:var(--blue);margin-bottom:12px">Reopen this tournament?</div>
+    <p style="font-size:14px;color:#475569;line-height:1.7;margin-bottom:20px">This will set the tournament back to <strong>active</strong> status so you can continue advancing rounds. Scores and economies are unchanged — nothing is lost.</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="this.closest('[style*=fixed]').remove()">Cancel</button>
+      <button class="btn btn-gold" onclick="this.closest('[style*=fixed]').remove();doReopenTournament('${id}')">Reopen tournament</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+async function doReopenTournament(id){
+  try{
+    await sbPatch('tournaments',`id=eq.${id}`,{status:'active'});
+    flash('Tournament reopened — you can now advance rounds again.');
+    renderAdminTournaments();
+    renderAdminRounds();
+  }catch(e){flash('Error: '+e.message,'err');}
+}
+
+async function crownChampion(tournId){
+  try{
+    const [tourns,teams,ecos]=await Promise.all([sbGet('tournaments',`id=eq.${tournId}&select=*`),sbGet('teams',`tournament_id=eq.${tournId}&select=*`),sbGet('economies',`tournament_id=eq.${tournId}&select=team_id,current`)]);
+    const tourn=tourns[0];if(!tourn)return;
+    const rows=teams.map(t=>{const eco=ecos.find(e=>e.team_id===t.id);return{team:t,score:eco?computeScores(eco.current).total:0};}).sort((a,b)=>b.score-a.score);
+    if(!rows[0])return;
+    const winner=rows[0].team;
+    const cap=await sbGet('mn_users',`id=eq.${winner.captain_id}&select=name,country,institution`);
+    const capData=cap[0]||{};
+    const prizes=calcPrizePool(tourn.entry_fee||0,teams.length);
+    await sbPost('champions',{season:tourn.name,team:winner.name,captain:capData.name||'Unknown',country:capData.country||'—',institution:capData.institution||'—',score:Math.round(rows[0].score),year:new Date().getFullYear(),prize_won:prizes.winner});
+    flash('Champion crowned: '+winner.name);
+  }catch(e){console.warn('Champion error',e);}
+}
+
+async function deleteTournament(id){
+  if(!confirm('Delete this tournament and all its data?'))return;
+  try{
+    await Promise.all([sbDelete('crises_active',`tournament_id=eq.${id}`),sbDelete('decisions',`tournament_id=eq.${id}`),sbDelete('economies',`tournament_id=eq.${id}`),sbDelete('teams',`tournament_id=eq.${id}`)]);
+    await sbDelete('tournaments',`id=eq.${id}`);
+    flash('Tournament deleted');renderAdminTournaments();loadHomeStats();
+  }catch(e){flash('Error: '+e.message,'err');}
+}
+
+async function renderAdminTeams(){
+  const el=document.getElementById('admin-teams');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [teams,tournaments,users,ecos]=await Promise.all([sbGet('teams','select=*&order=created_at.desc'),sbGet('tournaments','select=id,name,entry_fee'),sbGet('mn_users','select=id,name'),sbGet('economies','select=team_id,current')]);
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:14px">All teams</div>
+      ${teams.length===0?'<div class="notice notice-info">No teams yet.</div>':
+      '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Team</th><th>Tournament</th><th>Members</th><th>Code</th><th>Payment</th><th>Score</th><th>Actions</th></tr></thead><tbody>'+
+      teams.map(t=>{
+        const tourn=tournaments.find(x=>x.id===t.tournament_id);
+        const eco=ecos.find(e=>e.team_id===t.id);
+        const score=eco?Math.round(computeScores(eco.current).total):0;
+        const memberNames=(t.members||[]).map(id=>{const u=users.find(x=>x.id===id);return u?u.name:id;});
+        return `<tr><td style="font-weight:500">${esc(t.name)}</td><td style="color:var(--muted);font-size:12px">${esc((tourn&&tourn.name)||'—')}</td><td style="font-size:12px;color:var(--muted)">${memberNames.slice(0,2).map(m=>esc(m)).join(', ')}${memberNames.length>2?` +${memberNames.length-2}`:''}</td><td><span class="inv-code" style="font-size:11px;padding:2px 6px">${t.invite_code}</span></td>
+          <td>${t.fee_paid?'<span class="pay-status-paid">&#10003; Paid</span>':(tourn&&tourn.entry_fee)>0?`<button class="btn-success" onclick="openMarkPaid('${t.id}','${esc(t.name)}')">Mark paid</button>`:'<span class="badge badge-gray">Free</span>'}</td>
+          <td style="font-family:var(--font-mono);color:var(--blue)">${score}</td>
+          <td><button class="btn-danger" onclick="deleteTeam('${t.id}')">Remove</button></td></tr>`;
+      }).join('')+'</tbody></table></div>'}`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+function openMarkPaid(teamId,teamName){markPaidTeamId=teamId;document.getElementById('mp-team-name').textContent=teamName;document.getElementById('mp-ref').value='';openModal('modal-mark-paid');}
+async function confirmMarkPaid(){try{await sbPatch('teams',`id=eq.${markPaidTeamId}`,{fee_paid:true});closeModal('modal-mark-paid');flash('Payment confirmed');renderAdminTeams();}catch(e){flash('Error: '+e.message,'err');}}
+async function deleteTeam(id){if(!confirm('Remove this team?'))return;try{await Promise.all([sbDelete('economies',`team_id=eq.${id}`),sbDelete('decisions',`team_id=eq.${id}`),sbDelete('crises_active',`team_id=eq.${id}`)]);await sbDelete('teams',`id=eq.${id}`);flash('Team removed');renderAdminTeams();}catch(e){flash('Error: '+e.message,'err');}}
+
+async function renderAdminRounds(){
+  const el=document.getElementById('admin-rounds');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [tournaments,teams,decisions]=await Promise.all([sbGet('tournaments','status=in.(active,completed)&select=*&order=created_at.desc'),sbGet('teams','select=id,tournament_id,members'),sbGet('decisions','is_final=eq.true&select=team_id,tournament_id,round')]);
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:4px">Advance rounds</div>
+      <p class="page-sub">Run the macro simulation for all teams and move to the next round.</p>
+      ${tournaments.length===0?'<div class="notice notice-info">No active or completed tournaments yet.</div>':
+      tournaments.map(t=>{
+        const tTeams=teams.filter(x=>x.tournament_id===t.id);
+        const submitted=decisions.filter(d=>d.tournament_id===t.id&&d.round===t.current_round).length;
+        const nextRound=t.schedule&&t.schedule.find(s=>s.round===(t.current_round||0)+1);
+        const schedHtml=t.schedule&&t.schedule.length?'<div class="card" style="margin-top:12px"><div class="card-title" style="margin-bottom:10px">Round schedule</div>'+t.schedule.map(s=>`<div class="schedule-bar"><div class="schedule-round"><div class="schedule-num">${s.round}</div><div class="schedule-info"><div class="schedule-date">${s.date}</div><div class="schedule-status">${s.round<(t.current_round||0)?'Completed':s.round===(t.current_round||0)?'Current':'Upcoming'}</div></div>${s.round>(t.current_round||0)?`<span class="countdown">${countdownTo(s.date)}</span>`:''}</div></div>`).join('')+'</div>':'';
+        const isCompleted=t.status==='completed';
+        const canAdvance=!isCompleted&&t.current_round<=t.rounds_total;
+        return `<div class="card" style="${isCompleted?'opacity:0.8;border-color:rgba(15,61,158,0.06)':''}"><div class="card-hd"><div><div class="card-title">${esc(t.name)} ${isCompleted?'<span class="badge badge-gray">completed</span>':''}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">Round ${t.current_round}/${t.rounds_total} &middot; ${tTeams.length} teams &middot; ${submitted}/${tTeams.length} submitted${nextRound&&!isCompleted?` &middot; Next: ${nextRound.date}`:''}</div></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            ${isCompleted?`<span style="font-size:13px;color:var(--muted)">Tournament complete</span><button class="btn btn-info btn-sm" onclick="reopenTournament('${t.id}')">&#8617; Reopen to advance</button>`:`<button class="btn btn-gold" id="advance-btn-${t.id}" onclick="advanceRound('${t.id}',${t.current_round},${t.rounds_total})">Run &amp; advance</button>`}
+          </div>
+        </div>${isCompleted?'<div class="notice notice-warn" style="margin:0">This tournament is marked complete. Click <strong>Reopen to advance</strong> if you need to run more rounds.</div>':''}${schedHtml}</div>`;
+      }).join('')}`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function advanceRound(tournId,currentRound,totalRounds){
+  const btn=document.getElementById(`advance-btn-${tournId}`);btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Simulating...';
+  try{
+    const [teams,ecos,decisions,crises]=await Promise.all([sbGet('teams',`tournament_id=eq.${tournId}&select=*`),sbGet('economies',`tournament_id=eq.${tournId}&select=*`),sbGet('decisions',`tournament_id=eq.${tournId}&round=eq.${currentRound}&is_final=eq.true&select=*`),sbGet('crises_active',`tournament_id=eq.${tournId}&round=eq.${currentRound}&resolved=eq.true&select=*`)]);
+    for(const team of teams){
+      const eco=ecos.find(e=>e.team_id===team.id);if(!eco)continue;
+      const dec=decisions.find(d=>d.team_id===team.id);
+      const policy=dec?dec.policy:{};
+      const crisis=crises.find(c=>c.team_id===team.id);
+      const crisisDef=crisis?CRISES.find(c=>c.id===crisis.crisis_id):null;
+      // Apply crisis effects: if player responded use their effectiveness, if ignored apply full shock (0% mitigation)
+      const eff = crisis ? (crisis.effectiveness||0) : 0;
+      const crisisEffects = crisisDef ? [{
+        gdp_shock: crisisDef.gdp_shock * (1 - eff/100),
+        unemp_shock: crisisDef.unemp_shock * (1 - eff/100),
+        inf_shock: crisisDef.inf_shock,
+        fin_shock: crisisDef.fin_shock * (1 - eff/100)
+      }] : [];
+      // Mark any unresolved crisis as resolved with 0% — full shock was applied
+      const unresolved = await sbGet('crises_active',`team_id=eq.${team.id}&tournament_id=eq.${tournId}&round=eq.${currentRound}&resolved=eq.false&select=id`).catch(()=>[]);
+      if(unresolved.length) await sbPatch('crises_active',`id=eq.${unresolved[0].id}`,{resolved:true,effectiveness:0,response:'No response — full shock applied'}).catch(()=>{});
+      const newState=simRound(eco.current,policy,crisisEffects);
+      const scores=computeScores(newState);
+      const snapshots=[...(eco.snapshots||[]),{round:currentRound,state:eco.current,scores:computeScores(eco.current)}];
+      const scores_history=[...(eco.scores_history||[]),{round:currentRound,...scores}];
+      await sbPatch('economies',`id=eq.${eco.id}`,{current:newState,snapshots,current_round:currentRound,scores_history});
+      if([3,6,9].includes(currentRound+1)&&Math.random()<0.6){
+        const ct=CRISES[Math.floor(Math.random()*CRISES.length)];
+        await sbPost('crises_active',{id:mkId(),team_id:team.id,tournament_id:tournId,crisis_id:ct.id,name:ct.name,round:currentRound+1,resolved:false});
+      }
+    }
+    const nextRound=currentRound+1;
+    const newStatus=nextRound>totalRounds?'completed':'active';
+    await sbPatch('tournaments',`id=eq.${tournId}`,{current_round:nextRound,status:newStatus});
+    if(newStatus==='completed')await crownChampion(tournId);
+    flash(`Round ${currentRound} complete! ${teams.length} economies simulated.`);
+    // Auto-prompt to notify participants
+    setTimeout(()=>{
+      const notify=confirm('Round '+currentRound+' simulation complete! Would you like to open your email client to notify participants that Round '+(currentRound+1)+' is now open?');
+      if(notify){
+        sbGet('teams',`tournament_id=eq.${tournId}&select=members`).then(ts=>{
+          sbGet('mn_users','select=id,email').then(users=>{
+            const emails=ts.flatMap(t=>(t.members||[]).map(id=>{const u=users.find(x=>x.id===id);return u?u.email:null;})).filter(Boolean);
+            const subject='MacroNations: Round '+(currentRound+1)+' is now open';
+            const body='Hi everyone,\n\nRound '+(currentRound+1)+' of your MacroNations tournament is now open for policy submissions.\n\nLog in at macronations.com to set your policy decisions before the deadline.\n\nGood luck!\n\nThe MacroNations Team';
+            window.location.href='mailto:?bcc='+encodeURIComponent(emails.join(','))+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+          });
+        });
+      }
+    },1200);
+    renderAdminRounds();
+  }catch(e){flash('Simulation error: '+e.message,'err');btn.disabled=false;btn.textContent='Run & advance';}
+}
+
+// ---- Playoffs ----
+async function renderAdminPlayoffs(){
+  const el=document.getElementById('admin-playoffs');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const tournaments=await sbGet('tournaments','status=in.(active,completed)&select=*');
+    if(!tournaments.length){el.innerHTML='<div class="notice notice-info">No active or completed tournaments. Start a tournament to manage playoffs.</div>';return;}
+    let html=`<div class="page-title" style="font-size:20px;margin-bottom:4px">Playoffs</div>
+      <p class="page-sub">Create a playoff bracket from the top teams in a completed or active tournament.</p>`;
+    for(const t of tournaments){
+      const [teams,ecos]=await Promise.all([sbGet('teams',`tournament_id=eq.${t.id}&select=*`),sbGet('economies',`tournament_id=eq.${t.id}&select=team_id,current`)]);
+      const ranked=teams.map(team=>{const eco=ecos.find(e=>e.team_id===team.id);return{team,score:eco?computeScores(eco.current).total:0};}).sort((a,b)=>b.score-a.score);
+      const playoffTeams=t.playoff_teams||[];
+      const bracket=t.playoff_bracket||[];
+      html+=`<div class="card"><div class="card-hd">
+        <div><div class="card-title">${esc(t.name)}</div><div style="font-size:12px;color:var(--muted)">${ranked.length} teams &middot; Round ${t.current_round||0}/${t.rounds_total}</div></div>
+        ${playoffTeams.length===0?`<button class="btn btn-gold btn-sm" onclick="createPlayoff('${t.id}',${JSON.stringify(ranked.slice(0,8).map(r=>r.team.id)).replace(/"/g,'&quot;')})">Create playoff (top 8)</button>`:'<span class="badge badge-green">Playoff active</span>'}
+      </div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px">Regular season standings (top 10):</div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Rank</th><th>Team</th><th>Score</th><th>Playoff</th></tr></thead><tbody>
+      ${ranked.slice(0,10).map((r,i)=>`<tr><td><span class="rank-badge rank-${i<3?i+1:'n'}">${i+1}</span></td><td>${esc(r.team.name)}</td><td style="font-family:var(--font-mono);color:var(--blue)">${Math.round(r.score)}</td><td>${playoffTeams.includes(r.team.id)?'<span class="badge badge-green">&#10003; Qualifier</span>':'<span style="color:var(--muted);font-size:12px">—</span>'}</td></tr>`).join('')}
+      </tbody></table></div>
+      ${playoffTeams.length>0?renderBracketHTML(bracket,ranked):''}
+      ${playoffTeams.length>0?`<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-info btn-sm" onclick="advancePlayoffRound('${t.id}')">Advance playoff round</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearPlayoff('${t.id}')">Clear playoff</button>
+      </div>`:''}
+      </div>`;
+    }
+    el.innerHTML=html;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+function renderBracketHTML(bracket,ranked){
+  if(!bracket||!bracket.length)return'';
+  let html='<div style="margin-top:14px"><div class="card-title" style="margin-bottom:10px">Bracket</div><div style="display:flex;gap:16px;overflow-x:auto;padding-bottom:8px">';
+  bracket.forEach((round,ri)=>{
+    html+=`<div style="min-width:160px"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Round ${ri+1}</div>`;
+    round.forEach(match=>{
+      const t1=ranked.find(r=>r.team.id===match.t1);
+      const t2=ranked.find(r=>r.team.id===match.t2);
+      html+=`<div class="bracket-match" style="margin-bottom:10px">
+        <div class="bracket-team ${match.winner===match.t1?'winner':match.winner&&match.winner!==match.t1?'loser':''}">${t1?esc(t1.team.name):'TBD'}<span style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">${t1?Math.round(t1.score):''}</span></div>
+        <div class="bracket-team ${match.winner===match.t2?'winner':match.winner&&match.winner!==match.t2?'loser':''}">${t2?esc(t2.team.name):'TBD'}<span style="font-family:var(--font-mono);font-size:11px;color:var(--muted)">${t2?Math.round(t2.score):''}</span></div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div></div>';
+  return html;
+}
+
+async function createPlayoff(tournId,teamIds){
+  try{
+    // Create bracket: pair teams by seeding (1v8, 2v7, 3v6, 4v5)
+    const n=teamIds.length;const round1=[];
+    for(let i=0;i<n/2;i++)round1.push({t1:teamIds[i],t2:teamIds[n-1-i],winner:null});
+    await sbPatch('tournaments',`id=eq.${tournId}`,{playoff_teams:teamIds,playoff_bracket:[round1]});
+    flash('Playoff bracket created with '+n+' teams!');renderAdminPlayoffs();
+  }catch(e){flash('Error: '+e.message,'err');}
+}
+
+async function advancePlayoffRound(tournId){
+  try{
+    const tourns=await sbGet('tournaments',`id=eq.${tournId}&select=playoff_bracket,playoff_teams`);
+    const t=tourns[0];if(!(t&&t.playoff_bracket&&t.playoff_bracket.length))return;
+    const bracket=t.playoff_bracket;
+    const lastRound=bracket[bracket.length-1];
+    // Auto-advance: winner of each match is team with higher score
+    const [teams,ecos]=await Promise.all([sbGet('teams',`tournament_id=eq.${tournId}&select=*`),sbGet('economies',`tournament_id=eq.${tournId}&select=team_id,current`)]);
+    const scoreMap={};ecos.forEach(e=>{scoreMap[e.team_id]=computeScores(e.current).total;});
+    const updatedRound=lastRound.map(m=>({...m,winner:scoreMap[m.t1]>=scoreMap[m.t2]?m.t1:m.t2}));
+    const winners=updatedRound.map(m=>m.winner);
+    if(winners.length===1){
+      // Final done
+      const champTeam=teams.find(t=>t.id===winners[0]);
+      const runnerTeam=teams.find(t=>t.id===updatedRound[0].winner===winners[0]?updatedRound[0].t2:updatedRound[0].t1);
+      bracket[bracket.length-1]=updatedRound;
+      await sbPatch('tournaments',`id=eq.${tournId}`,{playoff_bracket:bracket});
+      flash('Playoffs complete! Winner: '+((champTeam&&champTeam.name)||'—'));
+      renderAdminPlayoffs();return;
+    }
+    // Build next round
+    const nextRound=[];
+    for(let i=0;i<winners.length;i+=2)nextRound.push({t1:winners[i],t2:winners[i+1]||winners[i],winner:null});
+    bracket[bracket.length-1]=updatedRound;
+    bracket.push(nextRound);
+    await sbPatch('tournaments',`id=eq.${tournId}`,{playoff_bracket:bracket});
+    flash('Playoff round advanced!');renderAdminPlayoffs();
+  }catch(e){flash('Error: '+e.message,'err');}
+}
+
+async function clearPlayoff(tournId){
+  if(!confirm('Clear the playoff bracket for this tournament?'))return;
+  try{await sbPatch('tournaments',`id=eq.${tournId}`,{playoff_teams:[],playoff_bracket:[]});flash('Playoff cleared');renderAdminPlayoffs();}catch(e){flash('Error: '+e.message,'err');}
+}
+
+async function renderAdminPayments(){
+  const el=document.getElementById('admin-payments');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [teams,tournaments,users]=await Promise.all([sbGet('teams','select=*&order=created_at.desc'),sbGet('tournaments','select=id,name,entry_fee'),sbGet('mn_users','select=id,name,email')]);
+    const paidTeams=teams.filter(t=>{const tourn=tournaments.find(x=>x.id===t.tournament_id);return tourn&&tourn.entry_fee>0;});
+    const totalCollected=paidTeams.filter(t=>t.fee_paid).reduce((a,t)=>{const tourn=tournaments.find(x=>x.id===t.tournament_id);return a+((tourn&&tourn.entry_fee)||0);},0);
+    const outstanding=paidTeams.filter(t=>!t.fee_paid).reduce((a,t)=>{const tourn=tournaments.find(x=>x.id===t.tournament_id);return a+((tourn&&tourn.entry_fee)||0);},0);
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:14px">Payments</div>
+      <div class="metric-grid"><div class="metric"><div class="metric-lbl">Paid teams</div><div class="metric-val green">${paidTeams.filter(t=>t.fee_paid).length}</div></div><div class="metric"><div class="metric-lbl">Unpaid</div><div class="metric-val amber">${paidTeams.filter(t=>!t.fee_paid).length}</div></div><div class="metric"><div class="metric-lbl">Collected</div><div class="metric-val blue">${fmt$(totalCollected)}</div></div><div class="metric"><div class="metric-lbl">Outstanding</div><div class="metric-val amber">${fmt$(outstanding)}</div></div></div>
+      <div class="notice notice-info">Stripe auto-confirmation requires Railway backend. Use "Mark paid" to manually confirm after verifying in Stripe dashboard.</div>
+      ${paidTeams.length===0?'<div class="notice notice-info">No paid tournaments yet.</div>':
+      '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Team</th><th>Email</th><th>Tournament</th><th>Fee</th><th>Status</th><th>Action</th></tr></thead><tbody>'+
+      paidTeams.map(t=>{const tourn=tournaments.find(x=>x.id===t.tournament_id);const cap=users.find(u=>u.id===t.captain_id);return`<tr><td style="font-weight:500">${esc(t.name)}</td><td style="font-size:12px;color:var(--muted)">${esc((cap&&cap.email)||'')}</td><td style="font-size:12px;color:var(--muted)">${esc((tourn&&tourn.name)||'—')}</td><td style="font-family:var(--font-mono)">${fmt$((tourn&&tourn.entry_fee)||0)}</td><td>${t.fee_paid?'<span class="pay-status-paid">&#10003; Paid</span>':'<span class="pay-status-unpaid">Unpaid</span>'}</td><td>${!t.fee_paid?`<button class="btn-success" onclick="openMarkPaid('${t.id}','${esc(t.name)}')">Mark paid</button>`:''}</td></tr>`;}).join('')+'</tbody></table></div>'}`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function renderAdminWaivers(){
+  const el=document.getElementById('admin-waivers');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [waivers,tournaments]=await Promise.all([sbGet('waivers','select=*&order=created_at.desc'),sbGet('tournaments','select=id,name')]);
+    document.getElementById('wv-tourn').innerHTML=tournaments.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')||'<option>No tournaments</option>';
+    el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div class="page-title" style="font-size:20px">Fee waivers</div>
+        <button class="btn btn-gold" onclick="openModal('modal-waiver')">+ Grant waiver</button>
+      </div>
+      ${waivers.length===0?'<div class="notice notice-info">No waivers yet.</div>':
+      '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Email</th><th>Tournament</th><th>Discount</th><th>Reason</th><th>Date</th></tr></thead><tbody>'+
+      waivers.map(w=>{const tourn=tournaments.find(t=>t.id===w.tournament_id);return`<tr><td>${esc(w.email)}</td><td style="color:var(--muted);font-size:12px">${esc((tourn&&tourn.name)||'—')}</td><td><span class="badge ${w.discount===100?'badge-green':'badge-amber'}">${w.discount}%</span></td><td style="color:var(--muted);font-size:12px">${esc(w.reason||'—')}</td><td style="font-size:12px;color:var(--muted)">${new Date(w.created_at).toLocaleDateString()}</td></tr>`;}).join('')+'</tbody></table></div>'}`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+async function doGrantWaiver(){
+  const email=document.getElementById('wv-email').value.trim(),tid=document.getElementById('wv-tourn').value,disc=+document.getElementById('wv-disc').value,reason=document.getElementById('wv-reason').value.trim();
+  if(!email||!tid){flash('Fill in all fields','err');return;}
+  try{await sbPost('waivers',{id:mkId(),email,tournament_id:tid,discount:disc,reason});closeModal('modal-waiver');flash('Waiver granted to '+email);renderAdminWaivers();}catch(e){flash('Error: '+e.message,'err');}
+}
+
+async function renderAdminNotify(){
+  const el=document.getElementById('admin-notify');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [tournaments,teams,users]=await Promise.all([sbGet('tournaments','status=eq.active&select=*'),sbGet('teams','select=*'),sbGet('mn_users','select=id,name,email')]);
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:4px">Notifications</div>
+      <p class="page-sub">Opens your email client with pre-filled messages. Automatic sending via Resend requires Railway backend.</p>
+      <div class="notice notice-warn" style="margin-bottom:18px">Emails open your local email client. Add all recipients in BCC for privacy.</div>
+      ${tournaments.map(t=>{
+        const tTeams=teams.filter(x=>x.tournament_id===t.id);
+        const emails=tTeams.flatMap(team=>(team.members||[]).map(id=>{const u=users.find(x=>x.id===id);return u?u.email:null;})).filter(Boolean);
+        const subject=`MacroNations: Round ${t.current_round} open — ${t.name}`;
+        const body=`Hi everyone,\n\nRound ${t.current_round} of ${t.name} is now open for policy submissions.\n\nLog in at macronations.com to submit your decisions.\n\nThe MacroNations Team`;
+        return `<div class="card"><div class="card-title" style="margin-bottom:6px">${esc(t.name)}</div><div style="font-size:12px;color:var(--muted);margin-bottom:12px">${emails.length} participants</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-gold btn-sm" onclick="window.location.href='mailto:?bcc=${encodeURIComponent(emails.join(','))}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}'">Email round ${t.current_round} alert</button>
+            <button class="btn btn-ghost btn-sm" onclick="window.location.href='mailto:?bcc=${encodeURIComponent(emails.join(','))}&subject=MacroNations%20update&body=Hi%20everyone%2C%0A%0A'">Custom message</button>
+          </div>
+        </div>`;
+      }).join('')||'<div class="notice notice-info">No active tournaments.</div>'}
+      <div class="card"><div class="card-title" style="margin-bottom:10px">Send custom email</div>
+        <div class="field"><label>Recipient(s)</label><input type="text" id="notify-to" placeholder="email@example.com, ..."></div>
+        <div class="field"><label>Subject</label><input type="text" id="notify-subject" placeholder="Email subject"></div>
+        <div class="field"><label>Message</label><textarea id="notify-body" placeholder="Your message..." style="height:100px"></textarea></div>
+        <button class="btn btn-gold" onclick="sendCustomEmail()">Open in email client</button>
+      </div>`;
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+function sendCustomEmail(){
+  const to=document.getElementById('notify-to').value.trim(),subject=document.getElementById('notify-subject').value.trim(),body=document.getElementById('notify-body').value.trim();
+  if(!to||!subject){flash('Fill in recipient and subject','err');return;}
+  window.location.href=`mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+async function renderAdminAnalytics(){
+  const el=document.getElementById('admin-analytics');el.innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
+  try{
+    const [decisions,teams,tournaments,ecos]=await Promise.all([sbGet('decisions','is_final=eq.true&select=*'),sbGet('teams','select=id,name,tournament_id,fee_paid'),sbGet('tournaments','select=id,name,current_round,rounds_total,entry_fee,season_year'),sbGet('economies','select=team_id,current,scores_history')]);
+    const avgScores=ecos.map(e=>computeScores(e.current).total);
+    const avgTotal=avgScores.length?Math.round(avgScores.reduce((a,b)=>a+b,0)/avgScores.length):0;
+    const totalRevenue=teams.filter(t=>t.fee_paid).reduce((a,t)=>{const tourn=tournaments.find(x=>x.id===t.tournament_id);return a+((tourn&&tourn.entry_fee)||0);},0);
+    el.innerHTML=`<div class="page-title" style="font-size:20px;margin-bottom:14px">Analytics &amp; exports</div>
+      <div class="metric-grid"><div class="metric"><div class="metric-lbl">Policy data points</div><div class="metric-val blue">${decisions.length}</div></div><div class="metric"><div class="metric-lbl">Teams tracked</div><div class="metric-val blue">${teams.length}</div></div><div class="metric"><div class="metric-lbl">Avg score</div><div class="metric-val blue">${avgTotal}</div></div><div class="metric"><div class="metric-lbl">Revenue</div><div class="metric-val green">${fmt$(totalRevenue)}</div></div></div>
+      <div class="card"><div class="card-title" style="margin-bottom:10px">Export data</div>
+        <p style="font-size:13px;color:#475569;margin-bottom:12px;line-height:1.6">Full panel dataset: one row per team per round with all 10 policy inputs, economy outcomes, and scores.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-success btn" onclick="exportCSV()">Download CSV (${decisions.length} rows)</button>
+          <button class="btn-info btn" onclick="exportJSON()">Download JSON</button>
+        </div>
+      </div>
+      <div class="card"><div class="card-title" style="margin-bottom:10px">Score summary</div>
+        ${tournaments.length===0?'<p style="color:var(--muted)">No data yet.</p>':
+        '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Tournament</th><th>Season</th><th>Teams</th><th>Rounds</th><th>Avg score</th><th>Top score</th><th>Revenue</th></tr></thead><tbody>'+
+        tournaments.map(t=>{const tT=teams.filter(x=>x.tournament_id===t.id);const sc=tT.map(team=>{const eco=ecos.find(e=>e.team_id===team.id);return eco?computeScores(eco.current).total:0;});const avg=sc.length?Math.round(sc.reduce((a,b)=>a+b,0)/sc.length):0;const top=sc.length?Math.round(Math.max(...sc)):0;const rev=tT.filter(x=>x.fee_paid).length*(t.entry_fee||0);return`<tr><td style="font-weight:500">${esc(t.name)}</td><td style="color:var(--muted)">${t.season_year||CURRENT_YEAR}</td><td>${tT.length}</td><td>${t.current_round||0}/${t.rounds_total}</td><td style="font-family:var(--font-mono)">${avg}</td><td style="font-family:var(--font-mono);color:var(--blue)">${top}</td><td style="font-family:var(--font-mono);color:var(--green)">${fmt$(rev)}</td></tr>`;}).join('')+'</tbody></table></div>'}
+      </div>`;
+    window._analyticsCache={decisions,teams,tournaments,ecos};
+  }catch(e){el.innerHTML=`<div class="notice notice-err">Error: ${esc(e.message)}</div>`;}
+}
+
+function exportCSV(){
+  const{decisions,teams,tournaments,ecos}=window._analyticsCache||{};
+  if(!(decisions&&decisions.length)){flash('No data to export','warn');return;}
+  const rows=[['team_name','tournament','season_year','round','spending_change','income_tax','corp_tax','vat','interest_rate_delta','education','healthcare','rd','infra','tariff','rationale','gdp_growth','inflation','unemployment','debt','gini','hdi','total_score','fee_paid']];
+  decisions.forEach(d=>{const team=(teams&&teams.find)(t=>t.id===d.team_id);const tourn=(tournaments&&tournaments.find)(t=>t.id===d.tournament_id);const eco=(ecos&&ecos.find)(e=>e.team_id===d.team_id);const snap=(eco&&eco.scores_history&&eco.scores_history.find)(s=>s.round===d.round);const p=d.policy||{};const state=(eco&&eco.current)||{};rows.push([(team&&team.name)||'',(tourn&&tourn.name)||'',(tourn&&tourn.season_year)||'',d.round,p.spending_change||0,p.income_tax||30,p.corp_tax||21,p.vat||15,p.interest_rate_delta||0,p.education||5,p.healthcare||6,p.rd||2,p.infra||3,p.tariff||5,(p.rationale||'').replace(/,/g,''),(state.gdp_growth||0).toFixed(2),(state.inflation||0).toFixed(2),(state.unemployment||0).toFixed(2),(state.debt||0).toFixed(2),(state.gini||0).toFixed(2),(state.hdi||0).toFixed(3),snap?Math.round(snap.total):'',(team&&team.fee_paid)?'yes':'no']);});
+  const csv=rows.map(r=>r.map(c=>String(c).includes(',')?`"${c}"`:c).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='macronations_panel_data.csv';a.click();URL.revokeObjectURL(url);flash('CSV downloaded');
+}
+
+function exportJSON(){
+  const data=window._analyticsCache||{};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='macronations_data.json';a.click();URL.revokeObjectURL(url);flash('JSON downloaded');
+}
+
+
+// ---- Supabase schema init ----
+async function ensureSchema(){
+  // Non-blocking schema check - failures are silently ignored
+  try{
+    fetch(`${SUPABASE_URL}/rest/v1/rpc/exec_sql`,{
+      method:'POST',
+      headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json'},
+      body:JSON.stringify({query:"ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS season_year int DEFAULT 2025; ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS schedule jsonb DEFAULT '[]'; ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS playoff_teams jsonb DEFAULT '[]'; ALTER TABLE tournaments ADD COLUMN IF NOT EXISTS playoff_bracket jsonb DEFAULT '[]'; ALTER TABLE champions ADD COLUMN IF NOT EXISTS prize_won numeric DEFAULT 0;"})
+    }).catch(()=>{});
+  }catch(e){}
+}
+
+// ---- Init ----
+try { ensureSchema(); } catch(e) { console.warn('Schema init failed:', e); }
+try { loadHomeStats(); } catch(e) { console.warn('Stats load failed:', e); }
+</script>
+</body>
+</html>
