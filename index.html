@@ -4143,10 +4143,14 @@ async function doRegister() {
     currentSession = { access_token: accessToken, refresh_token: refreshToken, expires_at: Date.now() + (expiresIn*1000) };
   }
 
-  // Step 4: Insert profile into mn_users (RLS disabled, use anon key if no session yet)
+  // Step 4: Insert profile into mn_users
+  // Use the Supabase Auth user's UUID as the id — this links auth to profile
+  // and satisfies the NOT NULL constraint without needing a DB default.
+  var authUserId = (sd.user && sd.user.id) ? sd.user.id : (sd.id || null);
+
   var profile = null;
   try {
-    profile = await sbPost('mn_users', {
+    var profileData = {
       name:        name,
       username:    username,
       email:       email,
@@ -4154,7 +4158,11 @@ async function doRegister() {
       institution: inst,
       role:        finalRole,
       is_admin:    isFirst
-    });
+    };
+    // Only include id if we have it from Auth — avoids the NOT NULL violation
+    if (authUserId) { profileData.id = authUserId; }
+
+    profile = await sbPost('mn_users', profileData);
   } catch(e) {
     _setFormErr('register-error', 'Auth account created but profile save failed: ' + (e.message || 'unknown error') + '. Please contact support@macronations.com');
     setLoading('btn-do-register',false,'Create Account');
