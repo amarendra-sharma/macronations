@@ -4193,74 +4193,14 @@ async function doRegister() {
   }
 }
 
-async function doLogin() {
-  _setFormErr('signin-error', '');
-  var email = (document.getElementById('signin-email').value || '').trim().toLowerCase();
-  var pass  = (document.getElementById('signin-password').value || '');
-
-  if (!email || !pass) {
-    _setFormErr('signin-error', 'Please enter your email and password.');
-    return;
-  }
-
-  setLoading('btn-do-login', true, 'Signing in…');
-
-  try {
-    // Use the proper Supabase token endpoint (what _supaSignIn should do)
-    const res = await fetch(`${SUPA_URL}/auth/v1/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPA_ANON,
-      },
-      body: JSON.stringify({
-        email: email,
-        password: pass,
-        grant_type: 'password'   // important
-      })
-    });
-
-    const auth = await res.json();
-
-    if (!res.ok || auth.error) {
-      const msg = auth.error_description || 
-                  (auth.error && auth.error.message) || 
-                  'Invalid email or password.';
-      _setFormErr('signin-error', msg);
-      setLoading('btn-do-login', false, 'Sign In');
-      return;
-    }
-
-    // Full session from Supabase
-    const sess = {
-      access_token: auth.access_token,
-      refresh_token: auth.refresh_token,
-      expires_at: Date.now() + ((auth.expires_in || 3600) * 1000)
-    };
-
-    currentSession = sess;
-
-    // Fetch profile (this part looks mostly fine)
-    const rows = await sbGet('mn_users', `email=eq.${encodeURIComponent(email)}&limit=1`);
-    if (!rows || !rows.length) {
-      _setFormErr('signin-error', 'Profile not found. Please contact support@macronations.com.');
-      setLoading('btn-do-login', false, 'Sign In');
-      return;
-    }
-
-    currentUser = rows[0];
-    _saveSession(sess, currentUser);
-
-    closeModal('modal-auth');
-    afterLogin();
-    flash(`Welcome back, ${esc(currentUser.name || currentUser.username || 'Economist')}!`, 'success');
-
-  } catch (e) {
-    console.error(e);
-    _setFormErr('signin-error', 'Network error. Please try again.');
-    setLoading('btn-do-login', false, 'Sign In');
-  }
-
+async function doLogout() {
+  try { if (currentSession && currentSession.access_token) { await _supaSignOut(currentSession.access_token); } } catch(e) {}
+  _clearSession();
+  currentSession = null; currentUser = null; currentTeamId = null; currentTournamentId = null;
+  _renderLoggedOutNav();
+  showPage('home');
+  flash('You have been signed out.', 'info');
+}
 
 async function afterLogin() {
   _renderLoggedInNav();
