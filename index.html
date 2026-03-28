@@ -3323,7 +3323,7 @@ h1, h2, h3, h4, h5 {
         <div class="form-error" id="signin-error">Invalid email or password.</div>
         <button class="btn btn--primary btn--full btn--lg" style="margin-top:0.5rem;">Sign In</button>
         <p class="text-center text-sm mt-2" style="color:var(--text-400);">
-          <a href="#">Forgot your password?</a>
+          <a href="#" onclick="doForgotPassword();return false;">Forgot your password?</a>
         </p>
       </div>
 
@@ -3915,6 +3915,151 @@ async function doLogin() {
     _setFormErr('signin-error','Network error. Please try again.');
     setLoading('btn-do-login', false, 'Sign In');
   }
+}
+
+// ── FORGOT PASSWORD ───────────────────────────────────────────────
+async function doForgotPassword() {
+  var emailEl = document.getElementById('signin-email');
+  var email   = emailEl ? emailEl.value.trim().toLowerCase() : '';
+
+  if (!email) {
+    // Prompt inline if field is empty
+    var entered = prompt('Enter your account email address to receive a reset link:');
+    if (!entered) { return; }
+    email = entered.trim().toLowerCase();
+  }
+
+  if (!email || email.indexOf('@') === -1) {
+    flash('Please enter a valid email address.', 'error');
+    return;
+  }
+
+  try {
+    var redirectUrl = window.location.origin + window.location.pathname + '?reset=1';
+    var res = await fetch(SUPA_URL + '/auth/v1/recover', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPA_ANON },
+      body: JSON.stringify({ email: email, redirect_to: redirectUrl })
+    });
+    // Supabase returns 200 regardless of whether email exists (security)
+    flash('If an account exists for ' + email + ', a password reset link has been sent. Check your inbox (and spam folder).', 'success');
+  } catch(e) {
+    flash('Could not send reset email. Please try again or contact support@macronations.com.', 'error');
+  }
+}
+
+// ── RESET PASSWORD (handles ?reset=1 token in URL after email click) ─
+async function doResetPassword(newPass) {
+  // Called from the reset password modal
+  if (!newPass || newPass.length < 8) {
+    flash('Password must be at least 8 characters.', 'error');
+    return false;
+  }
+  try {
+    var res = await fetch(SUPA_URL + '/auth/v1/user', {
+      method: 'PUT',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPA_ANON,
+        'Authorization': 'Bearer ' + _authToken()
+      },
+      body: JSON.stringify({ password: newPass })
+    });
+    var data = await res.json();
+    if (data.error || (data.id === undefined && !data.email)) {
+      flash('Reset failed: ' + ((data.error && data.error.message) || 'Unknown error. Try the link again.'), 'error');
+      return false;
+    }
+    flash('Password updated! You can now sign in with your new password.', 'success');
+    closeModal('modal-reset-password');
+    openAuthModal('login');
+    return true;
+  } catch(e) {
+    flash('Network error. Please try again.', 'error');
+    return false;
+  }
+}
+
+// ── Check on page load if we're returning from a password reset email ─
+(function _checkResetToken() {
+  var hash   = window.location.hash || '';
+  var search = window.location.search || '';
+  // Supabase sends tokens in the URL hash as #access_token=...&type=recovery
+  var isRecovery = hash.indexOf('type=recovery') !== -1 || search.indexOf('reset=1') !== -1;
+  if (!isRecovery) { return; }
+
+  // Extract access token from hash
+  var tokenMatch = hash.match(/access_token=([^&]+)/);
+  var token      = tokenMatch ? tokenMatch[1] : null;
+
+  if (token) {
+    // Store temporarily so _authToken() returns it for the PUT /user call
+    currentSession = { access_token: token, refresh_token: '', expires_at: Date.now() + 3600000 };
+  }
+
+  // Show reset password modal
+  setTimeout(function() {
+    _showResetModal();
+    // Clean the URL so the token isn't visible
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, 400);
+})();
+
+function _showResetModal() {
+  // Create a simple inline modal if it doesn't exist yet
+  var existing = document.getElementById('modal-reset-password');
+  if (!existing) {
+    var div = document.createElement('div');
+    div.className = 'modal-backdrop';
+    div.id = 'modal-reset-password';
+    div.setAttribute('role', 'dialog');
+    div.setAttribute('aria-modal', 'true');
+    div.innerHTML =
+      '<div class="modal">' +
+        '<div class="modal__header">' +
+          '<div><h2 class="modal__title">Set New Password</h2>' +
+            '<p class="modal__subtitle">Choose a new password for your MacroNations account</p></div>' +
+        '</div>' +
+        '<div class="modal__body">' +
+          '<div class="form-field">' +
+            '<label class="form-label form-label--required" for="reset-new-pass">New Password</label>' +
+            '<div class="form-pw-wrap">' +
+              '<input type="password" id="reset-new-pass" class="form-input" placeholder="Minimum 8 characters" autocomplete="new-password">' +
+              '<button class="form-pw-toggle" type="button" aria-label="Show password">👁</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-field">' +
+            '<label class="form-label form-label--required" for="reset-confirm-pass">Confirm Password</label>' +
+            '<input type="password" id="reset-confirm-pass" class="form-input" placeholder="Repeat new password" autocomplete="new-password">' +
+          '</div>' +
+          '<div class="form-error" id="reset-error"></div>' +
+        '</div>' +
+        '<div class="modal__footer">' +
+          '<button class="btn btn--primary btn--full btn--lg" id="btn-do-reset" onclick="(function(){' +
+            'var p=document.getElementById(\'reset-new-pass\').value;' +
+            'var c=document.getElementById(\'reset-confirm-pass\').value;' +
+            'var e=document.getElementById(\'reset-error\');' +
+            'if(p.length<8){e.textContent=\'Password must be at least 8 characters.\';e.classList.add(\'visible\');return;}' +
+            'if(p!==c){e.textContent=\'Passwords do not match.\';e.classList.add(\'visible\');return;}' +
+            'e.classList.remove(\'visible\');' +
+            'doResetPassword(p);' +
+          '})()">Set New Password</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(div);
+    // Wire pw toggle
+    var tog = div.querySelector('.form-pw-toggle');
+    if (tog) {
+      tog.addEventListener('click', function() {
+        var inp = document.getElementById('reset-new-pass');
+        if (inp.type === 'password') { inp.type = 'text'; tog.textContent = '🔒'; }
+        else                         { inp.type = 'password'; tog.textContent = '👁'; }
+      });
+    }
+  }
+  openModal('modal-reset-password');
 }
 
 async function doRegister() {
