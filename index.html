@@ -3900,16 +3900,36 @@ async function doLogin() {
   setLoading('btn-do-login', true, 'Signing in…');
   try {
     var auth = await _supaSignIn(email, pass);
+
+    // Show the REAL Supabase error — critical for debugging
     if (auth.error || !auth.access_token) {
-      _setFormErr('signin-error', (auth.error_description) || (auth.error && auth.error.message) || 'Invalid email or password.');
+      var rawMsg = (auth.error_description)
+        || (auth.error && auth.error.message)
+        || (auth.msg)
+        || JSON.stringify(auth);
+
+      // Translate common Supabase auth errors to human-friendly messages
+      var friendlyMsg = rawMsg;
+      if (rawMsg.indexOf('Email not confirmed') !== -1 || rawMsg.indexOf('email_not_confirmed') !== -1) {
+        friendlyMsg = 'Your email address has not been confirmed yet. Please check your inbox for a confirmation email from MacroNations and click the link. Check your spam folder too.';
+      } else if (rawMsg.indexOf('Invalid login credentials') !== -1) {
+        friendlyMsg = 'Incorrect email or password. Please try again, or use "Forgot your password?" to reset it.';
+      } else if (rawMsg.indexOf('User not found') !== -1) {
+        friendlyMsg = 'No account found with that email address. Please register first.';
+      } else if (rawMsg.indexOf('Too many requests') !== -1) {
+        friendlyMsg = 'Too many sign-in attempts. Please wait a few minutes and try again.';
+      }
+
+      _setFormErr('signin-error', friendlyMsg);
       setLoading('btn-do-login', false, 'Sign In');
       return;
     }
+
     var sess = { access_token: auth.access_token, refresh_token: auth.refresh_token, expires_at: Date.now() + ((auth.expires_in||3600)*1000) };
     currentSession = sess;
     var rows = await sbGet('mn_users','email=eq.'+encodeURIComponent(email)+'&limit=1');
     if (!rows || !rows.length) {
-      _setFormErr('signin-error','Profile not found. Please contact support@macronations.com.');
+      _setFormErr('signin-error','Account authenticated but profile not found. Please contact support@macronations.com.');
       setLoading('btn-do-login', false, 'Sign In');
       return;
     }
@@ -3919,7 +3939,7 @@ async function doLogin() {
     afterLogin();
     flash('Welcome back, ' + esc(currentUser.name || currentUser.username || 'Economist') + '!', 'success');
   } catch(e) {
-    _setFormErr('signin-error','Network error. Please try again.');
+    _setFormErr('signin-error', 'Network error: ' + (e.message || 'Could not reach server. Check your connection.'));
     setLoading('btn-do-login', false, 'Sign In');
   }
 }
