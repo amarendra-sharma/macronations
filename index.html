@@ -4079,45 +4079,109 @@ async function doRegister() {
   if (!/^[a-z0-9_]+$/.test(username)) { _setFormErr('register-error','Username may only contain letters, numbers, and underscores.'); return; }
 
   setLoading('btn-do-register', true, 'Creating account…');
+
+  // Step 1: Check username uniqueness
   try {
     var existing = await sbGet('mn_users','username=eq.'+encodeURIComponent(username)+'&limit=1');
-    if (existing && existing.length) { _setFormErr('register-error','That username is already taken.'); setLoading('btn-do-register',false,'Create Account'); return; }
-
-    var allUsers = await sbGet('mn_users','limit=1');
-    var isFirst  = !allUsers || !allUsers.length;
-    var finalRole = isFirst ? 'admin' : role;
-
-    var sd = await _supaSignUp(email, pass);
-    if (sd.error || !(sd.user || sd.id)) {
-      _setFormErr('register-error', (sd.error && sd.error.message) || 'Registration failed. Email may already be in use.');
-      setLoading('btn-do-register',false,'Create Account'); return;
-    }
-
-    var accessToken  = null;
-    var refreshToken = null;
-    var expiresIn    = 3600;
-    if (sd.session && sd.session.access_token) { accessToken = sd.session.access_token; refreshToken = sd.session.refresh_token; expiresIn = sd.session.expires_in || 3600; }
-    else if (sd.access_token) { accessToken = sd.access_token; refreshToken = sd.refresh_token; expiresIn = sd.expires_in || 3600; }
-
-    if (accessToken) { currentSession = { access_token: accessToken, refresh_token: refreshToken, expires_at: Date.now() + (expiresIn*1000) }; }
-
-    var profile = await sbPost('mn_users', { name:name, username:username, email:email, country:country, institution:inst, role:finalRole, is_admin:isFirst });
-    if (!profile || profile.code) { _setFormErr('register-error',(profile&&profile.message)||'Could not save profile.'); setLoading('btn-do-register',false,'Create Account'); return; }
-
-    currentUser = profile;
-    if (accessToken) {
-      _saveSession(currentSession, currentUser);
-      closeModal('modal-auth');
-      afterLogin();
-      flash('Welcome to MacroNations' + (isFirst ? ' — you are the Admin!' : '!'), 'success');
-    } else {
-      _clearSession(); currentSession = null; currentUser = null;
-      closeModal('modal-auth');
-      flash('Account created! Check your email to confirm, then sign in.', 'info');
+    if (existing && existing.length) {
+      _setFormErr('register-error','That username is already taken.');
+      setLoading('btn-do-register',false,'Create Account');
+      return;
     }
   } catch(e) {
-    _setFormErr('register-error','Network error. Please try again.');
+    _setFormErr('register-error','Could not check username. Check your connection and try again.');
     setLoading('btn-do-register',false,'Create Account');
+    return;
+  }
+
+  // Step 2: Check if first user
+  var isFirst  = false;
+  var finalRole = role;
+  try {
+    var allUsers = await sbGet('mn_users','limit=1&select=id');
+    isFirst   = !allUsers || !allUsers.length;
+    finalRole = isFirst ? 'admin' : role;
+  } catch(e) { /* non-fatal — default to not first */ }
+
+  // Step 3: Create Supabase Auth account
+  var sd = null;
+  try {
+    var signupRes = await fetch(SUPA_URL + '/auth/v1/signup', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPA_ANON },
+      body:    JSON.stringify({ email: email, password: pass })
+    });
+    sd = await signupRes.json();
+  } catch(e) {
+    _setFormErr('register-error', 'Network error reaching auth server. Check your connection. (' + (e.message || '') + ')');
+    setLoading('btn-do-register',false,'Create Account');
+    return;
+  }
+
+  if (!sd || sd.error || !(sd.user || sd.id)) {
+    var authErr = (sd && sd.error && sd.error.message) || (sd && sd.msg) || 'Signup failed. Email may already be registered.';
+    _setFormErr('register-error', authErr);
+    setLoading('btn-do-register',false,'Create Account');
+    return;
+  }
+
+  // Extract session token if provided immediately
+  var accessToken  = null;
+  var refreshToken = null;
+  var expiresIn    = 3600;
+  if (sd.session && sd.session.access_token) {
+    accessToken  = sd.session.access_token;
+    refreshToken = sd.session.refresh_token;
+    expiresIn    = sd.session.expires_in || 3600;
+  } else if (sd.access_token) {
+    accessToken  = sd.access_token;
+    refreshToken = sd.refresh_token;
+    expiresIn    = sd.expires_in || 3600;
+  }
+
+  if (accessToken) {
+    currentSession = { access_token: accessToken, refresh_token: refreshToken, expires_at: Date.now() + (expiresIn*1000) };
+  }
+
+  // Step 4: Insert profile into mn_users (RLS disabled, use anon key if no session yet)
+  var profile = null;
+  try {
+    profile = await sbPost('mn_users', {
+      name:        name,
+      username:    username,
+      email:       email,
+      country:     country,
+      institution: inst,
+      role:        finalRole,
+      is_admin:    isFirst
+    });
+  } catch(e) {
+    _setFormErr('register-error', 'Auth account created but profile save failed: ' + (e.message || 'unknown error') + '. Please contact support@macronations.com');
+    setLoading('btn-do-register',false,'Create Account');
+    return;
+  }
+
+  if (!profile || profile.code) {
+    var profErr = (profile && profile.message) || (profile && profile.details) || 'Could not save profile. Please contact support@macronations.com';
+    _setFormErr('register-error', profErr);
+    setLoading('btn-do-register',false,'Create Account');
+    return;
+  }
+
+  // Success
+  currentUser = profile;
+  if (accessToken) {
+    _saveSession(currentSession, currentUser);
+    closeModal('modal-auth');
+    afterLogin();
+    flash('Welcome to MacroNations' + (isFirst ? ' — you are the Admin!' : '!'), 'success');
+  } else {
+    // Email confirmation required before session is granted
+    _clearSession();
+    currentSession = null;
+    currentUser    = null;
+    closeModal('modal-auth');
+    flash('Account created! Check your email to confirm your address, then sign in.', 'info');
   }
 }
 
