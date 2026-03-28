@@ -3574,13 +3574,20 @@ async function sbGet(table, params) {
 }
 
 async function sbPost(table, body) {
+  // Strip any undefined/null id — let Postgres generate it via DEFAULT
+  var clean = {};
+  var keys  = Object.keys(body);
+  for (var i = 0; i < keys.length; i++) {
+    if (keys[i] === 'id' && (body[keys[i]] === null || body[keys[i]] === undefined)) { continue; }
+    clean[keys[i]] = body[keys[i]];
+  }
   var res  = await fetch(SUPA_URL + '/rest/v1/' + table, {
     method:  'POST',
     headers: _restHeaders({ 'Prefer': 'return=representation' }),
-    body:    JSON.stringify(body)
+    body:    JSON.stringify(clean)
   });
   var data = await res.json();
-  if (!res.ok) { throw new Error((data && data.message) || 'POST failed'); }
+  if (!res.ok) { throw new Error((data && data.message) || (data && data.details) || 'POST failed on ' + table); }
   return Array.isArray(data) ? data[0] : data;
 }
 
@@ -4204,6 +4211,10 @@ async function doLogout() {
 
 async function afterLogin() {
   _renderLoggedInNav();
+  // Run DB setup check for admins/professors once
+  if (currentUser && (currentUser.is_admin || currentUser.role === 'professor')) {
+    dbSetupDefaults();
+  }
   try {
     var captained = await sbGet('teams','captain_id=eq.'+currentUser.id+'&limit=1');
     if (captained && captained.length) {
@@ -4387,6 +4398,41 @@ function _setStatEl(id, val) {
 var PAGE_LOADERS = {
   home: loadHomeStats
 };
+
+// ── DATABASE SETUP: fix missing DEFAULT on id columns ─────────────
+// Runs once via Supabase RPC if available, otherwise surfaces SQL to run manually.
+// Called automatically when an admin first logs in.
+async function dbSetupDefaults() {
+  // We can't run DDL directly via REST, so we use Supabase's rpc endpoint.
+  // If the rpc doesn't exist, surface the SQL for the user to run manually.
+  var sql = [
+    'ALTER TABLE mn_users    ALTER COLUMN id SET DEFAULT gen_random_uuid();',
+    'ALTER TABLE tournaments ALTER COLUMN id SET DEFAULT gen_random_uuid();',
+    'ALTER TABLE teams       ALTER COLUMN id SET DEFAULT gen_random_uuid();',
+    'ALTER TABLE economies   ALTER COLUMN id SET DEFAULT gen_random_uuid();',
+    'ALTER TABLE decisions   ALTER COLUMN id SET DEFAULT gen_random_uuid();',
+    'ALTER TABLE crises_active ALTER COLUMN id SET DEFAULT gen_random_uuid();',
+    'ALTER TABLE waivers     ALTER COLUMN id SET DEFAULT gen_random_uuid();',
+    'ALTER TABLE champions   ALTER COLUMN id SET DEFAULT gen_random_uuid();'
+  ].join('\n');
+
+  // Try calling a setup RPC if it exists
+  try {
+    var res = await fetch(SUPA_URL + '/rest/v1/rpc/setup_uuid_defaults', {
+      method:  'POST',
+      headers: _restHeaders({ 'Content-Type': 'application/json' }),
+      body:    '{}'
+    });
+    if (res.ok) { return; } // RPC exists and ran
+  } catch(e) {}
+
+  // RPC doesn't exist — store flag to avoid nagging on every login,
+  // and surface the SQL to the admin via the console and a toast.
+  if (localStorage.getItem('mn_db_setup_shown')) { return; }
+  localStorage.setItem('mn_db_setup_shown', '1');
+  console.warn('[MacroNations] Run this SQL once in your Supabase SQL Editor:\n\n' + sql);
+  flash('DB setup needed — check browser console for SQL to run once in Supabase.', 'info');
+}
 
 // ═══════════════════════════════════════════════════════════════════
 //  INIT
