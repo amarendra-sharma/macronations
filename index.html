@@ -272,7 +272,7 @@ html,body{height:100%;background:var(--navy);color:var(--white);font-family:var(
   <a href="#" onclick="showPage('legal',null);showLegal('privacy')">Privacy</a>
   <a href="#" onclick="showPage('legal',null);showLegal('disclaimer')">Disclaimer</a>
   <a href="#" onclick="showPage('legal',null);showLegal('copyright')">Copyright</a>
-  &nbsp;|&nbsp; <a href="mailto:support@macronation.org">support@macronation.org</a>
+  &nbsp;|&nbsp; <a href="mailto:support@macronations.com">support@macronations.com</a>
 </div>
 </div><!-- /app -->
 
@@ -490,20 +490,20 @@ function sendEmail(to, subject, body) {
 }
 
 function emailRoundAlert(tourn, roundNum) {
-  const subject = `MacroNation: Round ${roundNum} is now open — ${tourn.name}`;
-  const body = `Hi there,\n\nRound ${roundNum} of ${tourn.name} is now open for policy submissions.\n\nLog in to submit your policy decisions before the deadline.\n\nGood luck!\n\nThe MacroNation Team\nmacronation.org`;
+  const subject = `MacroNations: Round ${roundNum} is now open — ${tourn.name}`;
+  const body = `Hi there,\n\nRound ${roundNum} of ${tourn.name} is now open for policy submissions.\n\nLog in to submit your policy decisions before the deadline.\n\nGood luck!\n\nThe MacroNations Team\nmacronations.com`;
   return { subject, body };
 }
 
 function emailCrisisAlert(teamName, crisisName, tournName) {
-  const subject = `MacroNation: Crisis alert — ${crisisName}`;
-  const body = `Hi ${teamName},\n\nYour economy is facing a crisis: ${crisisName}\n\nLog in to ${tournName} to review the crisis details and choose your response before the round closes.\n\nThe MacroNation Team\nmacronation.org`;
+  const subject = `MacroNations: Crisis alert — ${crisisName}`;
+  const body = `Hi ${teamName},\n\nYour economy is facing a crisis: ${crisisName}\n\nLog in to ${tournName} to review the crisis details and choose your response before the round closes.\n\nThe MacroNations Team\nmacronations.com`;
   return { subject, body };
 }
 
 function emailWelcome(name, email) {
-  const subject = 'Welcome to MacroNation!';
-  const body = `Hi ${name},\n\nWelcome to MacroNation — the global macroeconomic policy simulation.\n\nYour account has been created successfully.\n\nGet started:\n1. Browse open tournaments at macronation.org\n2. Create or join a team\n3. Submit your policy decisions each round\n\nFor support: support@macronation.org\n\nThe MacroNation Team`;
+  const subject = 'Welcome to MacroNations!';
+  const body = `Hi ${name},\n\nWelcome to MacroNations — the global macroeconomic policy simulation.\n\nYour account has been created successfully.\n\nGet started:\n1. Browse open tournaments at macronations.com\n2. Create or join a team\n3. Submit your policy decisions each round\n\nFor support: support@macronations.com\n\nThe MacroNations Team`;
   return { subject, body };
 }
 
@@ -594,42 +594,42 @@ function showLegal(section){
   const pages={
     terms:`<div class="legal-content">
       <h1>Terms of Service</h1>
-      <p class="last-updated">Last updated: January 1, 2025</p>
-      <p>These Terms of Service ("Terms") govern your access to and use of MacroNation, operated by MacroNation Inc. ("Company", "we", "us", or "our"), accessible at macronation.org. By registering an account or participating in any tournament, you agree to be bound by these Terms.</p>
+      <p class="last-updated">Last updated: April 1, 2026</p>
+      <p>These Terms of Service ("Terms") govern your access to and use of MacroNations, operated by MacroNations LLC. ("Company", "we", "us", or "our"), accessible at macronations.com. By registering an account or participating in any tournament, you agree to be bound by these Terms.</p>
       <h2>1. Eligibility</h2>
-      <p>MacroNation is open to participants worldwide with no restrictions on age, nationality, or student status. However, participants in paid tournaments who are under 18 years of age must have verifiable parental or guardian consent. By entering a paid tournament, you represent that you meet this requirement.</p>
+      <p>MacroNations is open to participants worldwide with no restrictions on age, nationality, or student status. However, participants in paid tournaments who are under 18 years of age must have verifiable parental or guardian consent. By entering a paid tournament, you represent that you meet this requirement.</p>
       <h2>2. Account registration</h2>
       <p>You must provide accurate and complete information when creating an account. You are responsible for maintaining the confidentiality of your credentials and for all activity that occurs under your account. You may not create multiple accounts or share accounts with other participants.</p>
       <h2>3. Tournament participation</h2>
       <p>Each registered user may participate on only one team per tournament season year. A season year runs from January 1 to December 31 of the applicable calendar year. Attempting to register on multiple teams in the same season is grounds for disqualification.</p>
-      <p>MacroNation reserves the right to disqualify any participant found to be using automated tools, exploiting simulation bugs, or otherwise acting in bad faith to gain competitive advantage.</p>
+      <p>MacroNations reserves the right to disqualify any participant found to be using automated tools, exploiting simulation bugs, or otherwise acting in bad faith to gain competitive advantage.</p>
       <h2>4. Entry fees and payments</h2>
-      <p>Entry fees, where applicable, are non-refundable except as required by applicable law or as specifically stated in the Prize Rules. Payments are processed through Stripe. MacroNation does not store payment card information.</p>
+      <p>Entry fees, where applicable, are non-refundable except as required by applicable law or as specifically stated in the Prize Rules. Payments are processed through Stripe. MacroNations does not store payment card information.</p>
       <h2>5. Intellectual property</h2>
-      <p>The MacroNation platform, simulation engine, scoring system, branding, and all associated content are the exclusive property of MacroNation Inc. and are protected by U.S. and international copyright law. You may not copy, reproduce, distribute, or create derivative works without express written permission.</p>
+      <p>The MacroNations platform, simulation engine, scoring system, branding, and all associated content are the exclusive property of MacroNations LLC and are protected by U.S. and international copyright law. You may not copy, reproduce, distribute, or create derivative works without express written permission.</p>
       <h2>6. Disclaimer of warranties</h2>
-      <p>MacroNation is provided "as is" without warranties of any kind. We do not guarantee uninterrupted access or that simulation results accurately reflect real-world economic outcomes. The platform is intended for educational and competitive entertainment purposes only.</p>
+      <p>MacroNations is provided "as is" without warranties of any kind. We do not guarantee uninterrupted access or that simulation results accurately reflect real-world economic outcomes. The platform is intended for educational and competitive entertainment purposes only.</p>
       <h2>7. Limitation of liability</h2>
-      <p>To the maximum extent permitted by law, MacroNation Inc. shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the platform or participation in any tournament.</p>
+      <p>To the maximum extent permitted by law, MacroNations LLC shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the platform or participation in any tournament.</p>
       <h2>8. Governing law</h2>
-      <p>These Terms are governed by the laws of the State of Delaware, United States, without regard to conflict of law principles. Any disputes shall be resolved exclusively in the state or federal courts located in Delaware.</p>
+      <p>These Terms are governed by the laws of the State of New York, United States, without regard to conflict of law principles. Any disputes shall be resolved exclusively in the state or federal courts located in New York.</p>
       <h2>9. Changes to terms</h2>
       <p>We may update these Terms at any time. Continued use of the platform after changes constitutes acceptance of the revised Terms.</p>
       <h2>10. Contact</h2>
-      <p>Questions about these Terms: <a href="mailto:legal@macronation.org">legal@macronation.org</a></p>
+      <p>Questions about these Terms: <a href="mailto:support@macronations.com">support@macronations.com</a></p>
     </div>`,
 
     prizes:`<div class="legal-content">
       <h1>Prize Rules &amp; Competition Policy</h1>
       <p class="last-updated">Last updated: January 1, 2025</p>
-      <p>These Prize Rules govern the award of cash prizes in MacroNation tournaments. By entering a paid tournament, you agree to these rules in addition to the Terms of Service.</p>
+      <p>These Prize Rules govern the award of cash prizes in MacroNations tournaments. By entering a paid tournament, you agree to these rules in addition to the Terms of Service.</p>
       <h2>1. Prize pool structure</h2>
       <p>For each paid tournament, a prize pool is established as follows:</p>
       <ul>
         <li>The prize pool equals a maximum of <strong>10%</strong> of total entry fees collected for that tournament.</li>
         <li>The prize pool is displayed in real time on the tournament page and updates as new teams register.</li>
-        <li>The prize pool is funded and held by MacroNation Inc. until the tournament concludes.</li>
-        <li>MacroNation Inc. reserves the right to reduce the prize pool in the event of technical errors or fraud affecting tournament integrity, with notice to participants.</li>
+        <li>The prize pool is funded and held by MacroNations LLC until the tournament concludes.</li>
+        <li>MacroNations LLC reserves the right to reduce the prize pool in the event of technical errors or fraud affecting tournament integrity, with notice to participants.</li>
       </ul>
       <h2>2. Prize distribution</h2>
       <p>Cash prizes are awarded to the top two finishing teams as follows:</p>
@@ -641,7 +641,7 @@ function showLegal(section){
       <h2>3. Determining winners</h2>
       <p>Final standings are determined by total cumulative score across all rounds. In the event of a tie, the following tiebreakers apply in order: (1) average GDP growth across all rounds, (2) lowest absolute deviation from 2% inflation target, (3) final round HDI, (4) lowest debt-to-GDP ratio, (5) best crisis response score.</p>
       <h2>4. Prize payment</h2>
-      <p>Winners will be contacted at their registered email address within 7 business days of tournament completion. Prize payment is made via bank transfer or Stripe transfer to verified accounts. Recipients are responsible for all applicable taxes on prize winnings. MacroNation Inc. will issue a 1099-MISC (or equivalent) where required by law.</p>
+      <p>Winners will be contacted at their registered email address within 7 business days of tournament completion. Prize payment is made via bank transfer or Stripe transfer to verified accounts. Recipients are responsible for all applicable taxes on prize winnings. MacroNations LLC will issue a 1099-MISC (or equivalent) where required by law.</p>
       <h2>5. Eligibility for prizes</h2>
       <p>To claim a prize, winning team members must:</p>
       <ul>
@@ -653,13 +653,13 @@ function showLegal(section){
       <h2>6. Free tournaments</h2>
       <p>Tournaments with a $0 entry fee do not include cash prizes. Certificate of participation and digital badges are awarded to all completing teams. A digital Hall of Champions certificate is awarded to tournament winners.</p>
       <h2>7. Disputes</h2>
-      <p>Prize disputes must be raised within 14 days of tournament completion by emailing <a href="mailto:prizes@macronation.org">prizes@macronation.org</a>. MacroNation Inc.'s decision on all prize matters is final.</p>
+      <p>Prize disputes must be raised within 14 days of tournament completion by emailing <a href="mailto:support@macronations.com">support@macronations.com</a>. MacroNations LLC's decision on all prize matters is final.</p>
     </div>`,
 
     privacy:`<div class="legal-content">
       <h1>Privacy Policy</h1>
-      <p class="last-updated">Last updated: January 1, 2025</p>
-      <p>MacroNation Inc. ("we", "us") operates macronation.org. This Privacy Policy explains how we collect, use, and protect your personal information.</p>
+      <p class="last-updated">Last updated: April 1, 2026</p>
+      <p>MacroNations LLC ("we", "us") operates macronations.com. This Privacy Policy explains how we collect, use, and protect your personal information.</p>
       <h2>1. Information we collect</h2>
       <ul>
         <li><strong>Account information:</strong> name, email address, password (hashed), username, country, institution, role</li>
@@ -678,55 +678,55 @@ function showLegal(section){
       <h2>3. Data sharing</h2>
       <p>We do not sell your personal data. We share data only with: Stripe (payment processing), Supabase (database hosting), and as required by law.</p>
       <h2>4. Data retention</h2>
-      <p>Account data is retained for as long as your account is active. Tournament data (decisions, scores) is retained indefinitely for Hall of Champions records. You may request deletion of your account by emailing <a href="mailto:privacy@macronation.org">privacy@macronation.org</a>.</p>
+      <p>Account data is retained for as long as your account is active. Tournament data (decisions, scores) is retained indefinitely for Hall of Champions records. You may request deletion of your account by emailing <a href="mailto:support@macronations.com">support@macronations.com</a>.</p>
       <h2>5. Your rights</h2>
-      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contact <a href="mailto:privacy@macronation.org">privacy@macronation.org</a> to exercise these rights.</p>
+      <p>Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. Contact <a href="mailto:support@macronations.com">support@macronations.com</a> to exercise these rights.</p>
       <h2>6. Security</h2>
       <p>We use industry-standard security measures including encrypted connections (HTTPS), hashed passwords, and access controls. No method of transmission over the internet is 100% secure.</p>
       <h2>7. Contact</h2>
-      <p>Privacy inquiries: <a href="mailto:privacy@macronation.org">privacy@macronation.org</a></p>
+      <p>Privacy inquiries: <a href="mailto:support@macronations.com">support@macronations.com</a></p>
     </div>`,
 
     disclaimer:`<div class="legal-content">
       <h1>Disclaimer</h1>
-      <p class="last-updated">Last updated: January 1, 2025</p>
+      <p class="last-updated">Last updated: April 1, 2026</p>
       <h2>Educational purpose</h2>
-      <p>MacroNation is an educational simulation platform designed to help students understand macroeconomic policy concepts through competitive gameplay. The simulation engine uses simplified economic models for entertainment and educational purposes only.</p>
+      <p>MacroNations is an educational simulation platform designed to help students understand macroeconomic policy concepts through competitive gameplay. The simulation engine uses simplified economic models for entertainment and educational purposes only.</p>
       <h2>Not financial advice</h2>
       <p>Nothing on this platform constitutes financial, investment, economic, or policy advice. Simulation outcomes do not reflect real-world economic conditions and should not be relied upon for any real economic decision-making.</p>
       <h2>Simulation accuracy</h2>
-      <p>The MacroNation simulation engine incorporates elements of Keynesian multiplier theory, the Phillips Curve, Okun's Law, and the Reinhart-Rogoff debt threshold as pedagogical tools. These models are deliberately simplified. Real economies are far more complex and unpredictable. MacroNation makes no representation that simulation results would occur in a real economy under similar policy conditions.</p>
+      <p>The MacroNations simulation engine incorporates elements of Keynesian multiplier theory, the Phillips Curve, Okun's Law, and the Reinhart-Rogoff debt threshold as pedagogical tools. These models are deliberately simplified. Real economies are far more complex and unpredictable. MacroNations makes no representation that simulation results would occur in a real economy under similar policy conditions.</p>
       <h2>Prize tournaments</h2>
-      <p>Participation in paid tournaments involves a financial risk equal to the entry fee paid. There is no guarantee of winning a prize. MacroNation Inc. is not a gambling operator. Tournament outcomes are determined by participant skill in operating a simplified economic simulation, not by chance alone.</p>
+      <p>Participation in paid tournaments involves a financial risk equal to the entry fee paid. There is no guarantee of winning a prize. MacroNations LLC is not a gambling operator. Tournament outcomes are determined by participant skill in operating a simplified economic simulation, not by chance alone.</p>
       <h2>Platform availability</h2>
-      <p>MacroNation does not guarantee uninterrupted availability of the platform. Scheduled and unscheduled maintenance may affect access. We are not liable for losses arising from platform downtime during tournament rounds.</p>
+      <p>MacroNations does not guarantee uninterrupted availability of the platform. Scheduled and unscheduled maintenance may affect access. We are not liable for losses arising from platform downtime during tournament rounds.</p>
       <h2>Third-party services</h2>
-      <p>MacroNation uses Stripe for payment processing and Supabase for data storage. We are not responsible for the availability or conduct of these third-party services.</p>
+      <p>MacroNations uses Stripe for payment processing and Supabase for data storage. We are not responsible for the availability or conduct of these third-party services.</p>
     </div>`,
 
     copyright:`<div class="legal-content">
       <h1>Copyright Notice</h1>
-      <p class="last-updated">Last updated: January 1, 2025</p>
-      <p>&copy; 2025 MacroNation Inc. All rights reserved.</p>
+      <p class="last-updated">Last updated: April 1, 2026</p>
+      <p>&copy; 2026 MacroNations LLC. All rights reserved.</p>
       <h2>Ownership</h2>
-      <p>All content on macronation.org — including but not limited to the platform design, user interface, simulation engine code, scoring algorithms, tournament framework, written content, branding, and graphics — is the exclusive intellectual property of MacroNation Inc. and is protected under United States copyright law (17 U.S.C.) and international copyright treaties.</p>
+      <p>All content on macronations.com — including but not limited to the platform design, user interface, simulation engine code, scoring algorithms, tournament framework, written content, branding, and graphics — is the exclusive intellectual property of MacroNations LLC and is protected under United States copyright law (17 U.S.C.) and international copyright treaties.</p>
       <h2>Permitted use</h2>
-      <p>You may access and use the MacroNation platform solely for your personal participation in tournaments as governed by the Terms of Service. No other use is permitted without express written consent from MacroNation Inc.</p>
+      <p>You may access and use the MacroNations platform solely for your personal participation in tournaments as governed by the Terms of Service. No other use is permitted without express written consent from MacroNations LLC</p>
       <h2>Prohibited use</h2>
       <p>You may not:</p>
       <ul>
         <li>Copy, reproduce, or distribute any part of the platform or its content</li>
         <li>Reverse engineer, decompile, or extract the simulation engine or scoring algorithms</li>
-        <li>Create derivative works based on MacroNation content</li>
-        <li>Use MacroNation branding, name, or logo without written permission</li>
+        <li>Create derivative works based on MacroNations content</li>
+        <li>Use MacroNations branding, name, or logo without written permission</li>
         <li>Scrape or harvest data from the platform</li>
       </ul>
       <h2>Academic use</h2>
-      <p>Professors and instructors may reference MacroNation in academic curricula and publications with appropriate attribution. Contact <a href="mailto:academic@macronation.org">academic@macronation.org</a> for academic licensing inquiries.</p>
+      <p>Professors and instructors may reference MacroNations in academic curricula and publications with appropriate attribution. Contact <a href="mailto:support@macronations.com">support@macronations.com</a> for academic licensing inquiries.</p>
       <h2>DMCA</h2>
-      <p>If you believe content on MacroNation infringes your copyright, please send a notice to <a href="mailto:dmca@macronation.org">dmca@macronation.org</a> with the required information under 17 U.S.C. § 512(c)(3).</p>
+      <p>If you believe content on MacroNations infringes your copyright, please send a notice to <a href="mailto:support@macronations.com">support@macronations.com</a> with the required information under 17 U.S.C. § 512(c)(3).</p>
       <h2>Contact</h2>
-      <p>Copyright inquiries: <a href="mailto:legal@macronation.org">legal@macronation.org</a><br>MacroNation Inc., United States</p>
+      <p>Copyright inquiries: <a href="mailto:support@macronations.com">support@macronations.com</a><br>MacroNations LLC, United States</p>
     </div>`
   };
   el.innerHTML = pages[section]||pages['terms'];
@@ -767,7 +767,7 @@ async function doRegister(){
     const user={id:mkId(),name,email,password:pass,username,country,institution:inst,role:isFirst?'admin':role,is_admin:isFirst};
     const created=await sbPost('mn_users',user);
     currentUser=created[0];closeModal('modal-register');afterLogin();
-    flash('Welcome to MacroNation, '+name+'!'+(isFirst?' You are the platform admin.':''));
+    flash('Welcome to MacroNations, '+name+'!'+(isFirst?' You are the platform admin.':''));
   }catch(e){errEl.style.display='block';errEl.textContent='Error: '+e.message;}
   finally{setLoading('reg-btn',false,'Create account');}
 }
