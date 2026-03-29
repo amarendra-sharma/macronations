@@ -5757,31 +5757,33 @@ var PILLARS = [
 //  ENTRY POINT: renderDashboard()
 // ─────────────────────────────────────────────────────────────────
 async function renderDashboard() {
-  // Guard: must be logged in
-  if (!currentUser) {
-    openAuthModal('login');
-    return;
-  }
+  if (!currentUser) { openAuthModal('login'); return; }
 
   var noTeamEl  = document.getElementById('dash-no-team');
   var contentEl = document.getElementById('dash-content');
   var titleEl   = document.getElementById('dash-title');
   var subEl     = document.getElementById('dash-sub');
 
-  // Show loading
-  if (contentEl) { contentEl.innerHTML = '<div class="empty-state"><div class="spinner" style="width:28px;height:28px;margin:0 auto 1rem;"></div><div class="empty-state__title">Loading your economy…</div></div>'; }
+  // Show spinner in overview panel only — do NOT replace contentEl innerHTML
+  // (that would destroy the tab panels)
+  var overviewPanel = document.getElementById('dash-panel-overview');
+  if (overviewPanel) {
+    overviewPanel.innerHTML =
+      '<div class="empty-state" style="padding:4rem 0;">' +
+        '<div class="spinner" style="width:28px;height:28px;margin:0 auto 1rem;"></div>' +
+        '<div class="empty-state__title">Loading your economy…</div>' +
+      '</div>';
+  }
 
   try {
     // 1. Load team
     if (!currentTeamId) {
-      // Try to find team
       var caps = await sbGet('teams', 'captain_id=eq.' + currentUser.id + '&limit=1');
       if (caps && caps.length) {
         _dashTeam = caps[0];
         currentTeamId = _dashTeam.id;
         currentTournamentId = _dashTeam.tournament_id;
       } else {
-        // Check membership
         var mems = await sbGet('teams', 'members=cs.{' + currentUser.id + '}&limit=1');
         if (mems && mems.length) {
           _dashTeam = mems[0];
@@ -5796,26 +5798,44 @@ async function renderDashboard() {
 
     if (!_dashTeam) {
       if (noTeamEl)  { noTeamEl.style.display  = 'block'; }
-      if (contentEl) { contentEl.style.display = 'none';  }
-      if (titleEl)   { titleEl.textContent      = 'Dashboard'; }
-      if (subEl)     { subEl.textContent        = 'No active team'; }
+      if (contentEl) { contentEl.style.display  = 'none';  }
+      if (titleEl)   { titleEl.textContent = 'Dashboard'; }
+      if (subEl)     { subEl.textContent   = 'Join a tournament to get started.'; }
       return;
     }
 
-    if (noTeamEl)  { noTeamEl.style.display  = 'none'; }
+    if (noTeamEl)  { noTeamEl.style.display = 'none'; }
     if (contentEl) { contentEl.style.display = 'block'; }
 
     // 2. Load tournament
     var tRows = await sbGet('tournaments', 'id=eq.' + _dashTeam.tournament_id + '&limit=1');
     _dashTourn = (tRows && tRows.length) ? tRows[0] : null;
 
-    // 3. Load economy
+    // 3. Load economy — query by team+tournament only (not round)
     var econRows = await sbGet('economies',
-      'team_id=eq.' + currentTeamId + '&tournament_id=eq.' + _dashTeam.tournament_id + '&limit=1');
+      'team_id=eq.' + currentTeamId +
+      '&tournament_id=eq.' + _dashTeam.tournament_id + '&limit=1');
     _dashEconomy = (econRows && econRows.length) ? econRows[0] : null;
 
+    // If no economy record yet, create one with defaults
+    if (!_dashEconomy) {
+      try {
+        var newEcon = await sbPost('economies', {
+          team_id:        currentTeamId,
+          tournament_id:  _dashTeam.tournament_id,
+          current:        defaultEconomy(),
+          snapshots:      [],
+          current_round:  0,
+          scores_history: []
+        });
+        _dashEconomy = newEcon;
+      } catch(econErr) {
+        // Non-fatal — dashboard still works with defaultEconomy()
+      }
+    }
+
     // 4. Load this round's decision
-    var round = (_dashTourn && _dashTourn.current_round) ? _dashTourn.current_round : 1;
+    var round = (_dashTourn && _dashTourn.current_round) ? Number(_dashTourn.current_round) : 1;
     var decRows = await sbGet('decisions',
       'team_id=eq.' + currentTeamId +
       '&tournament_id=eq.' + _dashTeam.tournament_id +
@@ -5826,45 +5846,46 @@ async function renderDashboard() {
     var crisisRows = await sbGet('crises_active',
       'team_id=eq.' + currentTeamId +
       '&tournament_id=eq.' + _dashTeam.tournament_id +
-      '&round=eq.' + round);
+      '&resolved=eq.false&limit=10');
     _dashCrises = crisisRows || [];
 
-    // 6. Load all teams for rankings
-    var allTeamRows = await sbGet('teams', 'tournament_id=eq.' + _dashTeam.tournament_id + '&limit=200');
+    // 6. Load all teams in this tournament for rankings
+    var allTeamRows = await sbGet('teams',
+      'tournament_id=eq.' + _dashTeam.tournament_id + '&limit=200');
     _dashAllTeams = allTeamRows || [];
 
-    // Init draft policy from last decision or defaults
-    if (!_draftPolicy) {
-      _draftPolicy = _policyFromDecision(_dashDecision);
-    }
+    // Always reset draft policy when loading fresh
+    _draftPolicy = _policyFromDecision(_dashDecision);
 
     // Update header
-    var teamName  = (_dashTeam && _dashTeam.name)  ? _dashTeam.name  : 'Your Team';
-    var tournName = (_dashTourn && _dashTourn.name) ? _dashTourn.name : 'Tournament';
-    var roundTot  = (_dashTourn && _dashTourn.rounds_total)  ? _dashTourn.rounds_total  : '?';
+    var teamName  = (_dashTeam && _dashTeam.name)         ? _dashTeam.name         : 'Your Team';
+    var tournName = (_dashTourn && _dashTourn.name)        ? _dashTourn.name        : 'Tournament';
+    var roundTot  = (_dashTourn && _dashTourn.rounds_total)? _dashTourn.rounds_total: '?';
     if (titleEl) { titleEl.textContent = teamName; }
     if (subEl)   { subEl.textContent   = tournName + ' · Round ' + round + ' of ' + roundTot; }
 
     // Header quick-submit button
     var hdrActions = document.getElementById('dash-header-actions');
     if (hdrActions) {
-      hdrActions.innerHTML = '<button class="btn btn--primary" onclick="switchDashTab(\'policy\')">🎛️ Set Policy</button>';
+      hdrActions.innerHTML =
+        '<button class="btn btn--primary" onclick="switchDashTab(\'policy\')">🎛️ Set Policy</button>';
     }
 
-    // Wire tab buttons
+    // Wire tabs once — remove old listeners by replacing buttons
     _wireDashTabs();
 
-    // Render active tab
-    _renderDashTab(_dashTab);
+    // Show the correct tab (default to overview)
+    switchDashTab(_dashTab || 'overview');
 
   } catch(e) {
-    if (contentEl) {
-      contentEl.innerHTML =
+    var msg = (e && e.message) ? e.message : 'Unknown error';
+    if (overviewPanel) {
+      overviewPanel.innerHTML =
         '<div class="empty-state">' +
           '<div class="empty-state__icon">⚠️</div>' +
           '<div class="empty-state__title">Could not load dashboard</div>' +
-          '<div class="empty-state__desc">' + esc(e.message || 'Network error') + '</div>' +
-          '<button class="btn btn--ghost" onclick="renderDashboard()">Retry</button>' +
+          '<div class="empty-state__desc">' + esc(msg) + '</div>' +
+          '<button class="btn btn--primary" style="margin-top:1rem;" onclick="renderDashboard()">Retry</button>' +
         '</div>';
     }
   }
@@ -5887,11 +5908,19 @@ function _policyFromDecision(dec) {
 function _wireDashTabs() {
   var tabs = document.querySelectorAll('#dash-tabs [data-dash-tab]');
   for (var i = 0; i < tabs.length; i++) {
+    // Clone to strip all existing listeners before re-adding
+    var oldTab = tabs[i];
+    var newTab = oldTab.cloneNode(true);
+    oldTab.parentNode.replaceChild(newTab, oldTab);
+  }
+  // Now wire fresh
+  var freshTabs = document.querySelectorAll('#dash-tabs [data-dash-tab]');
+  for (var j = 0; j < freshTabs.length; j++) {
     (function(tab) {
       tab.addEventListener('click', function() {
         switchDashTab(tab.getAttribute('data-dash-tab'));
       });
-    })(tabs[i]);
+    })(freshTabs[j]);
   }
 }
 
