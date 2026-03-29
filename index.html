@@ -200,16 +200,16 @@ h1, h2, h3, h4, h5 {
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
   max-width: var(--max-w);
   margin-inline: auto;
-  padding-inline: 1.5rem;
-  overflow: visible;
+  padding-inline: 1rem;
+  overflow: hidden;
   min-width: 0;
 }
 
 /* Nav left: logo */
-.nav__brand { flex-shrink: 0; margin-right: 0.5rem; }
+.nav__brand { flex-shrink: 0; margin-right: 0.375rem; }
 
 /* Nav center: tab links */
 .nav__links {
@@ -217,6 +217,8 @@ h1, h2, h3, h4, h5 {
   align-items: center;
   gap: 0.125rem;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .nav__tab {
@@ -261,29 +263,28 @@ h1, h2, h3, h4, h5 {
   flex-shrink: 0;
 }
 
-/* Nav right: CTA buttons */
+/* Nav right: CTA buttons — always visible, never clips */
 .nav__cta {
   display: flex;
   align-items: center;
   gap: 0.375rem;
   flex-shrink: 0;
-  min-width: 0;
-  overflow: visible;
+  margin-left: auto;
+  padding-left: 0.375rem;
 }
-.nav__cta .btn { white-space: nowrap; }
+.nav__cta .btn { white-space: nowrap; flex-shrink: 0; }
 .nav__cta .nav-user-pill {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  min-width: 0;
-  overflow: hidden;
+  flex-shrink: 0;
 }
 .nav__cta .nav-user-name-text {
-  max-width: 90px;
+  max-width: 80px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-900);
 }
@@ -2624,6 +2625,20 @@ h1, h2, h3, h4, h5 {
   .cert-type-grid { grid-template-columns: 1fr 1fr; }
   .cert-preview-area { padding: 1rem; }
 }
+/* How It Works layout — responsive */
+.how-it-works-layout {
+  display: grid;
+  grid-template-columns: 1fr 540px;
+  gap: 4rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .how-it-works-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -2913,7 +2928,7 @@ h1, h2, h3, h4, h5 {
     <!-- How it works -->
     <section class="section" id="how-it-works" aria-labelledby="how-heading">
       <div class="container">
-        <div style="display:grid;grid-template-columns:1fr 580px;gap:5rem;align-items:start;">
+        <div class="how-it-works-layout">
           <div>
             <span class="section__eyebrow">How It Works</span>
             <h2 class="section__title" id="how-heading">From Registration to Victory</h2>
@@ -2969,7 +2984,7 @@ h1, h2, h3, h4, h5 {
             <h2 style="font-family:'DM Serif Display',serif;font-size:2.25rem;color:#fff;margin-bottom:0.875rem;letter-spacing:-0.02em;">Ready to Govern?</h2>
             <p style="font-size:1rem;color:rgba(255,255,255,0.6);max-width:480px;margin-inline:auto;margin-bottom:2rem;line-height:1.7;">Join university teams from around the world competing in the world's most rigorous economic policy simulation.</p>
             <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-              <button class="btn btn--gold btn--xl" onclick="openAuthModal('register')">Register Your Team — $200</button>
+              <button class="btn btn--gold btn--xl" onclick="openAuthModal('register')">Register Your Team</button>
               <button class="btn btn--ghost btn--xl" style="color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.25);" onclick="showPage('about')">Learn More</button>
             </div>
           </div>
@@ -3235,6 +3250,27 @@ h1, h2, h3, h4, h5 {
           <textarea id="ct-desc" class="form-textarea" rows="2" placeholder="Brief description of this tournament…"></textarea>
         </div>
         <div class="form-error" id="ct-error"></div>
+
+        <!-- Professor-only: elect for global seasonal tournament -->
+        <div id="ct-global-election-wrap" style="display:none;margin-top:0.5rem;">
+          <div class="dash-alert dash-alert--info" style="margin-bottom:0.75rem;">
+            <div class="dash-alert__icon">🌍</div>
+            <div class="dash-alert__body">
+              <div class="dash-alert__title">Elect for Global Seasonal Tournament</div>
+              If elected, your teams' performance will be linked to the paid MacroNations World Cup.
+              Teams will see the payment link and their scores will count toward global rankings.
+            </div>
+          </div>
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;font-size:0.9375rem;color:var(--text-700);">
+            <input type="checkbox" id="ct-global-elect" style="width:18px;height:18px;cursor:pointer;">
+            <span>Elect this tournament for the <strong>MacroNations World Cup 2026</strong></span>
+          </label>
+          <div id="ct-global-stripe-wrap" style="display:none;margin-top:0.875rem;">
+            <label class="form-label" for="ct-stripe-link-prof">Global Tournament Payment Link</label>
+            <input type="url" id="ct-stripe-link-prof" class="form-input" placeholder="https://buy.stripe.com/... (provided by MacroNations admin)">
+            <div class="form-hint">Contact support@macronations.com to get your tournament's Stripe payment link.</div>
+          </div>
+        </div>
       </div>
       <div class="modal__footer">
         <button class="btn btn--ghost" onclick="closeModal('modal-create-tournament')">Cancel</button>
@@ -5888,11 +5924,17 @@ async function renderDashboard() {
     _dashDecision = (decRows && decRows.length) ? decRows[0] : null;
 
     // 5. Load active crises
+    // Load crises for this round — filter unresolved client-side to avoid column type issues
     var crisisRows = await sbGet('crises_active',
       'team_id=eq.' + currentTeamId +
       '&tournament_id=eq.' + _dashTeam.tournament_id +
-      '&resolved=eq.false&limit=10');
-    _dashCrises = crisisRows || [];
+      '&round=eq.' + round + '&limit=20');
+    _dashCrises = [];
+    if (crisisRows) {
+      for (var cri = 0; cri < crisisRows.length; cri++) {
+        if (!crisisRows[cri].resolved) { _dashCrises.push(crisisRows[cri]); }
+      }
+    }
 
     // 6. Load all teams in this tournament for rankings
     var allTeamRows = await sbGet('teams',
@@ -6516,9 +6558,9 @@ async function doConfirmCrisis() {
   }
   if (!_dashCrises.length) { return; }
 
-  var cr  = _dashCrises[0];
+  var cr    = _dashCrises[0];
   var crDef = (CRISES && CRISES[cr.crisis_id]) ? CRISES[cr.crisis_id] : null;
-  var eff = 50;
+  var eff   = 50;
   if (crDef && crDef.options) {
     for (var oi = 0; oi < crDef.options.length; oi++) {
       if (crDef.options[oi].id === choice) { eff = crDef.options[oi].effectiveness; break; }
@@ -6527,17 +6569,20 @@ async function doConfirmCrisis() {
 
   setLoading('btn-confirm-crisis', true, 'Confirming…');
   try {
+    // Only patch the response fields — do NOT send resolved/status here
+    // resolved stays false until the admin runs the simulation
     await sbPatch('crises_active', 'id=eq.' + cr.id, {
       chosen_opt:    choice,
-      effectiveness: eff,
-      resolved:      false
+      effectiveness: eff
     });
     _dashCrises[0].chosen_opt    = choice;
     _dashCrises[0].effectiveness = eff;
-    flash('Crisis response locked in!', 'success');
+    flash('Crisis response locked in! Now go to the Policy tab to submit your policy.', 'success');
     renderDashCrisis();
   } catch(e) {
-    flash('Error: ' + (e.message || 'Could not save response'), 'error');
+    var errMsg = (e && e.message) ? e.message : 'Could not save response';
+    if (errorEl) { errorEl.textContent = 'Error: ' + errMsg; errorEl.classList.add('visible'); }
+    flash('Error saving crisis response: ' + errMsg, 'error');
     setLoading('btn-confirm-crisis', false, 'Confirm Crisis Response');
   }
 }
@@ -6926,7 +6971,12 @@ function renderDashPayment() {
   }
 
   // Check for a Stripe link for this tournament
-  var stripeLink = (tourn.stripe_link) || (STRIPE_PAYMENT_LINKS[tourn.id]) || '';
+  var stripeLink = '';
+  // Try localStorage (set when tournament was created)
+  try {
+    stripeLink = localStorage.getItem('mn_stripe_' + (tourn.name||'').replace(/\s+/g,'_')) || '';
+  } catch(e) {}
+  if (!stripeLink) { stripeLink = (STRIPE_PAYMENT_LINKS[tourn.id]) || ''; }
 
   var payBtn = '';
   if (stripeLink) {
@@ -7289,18 +7339,41 @@ function _tournamentActionBtns(t) {
 }
 
 function openCreateTournament(isClass) {
-  // Pre-fill dates
   var today = new Date();
   var yyyy  = today.getFullYear();
   var mm    = String(today.getMonth() + 1).padStart(2, '0');
-  var dd    = String(today.getDate() + 7).padStart(2, '0'); // next week
+  var dd    = String(today.getDate() + 7).padStart(2, '0');
   var dateStr = yyyy + '-' + mm + '-' + dd;
   var startEl = document.getElementById('ct-startdate');
   if (startEl) { startEl.value = dateStr; }
+
   var tierEl = document.getElementById('ct-tier');
-  if (tierEl && isClass) { tierEl.value = 'class'; }
-  var feeEl = document.getElementById('ct-fee');
-  if (feeEl && isClass) { feeEl.value = '0'; }
+  var feeEl  = document.getElementById('ct-fee');
+
+  if (_isProfessor() && !_isAdmin()) {
+    // Professor: force free, show election option
+    if (tierEl) { tierEl.value = 'class'; }
+    if (feeEl)  { feeEl.value = '0'; feeEl.setAttribute('readonly', 'readonly'); feeEl.style.opacity = '0.5'; }
+    var electWrap = document.getElementById('ct-global-election-wrap');
+    if (electWrap) { electWrap.style.display = 'block'; }
+    // Wire election checkbox
+    var electBox = document.getElementById('ct-global-elect');
+    if (electBox) {
+      electBox.checked = false;
+      electBox.onchange = function() {
+        var sw = document.getElementById('ct-global-stripe-wrap');
+        if (sw) { sw.style.display = electBox.checked ? 'block' : 'none'; }
+      };
+    }
+  } else {
+    // Admin: full control
+    if (feeEl)  { feeEl.removeAttribute('readonly'); feeEl.style.opacity = '1'; }
+    if (tierEl && isClass) { tierEl.value = 'class'; }
+    if (feeEl  && isClass) { feeEl.value  = '0'; }
+    var electWrap2 = document.getElementById('ct-global-election-wrap');
+    if (electWrap2) { electWrap2.style.display = 'none'; }
+  }
+
   _setFormErr('ct-error', '');
   openModal('modal-create-tournament');
 }
@@ -7319,6 +7392,20 @@ async function doCreateTournament() {
 
   if (!name)      { _setFormErr('ct-error', 'Tournament name is required.'); return; }
   if (!startDate) { _setFormErr('ct-error', 'Start date is required.'); return; }
+  // Professors can only create free tournaments
+  if (_isProfessor() && !_isAdmin() && fee > 0) {
+    _setFormErr('ct-error', 'Professors can only create free class tournaments (entry fee must be $0). To run a paid tournament, contact support@macronations.com.');
+    return;
+  }
+  // Check global election
+  var electBox  = document.getElementById('ct-global-elect');
+  var isElected = electBox ? electBox.checked : false;
+  if (isElected) {
+    var profLink = document.getElementById('ct-stripe-link-prof');
+    if (profLink && profLink.value.trim()) {
+      try { localStorage.setItem('mn_stripe_elected_' + name.replace(/\s+/g,'_'), profLink.value.trim()); } catch(e) {}
+    }
+  }
 
   setLoading('btn-do-create-tournament', true, 'Creating…');
   try {
@@ -7663,7 +7750,7 @@ async function runSimulation(tournId) {
 
       // Resolve crisis
       if (cr) {
-        await sbPatch('crises_active', 'id=eq.' + cr.id, { resolved: true });
+        await sbPatch('crises_active', 'id=eq.' + cr.id, { resolved: true, chosen_opt: (cr.chosen_opt || null), effectiveness: (cr.effectiveness || 0) });
       }
 
       // Fire new crisis (rounds 3, 6, 9 with 60% probability)
@@ -9329,7 +9416,7 @@ doCreateTournament = async function() {
   sbPost = async function(table, body) {
     if (table === 'tournaments') {
       var sl = document.getElementById('ct-stripe-link');
-      if (sl && sl.value.trim()) { body.stripe_link = sl.value.trim(); }
+      if (sl && sl.value.trim()) { try { localStorage.setItem('mn_stripe_' + (body.name||'').replace(/\s+/g,'_'), sl.value.trim()); } catch(e){} }
     }
     return origSbPost(table, body);
   };
