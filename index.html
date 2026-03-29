@@ -204,10 +204,12 @@ h1, h2, h3, h4, h5 {
   max-width: var(--max-w);
   margin-inline: auto;
   padding-inline: 1.5rem;
+  overflow: visible;
+  min-width: 0;
 }
 
 /* Nav left: logo */
-.nav__brand { flex-shrink: 0; margin-right: 1rem; }
+.nav__brand { flex-shrink: 0; margin-right: 0.5rem; }
 
 /* Nav center: tab links */
 .nav__links {
@@ -263,8 +265,27 @@ h1, h2, h3, h4, h5 {
 .nav__cta {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
   flex-shrink: 0;
+  min-width: 0;
+  overflow: visible;
+}
+.nav__cta .btn { white-space: nowrap; }
+.nav__cta .nav-user-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  overflow: hidden;
+}
+.nav__cta .nav-user-name-text {
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-900);
 }
 
 /* Hamburger (mobile only) */
@@ -2662,7 +2683,7 @@ h1, h2, h3, h4, h5 {
       <a href="#" class="nav__tab" data-page="tournaments">Tournaments</a>
       <a href="#" class="nav__tab" data-page="rankings">Rankings</a>
       <a href="#" class="nav__tab" data-page="champions">Champions</a>
-      <a href="#" class="nav__tab" data-page="legal">Legal</a>
+      <a href="#" class="nav__tab" data-page="about">About</a>
       <span class="nav__divider" aria-hidden="true"></span>
       <a href="#" class="nav__tab nav__tab--how" data-page="how">How it works ↗</a>
     </nav>
@@ -2724,9 +2745,9 @@ h1, h2, h3, h4, h5 {
       <span class="mobile-menu__link-icon">🥇</span>
       Champions
     </a>
-    <a href="#" class="mobile-menu__link" data-page="legal">
-      <span class="mobile-menu__link-icon">📋</span>
-      Legal
+    <a href="#" class="mobile-menu__link" data-page="about">
+      <span class="mobile-menu__link-icon">ℹ️</span>
+      About
     </a>
     <a href="#" class="mobile-menu__link" data-page="how">
       <span class="mobile-menu__link-icon">💡</span>
@@ -2755,7 +2776,7 @@ h1, h2, h3, h4, h5 {
         <div class="hero__copy">
           <div class="hero__kicker">
             <span class="hero__kicker-dot" aria-hidden="true"></span>
-            Season 2025 · Now Open
+            Season 2026 · Now Open
           </div>
           <h1 class="hero__heading" id="hero-heading">
             Govern an Economy.<br>
@@ -2767,8 +2788,8 @@ h1, h2, h3, h4, h5 {
             earn real cash prizes.
           </p>
           <div class="hero__actions">
-            <button class="btn btn--gold btn--xl">Register Your Team</button>
-            <a href="#" class="hero__learn">
+            <button class="btn btn--gold btn--xl" onclick="openAuthModal('register')">Register Your Team</button>
+            <a href="#" class="hero__learn" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\"how\"]');if(e){e.click();}},100);return false;">
               See how it works
               <span class="hero__learn-arrow" aria-hidden="true">→</span>
             </a>
@@ -2849,7 +2870,7 @@ h1, h2, h3, h4, h5 {
           <h2 class="section__title" id="pillars-heading">Five Pillars of Economic Excellence</h2>
           <p class="section__desc">Each round you score across five dimensions of macroeconomic performance. Balance is key — neglecting any pillar costs you points.</p>
         </div>
-        <div class="grid-3" style="grid-template-columns:repeat(5,1fr);" role="list">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.5rem;" role="list">
           <article class="pillar-item" role="listitem">
             <div class="pillar-item__accent" style="background:#4a9eff"></div>
             <div class="pillar-item__icon">📈</div>
@@ -2948,8 +2969,8 @@ h1, h2, h3, h4, h5 {
             <h2 style="font-family:'DM Serif Display',serif;font-size:2.25rem;color:#fff;margin-bottom:0.875rem;letter-spacing:-0.02em;">Ready to Govern?</h2>
             <p style="font-size:1rem;color:rgba(255,255,255,0.6);max-width:480px;margin-inline:auto;margin-bottom:2rem;line-height:1.7;">Join university teams from around the world competing in the world's most rigorous economic policy simulation.</p>
             <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-              <button class="btn btn--gold btn--xl">Register Your Team — $200</button>
-              <button class="btn btn--ghost btn--xl" style="color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.25);">Learn More</button>
+              <button class="btn btn--gold btn--xl" onclick="openAuthModal('register')">Register Your Team — $200</button>
+              <button class="btn btn--ghost btn--xl" style="color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.25);" onclick="showPage('about')">Learn More</button>
             </div>
           </div>
         </div>
@@ -3165,7 +3186,7 @@ h1, h2, h3, h4, h5 {
         <div class="form-row">
           <div class="form-field">
             <label class="form-label form-label--required" for="ct-name">Tournament Name</label>
-            <input type="text" id="ct-name" class="form-input" placeholder="e.g. Spring Global Cup 2025">
+            <input type="text" id="ct-name" class="form-input" placeholder="e.g. Spring Global Cup 2026">
           </div>
           <div class="form-field">
             <label class="form-label form-label--required" for="ct-tier">Tier</label>
@@ -3182,7 +3203,7 @@ h1, h2, h3, h4, h5 {
         <div class="form-row">
           <div class="form-field">
             <label class="form-label form-label--required" for="ct-season">Season Year</label>
-            <input type="number" id="ct-season" class="form-input" value="2025" min="2024" max="2030">
+            <input type="number" id="ct-season" class="form-input" value="2026" min="2024" max="2030">
           </div>
           <div class="form-field">
             <label class="form-label form-label--required" for="ct-rounds">Number of Rounds</label>
@@ -3283,6 +3304,30 @@ h1, h2, h3, h4, h5 {
   </div>
 
 
+
+  <!-- ── PAGE: ABOUT ── -->
+  <div class="page page-about" id="page-about">
+    <div class="page-header">
+      <div class="page-header__inner">
+        <div>
+          <h1 class="page-header__title">About MacroNations</h1>
+          <p class="page-header__sub">Platform, people, and policies</p>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--bg-white);border-bottom:1px solid var(--border);">
+      <div class="container" style="padding-top:0;padding-bottom:0;">
+        <div class="admin-tabs" role="tablist" style="border-bottom:none;margin-bottom:0;overflow-x:auto;">
+          <button class="admin-tab active" data-about-tab="how"     onclick="showAbout('how')">How It Works</button>
+          <button class="admin-tab"        data-about-tab="founder" onclick="showAbout('founder')">Founder</button>
+          <button class="admin-tab"        data-about-tab="legal"   onclick="showAbout('legal')">Legal</button>
+        </div>
+      </div>
+    </div>
+    <div class="container" style="padding-top:2.5rem;padding-bottom:4rem;">
+      <div id="about-content"></div>
+    </div>
+  </div>
 
 </main><!-- /main-content -->
 
@@ -3498,29 +3543,29 @@ h1, h2, h3, h4, h5 {
     <div>
       <div class="footer__col-title">Platform</div>
       <ul class="footer__links">
-        <li><a href="#" class="footer__link">Tournaments</a></li>
-        <li><a href="#" class="footer__link">Rankings</a></li>
-        <li><a href="#" class="footer__link">Hall of Champions</a></li>
-        <li><a href="#" class="footer__link">How it Works</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('tournaments');return false;">Tournaments</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('rankings');return false;">Rankings</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('champions');return false;">Hall of Champions</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\'how\']');if(e){e.click();}},100);return false;">How it Works</a></li>
       </ul>
     </div>
 
     <div>
       <div class="footer__col-title">For Educators</div>
       <ul class="footer__links">
-        <li><a href="#" class="footer__link">Professor Portal</a></li>
-        <li><a href="#" class="footer__link">Class Tournaments</a></li>
-        <li><a href="#" class="footer__link">Curriculum Guide</a></li>
-        <li><a href="#" class="footer__link">Contact Us</a></li>
+        <li><a href="#" class="footer__link" onclick="openAuthModal('register');return false;">Professor Portal</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('tournaments');return false;">Class Tournaments</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\'how\']');if(e){e.click();}},100);return false;">Curriculum Guide</a></li>
+        <li><a href="mailto:support@macronations.com" class="footer__link">Contact Us</a></li>
       </ul>
     </div>
 
     <div>
       <div class="footer__col-title">Legal</div>
       <ul class="footer__links">
-        <li><a href="#" class="footer__link">Tournament Rules</a></li>
-        <li><a href="#" class="footer__link">Privacy Policy</a></li>
-        <li><a href="#" class="footer__link">Terms of Service</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\'legal\']');if(e){e.click();}},100);return false;">Tournament Rules</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\'legal\']');if(e){e.click();}},100);return false;">Privacy Policy</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\'legal\']');if(e){e.click();}},100);return false;">Terms of Service</a></li>
         <li><a href="mailto:support@macronations.com" class="footer__link">support@macronations.com</a></li>
       </ul>
     </div>
@@ -3528,7 +3573,7 @@ h1, h2, h3, h4, h5 {
   </div>
 
   <div class="footer__bottom">
-    <p class="footer__copy">© 2025 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
+    <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
     <nav class="footer__legal-links" aria-label="Legal links">
       <a href="#" class="footer__legal-link">Privacy</a>
       <a href="#" class="footer__legal-link">Terms</a>
@@ -6840,6 +6885,13 @@ async function renderDashRankings() {
 // ─────────────────────────────────────────────────────────────────
 //  TAB 6: PAYMENT
 // ─────────────────────────────────────────────────────────────────
+// Stripe payment link — admin sets this per tournament in settings
+// Falls back to email if not configured
+var STRIPE_PAYMENT_LINKS = {
+  // tournamentId: 'https://buy.stripe.com/...'
+  // Admin can set these via the settings tab or they can be hardcoded here
+};
+
 function renderDashPayment() {
   var el = document.getElementById('dash-panel-payment');
   if (!el) { return; }
@@ -6873,19 +6925,48 @@ function renderDashPayment() {
     return;
   }
 
-  // Unpaid
+  // Check for a Stripe link for this tournament
+  var stripeLink = (tourn.stripe_link) || (STRIPE_PAYMENT_LINKS[tourn.id]) || '';
+
+  var payBtn = '';
+  if (stripeLink) {
+    // Pre-fill Stripe with team name and email via URL params where supported
+    var stripeUrl = stripeLink;
+    if (currentUser && currentUser.email) {
+      stripeUrl += (stripeUrl.indexOf('?') === -1 ? '?' : '&') +
+        'prefilled_email=' + encodeURIComponent(currentUser.email);
+    }
+    payBtn =
+      '<a href="' + esc(stripeUrl) + '" target="_blank" rel="noopener" ' +
+        'class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;text-decoration:none;">' +
+        '💳 Pay ' + fmt$(fee) + ' with Card (Stripe)' +
+      '</a>' +
+      '<p style="font-size:0.8125rem;color:var(--text-400);margin-bottom:1rem;text-align:center;">' +
+        'Secure payment via Stripe. After paying, email us your receipt so we can mark your team as paid.' +
+      '</p>';
+  } else {
+    payBtn =
+      '<button class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;opacity:0.6;cursor:default;">' +
+        '💳 Card Payment (Link not yet set by admin)' +
+      '</button>';
+  }
+
   el.innerHTML =
     '<div class="payment-card">' +
       '<div style="font-size:3rem;margin-bottom:1rem;">💳</div>' +
       '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.5rem;margin-bottom:0.5rem;">Entry Fee Required</h2>' +
       '<p style="color:var(--text-500);margin-bottom:0.5rem;">To compete for prizes and unlock policy submissions, pay the entry fee:</p>' +
       '<div class="payment-amount">' + fmt$(fee) + '</div>' +
-      '<p style="color:var(--text-400);font-size:0.875rem;margin-bottom:2rem;">Per team &middot; One-time payment &middot; Non-refundable once round begins</p>' +
-      '<button class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;" onclick="alert(\'Stripe integration coming soon. Please pay via email.\');">Pay with Card (Coming Soon)</button>' +
+      '<p style="color:var(--text-400);font-size:0.875rem;margin-bottom:2rem;">Per team &middot; One-time &middot; Non-refundable once round begins</p>' +
+      payBtn +
       '<button class="btn btn--ghost btn--full" onclick="doEmailPayment()">📧 Email Admin to Arrange Payment</button>' +
       '<div class="dash-alert dash-alert--info" style="margin-top:1.5rem;text-align:left;">' +
         '<div class="dash-alert__icon">ℹ️</div>' +
-        '<div class="dash-alert__body">Contact <a href="mailto:support@macronations.com">support@macronations.com</a> with your team name and invite code to arrange payment. Once confirmed, your account will be unlocked within 24 hours.</div>' +
+        '<div class="dash-alert__body">' +
+          'After paying by card, email <a href="mailto:support@macronations.com">support@macronations.com</a> ' +
+          'with your team name (<strong>' + esc(team.name || '') + '</strong>) and invite code ' +
+          '(<strong>' + esc(team.invite_code || '') + '</strong>) so we can unlock your account.' +
+        '</div>' +
       '</div>' +
     '</div>';
 }
@@ -6902,10 +6983,11 @@ function doEmailPayment() {
     'Invite Code: ' + (team.invite_code || '') + '\n' +
     'Tournament: ' + (tourn.name || '') + '\n' +
     'Amount: ' + fmt$(fee) + '\n\n' +
-    'Please confirm payment method.\n\nThank you.'
+    'Please send payment instructions.\n\nThank you.'
   );
   window.open('mailto:support@macronations.com?subject=' + subject + '&body=' + body, '_blank');
 }
+
 
 
 
@@ -7227,7 +7309,7 @@ async function doCreateTournament() {
   _setFormErr('ct-error', '');
   var name     = (document.getElementById('ct-name').value || '').trim();
   var tier     = document.getElementById('ct-tier').value || 'university';
-  var season   = parseInt(document.getElementById('ct-season').value) || 2025;
+  var season   = parseInt(document.getElementById('ct-season').value) || 2026;
   var rounds   = parseInt(document.getElementById('ct-rounds').value) || 5;
   var fee      = Number(document.getElementById('ct-fee').value) || 0;
   var maxTeams = parseInt(document.getElementById('ct-maxteams').value) || 0;
@@ -8781,6 +8863,479 @@ showPage = function(id) {
 };
 
 PAGE_LOADERS['legal'] = function() { showLegal('terms'); };
+
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  ABOUT PAGE (How It Works, Founder, Legal)
+// ═══════════════════════════════════════════════════════════════════
+
+PAGE_LOADERS['about'] = function() { showAbout('how'); };
+
+function showAbout(tab) {
+  // Update tab active state
+  var tabs = document.querySelectorAll('[data-about-tab]');
+  for (var i = 0; i < tabs.length; i++) {
+    if (tabs[i].getAttribute('data-about-tab') === tab) { tabs[i].classList.add('active'); }
+    else { tabs[i].classList.remove('active'); }
+  }
+  var el = document.getElementById('about-content');
+  if (!el) { return; }
+  if (tab === 'how')     { el.innerHTML = _aboutHowItWorks(); }
+  if (tab === 'founder') { el.innerHTML = _aboutFounder(); }
+  if (tab === 'legal')   { el.innerHTML = _aboutLegal(); }
+  window.scrollTo(0, 0);
+}
+
+function _aboutHowItWorks() {
+  return (
+    '<div style="max-width:860px;margin:0 auto;">' +
+
+    '<h2 style="font-family:\'DM Serif Display\',serif;font-size:2rem;margin-bottom:0.5rem;">How MacroNations Works</h2>' +
+    '<p style="color:var(--text-500);margin-bottom:2.5rem;font-size:1.0625rem;">A complete guide for students, professors, and teams.</p>' +
+
+    // FOR STUDENTS
+    '<div class="card" style="margin-bottom:1.5rem;">' +
+      '<div class="card__header"><span class="card__title">🎓 For Students</span></div>' +
+      '<div class="card__body">' +
+        '<div class="steps">' +
+          _step('1','Register & Join','Create a free account with your university email. Go to Tournaments, find a competition open for registration, and either create a new team or join an existing one with an 8-character invite code. Each team can have up to 5 members.') +
+          _step('2','Pay the Entry Fee (if applicable)','For paid tournaments ($200/team), go to Dashboard → Payment. Pay via the Stripe link or email support@macronations.com. Your policy submissions are locked until payment is confirmed by the admin.') +
+          _step('3','Set Your 10 Policy Levers','Every round, go to Dashboard → Policy. Adjust your 10 macroeconomic levers: Interest Rate, Government Spending, Tax Rate, Trade Openness, R&D Investment, Green Energy Mix, Welfare Spending, Regulation, Foreign Aid, and Infrastructure. Write a brief rationale and hit Submit Final Decision before the round deadline.') +
+          _step('4','Respond to Crises','Some rounds trigger an economic crisis (banking crash, pandemic, trade war, debt crisis). Go to Crisis tab first — choose your response option — then separately submit your policy. These are two independent steps. If you skip the crisis response, the full unmitigated shock applies to your economy.') +
+          _step('5','Consult the AI Advisor','Use Dashboard → AI Advisor to think through trade-offs. The advisor uses the Socratic method — it raises questions about your economy but never tells you which levers to move. That judgment is yours.') +
+          _step('6','Track Your Score','Your economy is scored on 5 pillars (200 points each, 1000 total): GDP Performance, Stability, Equality, Sustainability, and Innovation. Check Dashboard → Overview after each round simulation runs.') +
+          _step('7','Prizes','The top-scoring team wins 70% of the prize pool. Runner-up wins 30%. The pool = 10% of all entry fees collected. Example: 14 teams × $200 = $2,800 collected → $280 prize pool → $196 to winner, $84 to runner-up.') +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // FOR PROFESSORS
+    '<div class="card" style="margin-bottom:1.5rem;">' +
+      '<div class="card__header"><span class="card__title">🏛️ For Professors</span></div>' +
+      '<div class="card__body">' +
+        '<div class="steps">' +
+          _step('1','Register as Professor','When registering, select the Professor role. After email confirmation, you gain access to the Admin tab in your navigation.') +
+          _step('2','Create a Class Tournament','Admin → Tournaments → New Tournament. Set Tier = Class Tournament, Entry Fee = 0 (free for students), enter your class size as Max Teams. Set a start date and choose days between rounds (7 days is recommended for weekly assignments). Click Create.') +
+          _step('3','Open Registration','After creating, click "Open Registration" on your tournament. Share the tournament name with students so they can find and join it. Students create teams and share their invite code with teammates.') +
+          _step('4','Advance Rounds','When ready for the next round: Admin → Rounds → Run Simulation & Advance. The simulation engine applies each team\'s submitted policies, processes crises, updates all economies, and advances the round counter. You will be prompted to send an email notification to all participants.') +
+          _step('5','Monitor & Grade','Use Admin → Teams to see all teams and their payment status. Admin → Analytics exports full data as CSV or JSON for grading. The AI Advisor\'s Socratic questioning encourages genuine economic reasoning rather than guess-and-check.') +
+          _step('6','Complete & Crown Champion','When all rounds are done, Admin → Tournaments → Complete. The system automatically records the champion in the Hall of Champions. Use Admin → Rounds to advance if you have rounds remaining.') +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // SCORING
+    '<div class="card" style="margin-bottom:1.5rem;">' +
+      '<div class="card__header"><span class="card__title">📊 Scoring System</span></div>' +
+      '<div class="card__body">' +
+        '<div class="grid-2" style="margin-bottom:1.25rem;">' +
+          _pillCard('📈','GDP Performance','#2563eb','Rewards sustained growth near potential GDP. Penalises recessions and overheating. Driven by fiscal multipliers, monetary transmission, and trade.') +
+          _pillCard('⚖️','Stability','#16a34a','Rewards low stable inflation (near 2%), manageable debt (below 90% GDP), and a healthy financial system. Punishes hyperinflation, deflation, and debt crises.') +
+          _pillCard('🤝','Equality','#d97706','Based on the Gini coefficient and unemployment rate. Welfare spending and progressive taxation improve this pillar; high unemployment and inequality reduce it.') +
+          _pillCard('🌱','Sustainability','#0d9488','Combines debt/GDP health with HDI and long-run potential GDP. Rewards investment in human capital and avoiding debt traps.') +
+          _pillCard('💡','Innovation','#7c3aed','Driven by productivity (TFP), HDI, and financial system health. R&D investment and infrastructure spending improve this pillar over multiple rounds.') +
+        '</div>' +
+        '<div class="legal-math">Total Score = GDP (0–200) + Stability (0–200) + Equality (0–200) + Sustainability (0–200) + Innovation (0–200)  =  0–1000 points</div>' +
+      '</div>' +
+    '</div>' +
+
+    // SIMULATION ENGINE
+    '<div class="card" style="margin-bottom:1.5rem;">' +
+      '<div class="card__header"><span class="card__title">⚙️ Simulation Engine</span></div>' +
+      '<div class="card__body" style="color:var(--text-500);font-size:0.9375rem;line-height:1.8;">' +
+        '<p>The MacroNations engine implements simplified versions of real macroeconomic relationships:</p>' +
+        '<div class="legal-math">' +
+          'Okun\'s Law:        ΔU ≈ −0.4 × (ΔY − Potential)\n' +
+          'Phillips Curve:     π = 0.3×πₑ + 0.4×(Y−Y*) + cost-push\n' +
+          'Fiscal Multiplier:  ΔGDP = 1.4 × ΔG − 1.1 × ΔT\n' +
+          'Laffer Curve:       Revenue peaks at ~40% average tax burden\n' +
+          'R-R Debt Threshold: Debt drag = −0.02 × (Debt−90)/10 above 90% GDP\n' +
+          'Monetary Transmission: ΔGDP = −0.8 × Δi' +
+        '</div>' +
+        '<p style="margin-top:1rem;">Random noise N(0, 0.3) is added to GDP each round, reflecting real-world uncertainty. New crises fire on rounds 3, 6, and 9 with 60% probability from a pool of 4 crisis types.</p>' +
+      '</div>' +
+    '</div>' +
+
+    '</div>'
+  );
+}
+
+function _step(num, title, desc) {
+  return (
+    '<div class="step">' +
+      '<div class="step__num" aria-hidden="true">' + num + '</div>' +
+      '<div><h3 class="step__title">' + esc(title) + '</h3>' +
+        '<p class="step__desc">' + esc(desc) + '</p></div>' +
+    '</div>'
+  );
+}
+
+function _pillCard(icon, name, color, desc) {
+  return (
+    '<div class="pillar-item">' +
+      '<div class="pillar-item__accent" style="background:' + color + ';"></div>' +
+      '<div class="pillar-item__icon">' + icon + '</div>' +
+      '<h3 class="pillar-item__name">' + esc(name) + '</h3>' +
+      '<p class="pillar-item__desc">' + esc(desc) + '</p>' +
+      '<div class="pillar-item__pts">200 pts max</div>' +
+    '</div>'
+  );
+}
+
+function _aboutFounder() {
+  return (
+    '<div style="max-width:720px;margin:0 auto;">' +
+    '<div class="card">' +
+      '<div class="card__body" style="padding:2.5rem;">' +
+        '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
+          // Photo placeholder
+          '<div style="flex-shrink:0;text-align:center;">' +
+            '<div style="width:160px;height:160px;border-radius:var(--radius-lg);background:var(--blue-light);border:2px dashed var(--blue-mid);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:0.5rem;" onclick="document.getElementById(\'founder-photo-input\').click()">' +
+              '<div style="font-size:2.5rem;margin-bottom:0.5rem;">📸</div>' +
+              '<div style="font-size:0.75rem;color:var(--blue);font-weight:600;">Upload Photo</div>' +
+            '</div>' +
+            '<input type="file" id="founder-photo-input" accept="image/*" style="display:none;" onchange="(function(e){var f=e.target.files[0];if(!f){return;}var r=new FileReader();r.onload=function(ev){var el=document.getElementById(\'founder-photo\');if(el){el.src=ev.target.result;el.style.display=\'block\';}};r.readAsDataURL(f);})(event)">' +
+            '<img id="founder-photo" style="width:160px;height:160px;border-radius:var(--radius-lg);object-fit:cover;display:none;" alt="Founder photo">' +
+          '</div>' +
+          // Bio text
+          '<div style="flex:1;min-width:240px;">' +
+            '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.75rem;margin-bottom:0.25rem;">Amarendra Sharma, PhD</h2>' +
+            '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder & Director, MacroNations LLC</p>' +
+            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">MacroNations was founded with a vision to make macroeconomic education experiential, competitive, and globally accessible. The platform bridges the gap between classroom theory and real-world policy-making by immersing students in the decisions that shape economies.</p>' +
+            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations LLC is registered as a New York Limited Liability Company.</p>' +
+            '<p style="color:var(--text-400);font-size:0.875rem;">📧 <a href="mailto:support@macronations.com">support@macronations.com</a> &nbsp;·&nbsp; 🌐 macronations.com</p>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '</div>'
+  );
+}
+
+function _aboutLegal() {
+  // Reuse the full legal content from the legal module
+  var legalEl = document.createElement('div');
+  legalEl.style.maxWidth = '720px';
+  legalEl.style.margin = '0 auto';
+
+  var sections = ['terms','prizes','privacy','disclaimer','copyright'];
+  var labels   = ['Terms of Service','Prize Rules','Privacy Policy','Disclaimer','Copyright'];
+
+  var tabs = '<div class="admin-tabs" style="border-bottom:2px solid var(--border);margin-bottom:2rem;overflow-x:auto;">';
+  for (var i = 0; i < sections.length; i++) {
+    tabs += '<button class="admin-tab' + (i===0?' active':'') + '" onclick="(function(s,b){' +
+      'var all=document.querySelectorAll(\'.about-legal-panel\');for(var j=0;j<all.length;j++){all[j].style.display=\'none\';}' +
+      'var panel=document.getElementById(\'about-legal-\'+s);if(panel){panel.style.display=\'block\';}' +
+      'var btns=b.closest(\'.admin-tabs\').querySelectorAll(\'.admin-tab\');for(var k=0;k<btns.length;k++){btns[k].classList.remove(\'active\');}' +
+      'b.classList.add(\'active\');' +
+    '})(\''+sections[i]+'\',this)">' + labels[i] + '</button>';
+  }
+  tabs += '</div>';
+
+  var panels = '';
+  for (var pi = 0; pi < sections.length; pi++) {
+    var data = LEGAL_CONTENT[sections[pi]];
+    if (!data) { continue; }
+    var html = '<div style="margin-bottom:0.25rem;font-size:0.8125rem;color:var(--text-400);">Last updated: ' + esc(data.updated) + '</div>';
+    if (data.highlight) { html += '<div class="legal-highlight">' + esc(data.highlight) + '</div>'; }
+    if (data.math) { html += '<div class="legal-math">' + data.math.map(function(l){return esc(l);}).join('<br>') + '</div>'; }
+    var secs = data.sections || [];
+    for (var si = 0; si < secs.length; si++) {
+      html += '<h2>' + esc(secs[si].h) + '</h2><p>' + esc(secs[si].p) + '</p>';
+    }
+    panels += '<div class="about-legal-panel legal-body" id="about-legal-' + sections[pi] + '" style="' + (pi===0?'':'display:none;') + '">' + html + '</div>';
+  }
+
+  return '<div style="max-width:720px;margin:0 auto;">' + tabs + panels + '</div>';
+}
+
+// ── Update showPage to load About tab ──────────────────────────────
+(function() {
+  var origShowPage2 = showPage;
+  showPage = function(id) {
+    origShowPage2(id);
+    if (id === 'about') { showAbout('how'); }
+  };
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+//  CERTIFICATE — Signature fix (professor name + admin name)
+// ═══════════════════════════════════════════════════════════════════
+
+// Read stored signer names (admin can set via settings)
+function _getCertSigners() {
+  var director = '';
+  var directorTitle = 'Director, MacroNations LLC';
+  try {
+    director = localStorage.getItem('mn_cert_director') || 'Amarendra Sharma, PhD';
+    directorTitle = localStorage.getItem('mn_cert_director_title') || 'Director, MacroNations LLC';
+  } catch(e) { director = 'Amarendra Sharma, PhD'; }
+
+  // Tournament director: professor who created the tournament
+  var tournDirector = '';
+  if (_dashTourn && _dashTourn.created_by && currentUser) {
+    // If current user created it, use their name
+    if (_dashTourn.created_by === currentUser.id) {
+      tournDirector = currentUser.name || currentUser.username || '';
+    }
+  }
+  try {
+    var stored = localStorage.getItem('mn_cert_tourndirector_' + (_dashTourn && _dashTourn.id || ''));
+    if (stored) { tournDirector = stored; }
+  } catch(e) {}
+  if (!tournDirector) { tournDirector = 'Tournament Director'; }
+
+  return { director: director, directorTitle: directorTitle, tournDirector: tournDirector };
+}
+
+// Override renderDashCertificates to include editable signers for admin/prof, read-only for students
+var _origRenderDashCertificates = renderDashCertificates;
+renderDashCertificates = function(el) {
+  if (!el) { return; }
+  var team   = _dashTeam  || {};
+  var tourn  = _dashTourn || {};
+  var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
+  var scores = computeScores(eco);
+  var signers = _getCertSigners();
+  var isEditable = currentUser && (currentUser.is_admin || currentUser.role === 'professor');
+  var activeCertType = 'participation';
+
+  // Build type buttons
+  var typeKeys   = ['participation','winner','runner_up','playoff'];
+  var typeLabels = { participation:'Participation', winner:'Champion', runner_up:'Runner-Up', playoff:'Playoff Qualifier' };
+  var typeIcons  = { participation:'🎓', winner:'🏆', runner_up:'🥈', playoff:'⭐' };
+  var typeBtns   = '';
+  for (var i = 0; i < typeKeys.length; i++) {
+    var tk = typeKeys[i];
+    typeBtns +=
+      '<button class="cert-type-btn' + (tk==='participation'?' active':'') + '" data-cert="' + tk + '" onclick="_certSelectType(\''+tk+'\')">' +
+        '<span class="cert-type-btn__icon">' + typeIcons[tk] + '</span>' +
+        '<span class="cert-type-btn__label">' + typeLabels[tk] + '</span>' +
+      '</button>';
+  }
+
+  // Signer editor (admin/professor only)
+  var signerEditor = '';
+  if (isEditable) {
+    signerEditor =
+      '<div class="card" style="margin-bottom:1.25rem;">' +
+        '<div class="card__header"><span class="card__title">Certificate Signatories</span>' +
+          '<span class="text-sm text-muted">Editable by admin/professor</span></div>' +
+        '<div class="card__body">' +
+          '<div class="form-row">' +
+            '<div class="form-field">' +
+              '<label class="form-label">Tournament Director (Line 1)</label>' +
+              '<input type="text" id="cert-signer-tourndirector" class="form-input" value="' + esc(signers.tournDirector) + '" oninput="_certUpdateSigners()">' +
+            '</div>' +
+            '<div class="form-field">' +
+              '<label class="form-label">MacroNations LLC Director (Line 2)</label>' +
+              '<input type="text" id="cert-signer-director" class="form-input" value="' + esc(signers.director) + '" oninput="_certUpdateSigners()">' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // Initial cert
+  var recipName = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
+  var initSvg   = makeCertSVG('participation', recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, signers.tournDirector, signers.director);
+
+  el.innerHTML =
+    '<div class="cert-wrap">' +
+      signerEditor +
+      '<div class="cert-type-grid">' + typeBtns + '</div>' +
+      '<div class="cert-preview-area">' +
+        '<div id="cert-preview">' + initSvg + '</div>' +
+        '<div style="margin-top:1.5rem;display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">' +
+          '<button class="btn btn--primary" id="btn-download-cert" onclick="_certDownloadCurrent()">⬇ Download PNG</button>' +
+          '<button class="btn btn--ghost" onclick="_certDownloadSVG()">⬇ Download SVG</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  // Store current cert type
+  el._activeCertType = 'participation';
+};
+
+function _certSelectType(type) {
+  var team   = _dashTeam  || {};
+  var tourn  = _dashTourn || {};
+  var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
+  var scores = computeScores(eco);
+  var signers = _getCertSigners();
+  // Read live signer inputs if open
+  var td = document.getElementById('cert-signer-tourndirector');
+  var dd = document.getElementById('cert-signer-director');
+  var tournDir  = td ? td.value : signers.tournDirector;
+  var dirName   = dd ? dd.value : signers.director;
+
+  var btns = document.querySelectorAll('.cert-type-btn');
+  for (var i = 0; i < btns.length; i++) {
+    if (btns[i].getAttribute('data-cert') === type) { btns[i].classList.add('active'); }
+    else { btns[i].classList.remove('active'); }
+  }
+  var recipName = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
+  var svg = makeCertSVG(type, recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, tournDir, dirName);
+  var preview = document.getElementById('cert-preview');
+  if (preview) { preview.innerHTML = svg; }
+  var panel = document.getElementById('dash-panel-certificates');
+  if (panel) { panel._activeCertType = type; }
+}
+
+function _certUpdateSigners() {
+  var panel = document.getElementById('dash-panel-certificates');
+  var type  = (panel && panel._activeCertType) ? panel._activeCertType : 'participation';
+  // Save to localStorage
+  var td = document.getElementById('cert-signer-tourndirector');
+  var dd = document.getElementById('cert-signer-director');
+  if (td) {
+    try { localStorage.setItem('mn_cert_tourndirector_' + (_dashTourn && _dashTourn.id || ''), td.value); } catch(e) {}
+  }
+  if (dd) {
+    try { localStorage.setItem('mn_cert_director', dd.value); } catch(e) {}
+  }
+  _certSelectType(type);
+}
+
+function _certDownloadCurrent() {
+  var panel = document.getElementById('dash-panel-certificates');
+  var type  = (panel && panel._activeCertType) ? panel._activeCertType : 'participation';
+  var team  = _dashTeam || {};
+  downloadCert('macronations-' + type + '-' + (team.name || 'cert').replace(/\s+/g,'-').toLowerCase());
+}
+
+function _certDownloadSVG() {
+  var svgEl = document.getElementById('cert-svg');
+  if (!svgEl) { flash('No certificate loaded.', 'error'); return; }
+  var b = new Blob([new XMLSerializer().serializeToString(svgEl)], { type:'image/svg+xml' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'macronations-certificate.svg';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// Override makeCertSVG to accept signer params
+var _origMakeCertSVG = makeCertSVG;
+makeCertSVG = function(type, recipientName, tournName, score, year, tournDirector, directorName) {
+  // Defaults
+  if (!tournDirector) { tournDirector = _getCertSigners().tournDirector; }
+  if (!directorName)  { directorName  = _getCertSigners().director; }
+  year = year || 2026;
+
+  var cfg  = CERT_TYPES[type] || CERT_TYPES.participation;
+  var W    = 900;
+  var H    = 636;
+  var name = _truncateName(recipientName || 'Participant', 38);
+  var msgLines = _wrapText(cfg.message, 68);
+  var accentBar = cfg.accent;
+  var bgLight   = cfg.accentLight;
+
+  var msgStartY = 362;
+  var msgLineH  = 20;
+  var msgSvg = '';
+  for (var mi = 0; mi < msgLines.length; mi++) {
+    msgSvg += '<text x="450" y="' + (msgStartY + mi * msgLineH) + '" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="13.5" fill="#2a3a58" letter-spacing="0.01em">' + _svgEsc(msgLines[mi]) + '</text>';
+  }
+
+  var sealSvg = '';
+  if (cfg.seal) {
+    sealSvg = '<g transform="translate(782,88)">' +
+      '<circle r="44" fill="' + accentBar + '" opacity="0.12"/>' +
+      '<circle r="38" fill="none" stroke="' + accentBar + '" stroke-width="2" opacity="0.5" stroke-dasharray="4 3"/>' +
+      '<circle r="28" fill="' + accentBar + '" opacity="0.9"/>' +
+      '<text x="0" y="4" text-anchor="middle" font-family="\'Cinzel\',serif" font-size="8.5" fill="white" letter-spacing="0.1em">CHAMPION</text>' +
+      '<text x="0" y="-7" text-anchor="middle" font-size="14" fill="#f5a623">★</text>' +
+    '</g>';
+  }
+
+  var tournDisplayName = _truncateName(tournName || 'MacroNations Global Tournament', 55);
+  var nameYOffset = msgStartY + msgLines.length * msgLineH + 24;
+  var scoreYOffset = nameYOffset + 24;
+
+  return (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" id="cert-svg">' +
+    '<defs>' +
+      '<linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">' +
+        '<stop offset="0%" stop-color="#ffffff"/>' +
+        '<stop offset="100%" stop-color="' + bgLight + '"/>' +
+      '</linearGradient>' +
+      '<linearGradient id="bar-grad" x1="0" y1="0" x2="1" y2="0">' +
+        '<stop offset="0%" stop-color="' + accentBar + '"/>' +
+        '<stop offset="100%" stop-color="' + accentBar + '" stop-opacity="0.7"/>' +
+      '</linearGradient>' +
+    '</defs>' +
+    '<rect width="' + W + '" height="' + H + '" fill="url(#bg-grad)"/>' +
+    '<text x="450" y="360" text-anchor="middle" font-family="\'Cinzel\',serif" font-size="120" fill="' + accentBar + '" opacity="0.04" letter-spacing="0.15em" font-weight="700">' + _svgEsc(cfg.watermark) + '</text>' +
+    '<rect x="0" y="0" width="' + W + '" height="12" fill="url(#bar-grad)"/>' +
+    '<rect x="0" y="' + (H-12) + '" width="' + W + '" height="12" fill="url(#bar-grad)"/>' +
+    '<rect x="24" y="24" width="' + (W-48) + '" height="' + (H-48) + '" fill="none" stroke="' + accentBar + '" stroke-width="1" opacity="0.2" rx="4"/>' +
+    '<g fill="none" stroke="' + accentBar + '" stroke-width="2" opacity="0.5">' +
+      '<path d="M 44 44 L 80 44 M 44 44 L 44 80"/>' +
+      '<path d="M ' + (W-44) + ' 44 L ' + (W-80) + ' 44 M ' + (W-44) + ' 44 L ' + (W-44) + ' 80"/>' +
+      '<path d="M 44 ' + (H-44) + ' L 80 ' + (H-44) + ' M 44 ' + (H-44) + ' L 44 ' + (H-80) + '"/>' +
+      '<path d="M ' + (W-44) + ' ' + (H-44) + ' L ' + (W-80) + ' ' + (H-44) + ' M ' + (W-44) + ' ' + (H-44) + ' L ' + (W-44) + ' ' + (H-80) + '"/>' +
+    '</g>' +
+    _svgLogoMark(48, 32, 48, accentBar) +
+    sealSvg +
+    '<line x1="120" y1="88" x2="790" y2="88" stroke="' + accentBar + '" stroke-width="0.75" opacity="0.25"/>' +
+    '<text x="450" y="155" text-anchor="middle" font-size="36">' + cfg.ribbon + '</text>' +
+    '<text x="450" y="188" text-anchor="middle" font-family="\'DM Serif Display\',serif" font-size="18" fill="#0d1526" letter-spacing="0.04em">MACRONATIONS</text>' +
+    '<text x="450" y="220" text-anchor="middle" font-family="\'Cinzel\',serif" font-size="13" fill="' + accentBar + '" letter-spacing="0.18em" font-weight="600">' + _svgEsc(cfg.label.toUpperCase()) + '</text>' +
+    '<line x1="300" y1="234" x2="600" y2="234" stroke="' + accentBar + '" stroke-width="1" opacity="0.35"/>' +
+    '<text x="450" y="268" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="11" fill="#8494b0" letter-spacing="0.22em">PRESENTED TO</text>' +
+    '<text x="450" y="316" text-anchor="middle" font-family="\'DM Serif Display\',serif" font-size="' + (name.length > 26 ? '28' : '34') + '" fill="' + accentBar + '" letter-spacing="-0.01em">' + _svgEsc(name) + '</text>' +
+    '<line x1="280" y1="332" x2="620" y2="332" stroke="' + accentBar + '" stroke-width="0.75" opacity="0.25"/>' +
+    msgSvg +
+    '<text x="450" y="' + nameYOffset + '" text-anchor="middle" font-family="\'DM Serif Display\',serif" font-size="14" fill="#0d1526" letter-spacing="0.02em">' + _svgEsc(tournDisplayName) + '</text>' +
+    (score ? '<text x="450" y="' + scoreYOffset + '" text-anchor="middle" font-family="\'DM Mono\',monospace" font-size="12" fill="#8494b0" letter-spacing="0.06em">Final Score: ' + score + ' / 1000</text>' : '') +
+    // Signature lines with actual names
+    '<line x1="80" y1="574" x2="310" y2="574" stroke="#0d1526" stroke-width="0.75" opacity="0.3"/>' +
+    '<line x1="590" y1="574" x2="820" y2="574" stroke="#0d1526" stroke-width="0.75" opacity="0.3"/>' +
+    '<text x="195" y="588" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#0d1526" font-weight="600">' + _svgEsc(_truncateName(tournDirector,28)) + '</text>' +
+    '<text x="195" y="600" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="9" fill="#8494b0" letter-spacing="0.06em">TOURNAMENT DIRECTOR</text>' +
+    '<text x="705" y="588" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#0d1526" font-weight="600">' + _svgEsc(_truncateName(directorName,28)) + '</text>' +
+    '<text x="705" y="600" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="9" fill="#8494b0" letter-spacing="0.04em">MACRONATIONS LLC — NEW YORK</text>' +
+    '<text x="450" y="600" text-anchor="middle" font-family="\'DM Mono\',monospace" font-size="10" fill="#8494b0">' + year + '</text>' +
+    '</svg>'
+  );
+};
+
+// ── Admin settings: Stripe link per tournament ─────────────────────
+// Add Stripe link field to the create tournament modal
+(function() {
+  var ctDesc = document.getElementById('ct-desc');
+  if (ctDesc) {
+    var wrap = ctDesc.closest('.form-field');
+    if (wrap) {
+      var stripeField = document.createElement('div');
+      stripeField.className = 'form-field';
+      stripeField.innerHTML =
+        '<label class="form-label" for="ct-stripe-link">Stripe Payment Link (optional)</label>' +
+        '<input type="url" id="ct-stripe-link" class="form-input" placeholder="https://buy.stripe.com/...">' +
+        '<div class="form-hint">Students will see a pay button linking here. Get this from your Stripe Dashboard → Payment Links.</div>';
+      wrap.parentNode.insertBefore(stripeField, wrap);
+    }
+  }
+})();
+
+// Patch doCreateTournament to include stripe_link
+var _origDoCreateTournament = doCreateTournament;
+doCreateTournament = async function() {
+  // Inject stripe_link into the tournament post
+  var origSbPost = sbPost;
+  sbPost = async function(table, body) {
+    if (table === 'tournaments') {
+      var sl = document.getElementById('ct-stripe-link');
+      if (sl && sl.value.trim()) { body.stripe_link = sl.value.trim(); }
+    }
+    return origSbPost(table, body);
+  };
+  await _origDoCreateTournament();
+  sbPost = origSbPost;
+};
 
 </script>
 </body>
