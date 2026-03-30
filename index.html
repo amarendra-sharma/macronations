@@ -3267,7 +3267,7 @@ h1, h2, h3, h4, h5 {
           </label>
           <div id="ct-global-stripe-wrap" style="display:none;margin-top:0.875rem;">
             <label class="form-label" for="ct-stripe-link-prof">Global Tournament Payment Link</label>
-            <input type="url" id="ct-stripe-link-prof" class="form-input" placeholder="https://buy.stripe.com/... (provided by MacroNations admin)">
+            <input type="url" id="ct-stripe-link-prof" class="form-input" placeholder="https://... (payment link URL)">
             <div class="form-hint">Contact support@macronations.com to get your tournament's Stripe payment link.</div>
           </div>
         </div>
@@ -4684,22 +4684,22 @@ function simRound(state, policy, crises) {
   var currency_trade  = -(new_currency - prev.currency) * 0.02;
 
   // ── 2. FISCAL POLICY ─────────────────────────────────────────
-  var spending_change = p.gov_spending_pct - prev.gov_spending;
-  // Keynesian multiplier 1.4 for spending increase
-  var fiscal_spending_gdp = 1.4 * (spending_change / 100) * 10;  // scaled to % GDP impact
+  // Spending: multiplier 1.4, expressed as pp-of-GDP change directly
+  var spending_change     = p.gov_spending_pct - prev.gov_spending;
+  var fiscal_spending_gdp = 1.4 * (spending_change * 0.15); // 0.15 = calibration so 10pp ≈ +2.1pp GDP
 
-  // Laffer curve: optimal tax ~40%. Deviation reduces efficiency.
-  var tax_deviation   = p.tax_rate - 40;
-  var laffer_penalty  = 0;
-  if (tax_deviation > 0) {
-    laffer_penalty = -0.015 * tax_deviation * tax_deviation;   // quadratic drag above 40%
-  } else if (p.tax_rate < 15) {
-    laffer_penalty = -0.02 * (15 - p.tax_rate);               // too-low taxes → underfunding
+  // Tax: negative multiplier -1.1. Cutting taxes raises GDP.
+  var tax_change          = p.tax_rate - prev.tax_revenue;
+  var fiscal_tax_gdp      = -1.1 * (tax_change * 0.12); // cutting tax boosts GDP
+
+  // Laffer curve: optimal tax ~40%. Above 40 = efficiency drag. Below 12 = underfunding drag.
+  var laffer_penalty = 0;
+  if (p.tax_rate > 40) {
+    laffer_penalty = -0.008 * (p.tax_rate - 40);
+  } else if (p.tax_rate < 12) {
+    laffer_penalty = -0.015 * (12 - p.tax_rate);
   }
-
-  var tax_impact       = (p.tax_rate - prev.tax_revenue) * 0.1;
-  var fiscal_tax_gdp   = -1.1 * tax_impact + laffer_penalty;
-  var fiscal_gdp       = fiscal_spending_gdp + fiscal_tax_gdp;
+  var fiscal_gdp = fiscal_spending_gdp + fiscal_tax_gdp + laffer_penalty;
 
   // New tax revenue and spending
   var new_tax_revenue  = _clamp(p.tax_rate, 5, 60);
@@ -4707,9 +4707,7 @@ function simRound(state, policy, crises) {
 
   // ── 3. BUDGET BALANCE & DEBT ─────────────────────────────────
   var new_budget_balance = new_tax_revenue - new_gov_spending;
-  // Interest on debt (simplified: rate × debt / 100)
-  var interest_payments  = (prev.debt * prev.interest_rate) / 1000;  // as % GDP
-  // New debt = old − budget_balance + interest_payments
+  var interest_payments  = (prev.debt * prev.interest_rate) / 1000;
   var new_debt = prev.debt - new_budget_balance + interest_payments;
   new_debt     = _clamp(new_debt, 0, 300);
 
@@ -4719,61 +4717,65 @@ function simRound(state, policy, crises) {
     debt_drag = -0.02 * (new_debt - 90) / 10;
   }
 
-  // ── 5. POTENTIAL GDP (R&D + education proxy via welfare) ─────
-  var rd_boost          = 0.05 * (p.rd_investment - 2);        // baseline R&D = 2%
-  var infra_boost       = 0.02 * (p.infrastructure - 5) / 5;
-  var new_potential     = _clamp(prev.potential + rd_boost + infra_boost, 0.5, 5.0);
+  // ── 5. POTENTIAL GDP (R&D + infrastructure) ──────────────────
+  // Potential grows slowly — supply-side takes time
+  var rd_boost       = 0.04 * (p.rd_investment - 2);
+  var infra_boost    = 0.015 * (p.infrastructure - 5) / 5;
+  var new_potential  = _clamp(prev.potential + rd_boost * 0.5 + infra_boost * 0.5, 0.5, 5.0);
 
   // ── 6. PRODUCTIVITY ──────────────────────────────────────────
-  var prod_change       = rd_boost * 0.5 + infra_boost * 0.3 + 0.01;
-  var new_productivity  = _clamp(prev.productivity + prod_change, 0.5, 5.0);
+  var prod_change    = rd_boost * 0.4 + infra_boost * 0.25 + 0.01;
+  var new_productivity = _clamp(prev.productivity + prod_change, 0.5, 5.0);
 
   // ── 7. STRUCTURAL / TRADE EFFECTS ────────────────────────────
   var trade_openness_norm = p.trade_openness / 100;
-  // Trade boosts GDP but increases exposure; assume moderate openness (65%) is optimal
-  var trade_gdp = 0.8 * (trade_openness_norm - 0.65) + currency_trade;
+  var trade_gdp = 0.6 * (trade_openness_norm - 0.65) + currency_trade;
 
-  // Regulation: too little → instability; too much → friction
-  var reg_norm   = p.regulation / 100;
-  var reg_gdp    = -0.5 * (reg_norm - 0.5) * (reg_norm - 0.5) + 0.12;  // peaks at 50%
+  // Regulation: peaks at 50% — zero at 50% so neutral policy = zero drag/boost
+  var reg_norm  = p.regulation / 100;
+  var reg_gdp   = -0.5 * (reg_norm - 0.5) * (reg_norm - 0.5); // 0 at 50%, negative elsewhere
 
   var structural_gdp = trade_gdp + reg_gdp;
 
   // ── 8. CRISIS SHOCKS ─────────────────────────────────────────
-  var crisis_gdp_shock  = 0;
+  var crisis_gdp_shock   = 0;
   var crisis_unemp_shock = 0;
-  var crisis_inf_shock  = 0;
-  var crisis_fin_shock  = 0;
+  var crisis_inf_shock   = 0;
+  var crisis_fin_shock   = 0;
 
   for (var ci = 0; ci < crises.length; ci++) {
     var cr = crises[ci];
-    // Apply effectiveness reduction from chosen response option
     var eff = (cr.chosen_effectiveness !== undefined) ? (1 - cr.chosen_effectiveness / 100) : 1;
-    crisis_gdp_shock   += ((cr.gdp_shock  || 0) * eff);
+    crisis_gdp_shock   += ((cr.gdp_shock   || 0) * eff);
     crisis_unemp_shock += ((cr.unemp_shock || 0) * eff);
-    crisis_inf_shock   += ((cr.inf_shock  || 0) * eff);
-    crisis_fin_shock   += ((cr.fin_shock  || 0) * eff);
+    crisis_inf_shock   += ((cr.inf_shock   || 0) * eff);
+    crisis_fin_shock   += ((cr.fin_shock   || 0) * eff);
   }
 
   // ── 9. GDP GROWTH ────────────────────────────────────────────
-  // Persistence: 0.4 × last year's growth (mean-reversion)
-  var persistence      = 0.4 * prev.gdp_growth;
-  var potential_pull   = 0.3 * (new_potential - prev.gdp_growth); // pull toward potential
-  var noise            = _gaussianNoise(0.3);
-
-  var new_gdp_growth   = _round2(
-    persistence + potential_pull +
-    monetary_gdp + fiscal_gdp + structural_gdp +
-    debt_drag + crisis_gdp_shock + noise
+  // GDP = potential + policy_effects + noise
+  // Sustained policy shifts keep GDP above/below potential as long as policy is held
+  var policy_gap   = monetary_gdp + fiscal_gdp + structural_gdp + debt_drag;
+  var noise        = _gaussianNoise(0.25);
+  // Momentum: 20% persistence of last period's gap above potential
+  var last_gap     = prev.gdp_growth - prev.potential;
+  var new_gdp_growth = _round2(
+    new_potential +              // anchor to potential
+    0.60 * policy_gap +          // sustained policy effect (60% pass-through)
+    0.20 * last_gap +            // momentum of prior policy gap
+    crisis_gdp_shock +
+    noise
   );
   new_gdp_growth = _clamp(new_gdp_growth, -12, 12);
 
   // ── 10. UNEMPLOYMENT (Okun's Law) ────────────────────────────
-  // ΔU ≈ -0.4 × (ΔY − 0)  where NAIRU = 4.5
-  var NAIRU             = 4.5;
-  var okun_change       = -0.4 * (new_gdp_growth - new_potential);
-  var new_unemployment  = _round2(
-    prev.unemployment + okun_change + crisis_unemp_shock + _gaussianNoise(0.1)
+  // ΔU = -0.5 × (Y_actual - Y_potential)
+  // When GDP exceeds potential, unemployment falls. Sustained above-potential = sustained low unemp.
+  var NAIRU        = 4.5;
+  var output_gap_u = new_gdp_growth - new_potential;  // positive = above potential → unemp falls
+  var okun_change  = -0.5 * output_gap_u;
+  var new_unemployment = _round2(
+    prev.unemployment + okun_change + crisis_unemp_shock + _gaussianNoise(0.08)
   );
   new_unemployment = _clamp(new_unemployment, 1.5, 25);
 
@@ -6440,7 +6442,7 @@ function renderDashCrisis() {
     options: []
   };
 
-  var alreadyResponded = cr.chosen_opt ? true : false;
+  var alreadyResponded = cr.response ? true : false;
 
   var shocksHtml =
     '<div class="shock-grid">' +
@@ -6454,12 +6456,12 @@ function renderDashCrisis() {
     var chosenOpt = null;
     var opts = (crDef && crDef.options) ? crDef.options : [];
     for (var co = 0; co < opts.length; co++) {
-      if (opts[co].id === cr.chosen_opt) { chosenOpt = opts[co]; break; }
+      if (opts[co].id === cr.response) { chosenOpt = opts[co]; break; }
     }
     el.innerHTML =
       '<div class="dash-alert dash-alert--success"><div class="dash-alert__icon">✓</div>' +
         '<div class="dash-alert__body"><div class="dash-alert__title">Crisis response submitted</div>' +
-        'You chose: <strong>' + esc((chosenOpt && chosenOpt.label) || cr.chosen_opt) + '</strong>. ' +
+        'You chose: <strong>' + esc((chosenOpt && chosenOpt.label) || cr.response) + '</strong>. ' +
         'Don\'t forget to also submit your policy in the Policy tab — they are separate steps.' +
         '<br><a href="#" onclick="switchDashTab(\'policy\');return false;">Go to Policy tab →</a></div></div>' +
       '<div class="card"><div class="card__header"><span class="card__title">' + esc(cr.name || 'Active Crisis') + '</span>' +
@@ -6572,10 +6574,10 @@ async function doConfirmCrisis() {
     // Only patch the response fields — do NOT send resolved/status here
     // resolved stays false until the admin runs the simulation
     await sbPatch('crises_active', 'id=eq.' + cr.id, {
-      chosen_opt:    choice,
+      response: choice,
       effectiveness: eff
     });
-    _dashCrises[0].chosen_opt    = choice;
+    _dashCrises[0].response = choice;
     _dashCrises[0].effectiveness = eff;
     flash('Crisis response locked in! Now go to the Policy tab to submit your policy.', 'success');
     renderDashCrisis();
@@ -6843,7 +6845,7 @@ async function doAskAdvisor() {
     }
     if (chatEl) { chatEl.textContent = reply || 'The advisor had no response. Please try again.'; }
   } catch(e) {
-    if (chatEl) { chatEl.textContent = 'Advisor unavailable. Consider these questions yourself:\n\n' + _offlineAdvisor(question, eco); }
+    if (chatEl) { chatEl.textContent = 'The Advisor is here to guide you toward an appropriate policy mix — but ultimately the right decisions are yours to make as the policymaker. Here are some questions to help frame your thinking:\n\n' + _offlineAdvisor(question, eco); }
   }
 
   if (inp) { inp.value = ''; }
@@ -6917,7 +6919,7 @@ async function renderDashRankings() {
           '<span class="text-sm text-muted">' + ranked.length + ' teams</span></div>' +
         '<div class="table-wrap" style="border:none;border-radius:0;box-shadow:none;">' +
           '<table class="table table--rank">' +
-            '<thead><tr><th>#</th><th>Team</th><th>Code</th><th>Score</th></tr></thead>' +
+            '<thead><tr><th>#</th><th>Team</th><th>Score</th></tr></thead>' +
             '<tbody>' + rowsHtml + '</tbody>' +
           '</table>' +
         '</div>' +
@@ -6932,10 +6934,9 @@ async function renderDashRankings() {
 // ─────────────────────────────────────────────────────────────────
 // Stripe payment link — admin sets this per tournament in settings
 // Falls back to email if not configured
-var STRIPE_PAYMENT_LINKS = {
-  // tournamentId: 'https://buy.stripe.com/...'
-  // Admin can set these via the settings tab or they can be hardcoded here
-};
+var STRIPE_PAYMENT_LINKS = {};
+// Default GoDaddy payment link for all paid tournaments
+var DEFAULT_PAYMENT_LINK = 'https://bcb769f9-c141-4e9a-ae69-a71cdfa4764c.paylinks.godaddy.com/e20b2adf-394f-4684-aff2-112';
 
 function renderDashPayment() {
   var el = document.getElementById('dash-panel-payment');
@@ -6976,7 +6977,7 @@ function renderDashPayment() {
   try {
     stripeLink = localStorage.getItem('mn_stripe_' + (tourn.name||'').replace(/\s+/g,'_')) || '';
   } catch(e) {}
-  if (!stripeLink) { stripeLink = (STRIPE_PAYMENT_LINKS[tourn.id]) || ''; }
+  if (!stripeLink) { stripeLink = (STRIPE_PAYMENT_LINKS[tourn.id]) || DEFAULT_PAYMENT_LINK || ''; }
 
   var payBtn = '';
   if (stripeLink) {
@@ -6989,10 +6990,10 @@ function renderDashPayment() {
     payBtn =
       '<a href="' + esc(stripeUrl) + '" target="_blank" rel="noopener" ' +
         'class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;text-decoration:none;">' +
-        '💳 Pay ' + fmt$(fee) + ' with Card (Stripe)' +
+        '💳 Pay ' + fmt$(fee) + ' — Secure Payment' +
       '</a>' +
       '<p style="font-size:0.8125rem;color:var(--text-400);margin-bottom:1rem;text-align:center;">' +
-        'Secure payment via Stripe. After paying, email us your receipt so we can mark your team as paid.' +
+        'Click to pay securely. After completing payment, email support@macronations.com with your team name and receipt so we can activate your account.' +
       '</p>';
   } else {
     payBtn =
@@ -7724,12 +7725,12 @@ async function runSimulation(tournId) {
         if (crDef) {
           var eff = 0;
           // If player responded, use their effectiveness; else 0%
-          if (cr.chosen_opt) {
+          if (cr.response) {
             var opts = crDef.options || [];
             for (var oi = 0; oi < opts.length; oi++) {
-              if (opts[oi].id === cr.chosen_opt) { eff = opts[oi].effectiveness; break; }
+              if (opts[oi].id === cr.response) { eff = opts[oi].effectiveness; break; }
             }
-            log('  Crisis: ' + cr.name + ' — response "' + cr.chosen_opt + '" (' + eff + '% effective)');
+            log('  Crisis: ' + cr.name + ' — response "' + cr.response + '" (' + eff + '% effective)');
           } else {
             log('  Crisis: ' + cr.name + ' — NO RESPONSE (full shock applied)', 'warn');
           }
@@ -7750,7 +7751,7 @@ async function runSimulation(tournId) {
 
       // Resolve crisis
       if (cr) {
-        await sbPatch('crises_active', 'id=eq.' + cr.id, { resolved: true, chosen_opt: (cr.chosen_opt || null), effectiveness: (cr.effectiveness || 0) });
+        await sbPatch('crises_active', 'id=eq.' + cr.id, { resolved: true, response: (cr.response || null), effectiveness: (cr.effectiveness || 0) });
       }
 
       // Fire new crisis (rounds 3, 6, 9 with 60% probability)
@@ -8382,7 +8383,7 @@ function makeCertSVG(type, recipientName, tournName, score, year) {
     '</g>' +
 
     // Logo mark
-    _svgLogoMark(48, 32, 48, accentBar) +
+    _svgLogoMark(60, 18, 40, accentBar) +
 
     // Seal (winner only)
     sealSvg +
@@ -9071,6 +9072,7 @@ function _pillCard(icon, name, color, desc) {
 }
 
 function _aboutFounder() {
+  _loadFounderPhotoDelayed();
   return (
     '<div style="max-width:720px;margin:0 auto;">' +
     '<div class="card">' +
@@ -9185,7 +9187,28 @@ renderDashCertificates = function(el) {
   var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
   var scores = computeScores(eco);
   var signers = _getCertSigners();
-  var isEditable = currentUser && (currentUser.is_admin || currentUser.role === 'professor');
+  var isAdmin    = currentUser && (currentUser.is_admin || currentUser.role === 'professor');
+  var isEditable = isAdmin;
+  var isCompleted = (tourn.status === 'completed');
+  var isCaptain   = team.captain_id === (currentUser && currentUser.id);
+
+  // Determine which cert types the student is eligible for
+  var myRank = 999;
+  if (_dashAllTeams && _dashAllTeams.length) {
+    var sorted = _dashAllTeams.slice().sort(function(a,b){ return (b._score||0)-(a._score||0); });
+    for(var ri=0;ri<sorted.length;ri++) { if(sorted[ri].id === team.id){ myRank = ri+1; break; } }
+  }
+  var eligible = { participation: isCompleted, winner: isCompleted && myRank===1, runner_up: isCompleted && myRank===2, playoff: isCompleted && myRank<=8 };
+
+  if (!isAdmin && !isCompleted) {
+    el.innerHTML =
+      '<div class="empty-state" style="padding:4rem 2rem;">' +
+        '<div class="empty-state__icon">🔒</div>' +
+        '<div class="empty-state__title">Certificates not yet available</div>' +
+        '<div class="empty-state__desc">Certificates are issued when the tournament concludes. Complete all rounds and your certificates will appear here.</div>' +
+      '</div>';
+    return;
+  }
   var activeCertType = 'participation';
 
   // Build type buttons
@@ -9226,7 +9249,7 @@ renderDashCertificates = function(el) {
 
   // Initial cert
   var recipName = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
-  var initSvg   = makeCertSVG('participation', recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, signers.tournDirector, signers.director);
+  var initSvg   = makeCertSVG(firstElig || 'participation', recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, signers.tournDirector, signers.director);
 
   el.innerHTML =
     '<div class="cert-wrap">' +
@@ -9365,7 +9388,7 @@ makeCertSVG = function(type, recipientName, tournName, score, year, tournDirecto
       '<path d="M 44 ' + (H-44) + ' L 80 ' + (H-44) + ' M 44 ' + (H-44) + ' L 44 ' + (H-80) + '"/>' +
       '<path d="M ' + (W-44) + ' ' + (H-44) + ' L ' + (W-80) + ' ' + (H-44) + ' M ' + (W-44) + ' ' + (H-44) + ' L ' + (W-44) + ' ' + (H-80) + '"/>' +
     '</g>' +
-    _svgLogoMark(48, 32, 48, accentBar) +
+    _svgLogoMark(60, 18, 40, accentBar) +
     sealSvg +
     '<line x1="120" y1="88" x2="790" y2="88" stroke="' + accentBar + '" stroke-width="0.75" opacity="0.25"/>' +
     '<text x="450" y="155" text-anchor="middle" font-size="36">' + cfg.ribbon + '</text>' +
