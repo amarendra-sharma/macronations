@@ -3828,6 +3828,7 @@ function _restHeaders(extra) {
 }
 
 async function sbGet(table, params) {
+  await _ensureFreshToken();
   var url = SUPA_URL + '/rest/v1/' + table;
   if (params) { url += '?' + params; }
   var res  = await fetch(url, { method: 'GET', headers: _restHeaders() });
@@ -3837,6 +3838,7 @@ async function sbGet(table, params) {
 }
 
 async function sbPost(table, body) {
+  await _ensureFreshToken();
   // Strip any undefined/null id — let Postgres generate it via DEFAULT
   var clean = {};
   var keys  = Object.keys(body);
@@ -3855,6 +3857,7 @@ async function sbPost(table, body) {
 }
 
 async function sbPatch(table, filter, body) {
+  await _ensureFreshToken();
   var res  = await fetch(SUPA_URL + '/rest/v1/' + table + '?' + filter, {
     method:  'PATCH',
     headers: _restHeaders({ 'Prefer': 'return=representation' }),
@@ -3866,6 +3869,7 @@ async function sbPatch(table, filter, body) {
 }
 
 async function sbDelete(table, filter) {
+  await _ensureFreshToken();
   var res = await fetch(SUPA_URL + '/rest/v1/' + table + '?' + filter, {
     method:  'DELETE',
     headers: _restHeaders()
@@ -3909,6 +3913,38 @@ async function _supaRefresh(refreshToken) {
     body:    JSON.stringify({ refresh_token: refreshToken })
   });
   return res.json();
+}
+
+// Auto-refresh the session if within 5 minutes of expiry.
+// Called before every API request.
+async function _ensureFreshToken() {
+  if (!currentSession) { return; }
+  var expiresAt = currentSession.expires_at || 0;
+  var fiveMin   = 5 * 60 * 1000;
+  if (Date.now() < expiresAt - fiveMin) { return; } // still fresh
+
+  // Try to refresh
+  var rt = currentSession.refresh_token;
+  if (!rt) { _clearSession(); currentSession = null; currentUser = null; _renderLoggedOutNav(); return; }
+  try {
+    var refreshed = await _supaRefresh(rt);
+    if (refreshed && !refreshed.error && refreshed.access_token) {
+      currentSession = {
+        access_token:  refreshed.access_token,
+        refresh_token: refreshed.refresh_token || rt,
+        expires_at:    Date.now() + ((refreshed.expires_in || 3600) * 1000)
+      };
+      if (currentUser) { _saveSession(currentSession, currentUser); }
+    } else {
+      // Refresh token itself expired — force sign out cleanly
+      _clearSession();
+      currentSession = null;
+      currentUser    = null;
+      currentTeamId  = null;
+      _renderLoggedOutNav();
+      flash('Your session expired. Please sign in again.', 'info');
+    }
+  } catch(e) {}
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -7656,8 +7692,19 @@ function openCreateTournament(isClass) {
       electBox.onchange = function() {
         var sw = document.getElementById('ct-global-stripe-wrap');
         if (sw) { sw.style.display = electBox.checked ? 'block' : 'none'; }
+        // Auto-fill with the MacroNations default payment link
+        if (electBox.checked) {
+          var profLinkInput = document.getElementById('ct-stripe-link-prof');
+          if (profLinkInput && !profLinkInput.value.trim()) {
+            profLinkInput.value = (typeof DEFAULT_PAYMENT_LINK !== 'undefined') ? DEFAULT_PAYMENT_LINK : '';
+          }
+        }
       };
     }
+    // Hide the Stripe field from admins too (professors never see it)
+    // Stripe payment link for admins is separate; professors auto-use DEFAULT_PAYMENT_LINK
+    var adminStripeWrap = document.getElementById('ct-admin-stripe-wrap');
+    if (adminStripeWrap) { adminStripeWrap.style.display = 'none'; }
   } else {
     // Admin: full control
     if (feeEl)  { feeEl.removeAttribute('readonly'); feeEl.style.opacity = '1'; }
@@ -7665,6 +7712,9 @@ function openCreateTournament(isClass) {
     if (feeEl  && isClass) { feeEl.value  = '0'; }
     var electWrap2 = document.getElementById('ct-global-election-wrap');
     if (electWrap2) { electWrap2.style.display = 'none'; }
+    // Show the admin-only Stripe field for admins
+    var adminSW = document.getElementById('ct-admin-stripe-wrap');
+    if (adminSW) { adminSW.style.display = 'block'; }
   }
 
   _setFormErr('ct-error', '');
@@ -9359,27 +9409,34 @@ function _pillCard(icon, name, color, desc) {
   );
 }
 
+// Cached founder photo — loaded async from admin mn_users row
+var _founderPhotoCache = null;
+
+async function _loadFounderPhoto() {
+  try {
+    var rows = await sbGet('mn_users', 'is_admin=eq.true&order=created_at.asc&limit=1&select=id,name,profile_image_url');
+    if (rows && rows.length && rows[0].profile_image_url) {
+      _founderPhotoCache = rows[0].profile_image_url;
+      return _founderPhotoCache;
+    }
+  } catch(ex) {}
+  // Fallback: localStorage
+  try { return localStorage.getItem('mn_founder_photo') || ''; } catch(e2) { return ''; }
+}
+
 function _aboutFounder() {
-  var savedPhoto = '';
-  try { savedPhoto = localStorage.getItem('mn_founder_photo') || ''; } catch(ex) {}
-  var photoBlock = savedPhoto
-    ? '<img id="founder-photo" src="' + savedPhoto + '" style="width:160px;height:160px;border-radius:12px;object-fit:cover;display:block;" alt="Founder">'
-    : '<div id="founder-photo-placeholder" style="width:160px;height:160px;border-radius:12px;background:var(--blue-light);border:2px dashed var(--blue-mid);display:flex;flex-direction:column;align-items:center;justify-content:center;">' +
-        '<div style="font-size:2.5rem;">📸</div>' +
-        '<div style="font-size:0.75rem;color:var(--blue);font-weight:600;margin-top:0.375rem;">No photo yet</div>' +
-      '</div>';
-  return (
+  // Render skeleton; swap in photo async after mount
+  var cached = _founderPhotoCache || '';
+  var photoHtml = cached
+    ? '<img src="' + cached + '" style="width:160px;height:160px;border-radius:12px;object-fit:cover;display:block;" alt="Amarendra Sharma">'
+    : '<div id="founder-photo-slot" style="width:160px;height:160px;border-radius:12px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;"><div class="spinner" style="width:24px;height:24px;"></div></div>';
+
+  var html =
     '<div style="max-width:720px;margin:0 auto;">' +
     '<div class="card">' +
       '<div class="card__body" style="padding:2rem;">' +
         '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
-          '<div style="flex-shrink:0;text-align:center;min-width:160px;">' +
-            photoBlock +
-            '<label style="display:inline-flex;align-items:center;gap:0.375rem;margin-top:0.75rem;padding:0.375rem 0.875rem;background:var(--bg-subtle);border:1.5px solid var(--border-strong);border-radius:8px;font-size:0.8125rem;font-weight:600;cursor:pointer;color:var(--text-700);">' +
-              '📸 ' + (savedPhoto ? 'Change Photo' : 'Upload Photo') +
-              '<input type="file" accept="image/*" style="display:none;" onchange="_founderPhotoUpload(event)">' +
-            '</label>' +
-          '</div>' +
+          '<div style="flex-shrink:0;text-align:center;min-width:160px;">' + photoHtml + '</div>' +
           '<div style="flex:1;min-width:220px;">' +
             '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.75rem;margin-bottom:0.25rem;">Amarendra Sharma, PhD</h2>' +
             '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder &amp; Director, MacroNations LLC</p>' +
@@ -9390,8 +9447,29 @@ function _aboutFounder() {
         '</div>' +
       '</div>' +
     '</div>' +
-    '</div>'
-  );
+    '</div>';
+
+  if (!cached) {
+    setTimeout(function() {
+      var slot = document.getElementById('founder-photo-slot');
+      if (!slot) { return; }
+      _loadFounderPhoto().then(function(url) {
+        var s = document.getElementById('founder-photo-slot');
+        if (!s) { return; }
+        if (url) {
+          var img = document.createElement('img');
+          img.src = url;
+          img.alt = 'Amarendra Sharma';
+          img.style.cssText = 'width:160px;height:160px;border-radius:12px;object-fit:cover;display:block;';
+          s.parentNode.replaceChild(img, s);
+        } else {
+          s.innerHTML = '<div style="width:160px;height:160px;border-radius:12px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:700;">AS</div>';
+          s.id = '';
+        }
+      });
+    }, 60);
+  }
+  return html;
 }
 
 function _founderPhotoUpload(event) {
@@ -9749,9 +9827,11 @@ makeCertSVG = function(type, recipientName, tournName, score, year, tournDirecto
       var stripeField = document.createElement('div');
       stripeField.className = 'form-field';
       stripeField.innerHTML =
-        '<label class="form-label" for="ct-stripe-link">Stripe Payment Link (optional)</label>' +
-        '<input type="url" id="ct-stripe-link" class="form-input" placeholder="https://buy.stripe.com/...">' +
-        '<div class="form-hint">Students will see a pay button linking here. Get this from your Stripe Dashboard → Payment Links.</div>';
+        '<div id="ct-admin-stripe-wrap" style="display:none;">' +
+          '<label class="form-label" for="ct-stripe-link">Stripe Payment Link (optional, admin only)</label>' +
+          '<input type="url" id="ct-stripe-link" class="form-input" placeholder="https://buy.stripe.com/...">' +
+          '<div class="form-hint">Students will see a pay button linking here.</div>' +
+        '</div>';
       wrap.parentNode.insertBefore(stripeField, wrap);
     }
   }
@@ -9785,6 +9865,7 @@ var ALLOWED_TYPES   = ['image/jpeg', 'image/png', 'image/webp'];
 
 // ── Storage helpers ────────────────────────────────────────────────
 async function sbStorageUpload(bucket, path, file) {
+  await _ensureFreshToken();
   var res = await fetch(
     SUPA_URL + '/storage/v1/object/' + bucket + '/' + path,
     {
