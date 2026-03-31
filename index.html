@@ -5795,10 +5795,10 @@ async function doCreateTeam() {
     // One-team-per-season check
     var conflict = await _checkSeasonConflict(tourn.season_year);
     if (conflict) {
+      var conflictName = (conflict && conflict.name) ? conflict.name : 'another team';
       _setFormErr('create-team-error',
-        'You are already on team "' + ((conflict && conflict.name) || 'another team') +
-        '" in Season ' + (tourn.season_year || '') +
-        '. Each player can only be on one team per season across all tournaments.'
+        'You are already on team "' + conflictName + '" in Season ' + (tourn.season_year || '') + '. ' +
+        'MacroNations allows only one team per season. Leave your current team before joining a new one.'
       );
       setLoading('btn-do-create-team',false,'Create Team');
       return;
@@ -7172,8 +7172,10 @@ async function renderDashRankings() {
 // Stripe payment link — admin sets this per tournament in settings
 // Falls back to email if not configured
 var STRIPE_PAYMENT_LINKS = {};
-// Default GoDaddy payment link for all paid tournaments
+// Primary payment link — GoDaddy (activated)
+// Used for all paid tournaments and global elections
 var DEFAULT_PAYMENT_LINK = 'https://bcb769f9-c141-4e9a-ae69-a71cdfa4764c.paylinks.godaddy.com/e20b2adf-394f-4684-aff2-112';
+var WORLD_CUP_ENTRY_FEE  = 200;   // USD — fee for global seasonal tournament
 
 function renderDashPayment() {
   var el = document.getElementById('dash-panel-payment');
@@ -7209,12 +7211,11 @@ function renderDashPayment() {
   }
 
   // Check for a Stripe link for this tournament
-  var stripeLink = '';
-  // Try localStorage (set when tournament was created)
-  try {
-    stripeLink = localStorage.getItem('mn_stripe_' + (tourn.name||'').replace(/\s+/g,'_')) || '';
-  } catch(e) {}
-  if (!stripeLink) { stripeLink = (STRIPE_PAYMENT_LINKS[tourn.id]) || DEFAULT_PAYMENT_LINK || ''; }
+  // Payment link: use the activated GoDaddy/Stripe link for all paid tournaments.
+  // This works across all devices without localStorage.
+  var stripeLink = DEFAULT_PAYMENT_LINK || '';
+  // Admin can override per-tournament via STRIPE_PAYMENT_LINKS map
+  if (STRIPE_PAYMENT_LINKS[tourn.id]) { stripeLink = STRIPE_PAYMENT_LINKS[tourn.id]; }
 
   var payBtn = '';
   if (stripeLink) {
@@ -7625,7 +7626,8 @@ function renderAdminTournaments(el) {
       '<td>' + _statusBadge(t.status) + '</td>' +
       '<td class="text-mono">' + teamCount + (t.max_teams ? '/' + t.max_teams : '') + '</td>' +
       '<td class="text-mono">R' + (t.current_round || 0) + '/' + (t.rounds_total || '?') + '</td>' +
-      '<td>' + (fee > 0 ? fmt$(pp.pool) : '<em style="color:var(--text-400);">Free</em>') + '</td>' +
+      '<td>' + (fee > 0 ? fmt$(pp.pool) : '<em style="color:var(--text-400);">Free</em>') +
+        (t.is_global_elected ? ' <span class="badge badge--gold badge--no-dot" style="font-size:0.7rem;">🌍 World Cup</span>' : '') + '</td>' +
       '<td><div class="admin-action-row">' + actions + '</div></td>' +
       '</tr>';
   }
@@ -7743,30 +7745,29 @@ async function doCreateTournament() {
   // Check global election
   var electBox  = document.getElementById('ct-global-elect');
   var isElected = electBox ? electBox.checked : false;
-  if (isElected) {
-    var profLink = document.getElementById('ct-stripe-link-prof');
-    if (profLink && profLink.value.trim()) {
-      try { localStorage.setItem('mn_stripe_elected_' + name.replace(/\s+/g,'_'), profLink.value.trim()); } catch(e) {}
-    }
+  // If elected for world cup, override fee to WORLD_CUP_ENTRY_FEE
+  if (isElected && _isProfessor() && !_isAdmin()) {
+    fee = WORLD_CUP_ENTRY_FEE;
   }
 
   setLoading('btn-do-create-tournament', true, 'Creating…');
   try {
     var schedule = buildSchedule(startDate, rounds, interval);
     var newTourn = await sbPost('tournaments', {
-      name:          name,
-      tier:          tier,
-      season_year:   season,
-      rounds_total:  rounds,
-      entry_fee:     fee,
-      max_teams:     maxTeams || null,
-      description:   desc,
-      status:        'upcoming',
-      current_round: 0,
-      created_by:    currentUser.id,
-      schedule:      schedule,
-      playoff_teams: [],
-      playoff_bracket: {}
+      name:             name,
+      tier:             tier,
+      season_year:      season,
+      rounds_total:     rounds,
+      entry_fee:        fee,
+      max_teams:        maxTeams || null,
+      description:      desc,
+      status:           'upcoming',
+      current_round:    0,
+      created_by:       currentUser.id,
+      schedule:         schedule,
+      playoff_teams:    [],
+      playoff_bracket:  {},
+      is_global_elected: isElected ? true : false
     });
     if (!newTourn || newTourn.code) {
       _setFormErr('ct-error', (newTourn && newTourn.message) || 'Failed to create tournament.');
