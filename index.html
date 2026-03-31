@@ -2639,6 +2639,188 @@ h1, h2, h3, h4, h5 {
   }
 }
 
+/* ── PROFILE UPLOADER ── */
+.profile-uploader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.profile-uploader__avatar {
+  flex-shrink: 0;
+}
+.profile-uploader__img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+  display: block;
+}
+.profile-uploader__initials {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.profile-uploader__controls {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.profile-uploader__hint {
+  font-size: 0.8125rem;
+  color: var(--text-400);
+  margin: 0;
+}
+.profile-uploader__file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-700);
+  transition: border-color 0.15s;
+  width: fit-content;
+}
+.profile-uploader__file-label:hover { border-color: var(--blue); color: var(--blue); }
+.profile-upload__status { font-size: 0.8125rem; color: var(--text-400); min-height: 1.2em; }
+.profile-upload__status--ok  { color: var(--success); font-weight: 600; }
+.profile-upload__status--err { color: var(--danger);  font-weight: 600; }
+
+/* ── CHAMPIONS LEADERBOARD ── */
+.champions-leaderboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.champ-card-new {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-xs);
+  position: relative;
+  transition: box-shadow 0.15s;
+}
+.champ-card-new:hover { box-shadow: var(--shadow-md); }
+.champ-card-new__rank {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.champ-card-new__avatar {
+  width: 88px;
+  height: 88px;
+  margin-bottom: 1rem;
+}
+.champ-card-new__avatar-img {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+}
+.champ-card-new__avatar-initials {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.champ-card-new__body { width: 100%; }
+.champ-card-new__season {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-400);
+  margin-bottom: 0.25rem;
+}
+.champ-card-new__team {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.25rem;
+  color: var(--text-900);
+  margin: 0 0 0.25rem;
+}
+.champ-card-new__captain {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-700);
+  margin: 0 0 0.2rem;
+}
+.champ-card-new__meta {
+  font-size: 0.8125rem;
+  color: var(--text-400);
+  margin: 0 0 0.875rem;
+}
+.champ-card-new__stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.champ-card-new__score {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--text-900);
+}
+.champ-card-new__score span { font-size: 0.8125rem; color: var(--text-400); }
+.champ-card-new__prize {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--warning);
+  background: var(--warning-bg);
+  border-radius: var(--radius-full);
+  padding: 0.2rem 0.625rem;
+}
+.champ-card-new__revoke {
+  margin-top: 1rem;
+  width: 100%;
+}
+/* Nav avatar with profile image */
+.nav-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+}
+@media (max-width: 600px) {
+  .champions-leaderboard { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .champ-card-new { padding: 1rem; }
+}
+@media (max-width: 380px) {
+  .champions-leaderboard { grid-template-columns: 1fr; }
+}
   </style>
 </head>
 <body>
@@ -4349,12 +4531,17 @@ function _renderLoggedInNav() {
   var isAdmin  = u.is_admin;
   var role     = u.role || 'student';
   var roleTag  = isAdmin ? 'Admin' : (role === 'professor' ? 'Professor' : 'Student');
+  var imgUrl   = u.profile_image_url || '';
+
+  var avatarHtml = imgUrl
+    ? '<img src="' + esc(imgUrl) + '" class="nav-avatar-img" alt="Profile">'
+    : '<div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8125rem;flex-shrink:0;">' + esc(initials) + '</div>';
 
   var cta = document.querySelector('.nav__cta');
   if (cta) {
     cta.innerHTML =
-      '<div style="display:flex;align-items:center;gap:0.5rem;">' +
-        '<div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8125rem;flex-shrink:0;">' + esc(initials) + '</div>' +
+      '<div style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;" onclick="showPage(\'dashboard\');switchDashTab(\'profile\')">' +
+        avatarHtml +
         '<div style="line-height:1.2;">' +
           '<div style="font-size:0.875rem;font-weight:600;color:var(--text-900);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(u.name || u.username) + '</div>' +
           '<div style="font-size:0.7rem;color:var(--text-400);text-transform:uppercase;letter-spacing:0.06em;">' + esc(roleTag) + '</div>' +
@@ -4372,7 +4559,6 @@ function _renderLoggedInNav() {
       html += '<a href="#" class="nav__tab" data-page="admin">Admin</a>';
     }
     dyn.innerHTML = html;
-    // Re-wire new links
     var newTabs = dyn.querySelectorAll('.nav__tab[data-page]');
     for (var i = 0; i < newTabs.length; i++) {
       (function(tab) {
@@ -9586,6 +9772,424 @@ doCreateTournament = async function() {
   await _origDoCreateTournament();
   sbPost = origSbPost;
 };
+
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  PROFILE IMAGE SYSTEM — Supabase Storage
+// ═══════════════════════════════════════════════════════════════════
+
+var STORAGE_BUCKET = 'profile-images';
+var MAX_FILE_BYTES  = 2 * 1024 * 1024; // 2 MB
+var ALLOWED_TYPES   = ['image/jpeg', 'image/png', 'image/webp'];
+
+// ── Storage helpers ────────────────────────────────────────────────
+async function sbStorageUpload(bucket, path, file) {
+  var res = await fetch(
+    SUPA_URL + '/storage/v1/object/' + bucket + '/' + path,
+    {
+      method: 'POST',
+      headers: {
+        'apikey':        SUPA_ANON,
+        'Authorization': 'Bearer ' + _authToken(),
+        'Content-Type':  file.type,
+        'x-upsert':      'true'
+      },
+      body: file
+    }
+  );
+  var data = await res.json();
+  if (!res.ok) { throw new Error((data && data.message) || 'Upload failed'); }
+  return data;
+}
+
+function sbStoragePublicUrl(bucket, path) {
+  return SUPA_URL + '/storage/v1/object/public/' + bucket + '/' + path;
+}
+
+// ── Image compression (canvas resize to max 512px, quality 0.82) ──
+function _compressImage(file, callback) {
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var MAX = 512;
+      var w = img.width;
+      var h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else        { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width  = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(function(blob) {
+        callback(null, blob);
+      }, 'image/jpeg', 0.82);
+    };
+    img.onerror = function() { callback(new Error('Could not read image')); };
+    img.src = ev.target.result;
+  };
+  reader.onerror = function() { callback(new Error('Could not read file')); };
+  reader.readAsDataURL(file);
+}
+
+// ── Upload profile picture ─────────────────────────────────────────
+async function uploadProfilePicture(file, statusEl, previewEl) {
+  if (!currentUser) { throw new Error('Not logged in'); }
+
+  // Champion-only gate — checked both here and enforced by Storage policy
+  if (!currentUser.is_champion && !currentUser.is_admin) {
+    throw new Error('Only tournament champions can upload a profile picture.');
+  }
+
+  // Validate type
+  var validType = false;
+  for (var i = 0; i < ALLOWED_TYPES.length; i++) {
+    if (file.type === ALLOWED_TYPES[i]) { validType = true; break; }
+  }
+  if (!validType) { throw new Error('Only JPG, PNG, and WEBP images are accepted.'); }
+
+  // Validate size (before compression)
+  if (file.size > MAX_FILE_BYTES) { throw new Error('File must be under 2 MB.'); }
+
+  if (statusEl) { statusEl.textContent = 'Compressing…'; statusEl.className = 'profile-upload__status'; }
+
+  // Compress
+  var compressed = await new Promise(function(resolve, reject) {
+    _compressImage(file, function(err, blob) {
+      if (err) { reject(err); } else { resolve(blob); }
+    });
+  });
+
+  // Preview compressed result
+  if (previewEl) {
+    var previewUrl = URL.createObjectURL(compressed);
+    previewEl.src = previewUrl;
+    previewEl.style.display = 'block';
+  }
+
+  if (statusEl) { statusEl.textContent = 'Uploading…'; }
+
+  // Upload to Supabase Storage: users/{user_id}/{timestamp}.jpg
+  var storagePath = currentUser.id + '/' + Date.now() + '.jpg';
+  await sbStorageUpload(STORAGE_BUCKET, storagePath, compressed);
+
+  var publicUrl = sbStoragePublicUrl(STORAGE_BUCKET, storagePath);
+
+  // Save URL to mn_users
+  await sbPatch('mn_users', 'id=eq.' + currentUser.id, { profile_image_url: publicUrl });
+  currentUser.profile_image_url = publicUrl;
+
+  // Persist updated user
+  try {
+    var saved = JSON.parse(localStorage.getItem('mn_session') || '{}');
+    if (saved.user) { saved.user.profile_image_url = publicUrl; localStorage.setItem('mn_session', JSON.stringify(saved)); }
+  } catch(ex) {}
+
+  // Refresh nav avatar
+  _renderLoggedInNav();
+
+  if (statusEl) { statusEl.textContent = '✓ Photo updated!'; statusEl.className = 'profile-upload__status profile-upload__status--ok'; }
+
+  return publicUrl;
+}
+
+// ── Profile picture uploader component ─────────────────────────────
+// Renders into any container element
+function renderProfileUploader(container) {
+  if (!container) { return; }
+  if (!currentUser) { container.innerHTML = '<p style="color:var(--text-400);">Please sign in.</p>'; return; }
+
+  var isChampion = currentUser.is_champion || currentUser.is_admin;
+  var avatarUrl  = currentUser.profile_image_url || '';
+  var parts      = (currentUser.name || '?').split(' ');
+  var initials   = parts.length >= 2 ? parts[0][0] + parts[parts.length-1][0] : parts[0][0] || '?';
+  initials = initials.toUpperCase();
+
+  container.innerHTML =
+    '<div class="profile-uploader">' +
+      // Current avatar
+      '<div class="profile-uploader__avatar">' +
+        (avatarUrl
+          ? '<img id="profile-upload-preview" src="' + esc(avatarUrl) + '" alt="Profile photo" class="profile-uploader__img">'
+          : '<div id="profile-upload-preview" class="profile-uploader__initials">' + esc(initials) + '</div>') +
+      '</div>' +
+      // Upload controls
+      (isChampion
+        ? '<div class="profile-uploader__controls">' +
+            '<p class="profile-uploader__hint">JPG, PNG or WEBP · max 2 MB</p>' +
+            '<label class="profile-uploader__file-label">' +
+              '📁 Choose Photo' +
+              '<input type="file" id="profile-file-input" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="_onProfileFileChange(event)">' +
+            '</label>' +
+            '<button class="btn btn--primary" id="btn-upload-profile" onclick="_doProfileUpload()" disabled>⬆ Upload</button>' +
+            '<div id="profile-upload-status" class="profile-upload__status"></div>' +
+          '</div>'
+        : '<div class="profile-uploader__controls">' +
+            '<div class="dash-alert dash-alert--info" style="margin:0;">' +
+              '<div class="dash-alert__icon">🏆</div>' +
+              '<div class="dash-alert__body"><div class="dash-alert__title">Champions only</div>' +
+              'Profile photo upload is available to tournament champions. Win a MacroNations tournament to unlock this feature.</div>' +
+            '</div>' +
+          '</div>') +
+    '</div>';
+}
+
+function _onProfileFileChange(event) {
+  var file = event.target.files[0];
+  if (!file) { return; }
+
+  // Validate immediately for UX feedback
+  var statusEl = document.getElementById('profile-upload-status');
+  var btn      = document.getElementById('btn-upload-profile');
+  var preview  = document.getElementById('profile-upload-preview');
+
+  var validType = ALLOWED_TYPES.indexOf(file.type) !== -1;
+  if (!validType) {
+    if (statusEl) { statusEl.textContent = 'Only JPG, PNG, WEBP accepted.'; statusEl.className = 'profile-upload__status profile-upload__status--err'; }
+    if (btn) { btn.disabled = true; }
+    return;
+  }
+  if (file.size > MAX_FILE_BYTES) {
+    if (statusEl) { statusEl.textContent = 'File too large (max 2 MB).'; statusEl.className = 'profile-upload__status profile-upload__status--err'; }
+    if (btn) { btn.disabled = true; }
+    return;
+  }
+
+  // Show preview
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    if (preview) {
+      if (preview.tagName === 'IMG') {
+        preview.src = ev.target.result;
+      } else {
+        var img = document.createElement('img');
+        img.id = 'profile-upload-preview';
+        img.src = ev.target.result;
+        img.className = 'profile-uploader__img';
+        img.alt = 'Preview';
+        preview.parentNode.replaceChild(img, preview);
+      }
+    }
+    if (statusEl) { statusEl.textContent = 'Ready to upload.'; statusEl.className = 'profile-upload__status'; }
+    if (btn) { btn.disabled = false; }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function _doProfileUpload() {
+  var fileInput = document.getElementById('profile-file-input');
+  var statusEl  = document.getElementById('profile-upload-status');
+  var preview   = document.getElementById('profile-upload-preview');
+  var btn       = document.getElementById('btn-upload-profile');
+
+  if (!fileInput || !fileInput.files[0]) {
+    if (statusEl) { statusEl.textContent = 'Please select a file first.'; statusEl.className = 'profile-upload__status profile-upload__status--err'; }
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Uploading…'; }
+
+  try {
+    var previewImg = (preview && preview.tagName === 'IMG') ? preview : null;
+    await uploadProfilePicture(fileInput.files[0], statusEl, previewImg);
+    if (btn) { btn.textContent = '✓ Done'; }
+  } catch(e) {
+    if (statusEl) { statusEl.textContent = 'Error: ' + (e.message || 'Upload failed'); statusEl.className = 'profile-upload__status profile-upload__status--err'; }
+    if (btn) { btn.disabled = false; btn.textContent = '⬆ Upload'; }
+  }
+}
+
+// ── Fetch profile_image_url on login and merge into currentUser ────
+var _origAfterLogin = afterLogin;
+afterLogin = async function() {
+  await _origAfterLogin();
+  // Refresh user row to get latest profile_image_url & is_champion
+  if (currentUser && currentUser.id) {
+    try {
+      var rows = await sbGet('mn_users', 'id=eq.' + currentUser.id + '&limit=1');
+      if (rows && rows.length) {
+        currentUser.profile_image_url = rows[0].profile_image_url || null;
+        currentUser.is_champion       = rows[0].is_champion       || false;
+        _renderLoggedInNav();
+      }
+    } catch(ex) {}
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  CHAMPIONS LEADERBOARD — with profile pictures
+// ═══════════════════════════════════════════════════════════════════
+
+async function renderChampions() {
+  var el = document.getElementById('champions-content');
+  if (!el) { return; }
+  el.innerHTML =
+    '<div class="empty-state"><div class="spinner" style="width:28px;height:28px;margin:0 auto 0.75rem;"></div>' +
+    '<div class="empty-state__title">Loading champions…</div></div>';
+
+  try {
+    var champs = await sbGet('champions', 'order=year.desc,score.desc&limit=100');
+    champs = champs || [];
+
+    if (!champs.length) {
+      el.innerHTML =
+        '<div class="empty-state"><div class="empty-state__icon">🏆</div>' +
+        '<div class="empty-state__title">No champions yet</div>' +
+        '<div class="empty-state__desc">The Hall of Champions will be populated when the first tournament concludes.</div></div>';
+      return;
+    }
+
+    // Fetch profile images for champion users
+    var profileMap = {};
+    try {
+      var allUsers = await sbGet('mn_users', 'select=id,name,profile_image_url,is_champion&limit=500');
+      if (allUsers) {
+        for (var ui = 0; ui < allUsers.length; ui++) {
+          if (allUsers[ui].name) { profileMap[allUsers[ui].name] = allUsers[ui]; }
+        }
+      }
+    } catch(ex) {}
+
+    // Build grid
+    var cards = '';
+    for (var i = 0; i < champs.length; i++) {
+      var c    = champs[i];
+      var rank = i + 1;
+      var rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '<span style="font-size:1rem;font-weight:700;color:var(--text-400);">#' + rank + '</span>';
+      var userRec   = profileMap[c.captain] || profileMap[c.team] || null;
+      var imgUrl    = (userRec && userRec.profile_image_url) ? userRec.profile_image_url : '';
+      var nameParts = (c.captain || c.team || '?').split(' ');
+      var initials  = nameParts.length >= 2
+        ? nameParts[0][0] + nameParts[nameParts.length-1][0]
+        : (nameParts[0][0] || '?');
+      initials = initials.toUpperCase();
+
+      var avatarHtml = imgUrl
+        ? '<img src="' + esc(imgUrl) + '" class="champ-card-new__avatar-img" alt="' + esc(c.captain || '') + '">'
+        : '<div class="champ-card-new__avatar-initials">' + esc(initials) + '</div>';
+
+      var isAdmin = currentUser && currentUser.is_admin;
+
+      cards +=
+        '<article class="champ-card-new">' +
+          '<div class="champ-card-new__rank">' + rankBadge + '</div>' +
+          '<div class="champ-card-new__avatar">' + avatarHtml + '</div>' +
+          '<div class="champ-card-new__body">' +
+            '<div class="champ-card-new__season">Season ' + esc(String(c.season || c.year || '')) + '</div>' +
+            '<h2 class="champ-card-new__team">' + esc(c.team || 'Unknown') + '</h2>' +
+            '<p class="champ-card-new__captain">' + esc(c.captain || '') + '</p>' +
+            '<p class="champ-card-new__meta">' + esc(c.institution || '') + (c.country ? ' · ' + esc(c.country) : '') + '</p>' +
+            '<div class="champ-card-new__stats">' +
+              '<div class="champ-card-new__score">' + esc(String(c.score || '—')) + '<span>/1000</span></div>' +
+              (c.prize_won ? '<div class="champ-card-new__prize">💰 ' + fmt$(c.prize_won) + '</div>' : '') +
+            '</div>' +
+          '</div>' +
+          (isAdmin
+            ? '<button class="btn btn--danger btn--sm champ-card-new__revoke" onclick="revokeChampion(\'' + esc(c.id) + '\')">Revoke</button>'
+            : '') +
+        '</article>';
+    }
+
+    el.innerHTML = '<div class="champions-leaderboard">' + cards + '</div>';
+
+  } catch(e) {
+    el.innerHTML =
+      '<div class="empty-state"><div class="empty-state__icon">⚠️</div>' +
+      '<div class="empty-state__title">Could not load champions</div>' +
+      '<div class="empty-state__desc">' + esc((e && e.message) || '') + '</div></div>';
+  }
+}
+
+// ── Mark user as champion when tournament completes ─────────────────
+var _origCrownChampion = crownChampion;
+crownChampion = async function(tournId) {
+  await _origCrownChampion(tournId);
+  // Also set is_champion on the winning captain's user record
+  try {
+    var teamRows = await sbGet('teams', 'tournament_id=eq.' + tournId + '&fee_paid=eq.true&limit=200');
+    if (!teamRows || !teamRows.length) { return; }
+    var econRows = await sbGet('economies', 'tournament_id=eq.' + tournId + '&select=team_id,current&limit=200');
+    if (!econRows || !econRows.length) { return; }
+    var best = null; var bestScore = -1;
+    for (var i = 0; i < econRows.length; i++) {
+      var sc = computeScores((econRows[i] && econRows[i].current) ? econRows[i].current : defaultEconomy()).total;
+      if (sc > bestScore) { bestScore = sc; best = econRows[i]; }
+    }
+    if (!best) { return; }
+    var winTeam = null;
+    for (var ti = 0; ti < teamRows.length; ti++) {
+      if (teamRows[ti].id === best.team_id) { winTeam = teamRows[ti]; break; }
+    }
+    if (winTeam && winTeam.captain_id) {
+      await sbPatch('mn_users', 'id=eq.' + winTeam.captain_id, { is_champion: true });
+    }
+  } catch(ex) {}
+};
+
+// ── Profile tab in dashboard ────────────────────────────────────────
+// Wire into dashboard tab system
+(function() {
+  var dashTabs = document.getElementById('dash-tabs');
+  if (!dashTabs) { return; }
+
+  // Add Profile tab button
+  var profileBtn = document.createElement('button');
+  profileBtn.className = 'admin-tab';
+  profileBtn.setAttribute('data-dash-tab', 'profile');
+  profileBtn.setAttribute('role', 'tab');
+  profileBtn.textContent = '👤 Profile';
+  dashTabs.appendChild(profileBtn);
+
+  // Add panel
+  var content = document.getElementById('dash-content');
+  if (content) {
+    var panel = document.createElement('div');
+    panel.id        = 'dash-panel-profile';
+    panel.className = 'dash-panel';
+    panel.style.display = 'none';
+    content.appendChild(panel);
+  }
+
+  // Extend tab renderer
+  var _prev_renderDashTab = _renderDashTab;
+  _renderDashTab = function(id) {
+    if (id === 'profile') { _renderDashProfileTab(); }
+    else { _prev_renderDashTab(id); }
+  };
+})();
+
+function _renderDashProfileTab() {
+  var el = document.getElementById('dash-panel-profile');
+  if (!el) { return; }
+  if (!currentUser) { el.innerHTML = '<div class="empty-state"><div class="empty-state__icon">🔒</div><div class="empty-state__title">Not signed in</div></div>'; return; }
+
+  el.innerHTML =
+    '<div style="max-width:540px;margin:0 auto;">' +
+      '<div class="card">' +
+        '<div class="card__header"><span class="card__title">Your Profile</span>' +
+          (currentUser.is_champion || currentUser.is_admin ? '<span class="badge badge--gold badge--no-dot">🏆 Champion</span>' : '') +
+        '</div>' +
+        '<div class="card__body">' +
+          '<div id="profile-uploader-mount"></div>' +
+          '<hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);">' +
+          '<div class="form-field"><label class="form-label">Name</label>' +
+            '<div style="font-size:0.9375rem;color:var(--text-900);font-weight:500;">' + esc(currentUser.name || '—') + '</div></div>' +
+          '<div class="form-field"><label class="form-label">Email</label>' +
+            '<div style="font-size:0.9375rem;color:var(--text-700);">' + esc(currentUser.email || '—') + '</div></div>' +
+          '<div class="form-field"><label class="form-label">Institution</label>' +
+            '<div style="font-size:0.9375rem;color:var(--text-700);">' + esc(currentUser.institution || '—') + '</div></div>' +
+          '<div class="form-field"><label class="form-label">Role</label>' +
+            '<div style="font-size:0.9375rem;color:var(--text-700);text-transform:capitalize;">' + esc(currentUser.role || 'student') + '</div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  renderProfileUploader(document.getElementById('profile-uploader-mount'));
+}
+
 
 </script>
 </body>
