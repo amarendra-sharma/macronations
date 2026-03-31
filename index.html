@@ -5304,7 +5304,8 @@ function _buildTournamentCard(t) {
   // User's team in this tournament
   var userTeam    = _userTeams[t.id];
   var alreadyIn   = !!userTeam;
-  var canJoin     = (status === 'registration' || status === 'active') && currentUser && !alreadyIn;
+  var tourRound   = Number(t.current_round) || 0;
+  var canJoin     = (status === 'registration' || (status === 'active' && tourRound === 0)) && currentUser && !alreadyIn;
 
   var footerAction = '';
   if (alreadyIn) {
@@ -5562,6 +5563,13 @@ async function doCreateTeam() {
     }
     if (!tourn) { _setFormErr('create-team-error','Tournament not found.'); setLoading('btn-do-create-team',false,'Create Team'); return; }
 
+    // Block joining if tournament has already started (round > 0)
+    if (Number(tourn.current_round) > 0) {
+      _setFormErr('create-team-error','This tournament has already started (Round ' + tourn.current_round + '). New teams cannot join after Round 1 has begun.');
+      setLoading('btn-do-create-team',false,'Create Team');
+      return;
+    }
+
     // One-team-per-season check
     var conflict = await _checkSeasonConflict(tourn.season_year);
     if (conflict) {
@@ -5724,6 +5732,13 @@ async function doJoinTeam() {
   setLoading('btn-do-join-team', true, 'Joining…');
 
   try {
+    // Block joining if tournament has already started
+    if (tourn && Number(tourn.current_round) > 0) {
+      _setFormErr('join-team-error','This tournament is already underway (Round ' + tourn.current_round + '). New members cannot join after Round 1 has begun.');
+      setLoading('btn-do-join-team',false,'Join This Team');
+      return;
+    }
+
     // One-team-per-season check
     var seasonYear = (tourn && tourn.season_year) ? tourn.season_year : null;
     if (seasonYear) {
@@ -7152,6 +7167,93 @@ async function renderAdmin() {
 
 PAGE_LOADERS['admin'] = renderAdmin;
 
+// ── Super-admin: Delete tournament ────────────────────────────────
+async function doDeleteTournament(tournId) {
+  var t = _getTournById(tournId);
+  var name = (t && t.name) ? t.name : 'this tournament';
+  if (!confirm('PERMANENTLY DELETE "' + name + '"?\n\nThis removes the tournament and cannot be undone. Teams and economy records are NOT automatically deleted — contact support to remove those.')) { return; }
+  try {
+    await sbDelete('tournaments', 'id=eq.' + tournId);
+    _adminTournaments = _adminTournaments.filter(function(t2) { return t2.id !== tournId; });
+    flash('Tournament deleted.', 'success');
+    _renderAdminTab('tournaments');
+  } catch(e) {
+    flash('Delete failed: ' + ((e && e.message) || 'Error'), 'error');
+  }
+}
+
+// ── Super-admin: Manage teams modal ───────────────────────────────
+async function openManageTeamsModal(tournId) {
+  var t = _getTournById(tournId);
+  if (!t) { flash('Tournament not found.', 'error'); return; }
+
+  var teams = [];
+  try {
+    teams = await sbGet('teams', 'tournament_id=eq.' + tournId + '&limit=200') || [];
+  } catch(e) { flash('Could not load teams.', 'error'); return; }
+
+  var rows = '';
+  for (var i = 0; i < teams.length; i++) {
+    var tm = teams[i];
+    rows +=
+      '<tr>' +
+      '<td>' + esc(tm.name || '') + '</td>' +
+      '<td class="text-mono">' + esc(tm.invite_code || '') + '</td>' +
+      '<td>' + (tm.fee_paid ? '<span class="badge badge--green badge--no-dot">Paid</span>' : '<span class="badge badge--subtle badge--no-dot">Unpaid</span>') + '</td>' +
+      '<td>' +
+        '<button class="btn btn--ghost btn--sm" onclick="doMarkPaid(\'' + tm.id + '\')">Mark Paid</button> ' +
+        '<button class="btn btn--danger btn--sm" onclick="doRemoveTeam(\'' + tm.id + '\',\'' + esc(tm.name||'') + '\')">Remove</button>' +
+      '</td>' +
+      '</tr>';
+  }
+
+  // Create or reuse modal
+  var existing = document.getElementById('modal-manage-teams');
+  if (!existing) {
+    existing = document.createElement('div');
+    existing.id = 'modal-manage-teams';
+    existing.className = 'modal-backdrop';
+    existing.setAttribute('role', 'dialog');
+    existing.setAttribute('aria-modal', 'true');
+    document.body.appendChild(existing);
+  }
+  existing.innerHTML =
+    '<div class="modal modal--wide">' +
+      '<div class="modal__header">' +
+        '<div><h2 class="modal__title">Manage Teams — ' + esc(t.name || '') + '</h2>' +
+          '<p class="modal__subtitle">Remove teams for misconduct or mark fees as paid.</p></div>' +
+        '<button class="modal__close" onclick="closeModal(\'modal-manage-teams\')">✕</button>' +
+      '</div>' +
+      '<div class="modal__body">' +
+        '<div class="table-wrap" style="border:none;box-shadow:none;">' +
+          '<table class="table">' +
+            '<thead><tr><th>Team</th><th>Code</th><th>Payment</th><th>Actions</th></tr></thead>' +
+            '<tbody>' + (rows || '<tr><td colspan="4" style="text-align:center;color:var(--text-400);padding:1.5rem;">No teams yet.</td></tr>') + '</tbody>' +
+          '</table>' +
+        '</div>' +
+      '</div>' +
+      '<div class="modal__footer">' +
+        '<button class="btn btn--ghost" onclick="closeModal(\'modal-manage-teams\')">Close</button>' +
+      '</div>' +
+    '</div>';
+  openModal('modal-manage-teams');
+}
+
+async function doRemoveTeam(teamId, teamName) {
+  if (!confirm('Remove team "' + teamName + '" from this tournament?\n\nThis action logs a misconduct removal. The team will lose access to the dashboard for this tournament.')) { return; }
+  try {
+    await sbDelete('teams', 'id=eq.' + teamId);
+    flash('Team "' + teamName + '" removed.', 'success');
+    // Refresh admin teams list
+    _adminTeams = _adminTeams.filter(function(tm) { return tm.id !== teamId; });
+    // Close and reopen to refresh
+    closeModal('modal-manage-teams');
+  } catch(e) {
+    flash('Remove failed: ' + ((e && e.message) || 'Error'), 'error');
+  }
+}
+
+
 function _renderAdminTab(id) {
   var el = document.getElementById('admin-panel-content');
   if (!el) { return; }
@@ -7334,7 +7436,11 @@ function _tournamentActionBtns(t) {
     btns += '<button class="btn btn--danger btn--sm" onclick="promptCompleteTournament(\'' + id + '\')">Complete</button>';
   }
   if (t.status === 'completed') {
-    btns += '<button class="btn btn--ghost btn--sm" onclick="doSetTournamentStatus(\'' + id + '\',\'active\')">Reopen</button>';
+    btns += '<button class="btn btn--ghost btn--sm" onclick="doSetTournamentStatus(\'' + id + '\',\'active\')">↩ Reopen</button>';
+  }
+  if (_isAdmin()) {
+    btns += '<button class="btn btn--ghost btn--sm" onclick="openManageTeamsModal(\'' + id + '\')" title="Manage teams">👥 Teams</button>';
+    btns += '<button class="btn btn--danger btn--sm" onclick="doDeleteTournament(\'' + id + '\')" title="Delete permanently">🗑</button>';
   }
   return btns || '<span class="text-muted text-sm">—</span>';
 }
@@ -7658,8 +7764,15 @@ async function runSimulation(tournId) {
   var t = _getTournById(tournId);
   if (!t) { log('Tournament not found.', 'err'); return; }
 
-  var round = t.current_round || 0;
+  var round    = t.current_round || 0;
+  var maxRound = t.rounds_total  || 5;
   var newRound = round + 1;
+
+  // Enforce max rounds — cannot advance beyond rounds_total
+  if (round >= maxRound) {
+    flash('All ' + maxRound + ' rounds have been played. Use "Complete Tournament" to finalise results.', 'info');
+    return;
+  }
 
   var btn = document.getElementById('btn-run-sim-' + tournId);
   if (btn) { btn.disabled = true; btn.textContent = 'Running…'; }
@@ -8939,17 +9052,6 @@ function showLegal(section) {
 }
 
 // Load legal on page show
-var _origShowPage = showPage;
-showPage = function(id) {
-  _origShowPage(id);
-  if (id === 'legal') {
-    // Show terms by default if nothing is active
-    var activeTab = document.querySelector('[data-legal].active');
-    if (!activeTab) { showLegal('terms'); }
-    else { showLegal(activeTab.getAttribute('data-legal')); }
-  }
-};
-
 PAGE_LOADERS['legal'] = function() { showLegal('terms'); };
 
 
@@ -9072,34 +9174,64 @@ function _pillCard(icon, name, color, desc) {
 }
 
 function _aboutFounder() {
-  _loadFounderPhotoDelayed();
+  var savedPhoto = '';
+  try { savedPhoto = localStorage.getItem('mn_founder_photo') || ''; } catch(ex) {}
+  var photoBlock = savedPhoto
+    ? '<img id="founder-photo" src="' + savedPhoto + '" style="width:160px;height:160px;border-radius:12px;object-fit:cover;display:block;" alt="Founder">'
+    : '<div id="founder-photo-placeholder" style="width:160px;height:160px;border-radius:12px;background:var(--blue-light);border:2px dashed var(--blue-mid);display:flex;flex-direction:column;align-items:center;justify-content:center;">' +
+        '<div style="font-size:2.5rem;">📸</div>' +
+        '<div style="font-size:0.75rem;color:var(--blue);font-weight:600;margin-top:0.375rem;">No photo yet</div>' +
+      '</div>';
   return (
     '<div style="max-width:720px;margin:0 auto;">' +
     '<div class="card">' +
-      '<div class="card__body" style="padding:2.5rem;">' +
+      '<div class="card__body" style="padding:2rem;">' +
         '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
-          // Photo placeholder
-          '<div style="flex-shrink:0;text-align:center;">' +
-            '<div style="width:160px;height:160px;border-radius:var(--radius-lg);background:var(--blue-light);border:2px dashed var(--blue-mid);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;margin-bottom:0.5rem;" onclick="document.getElementById(\'founder-photo-input\').click()">' +
-              '<div style="font-size:2.5rem;margin-bottom:0.5rem;">📸</div>' +
-              '<div style="font-size:0.75rem;color:var(--blue);font-weight:600;">Upload Photo</div>' +
-            '</div>' +
-            '<input type="file" id="founder-photo-input" accept="image/*" style="display:none;" onchange="(function(e){var f=e.target.files[0];if(!f){return;}var r=new FileReader();r.onload=function(ev){var el=document.getElementById(\'founder-photo\');if(el){el.src=ev.target.result;el.style.display=\'block\';}};r.readAsDataURL(f);})(event)">' +
-            '<img id="founder-photo" style="width:160px;height:160px;border-radius:var(--radius-lg);object-fit:cover;display:none;" alt="Founder photo">' +
+          '<div style="flex-shrink:0;text-align:center;min-width:160px;">' +
+            photoBlock +
+            '<label style="display:inline-flex;align-items:center;gap:0.375rem;margin-top:0.75rem;padding:0.375rem 0.875rem;background:var(--bg-subtle);border:1.5px solid var(--border-strong);border-radius:8px;font-size:0.8125rem;font-weight:600;cursor:pointer;color:var(--text-700);">' +
+              '📸 ' + (savedPhoto ? 'Change Photo' : 'Upload Photo') +
+              '<input type="file" accept="image/*" style="display:none;" onchange="_founderPhotoUpload(event)">' +
+            '</label>' +
           '</div>' +
-          // Bio text
-          '<div style="flex:1;min-width:240px;">' +
+          '<div style="flex:1;min-width:220px;">' +
             '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.75rem;margin-bottom:0.25rem;">Amarendra Sharma, PhD</h2>' +
-            '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder & Director, MacroNations LLC</p>' +
+            '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder &amp; Director, MacroNations LLC</p>' +
             '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">MacroNations was founded with a vision to make macroeconomic education experiential, competitive, and globally accessible. The platform bridges the gap between classroom theory and real-world policy-making by immersing students in the decisions that shape economies.</p>' +
-            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations LLC is registered as a New York Limited Liability Company.</p>' +
-            '<p style="color:var(--text-400);font-size:0.875rem;">📧 <a href="mailto:support@macronations.com">support@macronations.com</a> &nbsp;·&nbsp; 🌐 macronations.com</p>' +
+            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations LLC is a New York Limited Liability Company.</p>' +
+            '<p style="color:var(--text-400);font-size:0.875rem;">📧 <a href="mailto:support@macronations.com">support@macronations.com</a> &nbsp;&middot;&nbsp; 🌐 macronations.com</p>' +
           '</div>' +
         '</div>' +
       '</div>' +
     '</div>' +
     '</div>'
   );
+}
+
+function _founderPhotoUpload(event) {
+  var file = event.target.files[0];
+  if (!file) { return; }
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var dataUrl = ev.target.result;
+    try { localStorage.setItem('mn_founder_photo', dataUrl); } catch(ex) {}
+    var img = document.getElementById('founder-photo');
+    if (img) {
+      img.src = dataUrl;
+    } else {
+      var ph = document.getElementById('founder-photo-placeholder');
+      if (ph) {
+        var ni = document.createElement('img');
+        ni.id = 'founder-photo';
+        ni.src = dataUrl;
+        ni.alt = 'Founder';
+        ni.style.cssText = 'width:160px;height:160px;border-radius:12px;object-fit:cover;display:block;';
+        ph.parentNode.replaceChild(ni, ph);
+      }
+    }
+    flash('Photo saved!', 'success');
+  };
+  reader.readAsDataURL(file);
 }
 
 function _aboutLegal() {
@@ -9139,14 +9271,22 @@ function _aboutLegal() {
   return '<div style="max-width:720px;margin:0 auto;">' + tabs + panels + '</div>';
 }
 
-// ── Update showPage to load About tab ──────────────────────────────
-(function() {
-  var origShowPage2 = showPage;
-  showPage = function(id) {
-    origShowPage2(id);
-    if (id === 'about') { showAbout('how'); }
-  };
-})();
+// ── showPage: load About and Legal sub-content ──────────────────────
+var _baseShowPage = showPage;
+showPage = function(id) {
+  _baseShowPage(id);
+  if (id === 'about') {
+    // Re-activate the correct about tab
+    var activeAbout = document.querySelector('[data-about-tab].active');
+    var which = activeAbout ? activeAbout.getAttribute('data-about-tab') : 'how';
+    showAbout(which);
+  }
+  if (id === 'legal') {
+    var activeLegal = document.querySelector('[data-legal].active');
+    if (!activeLegal) { showLegal('terms'); }
+    else { showLegal(activeLegal.getAttribute('data-legal')); }
+  }
+};
 
 // ═══════════════════════════════════════════════════════════════════
 //  CERTIFICATE — Signature fix (professor name + admin name)
