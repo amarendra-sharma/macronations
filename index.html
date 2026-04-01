@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Stripe Buy Button SDK -->
+  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MacroNations — Global Economic Strategy Tournament</title>
   <meta name="description" content="The premier macroeconomic policy simulation tournament for university students worldwide.">
@@ -2639,6 +2641,188 @@ h1, h2, h3, h4, h5 {
   }
 }
 
+/* ── PROFILE UPLOADER ── */
+.profile-uploader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.profile-uploader__avatar {
+  flex-shrink: 0;
+}
+.profile-uploader__img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+  display: block;
+}
+.profile-uploader__initials {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.profile-uploader__controls {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+.profile-uploader__hint {
+  font-size: 0.8125rem;
+  color: var(--text-400);
+  margin: 0;
+}
+.profile-uploader__file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-subtle);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-700);
+  transition: border-color 0.15s;
+  width: fit-content;
+}
+.profile-uploader__file-label:hover { border-color: var(--blue); color: var(--blue); }
+.profile-upload__status { font-size: 0.8125rem; color: var(--text-400); min-height: 1.2em; }
+.profile-upload__status--ok  { color: var(--success); font-weight: 600; }
+.profile-upload__status--err { color: var(--danger);  font-weight: 600; }
+
+/* ── CHAMPIONS LEADERBOARD ── */
+.champions-leaderboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.champ-card-new {
+  background: var(--bg-white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: var(--shadow-xs);
+  position: relative;
+  transition: box-shadow 0.15s;
+}
+.champ-card-new:hover { box-shadow: var(--shadow-md); }
+.champ-card-new__rank {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.champ-card-new__avatar {
+  width: 88px;
+  height: 88px;
+  margin-bottom: 1rem;
+}
+.champ-card-new__avatar-img {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border);
+}
+.champ-card-new__avatar-initials {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.champ-card-new__body { width: 100%; }
+.champ-card-new__season {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-400);
+  margin-bottom: 0.25rem;
+}
+.champ-card-new__team {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.25rem;
+  color: var(--text-900);
+  margin: 0 0 0.25rem;
+}
+.champ-card-new__captain {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-700);
+  margin: 0 0 0.2rem;
+}
+.champ-card-new__meta {
+  font-size: 0.8125rem;
+  color: var(--text-400);
+  margin: 0 0 0.875rem;
+}
+.champ-card-new__stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.champ-card-new__score {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--text-900);
+}
+.champ-card-new__score span { font-size: 0.8125rem; color: var(--text-400); }
+.champ-card-new__prize {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--warning);
+  background: var(--warning-bg);
+  border-radius: var(--radius-full);
+  padding: 0.2rem 0.625rem;
+}
+.champ-card-new__revoke {
+  margin-top: 1rem;
+  width: 100%;
+}
+/* Nav avatar with profile image */
+.nav-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border);
+}
+@media (max-width: 600px) {
+  .champions-leaderboard { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .champ-card-new { padding: 1rem; }
+}
+@media (max-width: 380px) {
+  .champions-leaderboard { grid-template-columns: 1fr; }
+}
   </style>
 </head>
 <body>
@@ -3465,7 +3649,7 @@ h1, h2, h3, h4, h5 {
         <button class="btn btn--primary btn--full btn--lg" style="margin-top:0.5rem;">Create Account</button>
         <p class="text-center text-xs mt-2" style="color:var(--text-400);line-height:1.6;">
           By registering you agree to MacroNations Tournament Rules.<br>
-          MacroNations LLC · A New York Limited Liability Company
+          MacroNations — owned by a New York LLC
         </p>
       </div>
     </div>
@@ -3609,7 +3793,7 @@ h1, h2, h3, h4, h5 {
   </div>
 
   <div class="footer__bottom">
-    <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
+    <p class="footer__copy">© 2026 MacroNations — owned by a New York LLC · All rights reserved.</p>
     <nav class="footer__legal-links" aria-label="Legal links">
       <a href="#" class="footer__legal-link">Privacy</a>
       <a href="#" class="footer__legal-link">Terms</a>
@@ -3627,6 +3811,12 @@ var SUPA_URL  = 'https://rtaiivegcqqmdchpguzn.supabase.co';
 var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0YWlpdmVnY3FxbWRjaHBndXpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMzQ3NTEsImV4cCI6MjA4OTcxMDc1MX0.5BrafKPYNNyR_xpgbr3a6LWztaCOeBVbDktsFMCMH5Y';
 
 function _authToken() {
+  // ALWAYS use in-memory currentSession first — it is kept fresh by _ensureFreshToken.
+  // localStorage may contain an expired token from a previous page load.
+  if (currentSession && currentSession.access_token) {
+    return currentSession.access_token;
+  }
+  // Pre-init: currentSession not yet set, try localStorage as bootstrap only
   var sess = _loadSession();
   return (sess && sess.access_token) ? sess.access_token : SUPA_ANON;
 }
@@ -3646,6 +3836,7 @@ function _restHeaders(extra) {
 }
 
 async function sbGet(table, params) {
+  await _ensureFreshToken();
   var url = SUPA_URL + '/rest/v1/' + table;
   if (params) { url += '?' + params; }
   var res  = await fetch(url, { method: 'GET', headers: _restHeaders() });
@@ -3654,7 +3845,27 @@ async function sbGet(table, params) {
   return data;
 }
 
+// Public read — uses anon key only. No user JWT needed.
+// Use for rankings, champions, tournaments page — pages visible to all.
+async function sbGetPublic(table, params) {
+  var url = SUPA_URL + '/rest/v1/' + table;
+  if (params) { url += '?' + params; }
+  var res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type':  'application/json',
+      'apikey':        SUPA_ANON,
+      'Authorization': 'Bearer ' + SUPA_ANON,
+      'Accept':        'application/json'
+    }
+  });
+  var data = await res.json();
+  if (!res.ok) { throw new Error((data && data.message) || 'Public GET failed'); }
+  return Array.isArray(data) ? data : (data ? [data] : []);
+}
+
 async function sbPost(table, body) {
+  await _ensureFreshToken();
   // Strip any undefined/null id — let Postgres generate it via DEFAULT
   var clean = {};
   var keys  = Object.keys(body);
@@ -3673,6 +3884,7 @@ async function sbPost(table, body) {
 }
 
 async function sbPatch(table, filter, body) {
+  await _ensureFreshToken();
   var res  = await fetch(SUPA_URL + '/rest/v1/' + table + '?' + filter, {
     method:  'PATCH',
     headers: _restHeaders({ 'Prefer': 'return=representation' }),
@@ -3684,6 +3896,7 @@ async function sbPatch(table, filter, body) {
 }
 
 async function sbDelete(table, filter) {
+  await _ensureFreshToken();
   var res = await fetch(SUPA_URL + '/rest/v1/' + table + '?' + filter, {
     method:  'DELETE',
     headers: _restHeaders()
@@ -3727,6 +3940,38 @@ async function _supaRefresh(refreshToken) {
     body:    JSON.stringify({ refresh_token: refreshToken })
   });
   return res.json();
+}
+
+// Auto-refresh the session if within 5 minutes of expiry.
+// Called before every API request.
+async function _ensureFreshToken() {
+  if (!currentSession) { return; }
+  var expiresAt = currentSession.expires_at || 0;
+  var fiveMin   = 5 * 60 * 1000;
+  if (Date.now() < expiresAt - fiveMin) { return; } // still fresh
+
+  // Try to refresh
+  var rt = currentSession.refresh_token;
+  if (!rt) { _clearSession(); currentSession = null; currentUser = null; _renderLoggedOutNav(); return; }
+  try {
+    var refreshed = await _supaRefresh(rt);
+    if (refreshed && !refreshed.error && refreshed.access_token) {
+      currentSession = {
+        access_token:  refreshed.access_token,
+        refresh_token: refreshed.refresh_token || rt,
+        expires_at:    Date.now() + ((refreshed.expires_in || 3600) * 1000)
+      };
+      if (currentUser) { _saveSession(currentSession, currentUser); }
+    } else {
+      // Refresh token itself expired — force sign out cleanly
+      _clearSession();
+      currentSession = null;
+      currentUser    = null;
+      currentTeamId  = null;
+      _renderLoggedOutNav();
+      flash('Your session expired. Please sign in again.', 'info');
+    }
+  } catch(e) {}
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -4349,12 +4594,17 @@ function _renderLoggedInNav() {
   var isAdmin  = u.is_admin;
   var role     = u.role || 'student';
   var roleTag  = isAdmin ? 'Admin' : (role === 'professor' ? 'Professor' : 'Student');
+  var imgUrl   = u.profile_image_url || '';
+
+  var avatarHtml = imgUrl
+    ? '<img src="' + esc(imgUrl) + '" class="nav-avatar-img" alt="Profile">'
+    : '<div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8125rem;flex-shrink:0;">' + esc(initials) + '</div>';
 
   var cta = document.querySelector('.nav__cta');
   if (cta) {
     cta.innerHTML =
-      '<div style="display:flex;align-items:center;gap:0.5rem;">' +
-        '<div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8125rem;flex-shrink:0;">' + esc(initials) + '</div>' +
+      '<div style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;" onclick="showPage(\'dashboard\');switchDashTab(\'profile\')">' +
+        avatarHtml +
         '<div style="line-height:1.2;">' +
           '<div style="font-size:0.875rem;font-weight:600;color:var(--text-900);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(u.name || u.username) + '</div>' +
           '<div style="font-size:0.7rem;color:var(--text-400);text-transform:uppercase;letter-spacing:0.06em;">' + esc(roleTag) + '</div>' +
@@ -4372,7 +4622,6 @@ function _renderLoggedInNav() {
       html += '<a href="#" class="nav__tab" data-page="admin">Admin</a>';
     }
     dyn.innerHTML = html;
-    // Re-wire new links
     var newTabs = dyn.querySelectorAll('.nav__tab[data-page]');
     for (var i = 0; i < newTabs.length; i++) {
       (function(tab) {
@@ -5423,7 +5672,7 @@ function openTeamModal(tournamentId) {
   var fee = tourn ? Number(tourn.entry_fee) || 0 : 0;
   if (fee > 0 && feeEl && feeText) {
     feeEl.style.display = 'block';
-    feeText.textContent = 'Entry fee of ' + fmt$(fee) + ' per team is required to compete for prizes. Payment is handled offline — contact support@macronations.com after registering.';
+    feeText.textContent = 'Entry fee required to compete for prizes. Pay securely via the Payment tab in your dashboard after registering.';
   } else if (feeEl) {
     feeEl.style.display = 'none';
   }
@@ -5573,10 +5822,10 @@ async function doCreateTeam() {
     // One-team-per-season check
     var conflict = await _checkSeasonConflict(tourn.season_year);
     if (conflict) {
+      var conflictName = (conflict && conflict.name) ? conflict.name : 'another team';
       _setFormErr('create-team-error',
-        'You are already on team "' + ((conflict && conflict.name) || 'another team') +
-        '" in Season ' + (tourn.season_year || '') +
-        '. Each player can only be on one team per season across all tournaments.'
+        'You are already on team "' + conflictName + '" in Season ' + (tourn.season_year || '') + '. ' +
+        'MacroNations allows only one team per season. Leave your current team before joining a new one.'
       );
       setLoading('btn-do-create-team',false,'Create Team');
       return;
@@ -6950,8 +7199,12 @@ async function renderDashRankings() {
 // Stripe payment link — admin sets this per tournament in settings
 // Falls back to email if not configured
 var STRIPE_PAYMENT_LINKS = {};
-// Default GoDaddy payment link for all paid tournaments
-var DEFAULT_PAYMENT_LINK = 'https://bcb769f9-c141-4e9a-ae69-a71cdfa4764c.paylinks.godaddy.com/e20b2adf-394f-4684-aff2-112';
+// Primary payment link — GoDaddy (activated)
+// Used for all paid tournaments and global elections
+var DEFAULT_PAYMENT_LINK = 'https://buy.stripe.com/3cIbIU2MJ2RKgFD9Am5ZC00';
+var STRIPE_BUY_BTN_ID  = 'buy_btn_1THEu9599m6wZYJIiugg6UMV';
+var STRIPE_PUBLISHABLE = 'pk_live_51TDnG0599m6wZYJIAo2Uq2aocXy54TgNXKB9Fv7ayoZZ7OiayJSpwryXWJABC9VM4U9kq66BuVB06NyLaMfhKNpi00Z6CmLHnF';
+var WORLD_CUP_ENTRY_FEE  = 200;   // Set by admin — fee for global seasonal tournament
 
 function renderDashPayment() {
   var el = document.getElementById('dash-panel-payment');
@@ -6987,35 +7240,25 @@ function renderDashPayment() {
   }
 
   // Check for a Stripe link for this tournament
-  var stripeLink = '';
-  // Try localStorage (set when tournament was created)
-  try {
-    stripeLink = localStorage.getItem('mn_stripe_' + (tourn.name||'').replace(/\s+/g,'_')) || '';
-  } catch(e) {}
-  if (!stripeLink) { stripeLink = (STRIPE_PAYMENT_LINKS[tourn.id]) || DEFAULT_PAYMENT_LINK || ''; }
+  // Payment link: use the activated GoDaddy/Stripe link for all paid tournaments.
+  // This works across all devices without localStorage.
+  var stripeLink = DEFAULT_PAYMENT_LINK || '';
+  // Admin can override per-tournament via STRIPE_PAYMENT_LINKS map
+  if (STRIPE_PAYMENT_LINKS[tourn.id]) { stripeLink = STRIPE_PAYMENT_LINKS[tourn.id]; }
 
-  var payBtn = '';
-  if (stripeLink) {
-    // Pre-fill Stripe with team name and email via URL params where supported
-    var stripeUrl = stripeLink;
-    if (currentUser && currentUser.email) {
-      stripeUrl += (stripeUrl.indexOf('?') === -1 ? '?' : '&') +
-        'prefilled_email=' + encodeURIComponent(currentUser.email);
-    }
-    payBtn =
-      '<a href="' + esc(stripeUrl) + '" target="_blank" rel="noopener" ' +
-        'class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;text-decoration:none;">' +
-        '💳 Pay ' + fmt$(fee) + ' — Secure Payment' +
-      '</a>' +
-      '<p style="font-size:0.8125rem;color:var(--text-400);margin-bottom:1rem;text-align:center;">' +
-        'Click to pay securely. After completing payment, email support@macronations.com with your team name and receipt so we can activate your account.' +
-      '</p>';
-  } else {
-    payBtn =
-      '<button class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;opacity:0.6;cursor:default;">' +
-        '💳 Card Payment (Link not yet set by admin)' +
-      '</button>';
-  }
+  // Stripe Buy Button (official embed)
+  var payBtn =
+    '<div style="margin-bottom:1rem;text-align:center;">' +
+      '<stripe-buy-button ' +
+        'buy-button-id="' + STRIPE_BUY_BTN_ID + '" ' +
+        'publishable-key="' + STRIPE_PUBLISHABLE + '">' +
+      '</stripe-buy-button>' +
+    '</div>' +
+    '<p style="font-size:0.8125rem;color:var(--text-400);margin-bottom:1rem;text-align:center;">' +
+      'Secure payment via Stripe. After paying, email ' +
+      '<a href=\"mailto:support@macronations.com\">support@macronations.com</a> ' +
+      'with your team name and payment receipt to activate your account.' +
+    '</p>';
 
   el.innerHTML =
     '<div class="payment-card">' +
@@ -7403,7 +7646,8 @@ function renderAdminTournaments(el) {
       '<td>' + _statusBadge(t.status) + '</td>' +
       '<td class="text-mono">' + teamCount + (t.max_teams ? '/' + t.max_teams : '') + '</td>' +
       '<td class="text-mono">R' + (t.current_round || 0) + '/' + (t.rounds_total || '?') + '</td>' +
-      '<td>' + (fee > 0 ? fmt$(pp.pool) : '<em style="color:var(--text-400);">Free</em>') + '</td>' +
+      '<td>' + (fee > 0 ? fmt$(pp.pool) : '<em style="color:var(--text-400);">Free</em>') +
+        (t.is_global_elected ? ' <span class="badge badge--gold badge--no-dot" style="font-size:0.7rem;">🌍 World Cup</span>' : '') + '</td>' +
       '<td><div class="admin-action-row">' + actions + '</div></td>' +
       '</tr>';
   }
@@ -7470,8 +7714,19 @@ function openCreateTournament(isClass) {
       electBox.onchange = function() {
         var sw = document.getElementById('ct-global-stripe-wrap');
         if (sw) { sw.style.display = electBox.checked ? 'block' : 'none'; }
+        // Auto-fill with the MacroNations default payment link
+        if (electBox.checked) {
+          var profLinkInput = document.getElementById('ct-stripe-link-prof');
+          if (profLinkInput && !profLinkInput.value.trim()) {
+            profLinkInput.value = (typeof DEFAULT_PAYMENT_LINK !== 'undefined') ? DEFAULT_PAYMENT_LINK : '';
+          }
+        }
       };
     }
+    // Hide the Stripe field from admins too (professors never see it)
+    // Stripe payment link for admins is separate; professors auto-use DEFAULT_PAYMENT_LINK
+    var adminStripeWrap = document.getElementById('ct-admin-stripe-wrap');
+    if (adminStripeWrap) { adminStripeWrap.style.display = 'none'; }
   } else {
     // Admin: full control
     if (feeEl)  { feeEl.removeAttribute('readonly'); feeEl.style.opacity = '1'; }
@@ -7479,6 +7734,9 @@ function openCreateTournament(isClass) {
     if (feeEl  && isClass) { feeEl.value  = '0'; }
     var electWrap2 = document.getElementById('ct-global-election-wrap');
     if (electWrap2) { electWrap2.style.display = 'none'; }
+    // Show the admin-only Stripe field for admins
+    var adminSW = document.getElementById('ct-admin-stripe-wrap');
+    if (adminSW) { adminSW.style.display = 'block'; }
   }
 
   _setFormErr('ct-error', '');
@@ -7507,30 +7765,29 @@ async function doCreateTournament() {
   // Check global election
   var electBox  = document.getElementById('ct-global-elect');
   var isElected = electBox ? electBox.checked : false;
-  if (isElected) {
-    var profLink = document.getElementById('ct-stripe-link-prof');
-    if (profLink && profLink.value.trim()) {
-      try { localStorage.setItem('mn_stripe_elected_' + name.replace(/\s+/g,'_'), profLink.value.trim()); } catch(e) {}
-    }
+  // If elected for world cup, override fee to WORLD_CUP_ENTRY_FEE
+  if (isElected && _isProfessor() && !_isAdmin()) {
+    fee = WORLD_CUP_ENTRY_FEE;
   }
 
   setLoading('btn-do-create-tournament', true, 'Creating…');
   try {
     var schedule = buildSchedule(startDate, rounds, interval);
     var newTourn = await sbPost('tournaments', {
-      name:          name,
-      tier:          tier,
-      season_year:   season,
-      rounds_total:  rounds,
-      entry_fee:     fee,
-      max_teams:     maxTeams || null,
-      description:   desc,
-      status:        'upcoming',
-      current_round: 0,
-      created_by:    currentUser.id,
-      schedule:      schedule,
-      playoff_teams: [],
-      playoff_bracket: {}
+      name:             name,
+      tier:             tier,
+      season_year:      season,
+      rounds_total:     rounds,
+      entry_fee:        fee,
+      max_teams:        maxTeams || null,
+      description:      desc,
+      status:           'upcoming',
+      current_round:    0,
+      created_by:       currentUser.id,
+      schedule:         schedule,
+      playoff_teams:    [],
+      playoff_bracket:  {},
+      is_global_elected: isElected ? true : false
     });
     if (!newTourn || newTourn.code) {
       _setFormErr('ct-error', (newTourn && newTourn.message) || 'Failed to create tournament.');
@@ -8838,7 +9095,7 @@ async function renderRankings() {
 
   try {
     // Fetch active + completed tournaments
-    var tourns = await sbGet('tournaments',
+    var tourns = await sbGetPublic('tournaments',
       'status=in.(active,completed)&order=created_at.desc&limit=50') || [];
 
     if (!tourns.length) {
@@ -8939,9 +9196,9 @@ PAGE_LOADERS['rankings'] = renderRankings;
 var LEGAL_CONTENT = {
   terms: {
     title: 'Terms of Service',
-    updated: 'January 2025',
+    updated: 'January 2026',
     sections: [
-      { h: 'Agreement to Terms', p: 'By accessing or using the MacroNations platform at macronations.com, you agree to be bound by these Terms of Service. MacroNations is operated by MacroNations LLC, a New York Limited Liability Company. If you do not agree to these terms, please do not use the platform.' },
+      { h: 'Agreement to Terms', p: 'By accessing or using the MacroNations platform at macronations.com, you agree to be bound by these Terms of Service. MacroNations is operated by MacroNations (owned by a New York LLC). If you do not agree to these terms, please do not use the platform.' },
       { h: 'Eligibility', p: 'You must be enrolled as a student at an accredited university or college to participate in any MacroNations competition. Professors and educators may access the platform in a non-competing capacity to create and manage class tournaments. By registering, you affirm that the information you provide is accurate and complete.' },
       { h: 'User Accounts', p: 'You are responsible for maintaining the confidentiality of your login credentials. You agree to notify us immediately of any unauthorized access to your account at support@macronations.com. MacroNations LLC is not liable for losses resulting from unauthorized account use.' },
       { h: 'One-Team-Per-Season Rule', p: 'Each registered user may only be a member of one (1) team per tournament season year. Participation in multiple teams within the same season year across different tournaments is prohibited and may result in disqualification.' },
@@ -8954,17 +9211,17 @@ var LEGAL_CONTENT = {
   },
   prizes: {
     title: 'Prize Rules & Distribution',
-    updated: 'January 2025',
+    updated: 'January 2026',
     highlight: 'Prize pool = 10% of total entry fees collected. Winner receives 70%, Runner-up receives 30%.',
     math: [
-      'Example with $200 entry fee and 14 teams:',
+      'Example with a tournament entry fee and 14 teams:',
       '  Total collected:  $200 × 14 = $2,800',
       '  Prize pool (10%): $2,800 × 0.10 = $280',
       '  1st place (70%):  $280 × 0.70 = $196',
       '  2nd place (30%):  $280 × 0.30 = $84'
     ],
     sections: [
-      { h: 'Prize Pool Calculation', p: 'The prize pool consists of 10% of all entry fees collected from paid teams in a tournament. For a $200 entry fee with 14 paid teams, the prize pool is $280. The pool grows as more teams register.' },
+      { h: 'Prize Pool Calculation', p: 'The prize pool consists of 10% of all entry fees collected from paid teams in a tournament. The pool grows as more teams register.' },
       { h: 'Winner Distribution', p: 'The team with the highest aggregate score at the conclusion of all scheduled rounds receives 70% of the prize pool. The team with the second highest score receives the remaining 30%. In the event of a tie, the tied teams share the applicable prize tranche equally.' },
       { h: 'Eligibility for Prizes', p: 'To be eligible for prize distribution, a team must: (1) have paid the full entry fee, (2) have submitted policy decisions in at least one tournament round, and (3) not have been disqualified for any violation of these rules. Free tournaments (entry fee = $0) do not carry cash prizes.' },
       { h: 'Payment of Prizes', p: 'Prizes are paid within 14 business days of tournament conclusion via bank transfer or PayPal. Prize recipients must provide payment details within 30 days of notification or the prize may be forfeited. MacroNations LLC is responsible for any applicable withholding or tax reporting obligations.' },
@@ -8974,7 +9231,7 @@ var LEGAL_CONTENT = {
   },
   privacy: {
     title: 'Privacy Policy',
-    updated: 'January 2025',
+    updated: 'January 2026',
     sections: [
       { h: 'Information We Collect', p: 'We collect: (1) Registration information including name, email address, university affiliation, and country. (2) Tournament participation data including policy submissions, scores, and team membership. (3) Technical data including browser type, IP address, and usage patterns. We do not collect payment card information directly — any payment processing uses third-party services.' },
       { h: 'How We Use Your Information', p: 'Your information is used to: operate the tournament platform; calculate and display scores and rankings; send round notifications and tournament updates; populate the public leaderboard and Hall of Champions; enforce eligibility and integrity requirements; and improve the platform.' },
@@ -8982,12 +9239,12 @@ var LEGAL_CONTENT = {
       { h: 'Data Storage', p: 'Data is stored on Supabase infrastructure hosted in the United States. We implement industry-standard security measures including encryption in transit and access controls. We retain your data for the duration of your account and for a period of 7 years thereafter for record-keeping.' },
       { h: 'Your Rights', p: 'Under applicable law, you may have rights to access, correct, or delete your personal data. To exercise these rights, email support@macronations.com. We will respond within 30 days. Note that certain data (such as leaderboard records) may be retained even after account deletion as part of the public tournament record.' },
       { h: 'Governing Law', p: 'This Privacy Policy is governed by the laws of the State of New York and applicable federal privacy law, including the New York SHIELD Act. For users in the European Economic Area, additional rights may apply under the GDPR.' },
-      { h: 'Contact', p: 'For privacy inquiries, contact: MacroNations LLC, support@macronations.com, macronations.com. As a New York Limited Liability Company, we are subject to New York State jurisdiction.' }
+      { h: 'Contact', p: 'For privacy inquiries, contact: MacroNations LLC, support@macronations.com, macronations.com. As owned by a New York LLC, we are subject to New York State jurisdiction.' }
     ]
   },
   disclaimer: {
     title: 'Disclaimer',
-    updated: 'January 2025',
+    updated: 'January 2026',
     sections: [
       { h: 'Educational Purpose', p: 'MacroNations is an educational simulation platform. The macroeconomic model used in the tournament is a simplified representation designed for pedagogical purposes. It does not constitute financial, investment, or economic advice. Results in the simulation do not predict real-world economic outcomes.' },
       { h: 'No Warranty', p: 'The MacroNations platform is provided "as is" without warranty of any kind, express or implied. MacroNations LLC makes no warranties regarding the accuracy of the simulation engine, the availability of the platform, or the fitness of the platform for any particular purpose.' },
@@ -8998,9 +9255,9 @@ var LEGAL_CONTENT = {
   },
   copyright: {
     title: 'Copyright & Intellectual Property',
-    updated: 'January 2025',
+    updated: 'January 2026',
     sections: [
-      { h: 'Ownership', p: 'MacroNations, the MacroNations logo, the line-chart-with-star mark, the simulation engine, scoring algorithms, website design, and all associated content are the exclusive intellectual property of MacroNations LLC, a New York Limited Liability Company. All rights reserved.' },
+      { h: 'Ownership', p: 'MacroNations, the MacroNations logo, the line-chart-with-star mark, the simulation engine, scoring algorithms, website design, and all associated content are the exclusive intellectual property of MacroNations (owned by a New York LLC). All rights reserved.' },
       { h: 'Limited License', p: 'Registered users are granted a limited, non-exclusive, non-transferable license to access and use the platform solely for participation in authorized MacroNations tournaments. This license does not include the right to copy, reproduce, distribute, modify, or create derivative works from any MacroNations content.' },
       { h: 'Prohibited Uses', p: 'You may not: (1) reproduce or distribute the simulation engine or scoring algorithms; (2) use the MacroNations name or logo without written permission; (3) reverse-engineer, decompile, or disassemble any portion of the platform; (4) frame or mirror any part of the platform on any other site; or (5) use automated means to access the platform.' },
       { h: 'User Content', p: 'Policy submissions, team names, and rationale text entered by users remain the intellectual property of the respective users. By submitting content, you grant MacroNations LLC a non-exclusive, royalty-free license to display your content on the platform (including leaderboards and the Hall of Champions).' },
@@ -9025,7 +9282,7 @@ function showLegal(section) {
   if (!data) { el.innerHTML = '<p>Section not found.</p>'; return; }
 
   var html = '<h2 style="font-size:1.75rem;margin-bottom:0.25rem;">' + esc(data.title) + '</h2>';
-  html += '<p style="font-size:0.875rem;color:var(--text-400);margin-bottom:2rem;">MacroNations LLC · A New York Limited Liability Company · Last updated: ' + esc(data.updated) + '</p>';
+  html += '<p style="font-size:0.875rem;color:var(--text-400);margin-bottom:2rem;">MacroNations — owned by a New York LLC · Last updated: ' + esc(data.updated) + '</p>';
 
   if (data.highlight) {
     html += '<div class="legal-highlight">' + esc(data.highlight) + '</div>';
@@ -9041,7 +9298,7 @@ function showLegal(section) {
   }
 
   html += '<div class="legal-section-date">' +
-    'MacroNations LLC · A New York Limited Liability Company<br>' +
+    'MacroNations — owned by a New York LLC<br>' +
     'Contact: <a href="mailto:support@macronations.com">support@macronations.com</a> · macronations.com<br>' +
     'Governing law: State of New York, New York County<br>' +
     'Last updated: ' + esc(data.updated) +
@@ -9090,12 +9347,12 @@ function _aboutHowItWorks() {
       '<div class="card__body">' +
         '<div class="steps">' +
           _step('1','Register & Join','Create a free account with your university email. Go to Tournaments, find a competition open for registration, and either create a new team or join an existing one with an 8-character invite code. Each team can have up to 5 members.') +
-          _step('2','Pay the Entry Fee (if applicable)','For paid tournaments ($200/team), go to Dashboard → Payment. Pay via the Stripe link or email support@macronations.com. Your policy submissions are locked until payment is confirmed by the admin.') +
+          _step('2','Pay the Entry Fee (if applicable)','For paid tournaments, go to Dashboard → Payment and use the Stripe payment button. Your policy submissions are unlocked once payment is confirmed by the admin.') +
           _step('3','Set Your 10 Policy Levers','Every round, go to Dashboard → Policy. Adjust your 10 macroeconomic levers: Interest Rate, Government Spending, Tax Rate, Trade Openness, R&D Investment, Green Energy Mix, Welfare Spending, Regulation, Foreign Aid, and Infrastructure. Write a brief rationale and hit Submit Final Decision before the round deadline.') +
           _step('4','Respond to Crises','Some rounds trigger an economic crisis (banking crash, pandemic, trade war, debt crisis). Go to Crisis tab first — choose your response option — then separately submit your policy. These are two independent steps. If you skip the crisis response, the full unmitigated shock applies to your economy.') +
           _step('5','Consult the AI Advisor','Use Dashboard → AI Advisor to think through trade-offs. The advisor uses the Socratic method — it raises questions about your economy but never tells you which levers to move. That judgment is yours.') +
           _step('6','Track Your Score','Your economy is scored on 5 pillars (200 points each, 1000 total): GDP Performance, Stability, Equality, Sustainability, and Innovation. Check Dashboard → Overview after each round simulation runs.') +
-          _step('7','Prizes','The top-scoring team wins 70% of the prize pool. Runner-up wins 30%. The pool = 10% of all entry fees collected. Example: 14 teams × $200 = $2,800 collected → $280 prize pool → $196 to winner, $84 to runner-up.') +
+          _step('7','Prizes','The top-scoring team wins 70% of the prize pool. Runner-up wins 30%. The pool = 10% of all entry fees collected from participating teams.') +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -9173,39 +9430,67 @@ function _pillCard(icon, name, color, desc) {
   );
 }
 
+// Cached founder photo — loaded async from admin mn_users row
+var _founderPhotoCache = null;
+
+async function _loadFounderPhoto() {
+  try {
+    var rows = await sbGet('mn_users', 'is_admin=eq.true&order=created_at.asc&limit=1&select=id,name,profile_image_url');
+    if (rows && rows.length && rows[0].profile_image_url) {
+      _founderPhotoCache = rows[0].profile_image_url;
+      return _founderPhotoCache;
+    }
+  } catch(ex) {}
+  // Fallback: localStorage
+  try { return localStorage.getItem('mn_founder_photo') || ''; } catch(e2) { return ''; }
+}
+
 function _aboutFounder() {
-  var savedPhoto = '';
-  try { savedPhoto = localStorage.getItem('mn_founder_photo') || ''; } catch(ex) {}
-  var photoBlock = savedPhoto
-    ? '<img id="founder-photo" src="' + savedPhoto + '" style="width:160px;height:160px;border-radius:12px;object-fit:cover;display:block;" alt="Founder">'
-    : '<div id="founder-photo-placeholder" style="width:160px;height:160px;border-radius:12px;background:var(--blue-light);border:2px dashed var(--blue-mid);display:flex;flex-direction:column;align-items:center;justify-content:center;">' +
-        '<div style="font-size:2.5rem;">📸</div>' +
-        '<div style="font-size:0.75rem;color:var(--blue);font-weight:600;margin-top:0.375rem;">No photo yet</div>' +
-      '</div>';
-  return (
+  // Render skeleton; swap in photo async after mount
+  var cached = _founderPhotoCache || '';
+  var photoHtml = cached
+    ? '<img src="' + cached + '" style="width:160px;height:160px;border-radius:12px;object-fit:cover;display:block;" alt="Amarendra Sharma">'
+    : '<div id="founder-photo-slot" style="width:160px;height:160px;border-radius:12px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;"><div class="spinner" style="width:24px;height:24px;"></div></div>';
+
+  var html =
     '<div style="max-width:720px;margin:0 auto;">' +
     '<div class="card">' +
       '<div class="card__body" style="padding:2rem;">' +
         '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
-          '<div style="flex-shrink:0;text-align:center;min-width:160px;">' +
-            photoBlock +
-            '<label style="display:inline-flex;align-items:center;gap:0.375rem;margin-top:0.75rem;padding:0.375rem 0.875rem;background:var(--bg-subtle);border:1.5px solid var(--border-strong);border-radius:8px;font-size:0.8125rem;font-weight:600;cursor:pointer;color:var(--text-700);">' +
-              '📸 ' + (savedPhoto ? 'Change Photo' : 'Upload Photo') +
-              '<input type="file" accept="image/*" style="display:none;" onchange="_founderPhotoUpload(event)">' +
-            '</label>' +
-          '</div>' +
+          '<div style="flex-shrink:0;text-align:center;min-width:160px;">' + photoHtml + '</div>' +
           '<div style="flex:1;min-width:220px;">' +
             '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.75rem;margin-bottom:0.25rem;">Amarendra Sharma, PhD</h2>' +
             '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder &amp; Director, MacroNations LLC</p>' +
             '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">MacroNations was founded with a vision to make macroeconomic education experiential, competitive, and globally accessible. The platform bridges the gap between classroom theory and real-world policy-making by immersing students in the decisions that shape economies.</p>' +
-            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations LLC is a New York Limited Liability Company.</p>' +
+            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations LLC is owned by a New York LLC.</p>' +
             '<p style="color:var(--text-400);font-size:0.875rem;">📧 <a href="mailto:support@macronations.com">support@macronations.com</a> &nbsp;&middot;&nbsp; 🌐 macronations.com</p>' +
           '</div>' +
         '</div>' +
       '</div>' +
     '</div>' +
-    '</div>'
-  );
+    '</div>';
+
+  if (!cached) {
+    setTimeout(function() {
+      var slot = document.getElementById('founder-photo-slot');
+      if (!slot) { return; }
+      _loadFounderPhoto().then(function(url) {
+        var s = document.getElementById('founder-photo-slot');
+        if (!s) { return; }
+        if (url) {
+          var img = document.createElement('img');
+          img.src = url;
+          img.alt = 'Amarendra Sharma';
+          img.style.cssText = 'width:160px;height:160px;border-radius:12px;object-fit:cover;display:block;';
+          s.parentNode.replaceChild(img, s);
+        } else {
+          s.innerHTML = '<div style="width:160px;height:160px;border-radius:12px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:700;">AS</div>';
+          s.id = '';
+        }
+      });
+    }, 60);
+  }
+  return html;
 }
 
 function _founderPhotoUpload(event) {
@@ -9563,9 +9848,11 @@ makeCertSVG = function(type, recipientName, tournName, score, year, tournDirecto
       var stripeField = document.createElement('div');
       stripeField.className = 'form-field';
       stripeField.innerHTML =
-        '<label class="form-label" for="ct-stripe-link">Stripe Payment Link (optional)</label>' +
-        '<input type="url" id="ct-stripe-link" class="form-input" placeholder="https://buy.stripe.com/...">' +
-        '<div class="form-hint">Students will see a pay button linking here. Get this from your Stripe Dashboard → Payment Links.</div>';
+        '<div id="ct-admin-stripe-wrap" style="display:none;">' +
+          '<label class="form-label" for="ct-stripe-link">Stripe Payment Link (optional, admin only)</label>' +
+          '<input type="url" id="ct-stripe-link" class="form-input" placeholder="https://buy.stripe.com/...">' +
+          '<div class="form-hint">Students will see a pay button linking here.</div>' +
+        '</div>';
       wrap.parentNode.insertBefore(stripeField, wrap);
     }
   }
@@ -9586,6 +9873,425 @@ doCreateTournament = async function() {
   await _origDoCreateTournament();
   sbPost = origSbPost;
 };
+
+
+
+// ═══════════════════════════════════════════════════════════════════
+//  PROFILE IMAGE SYSTEM — Supabase Storage
+// ═══════════════════════════════════════════════════════════════════
+
+var STORAGE_BUCKET = 'profile-images';
+var MAX_FILE_BYTES  = 2 * 1024 * 1024; // 2 MB
+var ALLOWED_TYPES   = ['image/jpeg', 'image/png', 'image/webp'];
+
+// ── Storage helpers ────────────────────────────────────────────────
+async function sbStorageUpload(bucket, path, file) {
+  await _ensureFreshToken();
+  var res = await fetch(
+    SUPA_URL + '/storage/v1/object/' + bucket + '/' + path,
+    {
+      method: 'POST',
+      headers: {
+        'apikey':        SUPA_ANON,
+        'Authorization': 'Bearer ' + _authToken(),
+        'Content-Type':  file.type,
+        'x-upsert':      'true'
+      },
+      body: file
+    }
+  );
+  var data = await res.json();
+  if (!res.ok) { throw new Error((data && data.message) || 'Upload failed'); }
+  return data;
+}
+
+function sbStoragePublicUrl(bucket, path) {
+  return SUPA_URL + '/storage/v1/object/public/' + bucket + '/' + path;
+}
+
+// ── Image compression (canvas resize to max 512px, quality 0.82) ──
+function _compressImage(file, callback) {
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var MAX = 512;
+      var w = img.width;
+      var h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else        { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width  = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.toBlob(function(blob) {
+        callback(null, blob);
+      }, 'image/jpeg', 0.82);
+    };
+    img.onerror = function() { callback(new Error('Could not read image')); };
+    img.src = ev.target.result;
+  };
+  reader.onerror = function() { callback(new Error('Could not read file')); };
+  reader.readAsDataURL(file);
+}
+
+// ── Upload profile picture ─────────────────────────────────────────
+async function uploadProfilePicture(file, statusEl, previewEl) {
+  if (!currentUser) { throw new Error('Not logged in'); }
+
+  // Champion-only gate — checked both here and enforced by Storage policy
+  if (!currentUser.is_champion && !currentUser.is_admin) {
+    throw new Error('Only tournament champions can upload a profile picture.');
+  }
+
+  // Validate type
+  var validType = false;
+  for (var i = 0; i < ALLOWED_TYPES.length; i++) {
+    if (file.type === ALLOWED_TYPES[i]) { validType = true; break; }
+  }
+  if (!validType) { throw new Error('Only JPG, PNG, and WEBP images are accepted.'); }
+
+  // Validate size (before compression)
+  if (file.size > MAX_FILE_BYTES) { throw new Error('File must be under 2 MB.'); }
+
+  if (statusEl) { statusEl.textContent = 'Compressing…'; statusEl.className = 'profile-upload__status'; }
+
+  // Compress
+  var compressed = await new Promise(function(resolve, reject) {
+    _compressImage(file, function(err, blob) {
+      if (err) { reject(err); } else { resolve(blob); }
+    });
+  });
+
+  // Preview compressed result
+  if (previewEl) {
+    var previewUrl = URL.createObjectURL(compressed);
+    previewEl.src = previewUrl;
+    previewEl.style.display = 'block';
+  }
+
+  if (statusEl) { statusEl.textContent = 'Uploading…'; }
+
+  // Upload to Supabase Storage: users/{user_id}/{timestamp}.jpg
+  var storagePath = currentUser.id + '/' + Date.now() + '.jpg';
+  await sbStorageUpload(STORAGE_BUCKET, storagePath, compressed);
+
+  var publicUrl = sbStoragePublicUrl(STORAGE_BUCKET, storagePath);
+
+  // Save URL to mn_users
+  await sbPatch('mn_users', 'id=eq.' + currentUser.id, { profile_image_url: publicUrl });
+  currentUser.profile_image_url = publicUrl;
+
+  // Persist updated user
+  try {
+    var saved = JSON.parse(localStorage.getItem('mn_session') || '{}');
+    if (saved.user) { saved.user.profile_image_url = publicUrl; localStorage.setItem('mn_session', JSON.stringify(saved)); }
+  } catch(ex) {}
+
+  // Refresh nav avatar
+  _renderLoggedInNav();
+
+  if (statusEl) { statusEl.textContent = '✓ Photo updated!'; statusEl.className = 'profile-upload__status profile-upload__status--ok'; }
+
+  return publicUrl;
+}
+
+// ── Profile picture uploader component ─────────────────────────────
+// Renders into any container element
+function renderProfileUploader(container) {
+  if (!container) { return; }
+  if (!currentUser) { container.innerHTML = '<p style="color:var(--text-400);">Please sign in.</p>'; return; }
+
+  var isChampion = currentUser.is_champion || currentUser.is_admin;
+  var avatarUrl  = currentUser.profile_image_url || '';
+  var parts      = (currentUser.name || '?').split(' ');
+  var initials   = parts.length >= 2 ? parts[0][0] + parts[parts.length-1][0] : parts[0][0] || '?';
+  initials = initials.toUpperCase();
+
+  container.innerHTML =
+    '<div class="profile-uploader">' +
+      // Current avatar
+      '<div class="profile-uploader__avatar">' +
+        (avatarUrl
+          ? '<img id="profile-upload-preview" src="' + esc(avatarUrl) + '" alt="Profile photo" class="profile-uploader__img">'
+          : '<div id="profile-upload-preview" class="profile-uploader__initials">' + esc(initials) + '</div>') +
+      '</div>' +
+      // Upload controls
+      (isChampion
+        ? '<div class="profile-uploader__controls">' +
+            '<p class="profile-uploader__hint">JPG, PNG or WEBP · max 2 MB</p>' +
+            '<label class="profile-uploader__file-label">' +
+              '📁 Choose Photo' +
+              '<input type="file" id="profile-file-input" accept=".jpg,.jpeg,.png,.webp" style="display:none;" onchange="_onProfileFileChange(event)">' +
+            '</label>' +
+            '<button class="btn btn--primary" id="btn-upload-profile" onclick="_doProfileUpload()" disabled>⬆ Upload</button>' +
+            '<div id="profile-upload-status" class="profile-upload__status"></div>' +
+          '</div>'
+        : '<div class="profile-uploader__controls">' +
+            '<div class="dash-alert dash-alert--info" style="margin:0;">' +
+              '<div class="dash-alert__icon">🏆</div>' +
+              '<div class="dash-alert__body"><div class="dash-alert__title">Champions only</div>' +
+              'Profile photo upload is available to tournament champions. Win a MacroNations tournament to unlock this feature.</div>' +
+            '</div>' +
+          '</div>') +
+    '</div>';
+}
+
+function _onProfileFileChange(event) {
+  var file = event.target.files[0];
+  if (!file) { return; }
+
+  // Validate immediately for UX feedback
+  var statusEl = document.getElementById('profile-upload-status');
+  var btn      = document.getElementById('btn-upload-profile');
+  var preview  = document.getElementById('profile-upload-preview');
+
+  var validType = ALLOWED_TYPES.indexOf(file.type) !== -1;
+  if (!validType) {
+    if (statusEl) { statusEl.textContent = 'Only JPG, PNG, WEBP accepted.'; statusEl.className = 'profile-upload__status profile-upload__status--err'; }
+    if (btn) { btn.disabled = true; }
+    return;
+  }
+  if (file.size > MAX_FILE_BYTES) {
+    if (statusEl) { statusEl.textContent = 'File too large (max 2 MB).'; statusEl.className = 'profile-upload__status profile-upload__status--err'; }
+    if (btn) { btn.disabled = true; }
+    return;
+  }
+
+  // Show preview
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    if (preview) {
+      if (preview.tagName === 'IMG') {
+        preview.src = ev.target.result;
+      } else {
+        var img = document.createElement('img');
+        img.id = 'profile-upload-preview';
+        img.src = ev.target.result;
+        img.className = 'profile-uploader__img';
+        img.alt = 'Preview';
+        preview.parentNode.replaceChild(img, preview);
+      }
+    }
+    if (statusEl) { statusEl.textContent = 'Ready to upload.'; statusEl.className = 'profile-upload__status'; }
+    if (btn) { btn.disabled = false; }
+  };
+  reader.readAsDataURL(file);
+}
+
+async function _doProfileUpload() {
+  var fileInput = document.getElementById('profile-file-input');
+  var statusEl  = document.getElementById('profile-upload-status');
+  var preview   = document.getElementById('profile-upload-preview');
+  var btn       = document.getElementById('btn-upload-profile');
+
+  if (!fileInput || !fileInput.files[0]) {
+    if (statusEl) { statusEl.textContent = 'Please select a file first.'; statusEl.className = 'profile-upload__status profile-upload__status--err'; }
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Uploading…'; }
+
+  try {
+    var previewImg = (preview && preview.tagName === 'IMG') ? preview : null;
+    await uploadProfilePicture(fileInput.files[0], statusEl, previewImg);
+    if (btn) { btn.textContent = '✓ Done'; }
+  } catch(e) {
+    if (statusEl) { statusEl.textContent = 'Error: ' + (e.message || 'Upload failed'); statusEl.className = 'profile-upload__status profile-upload__status--err'; }
+    if (btn) { btn.disabled = false; btn.textContent = '⬆ Upload'; }
+  }
+}
+
+// ── Fetch profile_image_url on login and merge into currentUser ────
+var _origAfterLogin = afterLogin;
+afterLogin = async function() {
+  await _origAfterLogin();
+  // Refresh user row to get latest profile_image_url & is_champion
+  if (currentUser && currentUser.id) {
+    try {
+      var rows = await sbGet('mn_users', 'id=eq.' + currentUser.id + '&limit=1');
+      if (rows && rows.length) {
+        currentUser.profile_image_url = rows[0].profile_image_url || null;
+        currentUser.is_champion       = rows[0].is_champion       || false;
+        _renderLoggedInNav();
+      }
+    } catch(ex) {}
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+//  CHAMPIONS LEADERBOARD — with profile pictures
+// ═══════════════════════════════════════════════════════════════════
+
+async function renderChampions() {
+  var el = document.getElementById('champions-content');
+  if (!el) { return; }
+  el.innerHTML =
+    '<div class="empty-state"><div class="spinner" style="width:28px;height:28px;margin:0 auto 0.75rem;"></div>' +
+    '<div class="empty-state__title">Loading champions…</div></div>';
+
+  try {
+    var champs = await sbGetPublic('champions', 'order=year.desc,score.desc&limit=100');
+    champs = champs || [];
+
+    if (!champs.length) {
+      el.innerHTML =
+        '<div class="empty-state"><div class="empty-state__icon">🏆</div>' +
+        '<div class="empty-state__title">No champions yet</div>' +
+        '<div class="empty-state__desc">The Hall of Champions will be populated when the first tournament concludes.</div></div>';
+      return;
+    }
+
+    // Fetch profile images for champion users
+    var profileMap = {};
+    try {
+      var allUsers = await sbGetPublic('mn_users', 'select=id,name,profile_image_url,is_champion&limit=500');
+      if (allUsers) {
+        for (var ui = 0; ui < allUsers.length; ui++) {
+          if (allUsers[ui].name) { profileMap[allUsers[ui].name] = allUsers[ui]; }
+        }
+      }
+    } catch(ex) {}
+
+    // Build grid
+    var cards = '';
+    for (var i = 0; i < champs.length; i++) {
+      var c    = champs[i];
+      var rank = i + 1;
+      var rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '<span style="font-size:1rem;font-weight:700;color:var(--text-400);">#' + rank + '</span>';
+      var userRec   = profileMap[c.captain] || profileMap[c.team] || null;
+      var imgUrl    = (userRec && userRec.profile_image_url) ? userRec.profile_image_url : '';
+      var nameParts = (c.captain || c.team || '?').split(' ');
+      var initials  = nameParts.length >= 2
+        ? nameParts[0][0] + nameParts[nameParts.length-1][0]
+        : (nameParts[0][0] || '?');
+      initials = initials.toUpperCase();
+
+      var avatarHtml = imgUrl
+        ? '<img src="' + esc(imgUrl) + '" class="champ-card-new__avatar-img" alt="' + esc(c.captain || '') + '">'
+        : '<div class="champ-card-new__avatar-initials">' + esc(initials) + '</div>';
+
+      var isAdmin = currentUser && currentUser.is_admin;
+
+      cards +=
+        '<article class="champ-card-new">' +
+          '<div class="champ-card-new__rank">' + rankBadge + '</div>' +
+          '<div class="champ-card-new__avatar">' + avatarHtml + '</div>' +
+          '<div class="champ-card-new__body">' +
+            '<div class="champ-card-new__season">Season ' + esc(String(c.season || c.year || '')) + '</div>' +
+            '<h2 class="champ-card-new__team">' + esc(c.team || 'Unknown') + '</h2>' +
+            '<p class="champ-card-new__captain">' + esc(c.captain || '') + '</p>' +
+            '<p class="champ-card-new__meta">' + esc(c.institution || '') + (c.country ? ' · ' + esc(c.country) : '') + '</p>' +
+            '<div class="champ-card-new__stats">' +
+              '<div class="champ-card-new__score">' + esc(String(c.score || '—')) + '<span>/1000</span></div>' +
+              (c.prize_won ? '<div class="champ-card-new__prize">💰 ' + fmt$(c.prize_won) + '</div>' : '') +
+            '</div>' +
+          '</div>' +
+          (isAdmin
+            ? '<button class="btn btn--danger btn--sm champ-card-new__revoke" onclick="revokeChampion(\'' + esc(c.id) + '\')">Revoke</button>'
+            : '') +
+        '</article>';
+    }
+
+    el.innerHTML = '<div class="champions-leaderboard">' + cards + '</div>';
+
+  } catch(e) {
+    el.innerHTML =
+      '<div class="empty-state"><div class="empty-state__icon">⚠️</div>' +
+      '<div class="empty-state__title">Could not load champions</div>' +
+      '<div class="empty-state__desc">' + esc((e && e.message) || '') + '</div></div>';
+  }
+}
+
+// ── Mark user as champion when tournament completes ─────────────────
+var _origCrownChampion = crownChampion;
+crownChampion = async function(tournId) {
+  await _origCrownChampion(tournId);
+  // Also set is_champion on the winning captain's user record
+  try {
+    var teamRows = await sbGet('teams', 'tournament_id=eq.' + tournId + '&fee_paid=eq.true&limit=200');
+    if (!teamRows || !teamRows.length) { return; }
+    var econRows = await sbGet('economies', 'tournament_id=eq.' + tournId + '&select=team_id,current&limit=200');
+    if (!econRows || !econRows.length) { return; }
+    var best = null; var bestScore = -1;
+    for (var i = 0; i < econRows.length; i++) {
+      var sc = computeScores((econRows[i] && econRows[i].current) ? econRows[i].current : defaultEconomy()).total;
+      if (sc > bestScore) { bestScore = sc; best = econRows[i]; }
+    }
+    if (!best) { return; }
+    var winTeam = null;
+    for (var ti = 0; ti < teamRows.length; ti++) {
+      if (teamRows[ti].id === best.team_id) { winTeam = teamRows[ti]; break; }
+    }
+    if (winTeam && winTeam.captain_id) {
+      await sbPatch('mn_users', 'id=eq.' + winTeam.captain_id, { is_champion: true });
+    }
+  } catch(ex) {}
+};
+
+// ── Profile tab in dashboard ────────────────────────────────────────
+// Wire into dashboard tab system
+(function() {
+  var dashTabs = document.getElementById('dash-tabs');
+  if (!dashTabs) { return; }
+
+  // Add Profile tab button
+  var profileBtn = document.createElement('button');
+  profileBtn.className = 'admin-tab';
+  profileBtn.setAttribute('data-dash-tab', 'profile');
+  profileBtn.setAttribute('role', 'tab');
+  profileBtn.textContent = '👤 Profile';
+  dashTabs.appendChild(profileBtn);
+
+  // Add panel
+  var content = document.getElementById('dash-content');
+  if (content) {
+    var panel = document.createElement('div');
+    panel.id        = 'dash-panel-profile';
+    panel.className = 'dash-panel';
+    panel.style.display = 'none';
+    content.appendChild(panel);
+  }
+
+  // Extend tab renderer
+  var _prev_renderDashTab = _renderDashTab;
+  _renderDashTab = function(id) {
+    if (id === 'profile') { _renderDashProfileTab(); }
+    else { _prev_renderDashTab(id); }
+  };
+})();
+
+function _renderDashProfileTab() {
+  var el = document.getElementById('dash-panel-profile');
+  if (!el) { return; }
+  if (!currentUser) { el.innerHTML = '<div class="empty-state"><div class="empty-state__icon">🔒</div><div class="empty-state__title">Not signed in</div></div>'; return; }
+
+  el.innerHTML =
+    '<div style="max-width:540px;margin:0 auto;">' +
+      '<div class="card">' +
+        '<div class="card__header"><span class="card__title">Your Profile</span>' +
+          (currentUser.is_champion || currentUser.is_admin ? '<span class="badge badge--gold badge--no-dot">🏆 Champion</span>' : '') +
+        '</div>' +
+        '<div class="card__body">' +
+          '<div id="profile-uploader-mount"></div>' +
+          '<hr style="margin:1.5rem 0;border:none;border-top:1px solid var(--border);">' +
+          '<div class="form-field"><label class="form-label">Name</label>' +
+            '<div style="font-size:0.9375rem;color:var(--text-900);font-weight:500;">' + esc(currentUser.name || '—') + '</div></div>' +
+          '<div class="form-field"><label class="form-label">Email</label>' +
+            '<div style="font-size:0.9375rem;color:var(--text-700);">' + esc(currentUser.email || '—') + '</div></div>' +
+          '<div class="form-field"><label class="form-label">Institution</label>' +
+            '<div style="font-size:0.9375rem;color:var(--text-700);">' + esc(currentUser.institution || '—') + '</div></div>' +
+          '<div class="form-field"><label class="form-label">Role</label>' +
+            '<div style="font-size:0.9375rem;color:var(--text-700);text-transform:capitalize;">' + esc(currentUser.role || 'student') + '</div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  renderProfileUploader(document.getElementById('profile-uploader-mount'));
+}
+
 
 </script>
 </body>
