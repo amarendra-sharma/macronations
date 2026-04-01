@@ -3003,11 +3003,11 @@ h1, h2, h3, h4, h5 {
               <span class="hero__stat-label">Policy Levers</span>
             </div>
             <div role="listitem">
-              <span class="hero__stat-value">$200</span>
+              <span class="hero__stat-value">$50</span>
               <span class="hero__stat-label">Entry Fee</span>
             </div>
             <div role="listitem">
-              <span class="hero__stat-value">70%</span>
+              <span class="hero__stat-value">Top 8</span>
               <span class="hero__stat-label">Prize Split</span>
             </div>
           </div>
@@ -3144,14 +3144,14 @@ h1, h2, h3, h4, h5 {
               <div class="step__num" aria-hidden="true">4</div>
               <div>
                 <h3 class="step__title">Climb the Leaderboard</h3>
-                <p class="step__desc">Scores update after each round. Top 10% of teams by entry fees share the prize pool.</p>
+                <p class="step__desc">Scores update after each round. The top 8 teams enter the playoff bracket.</p>
               </div>
             </div>
             <div class="step">
               <div class="step__num" aria-hidden="true">5</div>
               <div>
                 <h3 class="step__title">Win Real Prizes</h3>
-                <p class="step__desc">Winner takes 70%, runner-up takes 30% of the prize pool. Certificates issued to all finalists.</p>
+                <p class="step__desc">Top performers share the prize pool based on final standings. Certificates issued to all finalists and playoff qualifiers.</p>
               </div>
             </div>
           </div>
@@ -3267,7 +3267,7 @@ h1, h2, h3, h4, h5 {
       <div class="page-header__inner">
         <div>
           <h1 class="page-header__title">Legal</h1>
-          <p class="page-header__sub">Terms, rules, and policies — MacroNations LLC</p>
+          <p class="page-header__sub">Terms, rules, and policies — MacroNations</p>
         </div>
       </div>
     </div>
@@ -3350,7 +3350,7 @@ h1, h2, h3, h4, h5 {
       <div class="page-header__inner">
         <div>
           <h1 class="page-header__title" id="admin-page-title">Admin Panel</h1>
-          <p class="page-header__sub" id="admin-page-sub">MacroNations LLC · Platform Management</p>
+          <p class="page-header__sub" id="admin-page-sub">MacroNations · Platform Management</p>
         </div>
         <span id="admin-page-badge"></span>
       </div>
@@ -4430,6 +4430,11 @@ async function doRegister() {
   if (pass.length < 8)  { _setFormErr('register-error','Password must be at least 8 characters.'); return; }
   if (username.length < 3) { _setFormErr('register-error','Username must be at least 3 characters.'); return; }
   if (!/^[a-z0-9_]+$/.test(username)) { _setFormErr('register-error','Username may only contain letters, numbers, and underscores.'); return; }
+  // Students must use .edu email; professors may use any institutional email
+  if (role === 'student' && email.slice(-4) !== '.edu') {
+    _setFormErr('register-error','Students must register with a university .edu email address (e.g. jsmith@university.edu).');
+    return;
+  }
 
   setLoading('btn-do-register', true, 'Creating account…');
 
@@ -5370,7 +5375,6 @@ async function renderTournaments() {
   var grid = document.getElementById('tournaments-grid');
   if (!grid) { return; }
 
-  // Show loading skeleton
   grid.innerHTML =
     '<div class="empty-state" style="grid-column:1/-1;">' +
       '<div class="spinner" style="width:28px;height:28px;margin:0 auto 1rem;"></div>' +
@@ -5383,16 +5387,29 @@ async function renderTournaments() {
     );
     _allTournaments = rows || [];
 
-    // Load user teams in parallel
+    // Fetch professor names for all tournaments in one query
+    var creatorIds = [];
+    for (var ci = 0; ci < _allTournaments.length; ci++) {
+      var cid = _allTournaments[ci].created_by;
+      if (cid && creatorIds.indexOf(cid) === -1) { creatorIds.push(cid); }
+    }
+    _professorMap = {};
+    if (creatorIds.length) {
+      try {
+        var profRows = await sbGetPublic('mn_users',
+          'id=in.(' + creatorIds.join(',') + ')&select=id,name,institution');
+        if (profRows) {
+          for (var pi = 0; pi < profRows.length; pi++) {
+            _professorMap[profRows[pi].id] = profRows[pi];
+          }
+        }
+      } catch(ex) {}
+    }
+
     if (currentUser) { await _loadUserTeams(); }
-
-    // Wire filter chips
     _wireFilterChips();
-    // Wire search
     _wireSearch();
-    // Wire admin create button
     _renderTournamentHeaderActions();
-
     _renderTournamentGrid();
 
   } catch(e) {
@@ -5501,15 +5518,15 @@ function _buildTournamentCard(t) {
       '<div class="prize-pool-widget">' +
         '<div class="prize-pool-widget__title">Live Prize Pool</div>' +
         '<div class="prize-pool-widget__row">' +
-          '<span class="prize-pool-widget__label">Total pool (10%)</span>' +
+          '<span class="prize-pool-widget__label">Prize Pool</span>' +
           '<span class="prize-pool-widget__val prize-pool-widget__val--total" id="' + poolId + '-total">—</span>' +
         '</div>' +
         '<div class="prize-pool-widget__row">' +
-          '<span class="prize-pool-widget__label">🥇 1st place (70%)</span>' +
+          '<span class="prize-pool-widget__label">🥇 1st place</span>' +
           '<span class="prize-pool-widget__val" id="' + poolId + '-first">—</span>' +
         '</div>' +
         '<div class="prize-pool-widget__row">' +
-          '<span class="prize-pool-widget__label">🥈 2nd place (30%)</span>' +
+          '<span class="prize-pool-widget__label">🥈 2nd place</span>' +
           '<span class="prize-pool-widget__val" id="' + poolId + '-second">—</span>' +
         '</div>' +
       '</div>';
@@ -5591,6 +5608,17 @@ function _buildTournamentCard(t) {
           (seaYear ? '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">📆</span>Season ' + esc(seaYear) + '</span>' : '') +
           '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">🔄</span>' + esc(String(totRound)) + ' Rounds</span>' +
           (maxTeams ? '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">👥</span>' + esc(String(maxTeams)) + ' Teams Max</span>' : '') +
+          (function() {
+            var prof = (t.created_by && _professorMap[t.created_by]) ? _professorMap[t.created_by] : null;
+            var out = '';
+            if (prof && prof.name) {
+              out += '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">🎓</span>' + esc(prof.name) + '</span>';
+            }
+            if (prof && prof.institution) {
+              out += '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">🏛️</span>' + esc(prof.institution) + '</span>';
+            }
+            return out;
+          })() +
         '</div>' +
         _statusBadge(status) +
         (countdownHtml ? ' ' + countdownHtml : '') +
@@ -5621,7 +5649,7 @@ async function _fetchPrizePool(tournamentId, fee, poolId) {
 }
 
 // Register page loader
-PAGE_LOADERS['tournaments'] = renderTournaments;
+var _professorMap = {};  // id → {name, institution} for tournament creators
 
 // ═══════════════════════════════════════════════════════════════════
 //  TEAM MODAL
@@ -5795,6 +5823,7 @@ function _genInviteCode() {
 // ── CREATE TEAM ───────────────────────────────────────────────────
 async function doCreateTeam() {
   _setFormErr('create-team-error','');
+  if (!currentUser) { _setFormErr('create-team-error','You must be signed in to create a team.'); return; }
 
   var teamName = (document.getElementById('team-name-input').value || '').trim();
   if (!teamName) { _setFormErr('create-team-error','Please enter a team name.'); return; }
@@ -5829,6 +5858,34 @@ async function doCreateTeam() {
       );
       setLoading('btn-do-create-team',false,'Create Team');
       return;
+    }
+
+    // Email domain check for class/university tournaments
+    // Student's email domain must match the professor who created the tournament
+    if (tourn.tier === 'class' || tourn.tier === 'university') {
+      var studentEmail = (currentUser.email || '').toLowerCase();
+      var studentDomain = studentEmail.indexOf('@') !== -1 ? studentEmail.split('@')[1] : '';
+      // Find professor's email domain
+      var profRec = tourn.created_by ? (_professorMap[tourn.created_by] || null) : null;
+      if (!profRec && tourn.created_by) {
+        try {
+          var profRows = await sbGetPublic('mn_users', 'id=eq.' + tourn.created_by + '&select=id,name,institution,email&limit=1');
+          if (profRows && profRows.length) { profRec = profRows[0]; _professorMap[tourn.created_by] = profRec; }
+        } catch(ex) {}
+      }
+      if (profRec && profRec.email) {
+        var profEmail  = (profRec.email || '').toLowerCase();
+        var profDomain = profEmail.indexOf('@') !== -1 ? profEmail.split('@')[1] : '';
+        if (profDomain && studentDomain && studentDomain !== profDomain) {
+          _setFormErr('create-team-error',
+            'This is a ' + tourn.tier + ' tournament for ' + esc(profDomain) + ' students. ' +
+            'You must use your ' + esc(profDomain) + ' email to join. ' +
+            'Please register again with your ' + esc(profDomain) + ' email address.'
+          );
+          setLoading('btn-do-create-team',false,'Create Team');
+          return;
+        }
+      }
     }
 
     // Max teams check
@@ -5999,6 +6056,30 @@ async function doJoinTeam() {
         );
         setLoading('btn-do-join-team',false,'Join This Team');
         return;
+      }
+    }
+
+    // Email domain check for class/university tournaments
+    if (tourn && (tourn.tier === 'class' || tourn.tier === 'university')) {
+      var jStudentEmail  = (currentUser.email || '').toLowerCase();
+      var jStudentDomain = jStudentEmail.indexOf('@') !== -1 ? jStudentEmail.split('@')[1] : '';
+      var jProfRec = tourn.created_by ? (_professorMap[tourn.created_by] || null) : null;
+      if (!jProfRec && tourn.created_by) {
+        try {
+          var jProfRows = await sbGetPublic('mn_users', 'id=eq.' + tourn.created_by + '&select=id,email,institution&limit=1');
+          if (jProfRows && jProfRows.length) { jProfRec = jProfRows[0]; _professorMap[tourn.created_by] = jProfRec; }
+        } catch(ex) {}
+      }
+      if (jProfRec && jProfRec.email) {
+        var jProfDomain = (jProfRec.email || '').toLowerCase().split('@')[1] || '';
+        if (jProfDomain && jStudentDomain && jStudentDomain !== jProfDomain) {
+          _setFormErr('join-team-error',
+            'This tournament is for ' + esc(jProfDomain) + ' students only. ' +
+            'Please sign in with your ' + esc(jProfDomain) + ' email to join.'
+          );
+          setLoading('btn-do-join-team',false,'Join This Team');
+          return;
+        }
       }
     }
 
@@ -6629,6 +6710,7 @@ async function doSaveDraft() {
 }
 
 async function doSubmitPolicy() {
+  if (!currentUser) { flash('You must be signed in.', 'error'); return; }
   if (!currentTeamId || !_dashTourn) { return; }
   var fee    = Number((_dashTourn && _dashTourn.entry_fee) || 0);
   var feePaid = (_dashTeam && _dashTeam.fee_paid);
@@ -6809,6 +6891,7 @@ function _crisisHistoryTable() {
 }
 
 async function doConfirmCrisis() {
+  if (!currentUser) { flash('You must be signed in.', 'error'); return; }
   var errorEl = document.getElementById('crisis-error');
   if (errorEl) { errorEl.classList.remove('visible'); errorEl.textContent = ''; }
 
@@ -7201,10 +7284,10 @@ async function renderDashRankings() {
 var STRIPE_PAYMENT_LINKS = {};
 // Primary payment link — GoDaddy (activated)
 // Used for all paid tournaments and global elections
-var DEFAULT_PAYMENT_LINK = 'https://buy.stripe.com/3cIbIU2MJ2RKgFD9Am5ZC00';
+var DEFAULT_PAYMENT_LINK = 'https://buy.stripe.com/dRmeV6afb8c475313Q5ZC02';
 var STRIPE_BUY_BTN_ID  = 'buy_btn_1THEu9599m6wZYJIiugg6UMV';
 var STRIPE_PUBLISHABLE = 'pk_live_51TDnG0599m6wZYJIAo2Uq2aocXy54TgNXKB9Fv7ayoZZ7OiayJSpwryXWJABC9VM4U9kq66BuVB06NyLaMfhKNpi00Z6CmLHnF';
-var WORLD_CUP_ENTRY_FEE  = 200;   // Set by admin — fee for global seasonal tournament
+var WORLD_CUP_ENTRY_FEE  = 50;    // Set by admin — fee for global seasonal tournament
 
 function renderDashPayment() {
   var el = document.getElementById('dash-panel-payment');
@@ -7352,7 +7435,7 @@ async function renderAdmin() {
   var badgeEl = document.getElementById('admin-page-badge');
   if (_isAdmin()) {
     if (titleEl) { titleEl.textContent = 'Admin Panel'; }
-    if (subEl)   { subEl.textContent   = 'MacroNations LLC · Platform Management'; }
+    if (subEl)   { subEl.textContent   = 'MacroNations · Platform Management'; }
     if (badgeEl) { badgeEl.innerHTML = '<span class="badge badge--red badge--no-dot">Admin</span>'; }
   } else {
     if (titleEl) { titleEl.textContent = 'Professor Panel'; }
@@ -7412,6 +7495,7 @@ PAGE_LOADERS['admin'] = renderAdmin;
 
 // ── Super-admin: Delete tournament ────────────────────────────────
 async function doDeleteTournament(tournId) {
+  if (!_isAdmin()) { flash('Super admin access required.', 'error'); return; }
   var t = _getTournById(tournId);
   var name = (t && t.name) ? t.name : 'this tournament';
   if (!confirm('PERMANENTLY DELETE "' + name + '"?\n\nThis removes the tournament and cannot be undone. Teams and economy records are NOT automatically deleted — contact support to remove those.')) { return; }
@@ -7483,6 +7567,7 @@ async function openManageTeamsModal(tournId) {
 }
 
 async function doRemoveTeam(teamId, teamName) {
+  if (!_isAdmin()) { flash('Super admin access required.', 'error'); return; }
   if (!confirm('Remove team "' + teamName + '" from this tournament?\n\nThis action logs a misconduct removal. The team will lose access to the dashboard for this tournament.')) { return; }
   try {
     await sbDelete('teams', 'id=eq.' + teamId);
@@ -7744,6 +7829,7 @@ function openCreateTournament(isClass) {
 }
 
 async function doCreateTournament() {
+  if (!currentUser || (!_isAdmin() && !_isProfessor())) { _setFormErr('ct-error','Admin or professor access required.'); return; }
   _setFormErr('ct-error', '');
   var name     = (document.getElementById('ct-name').value || '').trim();
   var tier     = document.getElementById('ct-tier').value || 'university';
@@ -7805,6 +7891,7 @@ async function doCreateTournament() {
 }
 
 async function doSetTournamentStatus(id, status) {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin or professor access required.', 'error'); return; }
   try {
     var patch = { status: status };
     if (status === 'active' && _getTournById(id) && _getTournById(id).current_round === 0) {
@@ -7837,6 +7924,7 @@ function promptCompleteTournament(id) {
 }
 
 async function doConfirmComplete() {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin or professor access required.', 'error'); return; }
   if (!_completeTargetId) { return; }
   var tid = _completeTargetId;
   await doSetTournamentStatus(tid, 'completed');
@@ -7893,6 +7981,7 @@ function renderAdminTeams(el) {
 }
 
 async function doMarkPaid(teamId) {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin access required.', 'error'); return; }
   try {
     await sbPatch('teams', 'id=eq.' + teamId, { fee_paid: true });
     for (var i = 0; i < _adminTeams.length; i++) {
@@ -8004,6 +8093,7 @@ function _buildRoundCard(t, isCompleted) {
 
 // ── SIMULATION ENGINE ─────────────────────────────────────────────
 async function runSimulation(tournId) {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin or professor access required.', 'error'); return; }
   var logContainer = document.getElementById('sim-log-container');
   var logEl        = document.getElementById('sim-log');
   if (logContainer) { logContainer.style.display = 'block'; }
@@ -8429,6 +8519,7 @@ function renderAdminWaivers(el) {
 }
 
 async function doGrantWaiver() {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin access required.', 'error'); return; }
   _setFormErr('waiver-error', '');
   var email   = (document.getElementById('waiver-email').value || '').trim().toLowerCase();
   var tournId = document.getElementById('waiver-tournament').value || '';
@@ -9026,6 +9117,7 @@ async function revokeChampion(id) {
 
 // ── crownChampion(tournId) — called after tournament completes ────
 async function crownChampion(tournId) {
+  if (!_isAdmin() && !_isProfessor()) { return; }
   try {
     var tRows = await sbGet('tournaments', 'id=eq.' + tournId + '&limit=1');
     var tourn = (tRows && tRows.length) ? tRows[0] : null;
@@ -9200,11 +9292,11 @@ var LEGAL_CONTENT = {
     sections: [
       { h: 'Agreement to Terms', p: 'By accessing or using the MacroNations platform at macronations.com, you agree to be bound by these Terms of Service. MacroNations is operated by MacroNations (owned by a New York LLC). If you do not agree to these terms, please do not use the platform.' },
       { h: 'Eligibility', p: 'You must be enrolled as a student at an accredited university or college to participate in any MacroNations competition. Professors and educators may access the platform in a non-competing capacity to create and manage class tournaments. By registering, you affirm that the information you provide is accurate and complete.' },
-      { h: 'User Accounts', p: 'You are responsible for maintaining the confidentiality of your login credentials. You agree to notify us immediately of any unauthorized access to your account at support@macronations.com. MacroNations LLC is not liable for losses resulting from unauthorized account use.' },
+      { h: 'User Accounts', p: 'You are responsible for maintaining the confidentiality of your login credentials. You agree to notify us immediately of any unauthorized access to your account at support@macronations.com. MacroNations is not liable for losses resulting from unauthorized account use.' },
       { h: 'One-Team-Per-Season Rule', p: 'Each registered user may only be a member of one (1) team per tournament season year. Participation in multiple teams within the same season year across different tournaments is prohibited and may result in disqualification.' },
       { h: 'Academic Integrity', p: 'All policy submissions must reflect the independent judgment of your team. Sharing policy decisions, collusion with other teams, exploiting simulation bugs, reverse-engineering scoring algorithms, or any other conduct inconsistent with academic integrity will result in immediate disqualification without refund.' },
-      { h: 'Platform Availability', p: 'MacroNations LLC makes no warranty that the platform will be available at all times. We reserve the right to suspend, modify, or terminate the platform at any time. In the event of platform disruption that prevents policy submission, affected round deadlines may be extended at our discretion.' },
-      { h: 'Limitation of Liability', p: 'To the maximum extent permitted by applicable law, MacroNations LLC shall not be liable for any indirect, incidental, special, consequential, or punitive damages. Our total liability shall not exceed the entry fee paid by the affected party for the current tournament season.' },
+      { h: 'Platform Availability', p: 'MacroNations makes no warranty that the platform will be available at all times. We reserve the right to suspend, modify, or terminate the platform at any time. In the event of platform disruption that prevents policy submission, affected round deadlines may be extended at our discretion.' },
+      { h: 'Limitation of Liability', p: 'To the maximum extent permitted by applicable law, MacroNations shall not be liable for any indirect, incidental, special, consequential, or punitive damages. Our total liability shall not exceed the entry fee paid by the affected party for the current tournament season.' },
       { h: 'Governing Law', p: 'These Terms of Service are governed by the laws of the State of New York, without regard to its conflict of law provisions. Any dispute arising from these terms shall be resolved exclusively in the state or federal courts of New York County, New York. You waive any objection to personal jurisdiction in those courts.' },
       { h: 'Changes to Terms', p: 'We may modify these terms at any time. Continued use of the platform after changes constitutes acceptance of the revised terms. We will notify registered users of material changes via email.' }
     ]
@@ -9212,21 +9304,20 @@ var LEGAL_CONTENT = {
   prizes: {
     title: 'Prize Rules & Distribution',
     updated: 'January 2026',
-    highlight: 'Prize pool = 10% of total entry fees collected. Winner receives 70%, Runner-up receives 30%.',
+    highlight: 'Prize pool is a fixed percentage of total entry fees collected, as determined by MacroNations management.',
     math: [
-      'Example with a tournament entry fee and 14 teams:',
-      '  Total collected:  $200 × 14 = $2,800',
-      '  Prize pool (10%): $2,800 × 0.10 = $280',
-      '  1st place (70%):  $280 × 0.70 = $196',
-      '  2nd place (30%):  $280 × 0.30 = $84'
+      'Example with a $50 entry fee and 14 teams:',
+      '  Total collected:    $50 × 14 = $700',
+      '  Prize pool:         Fixed % of $700 (set by management)',
+      '  Distribution:       Determined by MacroNations management'
     ],
     sections: [
-      { h: 'Prize Pool Calculation', p: 'The prize pool consists of 10% of all entry fees collected from paid teams in a tournament. The pool grows as more teams register.' },
-      { h: 'Winner Distribution', p: 'The team with the highest aggregate score at the conclusion of all scheduled rounds receives 70% of the prize pool. The team with the second highest score receives the remaining 30%. In the event of a tie, the tied teams share the applicable prize tranche equally.' },
+      { h: 'Prize Pool Calculation', p: 'The prize pool consists of a fixed percentage of all entry fees collected from paid teams in a tournament, as determined by MacroNations management. The pool grows as more teams register.' },
+      { h: 'Winner Distribution', p: 'Prize distribution among top-performing teams is determined by MacroNations management and communicated prior to tournament conclusion. In the event of a tie, tied teams share the applicable prize tranche equally.' },
       { h: 'Eligibility for Prizes', p: 'To be eligible for prize distribution, a team must: (1) have paid the full entry fee, (2) have submitted policy decisions in at least one tournament round, and (3) not have been disqualified for any violation of these rules. Free tournaments (entry fee = $0) do not carry cash prizes.' },
-      { h: 'Payment of Prizes', p: 'Prizes are paid within 14 business days of tournament conclusion via bank transfer or PayPal. Prize recipients must provide payment details within 30 days of notification or the prize may be forfeited. MacroNations LLC is responsible for any applicable withholding or tax reporting obligations.' },
+      { h: 'Payment of Prizes', p: 'Prizes are paid within 14 business days of tournament conclusion via bank transfer or PayPal. Prize recipients must provide payment details within 30 days of notification or the prize may be forfeited. MacroNations is responsible for any applicable withholding or tax reporting obligations.' },
       { h: 'Waivers and Adjustments', p: 'Teams that received a fee waiver may compete but are excluded from prize eligibility unless their waiver covered 100% of the fee. Partial waivers require the remaining balance to be paid for prize eligibility.' },
-      { h: 'Disqualification', p: 'Any team found to have violated academic integrity rules forfeits all prize claims without refund. The prize pool amount is not redistributed to the remaining teams; forfeited prizes remain with MacroNations LLC.' }
+      { h: 'Disqualification', p: 'Any team found to have violated academic integrity rules forfeits all prize claims without refund. The prize pool amount is not redistributed to the remaining teams; forfeited prizes remain with MacroNations.' }
     ]
   },
   privacy: {
@@ -9239,7 +9330,7 @@ var LEGAL_CONTENT = {
       { h: 'Data Storage', p: 'Data is stored on Supabase infrastructure hosted in the United States. We implement industry-standard security measures including encryption in transit and access controls. We retain your data for the duration of your account and for a period of 7 years thereafter for record-keeping.' },
       { h: 'Your Rights', p: 'Under applicable law, you may have rights to access, correct, or delete your personal data. To exercise these rights, email support@macronations.com. We will respond within 30 days. Note that certain data (such as leaderboard records) may be retained even after account deletion as part of the public tournament record.' },
       { h: 'Governing Law', p: 'This Privacy Policy is governed by the laws of the State of New York and applicable federal privacy law, including the New York SHIELD Act. For users in the European Economic Area, additional rights may apply under the GDPR.' },
-      { h: 'Contact', p: 'For privacy inquiries, contact: MacroNations LLC, support@macronations.com, macronations.com. As owned by a New York LLC, we are subject to New York State jurisdiction.' }
+      { h: 'Contact', p: 'For privacy inquiries, contact: MacroNations, support@macronations.com, macronations.com. As owned by a New York LLC, we are subject to New York State jurisdiction.' }
     ]
   },
   disclaimer: {
@@ -9247,10 +9338,10 @@ var LEGAL_CONTENT = {
     updated: 'January 2026',
     sections: [
       { h: 'Educational Purpose', p: 'MacroNations is an educational simulation platform. The macroeconomic model used in the tournament is a simplified representation designed for pedagogical purposes. It does not constitute financial, investment, or economic advice. Results in the simulation do not predict real-world economic outcomes.' },
-      { h: 'No Warranty', p: 'The MacroNations platform is provided "as is" without warranty of any kind, express or implied. MacroNations LLC makes no warranties regarding the accuracy of the simulation engine, the availability of the platform, or the fitness of the platform for any particular purpose.' },
+      { h: 'No Warranty', p: 'The MacroNations platform is provided "as is" without warranty of any kind, express or implied. MacroNations makes no warranties regarding the accuracy of the simulation engine, the availability of the platform, or the fitness of the platform for any particular purpose.' },
       { h: 'Simulation Accuracy', p: 'The economic simulation engine incorporates simplified versions of real economic relationships (Okun\'s Law, Phillips Curve, Laffer Curve, Reinhart-Rogoff debt threshold, etc.). These relationships are approximations. Real economies are substantially more complex and uncertain. Participants should not rely on simulation outcomes as predictions of real-world economic behavior.' },
-      { h: 'Prize Disclaimer', p: 'Prize amounts depend on the number of paid teams in a tournament. MacroNations LLC does not guarantee any minimum prize amount. In the event of technical failure that corrupts tournament data, MacroNations LLC\'s maximum liability is limited to refund of entry fees.' },
-      { h: 'Third-Party Services', p: 'The platform integrates with third-party services including Supabase (database), Anthropic (AI advisory feature), and payment processors. MacroNations LLC is not responsible for the availability, accuracy, or privacy practices of these third-party services.' }
+      { h: 'Prize Disclaimer', p: 'Prize amounts depend on the number of paid teams in a tournament. MacroNations does not guarantee any minimum prize amount. In the event of technical failure that corrupts tournament data, MacroNations\'s maximum liability is limited to refund of entry fees.' },
+      { h: 'Third-Party Services', p: 'The platform integrates with third-party services including Supabase (database), Anthropic (AI advisory feature), and payment processors. MacroNations is not responsible for the availability, accuracy, or privacy practices of these third-party services.' }
     ]
   },
   copyright: {
@@ -9260,9 +9351,9 @@ var LEGAL_CONTENT = {
       { h: 'Ownership', p: 'MacroNations, the MacroNations logo, the line-chart-with-star mark, the simulation engine, scoring algorithms, website design, and all associated content are the exclusive intellectual property of MacroNations (owned by a New York LLC). All rights reserved.' },
       { h: 'Limited License', p: 'Registered users are granted a limited, non-exclusive, non-transferable license to access and use the platform solely for participation in authorized MacroNations tournaments. This license does not include the right to copy, reproduce, distribute, modify, or create derivative works from any MacroNations content.' },
       { h: 'Prohibited Uses', p: 'You may not: (1) reproduce or distribute the simulation engine or scoring algorithms; (2) use the MacroNations name or logo without written permission; (3) reverse-engineer, decompile, or disassemble any portion of the platform; (4) frame or mirror any part of the platform on any other site; or (5) use automated means to access the platform.' },
-      { h: 'User Content', p: 'Policy submissions, team names, and rationale text entered by users remain the intellectual property of the respective users. By submitting content, you grant MacroNations LLC a non-exclusive, royalty-free license to display your content on the platform (including leaderboards and the Hall of Champions).' },
-      { h: 'DMCA', p: 'If you believe any content on the platform infringes your copyright, please send a notice to support@macronations.com including identification of the work claimed to be infringed, the allegedly infringing material, and your contact information. MacroNations LLC will respond in accordance with the Digital Millennium Copyright Act.' },
-      { h: 'Contact for Permissions', p: 'For licensing inquiries, partnership proposals, or academic use permissions, contact MacroNations LLC at support@macronations.com. We welcome educational partnerships and can discuss appropriate licensing arrangements for classroom use of the platform.' }
+      { h: 'User Content', p: 'Policy submissions, team names, and rationale text entered by users remain the intellectual property of the respective users. By submitting content, you grant MacroNations a non-exclusive, royalty-free license to display your content on the platform (including leaderboards and the Hall of Champions).' },
+      { h: 'DMCA', p: 'If you believe any content on the platform infringes your copyright, please send a notice to support@macronations.com including identification of the work claimed to be infringed, the allegedly infringing material, and your contact information. MacroNations will respond in accordance with the Digital Millennium Copyright Act.' },
+      { h: 'Contact for Permissions', p: 'For licensing inquiries, partnership proposals, or academic use permissions, contact MacroNations at support@macronations.com. We welcome educational partnerships and can discuss appropriate licensing arrangements for classroom use of the platform.' }
     ]
   }
 };
@@ -9352,7 +9443,7 @@ function _aboutHowItWorks() {
           _step('4','Respond to Crises','Some rounds trigger an economic crisis (banking crash, pandemic, trade war, debt crisis). Go to Crisis tab first — choose your response option — then separately submit your policy. These are two independent steps. If you skip the crisis response, the full unmitigated shock applies to your economy.') +
           _step('5','Consult the AI Advisor','Use Dashboard → AI Advisor to think through trade-offs. The advisor uses the Socratic method — it raises questions about your economy but never tells you which levers to move. That judgment is yours.') +
           _step('6','Track Your Score','Your economy is scored on 5 pillars (200 points each, 1000 total): GDP Performance, Stability, Equality, Sustainability, and Innovation. Check Dashboard → Overview after each round simulation runs.') +
-          _step('7','Prizes','The top-scoring team wins 70% of the prize pool. Runner-up wins 30%. The pool = 10% of all entry fees collected from participating teams.') +
+          _step('7','Prizes','Top performers share a prize pool funded by a fixed percentage of all entry fees collected — the exact split is determined by MacroNations management. Certificates are issued to all finalists.') +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -9460,9 +9551,9 @@ function _aboutFounder() {
           '<div style="flex-shrink:0;text-align:center;min-width:160px;">' + photoHtml + '</div>' +
           '<div style="flex:1;min-width:220px;">' +
             '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.75rem;margin-bottom:0.25rem;">Amarendra Sharma, PhD</h2>' +
-            '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder &amp; Director, MacroNations LLC</p>' +
+            '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder &amp; Director, MacroNations</p>' +
             '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">MacroNations was founded with a vision to make macroeconomic education experiential, competitive, and globally accessible. The platform bridges the gap between classroom theory and real-world policy-making by immersing students in the decisions that shape economies.</p>' +
-            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations LLC is owned by a New York LLC.</p>' +
+            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations is owned by a New York LLC.</p>' +
             '<p style="color:var(--text-400);font-size:0.875rem;">📧 <a href="mailto:support@macronations.com">support@macronations.com</a> &nbsp;&middot;&nbsp; 🌐 macronations.com</p>' +
           '</div>' +
         '</div>' +
@@ -9580,10 +9671,10 @@ showPage = function(id) {
 // Read stored signer names (admin can set via settings)
 function _getCertSigners() {
   var director = '';
-  var directorTitle = 'Director, MacroNations LLC';
+  var directorTitle = 'Director, MacroNations';
   try {
     director = localStorage.getItem('mn_cert_director') || 'Amarendra Sharma, PhD';
-    directorTitle = localStorage.getItem('mn_cert_director_title') || 'Director, MacroNations LLC';
+    directorTitle = localStorage.getItem('mn_cert_director_title') || 'Director, MacroNations';
   } catch(e) { director = 'Amarendra Sharma, PhD'; }
 
   // Tournament director: professor who created the tournament
@@ -9664,7 +9755,7 @@ renderDashCertificates = function(el) {
               '<input type="text" id="cert-signer-tourndirector" class="form-input" value="' + esc(signers.tournDirector) + '" oninput="_certUpdateSigners()">' +
             '</div>' +
             '<div class="form-field">' +
-              '<label class="form-label">MacroNations LLC Director (Line 2)</label>' +
+              '<label class="form-label">MacroNations Director (Line 2)</label>' +
               '<input type="text" id="cert-signer-director" class="form-input" value="' + esc(signers.director) + '" oninput="_certUpdateSigners()">' +
             '</div>' +
           '</div>' +
