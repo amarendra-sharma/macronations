@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Stripe Buy Button SDK -->
+  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MacroNations — Global Economic Strategy Tournament</title>
   <meta name="description" content="The premier macroeconomic policy simulation tournament for university students worldwide.">
@@ -4719,7 +4721,7 @@ async function loadHomeStats() {
   try {
     var results = await Promise.all([
       sbGetPublic('mn_users',    'select=id&limit=1000'),
-      sbGetPublic('tournaments', 'select=id,status&status=in.(upcoming,registration,active,completed)'),
+      sbGetPublic('tournaments', 'select=id,status&status=neq.draft'),
       sbGetPublic('teams',       'select=id,fee_paid&fee_paid=eq.true&limit=1000'),
       sbGetPublic('mn_users',    'select=country&limit=1000')
     ]);
@@ -5398,10 +5400,8 @@ async function renderTournaments() {
     '</div>';
 
   try {
-    // Fetch all non-draft tournaments. Use 'in' list instead of 'neq'
-    // because neq can fail with some RLS configurations.
     var rows = await sbGetPublic('tournaments',
-      'status=in.(upcoming,registration,active,completed)&order=created_at.desc&limit=200'
+      'status=neq.draft&order=created_at.desc&limit=100'
     );
     _allTournaments = rows || [];
 
@@ -5436,14 +5436,17 @@ async function renderTournaments() {
     _renderTournamentGrid();
 
   } catch(e) {
-    var errMsg = e.message || 'Unknown error';
-    console.error('[MacroNations] Tournament load failed:', errMsg);
+    var errMsg = e.message || 'Network error';
+    // If RLS is blocking public access, show a helpful message
+    if (errMsg.indexOf('permission') !== -1 || errMsg.indexOf('policy') !== -1 || errMsg.indexOf('JWT') !== -1) {
+      errMsg = 'Tournaments temporarily unavailable. If you are an admin, please check that public read policies are enabled in Supabase (RLS → pub_read_tournaments).';
+    }
     grid.innerHTML =
       '<div class="empty-state" style="grid-column:1/-1;">' +
         '<div class="empty-state__icon">⚠️</div>' +
         '<div class="empty-state__title">Could not load tournaments</div>' +
         '<div class="empty-state__desc">' + esc(errMsg) + '</div>' +
-        '<button class="btn btn--primary" style="margin-top:1rem;" onclick="renderTournaments()">Retry</button>' +
+        '<button class="btn btn--ghost" style="margin-top:1rem;" onclick="renderTournaments()">Retry</button>' +
       '</div>';
   }
 }
@@ -7355,29 +7358,18 @@ function renderDashPayment() {
   // Admin can override per-tournament via STRIPE_PAYMENT_LINKS map
   if (STRIPE_PAYMENT_LINKS[tourn.id]) { stripeLink = STRIPE_PAYMENT_LINKS[tourn.id]; }
 
-  // Plain Stripe payment link — no web component, no iframe, works with all browsers and extensions
-  var stripeUrl = DEFAULT_PAYMENT_LINK;
-  if (currentUser && currentUser.email) {
-    stripeUrl += (stripeUrl.indexOf('?') === -1 ? '?' : '&') +
-      'prefilled_email=' + encodeURIComponent(currentUser.email);
-  }
+  // Stripe Buy Button (official embed)
   var payBtn =
-    '<a href="' + esc(stripeUrl) + '" target="_blank" rel="noopener noreferrer" ' +
-      'style="display:flex;align-items:center;justify-content:center;gap:0.5rem;' +
-        'background:#635bff;color:#fff;border-radius:8px;padding:0.875rem 1.5rem;' +
-        'font-size:1rem;font-weight:600;text-decoration:none;margin-bottom:0.875rem;' +
-        'transition:background 0.15s;" ' +
-      'onmouseover="this.style.background='#4b44e0'" ' +
-      'onmouseout="this.style.background='#635bff'">' +
-      '<svg width="20" height="20" viewBox="0 0 24 24" fill="white" style="flex-shrink:0;">' +
-        '<path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>' +
-      '</svg>' +
-      'Pay ' + fmt$(fee) + ' with Stripe' +
-    '</a>' +
+    '<div style="margin-bottom:1rem;text-align:center;">' +
+      '<stripe-buy-button ' +
+        'buy-button-id="' + STRIPE_BUY_BTN_ID + '" ' +
+        'publishable-key="' + STRIPE_PUBLISHABLE + '">' +
+      '</stripe-buy-button>' +
+    '</div>' +
     '<p style="font-size:0.8125rem;color:var(--text-400);margin-bottom:1rem;text-align:center;">' +
       'Secure payment via Stripe. After paying, email ' +
-      '<a href="mailto:support@macronations.com">support@macronations.com</a> ' +
-      'with your team name and receipt to activate your account.' +
+      '<a href=\"mailto:support@macronations.com\">support@macronations.com</a> ' +
+      'with your team name and payment receipt to activate your account.' +
     '</p>';
 
   el.innerHTML =
@@ -8163,19 +8155,13 @@ async function runSimulation(tournId) {
 
   log('=== MacroNations Simulation Engine ===', 'head');
   log('Tournament: ' + (t.name || tournId));
-  log('Tournament ID: ' + tournId);
   log('Advancing: Round ' + round + ' → ' + newRound);
   log('');
 
   try {
     // Get all teams in this tournament
     var teams = await sbGet('teams', 'tournament_id=eq.' + tournId + '&limit=200');
-    if (!teams || !teams.length) {
-      log('No teams found for tournament ID: ' + tournId, 'warn');
-      log('Check that teams were created with this exact tournament ID.', 'warn');
-      if (btn) { btn.disabled = false; btn.textContent = '▶ Run Simulation'; }
-      return;
-    }
+    if (!teams || !teams.length) { log('No teams found.', 'warn'); return; }
 
     log('Processing ' + teams.length + ' teams…');
 
@@ -8333,9 +8319,6 @@ async function runSimulation(tournId) {
     log('ERROR: ' + (e.message || e), 'err');
     flash('Simulation error: ' + (e.message || ''), 'error');
     if (btn) { btn.disabled = false; btn.textContent = '▶ Run Simulation'; }
-  } finally {
-    // Always ensure button is re-enabled
-    if (btn && btn.disabled) { btn.disabled = false; btn.textContent = '▶ Run Simulation'; }
   }
 }
 
@@ -9748,71 +9731,48 @@ renderDashCertificates = function(el) {
   var tourn  = _dashTourn || {};
   var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
   var scores = computeScores(eco);
-  var signers  = _getCertSigners();
-  var isAdmin  = currentUser && (currentUser.is_admin || currentUser.role === 'professor');
+  var signers = _getCertSigners();
+  var isAdmin    = currentUser && (currentUser.is_admin || currentUser.role === 'professor');
+  var isEditable = isAdmin;
+  var isCompleted = (tourn.status === 'completed');
+  var isCaptain   = team.captain_id === (currentUser && currentUser.id);
 
-  // Completed = status is 'completed' OR all rounds have been played
-  var isCompleted = (tourn.status === 'completed') ||
-    (Number(tourn.current_round) > 0 &&
-     Number(tourn.rounds_total) > 0 &&
-     Number(tourn.current_round) >= Number(tourn.rounds_total));
-
-  // Determine rank for this team (for winner/runner-up eligibility)
+  // Determine which cert types the student is eligible for
   var myRank = 999;
   if (_dashAllTeams && _dashAllTeams.length) {
-    var sorted = _dashAllTeams.slice().sort(function(a, b) { return (b._score || 0) - (a._score || 0); });
-    for (var ri = 0; ri < sorted.length; ri++) {
-      if (sorted[ri].id === team.id) { myRank = ri + 1; break; }
-    }
+    var sorted = _dashAllTeams.slice().sort(function(a,b){ return (b._score||0)-(a._score||0); });
+    for(var ri=0;ri<sorted.length;ri++) { if(sorted[ri].id === team.id){ myRank = ri+1; break; } }
   }
+  var eligible = { participation: isCompleted, winner: isCompleted && myRank===1, runner_up: isCompleted && myRank===2, playoff: isCompleted && myRank<=8 };
 
-  // Eligibility per cert type
-  var eligible = {
-    participation: isAdmin || isCompleted,
-    winner:        isAdmin || (isCompleted && myRank === 1),
-    runner_up:     isAdmin || (isCompleted && myRank === 2),
-    playoff:       isAdmin || (isCompleted && myRank <= 8)
-  };
-
-  // Students: block entirely if tournament not completed
   if (!isAdmin && !isCompleted) {
     el.innerHTML =
       '<div class="empty-state" style="padding:4rem 2rem;">' +
         '<div class="empty-state__icon">🔒</div>' +
         '<div class="empty-state__title">Certificates not yet available</div>' +
-        '<div class="empty-state__desc">Certificates are issued when the tournament concludes.<br>' +
-        'Status: <strong>' + esc(tourn.status || 'unknown') + '</strong> · ' +
-        'Round ' + (Number(tourn.current_round) || 0) + ' of ' + (Number(tourn.rounds_total) || '?') + '</div>' +
+        '<div class="empty-state__desc">Certificates are issued when the tournament concludes. Complete all rounds and your certificates will appear here.</div>' +
       '</div>';
     return;
   }
+  var activeCertType = 'participation';
 
-  // Build type buttons — track firstElig for initial display
-  var typeKeys   = ['participation', 'winner', 'runner_up', 'playoff'];
-  var typeLabels = { participation: 'Participation', winner: 'Champion', runner_up: 'Runner-Up', playoff: 'Playoff Qualifier' };
-  var typeIcons  = { participation: '🎓', winner: '🏆', runner_up: '🥈', playoff: '⭐' };
+  // Build type buttons
+  var typeKeys   = ['participation','winner','runner_up','playoff'];
+  var typeLabels = { participation:'Participation', winner:'Champion', runner_up:'Runner-Up', playoff:'Playoff Qualifier' };
+  var typeIcons  = { participation:'🎓', winner:'🏆', runner_up:'🥈', playoff:'⭐' };
   var typeBtns   = '';
-  var firstElig  = null;
-
   for (var i = 0; i < typeKeys.length; i++) {
-    var tk     = typeKeys[i];
-    var isElig = eligible[tk];
-    if (isElig && !firstElig) { firstElig = tk; }
+    var tk = typeKeys[i];
     typeBtns +=
-      '<button class="cert-type-btn' + (firstElig === tk ? ' active' : '') +
-        (isElig ? '' : ' btn--disabled') + '" data-cert="' + tk + '" ' +
-        (isElig
-          ? 'onclick="_certSelectType(\'' + tk + '\')"'
-          : 'onclick="flash(\'You are not eligible for this certificate.\',\'info\')"') + '>' +
-        '<span class="cert-type-btn__icon">' + typeIcons[tk] + (isElig ? '' : ' 🔒') + '</span>' +
+      '<button class="cert-type-btn' + (tk==='participation'?' active':'') + '" data-cert="' + tk + '" onclick="_certSelectType(\''+tk+'\')">' +
+        '<span class="cert-type-btn__icon">' + typeIcons[tk] + '</span>' +
         '<span class="cert-type-btn__label">' + typeLabels[tk] + '</span>' +
       '</button>';
   }
-  if (!firstElig) { firstElig = 'participation'; }
 
   // Signer editor (admin/professor only)
   var signerEditor = '';
-  if (isAdmin) {
+  if (isEditable) {
     signerEditor =
       '<div class="card" style="margin-bottom:1.25rem;">' +
         '<div class="card__header"><span class="card__title">Certificate Signatories</span>' +
@@ -9832,9 +9792,9 @@ renderDashCertificates = function(el) {
       '</div>';
   }
 
-  // Initial cert SVG using first eligible type
+  // Initial cert
   var recipName = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
-  var initSvg   = makeCertSVG(firstElig, recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, signers.tournDirector, signers.director);
+  var initSvg   = makeCertSVG(firstElig || 'participation', recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, signers.tournDirector, signers.director);
 
   el.innerHTML =
     '<div class="cert-wrap">' +
@@ -9849,7 +9809,8 @@ renderDashCertificates = function(el) {
       '</div>' +
     '</div>';
 
-  el._activeCertType = firstElig;
+  // Store current cert type
+  el._activeCertType = 'participation';
 };
 
 function _certSelectType(type) {
