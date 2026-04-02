@@ -2841,31 +2841,34 @@ h1, h2, h3, h4, h5 {
     <div class="nav__brand">
       <a href="#" class="wordmark" aria-label="MacroNations home">
         <span class="logo-mark logo-mark--sm">
+          <!-- SVG: line chart with gold star on blue rounded square -->
           <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <defs><clipPath id="nsc"><path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z"/></clipPath></defs>
-  <path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z" fill="#0D1F3C"/>
-  <rect x="4" y="9" width="28" height="6" fill="#1A3260" clip-path="url(#nsc)"/>
-  <path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-  <path d="M18 3.5 L30 7.5 L30 21 Q30 30 18 33.5 Q6 30 6 21 L6 7.5 Z" fill="none" stroke="#FFD700" stroke-width="0.6" opacity="0.5"/>
-  <polygon points="18,4.5 18.55,6.2 20.4,6.2 18.9,7.3 19.45,9 18,7.9 16.55,9 17.1,7.3 15.6,6.2 17.45,6.2" fill="#FFD700"/>
-  <polygon points="11.5,6.5 11.85,7.6 12.95,7.6 12.05,8.25 12.4,9.35 11.5,8.7 10.6,9.35 10.95,8.25 10.05,7.6 11.15,7.6" fill="#FFD700" opacity="0.6"/>
-  <polygon points="24.5,6.5 24.85,7.6 25.95,7.6 25.05,8.25 25.4,9.35 24.5,8.7 23.6,9.35 23.95,8.25 23.05,7.6 24.15,7.6" fill="#FFD700" opacity="0.6"/>
-  <text x="18" y="16" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#FFD700" letter-spacing="2">MN</text>
-  <line x1="8" y1="18" x2="28" y2="18" stroke="#FFD700" stroke-width="0.8"/>
-  <rect x="17.2" y="17.2" width="1.6" height="1.6" fill="#FFD700" transform="rotate(45 18 18)"/>
-  <rect x="6.5"  y="27.5" width="2.5" height="4.5"  fill="#60A5FA" clip-path="url(#nsc)"/>
-  <rect x="10"   y="25.5" width="2.5" height="6.5"  fill="#60A5FA" clip-path="url(#nsc)"/>
-  <rect x="13.5" y="23.5" width="2.5" height="8.5"  fill="#60A5FA" clip-path="url(#nsc)"/>
-  <rect x="17"   y="21.5" width="2.5" height="10.5" fill="#60A5FA" clip-path="url(#nsc)"/>
-  <rect x="20.5" y="19.5" width="2.5" height="12.5" fill="#60A5FA" clip-path="url(#nsc)"/>
-  <polyline points="7.75,27 11.25,25 14.75,22.8 18.25,20.5 21.75,18.5" fill="none" stroke="#00FF88" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#nsc)"/>
-  <circle cx="7.75"  cy="27"   r="0.9" fill="#00FF88" clip-path="url(#nsc)"/>
-  <circle cx="11.25" cy="25"   r="1.1" fill="#00FF88" clip-path="url(#nsc)"/>
-  <circle cx="14.75" cy="22.8" r="1.3" fill="#00FF88" clip-path="url(#nsc)"/>
-  <circle cx="18.25" cy="20.5" r="1.5" fill="#00FF88" clip-path="url(#nsc)"/>
-  <circle cx="21.75" cy="18.5" r="1.8" fill="#00FF88" clip-path="url(#nsc)"/>
-  <polyline points="20.5,17.5 21.75,18.5 20.8,20" fill="none" stroke="#00FF88" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#nsc)"/>
-</svg>
+            <rect width="36" height="36" rx="8" fill="#0f3d9e"/>
+            <!-- Line chart path -->
+            <polyline
+              points="5,27 11,20 16,23 21,14 27,17"
+              fill="none"
+              stroke="rgba(255,255,255,0.5)"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <!-- Peak line (highlighted) -->
+            <polyline
+              points="16,23 21,14"
+              fill="none"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <!-- Gold star at peak (21,14) -->
+            <polygon
+              points="21,9.5 22.1,12.8 25.6,12.8 22.8,14.8 23.9,18.1 21,16.1 18.1,18.1 19.2,14.8 16.4,12.8 19.9,12.8"
+              fill="#f5a623"
+            />
+            <!-- Dot at chart line point -->
+            <circle cx="21" cy="14" r="1.5" fill="white"/>
+          </svg>
         </span>
         <span class="wordmark__text"><em>Macro</em>Nations</span>
       </a>
@@ -2912,30 +2915,12 @@ h1, h2, h3, h4, h5 {
   <div class="mobile-menu__brand">
     <span class="logo-mark">
       <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <defs><clipPath id="nsc"><path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z"/></clipPath></defs>
-  <path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z" fill="#0D1F3C"/>
-  <rect x="4" y="9" width="28" height="6" fill="#1A3260" clip-path="url(#nsc)"/>
-  <path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-  <path d="M18 3.5 L30 7.5 L30 21 Q30 30 18 33.5 Q6 30 6 21 L6 7.5 Z" fill="none" stroke="#FFD700" stroke-width="0.6" opacity="0.5"/>
-  <polygon points="18,4.5 18.55,6.2 20.4,6.2 18.9,7.3 19.45,9 18,7.9 16.55,9 17.1,7.3 15.6,6.2 17.45,6.2" fill="#FFD700"/>
-  <polygon points="11.5,6.5 11.85,7.6 12.95,7.6 12.05,8.25 12.4,9.35 11.5,8.7 10.6,9.35 10.95,8.25 10.05,7.6 11.15,7.6" fill="#FFD700" opacity="0.6"/>
-  <polygon points="24.5,6.5 24.85,7.6 25.95,7.6 25.05,8.25 25.4,9.35 24.5,8.7 23.6,9.35 23.95,8.25 23.05,7.6 24.15,7.6" fill="#FFD700" opacity="0.6"/>
-  <text x="18" y="16" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#FFD700" letter-spacing="2">MN</text>
-  <line x1="8" y1="18" x2="28" y2="18" stroke="#FFD700" stroke-width="0.8"/>
-  <rect x="17.2" y="17.2" width="1.6" height="1.6" fill="#FFD700" transform="rotate(45 18 18)"/>
-  <rect x="6.5"  y="27.5" width="2.5" height="4.5"  fill="#60A5FA" clip-path="url(#nsc)"/>
-  <rect x="10"   y="25.5" width="2.5" height="6.5"  fill="#60A5FA" clip-path="url(#nsc)"/>
-  <rect x="13.5" y="23.5" width="2.5" height="8.5"  fill="#60A5FA" clip-path="url(#nsc)"/>
-  <rect x="17"   y="21.5" width="2.5" height="10.5" fill="#60A5FA" clip-path="url(#nsc)"/>
-  <rect x="20.5" y="19.5" width="2.5" height="12.5" fill="#60A5FA" clip-path="url(#nsc)"/>
-  <polyline points="7.75,27 11.25,25 14.75,22.8 18.25,20.5 21.75,18.5" fill="none" stroke="#00FF88" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#nsc)"/>
-  <circle cx="7.75"  cy="27"   r="0.9" fill="#00FF88" clip-path="url(#nsc)"/>
-  <circle cx="11.25" cy="25"   r="1.1" fill="#00FF88" clip-path="url(#nsc)"/>
-  <circle cx="14.75" cy="22.8" r="1.3" fill="#00FF88" clip-path="url(#nsc)"/>
-  <circle cx="18.25" cy="20.5" r="1.5" fill="#00FF88" clip-path="url(#nsc)"/>
-  <circle cx="21.75" cy="18.5" r="1.8" fill="#00FF88" clip-path="url(#nsc)"/>
-  <polyline points="20.5,17.5 21.75,18.5 20.8,20" fill="none" stroke="#00FF88" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#nsc)"/>
-</svg>
+        <rect width="36" height="36" rx="8" fill="#0f3d9e"/>
+        <polyline points="5,27 11,20 16,23 21,14 27,17" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="16,23 21,14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <polygon points="21,9.5 22.1,12.8 25.6,12.8 22.8,14.8 23.9,18.1 21,16.1 18.1,18.1 19.2,14.8 16.4,12.8 19.9,12.8" fill="#f5a623"/>
+        <circle cx="21" cy="14" r="1.5" fill="white"/>
+      </svg>
     </span>
     <span class="wordmark__text"><em>Macro</em>Nations</span>
   </div>
@@ -3016,11 +3001,11 @@ h1, h2, h3, h4, h5 {
               <span class="hero__stat-label">Policy Levers</span>
             </div>
             <div role="listitem">
-              <span class="hero__stat-value">$200</span>
+              <span class="hero__stat-value">$50</span>
               <span class="hero__stat-label">Entry Fee</span>
             </div>
             <div role="listitem">
-              <span class="hero__stat-value">70%</span>
+              <span class="hero__stat-value">Top 8</span>
               <span class="hero__stat-label">Prize Split</span>
             </div>
           </div>
@@ -3157,14 +3142,14 @@ h1, h2, h3, h4, h5 {
               <div class="step__num" aria-hidden="true">4</div>
               <div>
                 <h3 class="step__title">Climb the Leaderboard</h3>
-                <p class="step__desc">Scores update after each round. Top 10% of teams by entry fees share the prize pool.</p>
+                <p class="step__desc">Scores update after each round. The top 8 teams enter the playoff bracket.</p>
               </div>
             </div>
             <div class="step">
               <div class="step__num" aria-hidden="true">5</div>
               <div>
                 <h3 class="step__title">Win Real Prizes</h3>
-                <p class="step__desc">Winner takes 70%, runner-up takes 30% of the prize pool. Certificates issued to all finalists.</p>
+                <p class="step__desc">Top performers share the prize pool based on final standings. Certificates issued to all finalists and playoff qualifiers.</p>
               </div>
             </div>
           </div>
@@ -3280,7 +3265,7 @@ h1, h2, h3, h4, h5 {
       <div class="page-header__inner">
         <div>
           <h1 class="page-header__title">Legal</h1>
-          <p class="page-header__sub">Terms, rules, and policies — MacroNations LLC</p>
+          <p class="page-header__sub">Terms, rules, and policies — MacroNations</p>
         </div>
       </div>
     </div>
@@ -3363,7 +3348,7 @@ h1, h2, h3, h4, h5 {
       <div class="page-header__inner">
         <div>
           <h1 class="page-header__title" id="admin-page-title">Admin Panel</h1>
-          <p class="page-header__sub" id="admin-page-sub">MacroNations LLC · Platform Management</p>
+          <p class="page-header__sub" id="admin-page-sub">MacroNations · Platform Management</p>
         </div>
         <span id="admin-page-badge"></span>
       </div>
@@ -3662,7 +3647,7 @@ h1, h2, h3, h4, h5 {
         <button class="btn btn--primary btn--full btn--lg" style="margin-top:0.5rem;">Create Account</button>
         <p class="text-center text-xs mt-2" style="color:var(--text-400);line-height:1.6;">
           By registering you agree to MacroNations Tournament Rules.<br>
-          MacroNations LLC · A New York Limited Liability Company
+          MacroNations — owned by a New York LLC
         </p>
       </div>
     </div>
@@ -3758,25 +3743,13 @@ h1, h2, h3, h4, h5 {
       <a href="#" class="wordmark wordmark--footer" aria-label="MacroNations home">
         <span class="logo-mark">
           <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <defs><clipPath id="fsc"><path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z"/></clipPath></defs>
-  <path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z" fill="rgba(255,255,255,0.08)"/>
-  <path d="M18 1.5 L32 6 L32 21 Q32 32 18 35.5 Q4 32 4 21 L4 6 Z" fill="none" stroke="#FFD700" stroke-width="1.5"/>
-  <path d="M18 3.5 L30 7.5 L30 21 Q30 30 18 33.5 Q6 30 6 21 L6 7.5 Z" fill="none" stroke="#FFD700" stroke-width="0.6" opacity="0.4"/>
-  <polygon points="18,4.5 18.55,6.2 20.4,6.2 18.9,7.3 19.45,9 18,7.9 16.55,9 17.1,7.3 15.6,6.2 17.45,6.2" fill="#FFD700"/>
-  <polygon points="11.5,6.5 11.85,7.6 12.95,7.6 12.05,8.25 12.4,9.35 11.5,8.7 10.6,9.35 10.95,8.25 10.05,7.6 11.15,7.6" fill="#FFD700" opacity="0.6"/>
-  <polygon points="24.5,6.5 24.85,7.6 25.95,7.6 25.05,8.25 25.4,9.35 24.5,8.7 23.6,9.35 23.95,8.25 23.05,7.6 24.15,7.6" fill="#FFD700" opacity="0.6"/>
-  <text x="18" y="16" text-anchor="middle" font-family="Georgia,serif" font-size="7.5" font-weight="700" fill="#FFD700" letter-spacing="2">MN</text>
-  <line x1="8" y1="18" x2="28" y2="18" stroke="#FFD700" stroke-width="0.8"/>
-  <rect x="17.2" y="17.2" width="1.6" height="1.6" fill="#FFD700" transform="rotate(45 18 18)"/>
-  <rect x="6.5"  y="27.5" width="2.5" height="4.5"  fill="#93C5FD" opacity="0.75" clip-path="url(#fsc)"/>
-  <rect x="10"   y="25.5" width="2.5" height="6.5"  fill="#93C5FD" opacity="0.75" clip-path="url(#fsc)"/>
-  <rect x="13.5" y="23.5" width="2.5" height="8.5"  fill="#93C5FD" opacity="0.75" clip-path="url(#fsc)"/>
-  <rect x="17"   y="21.5" width="2.5" height="10.5" fill="#93C5FD" opacity="0.75" clip-path="url(#fsc)"/>
-  <rect x="20.5" y="19.5" width="2.5" height="12.5" fill="#93C5FD" opacity="0.75" clip-path="url(#fsc)"/>
-  <polyline points="7.75,27 11.25,25 14.75,22.8 18.25,20.5 21.75,18.5" fill="none" stroke="#00FF88" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#fsc)"/>
-  <circle cx="21.75" cy="18.5" r="1.8" fill="#00FF88" clip-path="url(#fsc)"/>
-  <polyline points="20.5,17.5 21.75,18.5 20.8,20" fill="none" stroke="#00FF88" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#fsc)"/>
-</svg>
+            <rect width="36" height="36" rx="8" fill="rgba(255,255,255,0.1)"/>
+            <rect width="36" height="36" rx="8" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <polyline points="5,27 11,20 16,23 21,14 27,17" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="16,23 21,14" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round"/>
+            <polygon points="21,9.5 22.1,12.8 25.6,12.8 22.8,14.8 23.9,18.1 21,16.1 18.1,18.1 19.2,14.8 16.4,12.8 19.9,12.8" fill="#f5a623"/>
+            <circle cx="21" cy="14" r="1.5" fill="white"/>
+          </svg>
         </span>
         <span class="wordmark__text"><em>Macro</em>Nations</span>
       </a>
@@ -3818,7 +3791,7 @@ h1, h2, h3, h4, h5 {
   </div>
 
   <div class="footer__bottom">
-    <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
+    <p class="footer__copy">© 2026 MacroNations — owned by a New York LLC · All rights reserved.</p>
     <nav class="footer__legal-links" aria-label="Legal links">
       <a href="#" class="footer__legal-link">Privacy</a>
       <a href="#" class="footer__legal-link">Terms</a>
@@ -3836,6 +3809,12 @@ var SUPA_URL  = 'https://rtaiivegcqqmdchpguzn.supabase.co';
 var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0YWlpdmVnY3FxbWRjaHBndXpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMzQ3NTEsImV4cCI6MjA4OTcxMDc1MX0.5BrafKPYNNyR_xpgbr3a6LWztaCOeBVbDktsFMCMH5Y';
 
 function _authToken() {
+  // ALWAYS use in-memory currentSession first — it is kept fresh by _ensureFreshToken.
+  // localStorage may contain an expired token from a previous page load.
+  if (currentSession && currentSession.access_token) {
+    return currentSession.access_token;
+  }
+  // Pre-init: currentSession not yet set, try localStorage as bootstrap only
   var sess = _loadSession();
   return (sess && sess.access_token) ? sess.access_token : SUPA_ANON;
 }
@@ -3862,6 +3841,25 @@ async function sbGet(table, params) {
   var data = await res.json();
   if (!res.ok) { throw new Error((data && data.message) || 'GET failed'); }
   return data;
+}
+
+// Public read — uses anon key only. No user JWT needed.
+// Use for rankings, champions, tournaments page — pages visible to all.
+async function sbGetPublic(table, params) {
+  var url = SUPA_URL + '/rest/v1/' + table;
+  if (params) { url += '?' + params; }
+  var res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type':  'application/json',
+      'apikey':        SUPA_ANON,
+      'Authorization': 'Bearer ' + SUPA_ANON,
+      'Accept':        'application/json'
+    }
+  });
+  var data = await res.json();
+  if (!res.ok) { throw new Error((data && data.message) || 'Public GET failed'); }
+  return Array.isArray(data) ? data : (data ? [data] : []);
 }
 
 async function sbPost(table, body) {
@@ -4430,6 +4428,11 @@ async function doRegister() {
   if (pass.length < 8)  { _setFormErr('register-error','Password must be at least 8 characters.'); return; }
   if (username.length < 3) { _setFormErr('register-error','Username must be at least 3 characters.'); return; }
   if (!/^[a-z0-9_]+$/.test(username)) { _setFormErr('register-error','Username may only contain letters, numbers, and underscores.'); return; }
+  // Students must use .edu email; professors may use any institutional email
+  if (role === 'student' && email.slice(-4) !== '.edu') {
+    _setFormErr('register-error','Students must register with a university .edu email address (e.g. jsmith@university.edu).');
+    return;
+  }
 
   setLoading('btn-do-register', true, 'Creating account…');
 
@@ -4515,7 +4518,28 @@ async function doRegister() {
     // Only include id if we have it from Auth — avoids the NOT NULL violation
     if (authUserId) { profileData.id = authUserId; }
 
-    profile = await sbPost('mn_users', profileData);
+    // If no session yet (e.g. email confirmation required), insert bypassing RLS
+    // by using a direct fetch with the anon key and Prefer: return=representation
+    if (!currentSession || !currentSession.access_token) {
+      // No user JWT available — use anon key insert with explicit id
+      // The RLS policy must allow this; see SQL note below.
+      var insUrl = SUPA_URL + '/rest/v1/mn_users';
+      var insRes = await fetch(insUrl, {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'apikey':        SUPA_ANON,
+          'Authorization': 'Bearer ' + SUPA_ANON,
+          'Prefer':        'return=representation'
+        },
+        body: JSON.stringify(profileData)
+      });
+      var insData = await insRes.json();
+      if (!insRes.ok) { throw new Error((insData && insData.message) || 'Profile insert failed'); }
+      profile = Array.isArray(insData) ? insData[0] : insData;
+    } else {
+      profile = await sbPost('mn_users', profileData);
+    }
   } catch(e) {
     _setFormErr('register-error', 'Auth account created but profile save failed: ' + (e.message || 'unknown error') + '. Please contact support@macronations.com');
     setLoading('btn-do-register',false,'Create Account');
@@ -4715,10 +4739,10 @@ function _renderLoggedInNav() {
 async function loadHomeStats() {
   try {
     var results = await Promise.all([
-      sbGet('mn_users',    'select=id&limit=1000'),
-      sbGet('tournaments', 'select=id,status&status=neq.draft'),
-      sbGet('teams',       'select=id,fee_paid&fee_paid=eq.true&limit=1000'),
-      sbGet('mn_users',    'select=country&limit=1000')
+      sbGetPublic('mn_users',    'select=id&limit=1000'),
+      sbGetPublic('tournaments', 'select=id,status&status=in.(upcoming,registration,active,completed)'),
+      sbGetPublic('teams',       'select=id,fee_paid&fee_paid=eq.true&limit=1000'),
+      sbGetPublic('mn_users',    'select=country&limit=1000')
     ]);
     var users    = results[0] || [];
     var tourneys = results[1] || [];
@@ -4746,7 +4770,8 @@ function _setStatEl(id, val) {
 //  PAGE LOADERS REGISTRY
 // ═══════════════════════════════════════════════════════════════════
 var PAGE_LOADERS = {
-  home: loadHomeStats
+  home:        loadHomeStats,
+  tournaments: renderTournaments
 };
 
 // ── DATABASE SETUP: fix missing DEFAULT on id columns ─────────────
@@ -4899,14 +4924,14 @@ function defaultEconomy() {
 function simRound(state, policy, crises) {
   crises = crises || [];
 
-  // Snapshot the previous state before computing
+  // Snapshot previous state
   var prev = {};
   var keys = Object.keys(state);
   for (var i = 0; i < keys.length; i++) {
     if (keys[i] !== 'history') { prev[keys[i]] = state[keys[i]]; }
   }
 
-  // ── Policy defaults (fill in missing levers) ─────────────────
+  // Policy defaults
   var p = {
     interest_rate_target: (policy && policy.interest_rate_target !== undefined) ? policy.interest_rate_target : prev.interest_rate,
     gov_spending_pct:     (policy && policy.gov_spending_pct     !== undefined) ? policy.gov_spending_pct     : prev.gov_spending,
@@ -4920,80 +4945,94 @@ function simRound(state, policy, crises) {
     infrastructure:       (policy && policy.infrastructure       !== undefined) ? policy.infrastructure       : 5
   };
 
-  // ── 1. MONETARY POLICY ───────────────────────────────────────
-  var rate_change     = p.interest_rate_target - prev.interest_rate;
+  // ── 1. MONETARY POLICY ───────────────────────────────────────────
+  // BUG FIX: Use LEVEL not change. IS-LM: a persistently high rate keeps
+  // exerting drag every period, not just when the rate moves.
   var new_rate        = _clamp(p.interest_rate_target, 0, 20);
-  // Higher rates: tighten demand → drag on GDP, reduce inflation
-  var monetary_gdp    = -0.8 * rate_change;
-  var monetary_inf    = -0.5 * rate_change;       // higher rates cool inflation
-  // Currency: higher rates attract capital → appreciation
-  var new_currency    = prev.currency * (1 + 0.03 * rate_change / 100);
-  new_currency        = _clamp(new_currency, 50, 200);
-  // Trade effect of currency: appreciation hurts exports
-  var currency_trade  = -(new_currency - prev.currency) * 0.02;
+  var neutral_rate    = 4.0;   // rough "neutral" real rate (Taylor rule intercept)
+  var rate_gap        = new_rate - neutral_rate;  // positive = restrictive
+  var monetary_gdp    = -0.5 * rate_gap;          // level effect on GDP each period
+  var monetary_inf    = -0.4 * rate_gap;          // level effect on inflation each period
 
-  // ── 2. FISCAL POLICY ─────────────────────────────────────────
-  // Spending: multiplier 1.4, expressed as pp-of-GDP change directly
+  // BUG FIX: Currency responds meaningfully to rate level vs trading partners.
+  // A 1pp rate increase appreciates currency by ~1.5% (UIP approximation, simplified).
+  var rate_change_raw  = new_rate - prev.interest_rate;
+  var new_currency     = _clamp(prev.currency * (1 + 0.015 * rate_change_raw), 50, 200);
+  // Trade effect: appreciation of 1% hurts net exports by ~0.15pp GDP
+  var currency_trade   = -(new_currency - prev.currency) / prev.currency * 15;
+
+  // ── 2. FISCAL POLICY ─────────────────────────────────────────────
+  // Keynesian multiplier on CHANGE in spending (∆G × multiplier)
   var spending_change     = p.gov_spending_pct - prev.gov_spending;
-  var fiscal_spending_gdp = 1.4 * (spending_change * 0.15); // 0.15 = calibration so 10pp ≈ +2.1pp GDP
+  var fiscal_spending_gdp = 1.4 * (spending_change * 0.15);
 
-  // Tax: negative multiplier -1.1. Cutting taxes raises GDP.
-  var tax_change          = p.tax_rate - prev.tax_revenue;
-  var fiscal_tax_gdp      = -1.1 * (tax_change * 0.12); // cutting tax boosts GDP
+  // Tax multiplier on CHANGE in taxes (negative: tax cut → expansion)
+  var tax_change      = p.tax_rate - prev.tax_revenue;
+  var fiscal_tax_gdp  = -1.1 * (tax_change * 0.12);
 
-  // Laffer curve: optimal tax ~40%. Above 40 = efficiency drag. Below 12 = underfunding drag.
+  // Laffer curve: optimal ~40%. Quadratic drag above 40; underfunding below 15.
   var laffer_penalty = 0;
   if (p.tax_rate > 40) {
     laffer_penalty = -0.008 * (p.tax_rate - 40);
-  } else if (p.tax_rate < 12) {
-    laffer_penalty = -0.015 * (12 - p.tax_rate);
+  } else if (p.tax_rate < 15) {
+    laffer_penalty = -0.010 * (15 - p.tax_rate);
   }
   var fiscal_gdp = fiscal_spending_gdp + fiscal_tax_gdp + laffer_penalty;
 
-  // New tax revenue and spending
   var new_tax_revenue  = _clamp(p.tax_rate, 5, 60);
   var new_gov_spending = _clamp(p.gov_spending_pct, 10, 60);
 
-  // ── 3. BUDGET BALANCE & DEBT ─────────────────────────────────
+  // ── 3. BUDGET BALANCE & DEBT ─────────────────────────────────────
   var new_budget_balance = new_tax_revenue - new_gov_spending;
-  var interest_payments  = (prev.debt * prev.interest_rate) / 1000;
-  var new_debt = prev.debt - new_budget_balance + interest_payments;
+  // BUG FIX: Interest payments = debt × rate / 100 (not /1000).
+  // Scaled to GDP units: 60% debt × 4.5% rate = 2.7pp GDP interest cost per year.
+  var interest_payments  = (prev.debt * prev.interest_rate) / 100;
+  // Scale down to simulation time-step (each round ≈ 1 quarter → /4)
+  var interest_period    = interest_payments / 4;
+  var new_debt = prev.debt - new_budget_balance + interest_period;
   new_debt     = _clamp(new_debt, 0, 300);
 
-  // ── 4. REINHART-ROGOFF DEBT DRAG ─────────────────────────────
+  // ── 4. REINHART-ROGOFF DEBT DRAG ─────────────────────────────────
   var debt_drag = 0;
   if (new_debt > 90) {
-    debt_drag = -0.02 * (new_debt - 90) / 10;
+    debt_drag = -0.03 * (new_debt - 90) / 10;
   }
 
-  // ── 5. POTENTIAL GDP (R&D + infrastructure) ──────────────────
-  // Potential grows slowly — supply-side takes time
-  var rd_boost       = 0.04 * (p.rd_investment - 2);
-  var infra_boost    = 0.015 * (p.infrastructure - 5) / 5;
-  var new_potential  = _clamp(prev.potential + rd_boost * 0.5 + infra_boost * 0.5, 0.5, 5.0);
+  // ── 5. POTENTIAL GDP (Supply side: R&D + infrastructure) ─────────
+  var rd_boost      = 0.04 * (p.rd_investment - 2);
+  var infra_boost   = 0.015 * (p.infrastructure - 5) / 5;
+  // BUG FIX: green_energy now affects potential via energy cost reduction
+  var green_boost   = 0.008 * (p.green_energy - 30) / 70;   // above 30% baseline
+  var new_potential = _clamp(
+    prev.potential + rd_boost * 0.5 + infra_boost * 0.5 + green_boost * 0.3,
+    0.5, 5.5
+  );
 
-  // ── 6. PRODUCTIVITY ──────────────────────────────────────────
-  var prod_change    = rd_boost * 0.4 + infra_boost * 0.25 + 0.01;
+  // ── 6. PRODUCTIVITY ──────────────────────────────────────────────
+  var prod_change      = rd_boost * 0.4 + infra_boost * 0.25 + green_boost * 0.1 + 0.005;
   var new_productivity = _clamp(prev.productivity + prod_change, 0.5, 5.0);
 
-  // ── 7. STRUCTURAL / TRADE EFFECTS ────────────────────────────
+  // ── 7. STRUCTURAL / TRADE EFFECTS ────────────────────────────────
   var trade_openness_norm = p.trade_openness / 100;
   var trade_gdp = 0.6 * (trade_openness_norm - 0.65) + currency_trade;
 
-  // Regulation: peaks at 50% — zero at 50% so neutral policy = zero drag/boost
+  // Regulation: peaks at 50%; zero at 50% so neutral = no drag/boost
   var reg_norm  = p.regulation / 100;
-  var reg_gdp   = -0.5 * (reg_norm - 0.5) * (reg_norm - 0.5); // 0 at 50%, negative elsewhere
+  var reg_gdp   = -0.5 * (reg_norm - 0.5) * (reg_norm - 0.5);
 
-  var structural_gdp = trade_gdp + reg_gdp;
+  // BUG FIX: Foreign aid now affects diplomatic trade access (small GDP boost)
+  var aid_gdp   = 0.05 * (p.foreign_aid - 0.5);   // above 0.5% baseline
 
-  // ── 8. CRISIS SHOCKS ─────────────────────────────────────────
+  var structural_gdp = trade_gdp + reg_gdp + aid_gdp;
+
+  // ── 8. CRISIS SHOCKS ─────────────────────────────────────────────
   var crisis_gdp_shock   = 0;
   var crisis_unemp_shock = 0;
   var crisis_inf_shock   = 0;
   var crisis_fin_shock   = 0;
 
   for (var ci = 0; ci < crises.length; ci++) {
-    var cr = crises[ci];
+    var cr  = crises[ci];
     var eff = (cr.chosen_effectiveness !== undefined) ? (1 - cr.chosen_effectiveness / 100) : 1;
     crisis_gdp_shock   += ((cr.gdp_shock   || 0) * eff);
     crisis_unemp_shock += ((cr.unemp_shock || 0) * eff);
@@ -5001,82 +5040,86 @@ function simRound(state, policy, crises) {
     crisis_fin_shock   += ((cr.fin_shock   || 0) * eff);
   }
 
-  // ── 9. GDP GROWTH ────────────────────────────────────────────
-  // GDP = potential + policy_effects + noise
-  // Sustained policy shifts keep GDP above/below potential as long as policy is held
-  var policy_gap   = monetary_gdp + fiscal_gdp + structural_gdp + debt_drag;
-  var noise        = _gaussianNoise(0.25);
-  // Momentum: 20% persistence of last period's gap above potential
-  var last_gap     = prev.gdp_growth - prev.potential;
+  // ── 9. GDP GROWTH ────────────────────────────────────────────────
+  // GDP anchors to potential + sustained policy gap + momentum
+  var policy_gap     = monetary_gdp + fiscal_gdp + structural_gdp + debt_drag;
+  var last_gap       = prev.gdp_growth - prev.potential;
+  var noise          = _gaussianNoise(0.25);
   var new_gdp_growth = _round2(
-    new_potential +              // anchor to potential
-    0.60 * policy_gap +          // sustained policy effect (60% pass-through)
-    0.20 * last_gap +            // momentum of prior policy gap
+    new_potential +
+    0.60 * policy_gap +
+    0.20 * last_gap +
     crisis_gdp_shock +
     noise
   );
   new_gdp_growth = _clamp(new_gdp_growth, -12, 12);
 
-  // ── 10. UNEMPLOYMENT (Okun's Law) ────────────────────────────
-  // ΔU = -0.5 × (Y_actual - Y_potential)
-  // When GDP exceeds potential, unemployment falls. Sustained above-potential = sustained low unemp.
+  // ── 10. UNEMPLOYMENT (Okun's Law) ────────────────────────────────
+  // ΔU = -0.5 × output_gap. Sustained positive gap → sustained low unemployment.
   var NAIRU        = 4.5;
-  var output_gap_u = new_gdp_growth - new_potential;  // positive = above potential → unemp falls
+  var output_gap_u = new_gdp_growth - new_potential;
   var okun_change  = -0.5 * output_gap_u;
   var new_unemployment = _round2(
     prev.unemployment + okun_change + crisis_unemp_shock + _gaussianNoise(0.08)
   );
   new_unemployment = _clamp(new_unemployment, 1.5, 25);
 
-  // ── 11. INFLATION (Phillips Curve + cost-push + expectations) ─
-  var output_gap        = new_gdp_growth - new_potential;
-  var phillips          = 0.4 * output_gap;                      // demand-pull
-  var cost_push         = 0.03 * (trade_openness_norm - 0.5);   // import prices
-  var inf_expectations  = 0.3 * prev.inflation;                  // adaptive expectations
-  var new_inflation     = _round2(
+  // ── 11. INFLATION (Phillips Curve + expectations anchor + cost-push) ─
+  // BUG FIX: Inflation expectations are anchored to 2% target (hybrid model).
+  // Pure adaptive (prev.inflation × 0.3) caused collapse toward 0. 
+  // Use: 50% adaptive + 50% anchored to 2% target (Calvo-style partial credibility).
+  var output_gap       = new_gdp_growth - new_potential;
+  var phillips         = 0.4 * output_gap;
+  var cost_push        = 0.03 * (trade_openness_norm - 0.5);
+  var inf_expectations = 0.5 * prev.inflation + 0.5 * 2.0;  // anchor at 2%
+  var new_inflation    = _round2(
     inf_expectations + phillips + monetary_inf + cost_push + crisis_inf_shock + _gaussianNoise(0.15)
   );
-  new_inflation = _clamp(new_inflation, -2, 20);
+  new_inflation = _clamp(new_inflation, -3, 25);
 
-  // ── 12. STOCK MARKET ─────────────────────────────────────────
-  // Stocks: driven by growth, hurt by rates and inflation surprises
-  var stock_return = (new_gdp_growth * 0.06) - (rate_change * 0.04) -
+  // ── 12. STOCK MARKET ─────────────────────────────────────────────
+  var stock_return = (new_gdp_growth * 0.06) - (rate_change_raw * 0.04) -
                      (Math.abs(new_inflation - 2) * 0.02) +
                      _gaussianNoise(0.025);
   var new_stock = _round2(prev.stock * (1 + stock_return) + crisis_fin_shock * 50);
-  new_stock = _clamp(new_stock, 500, 50000);
+  new_stock     = _clamp(new_stock, 500, 50000);
 
-  // ── 13. FINANCIAL HEALTH ─────────────────────────────────────
-  // Hurt by high debt, high rates, crisis; helped by low deficit, high regulation
-  var fin_delta = (-0.1 * Math.max(0, new_debt - 80)) +
-                  (-0.5 * Math.max(0, new_rate - 8)) +
-                  (0.3  * _clamp(reg_norm, 0.3, 0.7)) +
-                  (-0.2 * Math.abs(new_budget_balance)) +
+  // ── 13. FINANCIAL HEALTH ─────────────────────────────────────────
+  var fin_delta = (-0.10 * Math.max(0, new_debt - 80)) +
+                  (-0.50 * Math.max(0, new_rate - 8)) +
+                  ( 0.30 * _clamp(reg_norm, 0.3, 0.7)) +
+                  (-0.20 * Math.abs(new_budget_balance)) +
                   crisis_fin_shock * 3 +
                   _gaussianNoise(0.5);
   var new_fin_health = _round2(_clamp(prev.fin_health + fin_delta, 10, 100));
 
-  // ── 14. GINI (inequality) ─────────────────────────────────────
-  // Higher welfare spending + lower tax_rate_deviation → better equality
-  var welfare_norm  = p.welfare_spending / 30;
-  var gini_change   = (-2.0 * welfare_norm) +
-                      (0.8  * Math.max(0, p.tax_rate - 40) / 20) +  // high tax on rich
-                      (0.5  * Math.max(0, unemployment_gap(new_unemployment, NAIRU))) +
-                      _gaussianNoise(0.2);
+  // ── 14. GINI (inequality) ─────────────────────────────────────────
+  // BUG FIX: Progressive taxation REDUCES inequality (Gini falls with higher tax).
+  // Old code had wrong sign: high taxes above 40% INCREASED inequality (backwards).
+  // Fix: taxes above 25% progressively reduce Gini; below 15% = regressive.
+  var welfare_norm   = p.welfare_spending / 30;
+  var tax_equality   = 0;
+  if (p.tax_rate >= 25) {
+    tax_equality = -0.5 * (p.tax_rate - 25) / 35;  // progressive tax reduces Gini
+  } else if (p.tax_rate < 15) {
+    tax_equality = 0.3 * (15 - p.tax_rate) / 15;   // very low tax → more inequality
+  }
+  var unemp_gini   = 0.5 * Math.max(0, new_unemployment - NAIRU);
+  var gini_change  = (-2.0 * welfare_norm) + tax_equality + unemp_gini + _gaussianNoise(0.2);
+
   function unemployment_gap(u, nairu) { return u - nairu; }
   var new_gini = _round2(_clamp(prev.gini + gini_change, 20, 65));
 
-  // ── 15. HDI ───────────────────────────────────────────────────
-  // Rises with welfare, R&D, low unemployment, falls with very high inflation
+  // ── 15. HDI ──────────────────────────────────────────────────────
   var hdi_change = (0.005 * welfare_norm) +
                    (0.003 * (p.rd_investment / 10)) +
+                   (0.002 * green_boost * 10) +
                    (-0.004 * Math.max(0, new_unemployment - NAIRU)) +
                    (-0.003 * Math.max(0, new_inflation - 4)) +
                    _gaussianNoise(0.003);
   var new_hdi = _round2(_clamp(prev.hdi + hdi_change, 0.30, 0.99));
 
-  // ── 16. BUILD NEW STATE ───────────────────────────────────────
-  // Record previous snapshot
+  // ── 16. BUILD NEW STATE ───────────────────────────────────────────
   var newHistory = state.history ? state.history.slice() : [];
   newHistory.push(prev);
 
@@ -5370,39 +5413,88 @@ async function renderTournaments() {
   var grid = document.getElementById('tournaments-grid');
   if (!grid) { return; }
 
-  // Show loading skeleton
   grid.innerHTML =
     '<div class="empty-state" style="grid-column:1/-1;">' +
       '<div class="spinner" style="width:28px;height:28px;margin:0 auto 1rem;"></div>' +
       '<div class="empty-state__title">Loading tournaments…</div>' +
     '</div>';
 
+  var rows = [];
+  var loadErr = '';
+
   try {
-    var rows = await sbGet('tournaments',
-      'status=neq.draft&order=created_at.desc&limit=100'
-    );
-    _allTournaments = rows || [];
+    // Fetch all tournaments visible to anon key (no status filter — show everything)
+    var url = SUPA_URL + '/rest/v1/tournaments' +
+      '?order=created_at.desc&limit=200';
+    var res = await fetch(url, {
+      method: 'GET',
+      headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + SUPA_ANON, 'Accept': 'application/json' }
+    });
+    var raw = await res.text();
+    var data = null;
+    try { data = JSON.parse(raw); } catch(pe) { loadErr = 'Invalid response from server'; }
 
-    // Load user teams in parallel
-    if (currentUser) { await _loadUserTeams(); }
-
-    // Wire filter chips
-    _wireFilterChips();
-    // Wire search
-    _wireSearch();
-    // Wire admin create button
-    _renderTournamentHeaderActions();
-
-    _renderTournamentGrid();
-
+    if (res.ok && Array.isArray(data)) {
+      rows = data;
+    } else if (!res.ok) {
+      loadErr = (data && data.message) ? data.message : ('HTTP ' + res.status);
+      // If RLS blocks the in.() filter, fall back to no filter (get all rows)
+      if (res.status === 400 || res.status === 401 || res.status === 403) {
+        var res2 = await fetch(SUPA_URL + '/rest/v1/tournaments?order=created_at.desc&limit=200', {
+          method: 'GET',
+          headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + SUPA_ANON, 'Accept': 'application/json' }
+        });
+        var raw2 = await res2.text();
+        try {
+          var data2 = JSON.parse(raw2);
+          if (res2.ok && Array.isArray(data2)) { rows = data2; loadErr = ''; }
+        } catch(pe2) {}
+      }
+    }
   } catch(e) {
+    loadErr = e.message || 'Network error';
+  }
+
+  if (loadErr && !rows.length) {
+    console.error('[MacroNations] Tournament load failed:', loadErr);
     grid.innerHTML =
       '<div class="empty-state" style="grid-column:1/-1;">' +
         '<div class="empty-state__icon">⚠️</div>' +
         '<div class="empty-state__title">Could not load tournaments</div>' +
-        '<div class="empty-state__desc">' + esc(e.message || 'Network error') + '</div>' +
+        '<div class="empty-state__desc">' + esc(loadErr) + '</div>' +
+        '<button class="btn btn--primary" style="margin-top:1rem;" onclick="renderTournaments()">↺ Retry</button>' +
       '</div>';
+    return;
   }
+
+  _allTournaments = rows;
+
+  // Fetch professor names — non-fatal
+  var creatorIds = [];
+  for (var ci = 0; ci < _allTournaments.length; ci++) {
+    var cid = _allTournaments[ci].created_by;
+    if (cid && creatorIds.indexOf(cid) === -1) { creatorIds.push(cid); }
+  }
+  _professorMap = {};
+  if (creatorIds.length) {
+    try {
+      var profRows = await sbGetPublic('mn_users',
+        'id=in.(' + creatorIds.join(',') + ')&select=id,name,institution');
+      if (profRows) {
+        for (var pi = 0; pi < profRows.length; pi++) {
+          _professorMap[profRows[pi].id] = profRows[pi];
+        }
+      }
+    } catch(ex) {}
+  }
+
+  if (currentUser) {
+    try { await _loadUserTeams(); } catch(ex2) {}
+  }
+  _wireFilterChips();
+  _wireSearch();
+  _renderTournamentHeaderActions();
+  _renderTournamentGrid();
 }
 
 function _renderTournamentHeaderActions() {
@@ -5501,15 +5593,15 @@ function _buildTournamentCard(t) {
       '<div class="prize-pool-widget">' +
         '<div class="prize-pool-widget__title">Live Prize Pool</div>' +
         '<div class="prize-pool-widget__row">' +
-          '<span class="prize-pool-widget__label">Total pool (10%)</span>' +
+          '<span class="prize-pool-widget__label">Prize Pool</span>' +
           '<span class="prize-pool-widget__val prize-pool-widget__val--total" id="' + poolId + '-total">—</span>' +
         '</div>' +
         '<div class="prize-pool-widget__row">' +
-          '<span class="prize-pool-widget__label">🥇 1st place (70%)</span>' +
+          '<span class="prize-pool-widget__label">🥇 1st place</span>' +
           '<span class="prize-pool-widget__val" id="' + poolId + '-first">—</span>' +
         '</div>' +
         '<div class="prize-pool-widget__row">' +
-          '<span class="prize-pool-widget__label">🥈 2nd place (30%)</span>' +
+          '<span class="prize-pool-widget__label">🥈 2nd place</span>' +
           '<span class="prize-pool-widget__val" id="' + poolId + '-second">—</span>' +
         '</div>' +
       '</div>';
@@ -5591,6 +5683,17 @@ function _buildTournamentCard(t) {
           (seaYear ? '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">📆</span>Season ' + esc(seaYear) + '</span>' : '') +
           '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">🔄</span>' + esc(String(totRound)) + ' Rounds</span>' +
           (maxTeams ? '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">👥</span>' + esc(String(maxTeams)) + ' Teams Max</span>' : '') +
+          (function() {
+            var prof = (t.created_by && _professorMap[t.created_by]) ? _professorMap[t.created_by] : null;
+            var out = '';
+            if (prof && prof.name) {
+              out += '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">🎓</span>' + esc(prof.name) + '</span>';
+            }
+            if (prof && prof.institution) {
+              out += '<span class="tournament-card__meta-item"><span class="tournament-card__meta-icon">🏛️</span>' + esc(prof.institution) + '</span>';
+            }
+            return out;
+          })() +
         '</div>' +
         _statusBadge(status) +
         (countdownHtml ? ' ' + countdownHtml : '') +
@@ -5621,7 +5724,7 @@ async function _fetchPrizePool(tournamentId, fee, poolId) {
 }
 
 // Register page loader
-PAGE_LOADERS['tournaments'] = renderTournaments;
+var _professorMap = {};  // id → {name, institution} for tournament creators
 
 // ═══════════════════════════════════════════════════════════════════
 //  TEAM MODAL
@@ -5672,7 +5775,7 @@ function openTeamModal(tournamentId) {
   var fee = tourn ? Number(tourn.entry_fee) || 0 : 0;
   if (fee > 0 && feeEl && feeText) {
     feeEl.style.display = 'block';
-    feeText.textContent = 'Entry fee of ' + fmt$(fee) + ' per team is required to compete for prizes. Payment is handled offline — contact support@macronations.com after registering.';
+    feeText.textContent = 'Entry fee required to compete for prizes. Pay securely via the Payment tab in your dashboard after registering.';
   } else if (feeEl) {
     feeEl.style.display = 'none';
   }
@@ -5795,6 +5898,7 @@ function _genInviteCode() {
 // ── CREATE TEAM ───────────────────────────────────────────────────
 async function doCreateTeam() {
   _setFormErr('create-team-error','');
+  if (!currentUser) { _setFormErr('create-team-error','You must be signed in to create a team.'); return; }
 
   var teamName = (document.getElementById('team-name-input').value || '').trim();
   if (!teamName) { _setFormErr('create-team-error','Please enter a team name.'); return; }
@@ -5822,13 +5926,41 @@ async function doCreateTeam() {
     // One-team-per-season check
     var conflict = await _checkSeasonConflict(tourn.season_year);
     if (conflict) {
+      var conflictName = (conflict && conflict.name) ? conflict.name : 'another team';
       _setFormErr('create-team-error',
-        'You are already on team "' + ((conflict && conflict.name) || 'another team') +
-        '" in Season ' + (tourn.season_year || '') +
-        '. Each player can only be on one team per season across all tournaments.'
+        'You are already on team "' + conflictName + '" in Season ' + (tourn.season_year || '') + '. ' +
+        'MacroNations allows only one team per season. Leave your current team before joining a new one.'
       );
       setLoading('btn-do-create-team',false,'Create Team');
       return;
+    }
+
+    // Email domain check for class/university tournaments
+    // Student's email domain must match the professor who created the tournament
+    if (tourn.tier === 'class' || tourn.tier === 'university') {
+      var studentEmail = (currentUser.email || '').toLowerCase();
+      var studentDomain = studentEmail.indexOf('@') !== -1 ? studentEmail.split('@')[1] : '';
+      // Find professor's email domain
+      var profRec = tourn.created_by ? (_professorMap[tourn.created_by] || null) : null;
+      if (!profRec && tourn.created_by) {
+        try {
+          var profRows = await sbGetPublic('mn_users', 'id=eq.' + tourn.created_by + '&select=id,name,institution,email&limit=1');
+          if (profRows && profRows.length) { profRec = profRows[0]; _professorMap[tourn.created_by] = profRec; }
+        } catch(ex) {}
+      }
+      if (profRec && profRec.email) {
+        var profEmail  = (profRec.email || '').toLowerCase();
+        var profDomain = profEmail.indexOf('@') !== -1 ? profEmail.split('@')[1] : '';
+        if (profDomain && studentDomain && studentDomain !== profDomain) {
+          _setFormErr('create-team-error',
+            'This is a ' + tourn.tier + ' tournament for ' + esc(profDomain) + ' students. ' +
+            'You must use your ' + esc(profDomain) + ' email to join. ' +
+            'Please register again with your ' + esc(profDomain) + ' email address.'
+          );
+          setLoading('btn-do-create-team',false,'Create Team');
+          return;
+        }
+      }
     }
 
     // Max teams check
@@ -5999,6 +6131,30 @@ async function doJoinTeam() {
         );
         setLoading('btn-do-join-team',false,'Join This Team');
         return;
+      }
+    }
+
+    // Email domain check for class/university tournaments
+    if (tourn && (tourn.tier === 'class' || tourn.tier === 'university')) {
+      var jStudentEmail  = (currentUser.email || '').toLowerCase();
+      var jStudentDomain = jStudentEmail.indexOf('@') !== -1 ? jStudentEmail.split('@')[1] : '';
+      var jProfRec = tourn.created_by ? (_professorMap[tourn.created_by] || null) : null;
+      if (!jProfRec && tourn.created_by) {
+        try {
+          var jProfRows = await sbGetPublic('mn_users', 'id=eq.' + tourn.created_by + '&select=id,email,institution&limit=1');
+          if (jProfRows && jProfRows.length) { jProfRec = jProfRows[0]; _professorMap[tourn.created_by] = jProfRec; }
+        } catch(ex) {}
+      }
+      if (jProfRec && jProfRec.email) {
+        var jProfDomain = (jProfRec.email || '').toLowerCase().split('@')[1] || '';
+        if (jProfDomain && jStudentDomain && jStudentDomain !== jProfDomain) {
+          _setFormErr('join-team-error',
+            'This tournament is for ' + esc(jProfDomain) + ' students only. ' +
+            'Please sign in with your ' + esc(jProfDomain) + ' email to join.'
+          );
+          setLoading('btn-do-join-team',false,'Join This Team');
+          return;
+        }
       }
     }
 
@@ -6629,6 +6785,7 @@ async function doSaveDraft() {
 }
 
 async function doSubmitPolicy() {
+  if (!currentUser) { flash('You must be signed in.', 'error'); return; }
   if (!currentTeamId || !_dashTourn) { return; }
   var fee    = Number((_dashTourn && _dashTourn.entry_fee) || 0);
   var feePaid = (_dashTeam && _dashTeam.fee_paid);
@@ -6809,6 +6966,7 @@ function _crisisHistoryTable() {
 }
 
 async function doConfirmCrisis() {
+  if (!currentUser) { flash('You must be signed in.', 'error'); return; }
   var errorEl = document.getElementById('crisis-error');
   if (errorEl) { errorEl.classList.remove('visible'); errorEl.textContent = ''; }
 
@@ -7199,8 +7357,12 @@ async function renderDashRankings() {
 // Stripe payment link — admin sets this per tournament in settings
 // Falls back to email if not configured
 var STRIPE_PAYMENT_LINKS = {};
-// Default GoDaddy payment link for all paid tournaments
-var DEFAULT_PAYMENT_LINK = 'https://bcb769f9-c141-4e9a-ae69-a71cdfa4764c.paylinks.godaddy.com/e20b2adf-394f-4684-aff2-112';
+// Primary payment link — GoDaddy (activated)
+// Used for all paid tournaments and global elections
+var DEFAULT_PAYMENT_LINK = 'https://buy.stripe.com/dRmeV6afb8c475313Q5ZC02';
+var STRIPE_BUY_BTN_ID  = 'buy_btn_1THEu9599m6wZYJIiugg6UMV';
+var STRIPE_PUBLISHABLE = 'pk_live_51TDnG0599m6wZYJIAo2Uq2aocXy54TgNXKB9Fv7ayoZZ7OiayJSpwryXWJABC9VM4U9kq66BuVB06NyLaMfhKNpi00Z6CmLHnF';
+var WORLD_CUP_ENTRY_FEE  = 50;    // Set by admin — fee for global seasonal tournament
 
 function renderDashPayment() {
   var el = document.getElementById('dash-panel-payment');
@@ -7236,35 +7398,30 @@ function renderDashPayment() {
   }
 
   // Check for a Stripe link for this tournament
-  var stripeLink = '';
-  // Try localStorage (set when tournament was created)
-  try {
-    stripeLink = localStorage.getItem('mn_stripe_' + (tourn.name||'').replace(/\s+/g,'_')) || '';
-  } catch(e) {}
-  if (!stripeLink) { stripeLink = (STRIPE_PAYMENT_LINKS[tourn.id]) || DEFAULT_PAYMENT_LINK || ''; }
+  // Payment link: use the activated GoDaddy/Stripe link for all paid tournaments.
+  // This works across all devices without localStorage.
+  var stripeLink = DEFAULT_PAYMENT_LINK || '';
+  // Admin can override per-tournament via STRIPE_PAYMENT_LINKS map
+  if (STRIPE_PAYMENT_LINKS[tourn.id]) { stripeLink = STRIPE_PAYMENT_LINKS[tourn.id]; }
 
-  var payBtn = '';
-  if (stripeLink) {
-    // Pre-fill Stripe with team name and email via URL params where supported
-    var stripeUrl = stripeLink;
-    if (currentUser && currentUser.email) {
-      stripeUrl += (stripeUrl.indexOf('?') === -1 ? '?' : '&') +
-        'prefilled_email=' + encodeURIComponent(currentUser.email);
-    }
-    payBtn =
-      '<a href="' + esc(stripeUrl) + '" target="_blank" rel="noopener" ' +
-        'class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;text-decoration:none;">' +
-        '💳 Pay ' + fmt$(fee) + ' — Secure Payment' +
-      '</a>' +
-      '<p style="font-size:0.8125rem;color:var(--text-400);margin-bottom:1rem;text-align:center;">' +
-        'Click to pay securely. After completing payment, email support@macronations.com with your team name and receipt so we can activate your account.' +
-      '</p>';
-  } else {
-    payBtn =
-      '<button class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;opacity:0.6;cursor:default;">' +
-        '💳 Card Payment (Link not yet set by admin)' +
-      '</button>';
+  // Plain Stripe payment link — no web component, no iframe, works with all browsers and extensions
+  var stripeUrl = DEFAULT_PAYMENT_LINK;
+  if (currentUser && currentUser.email) {
+    stripeUrl += (stripeUrl.indexOf('?') === -1 ? '?' : '&') +
+      'prefilled_email=' + encodeURIComponent(currentUser.email);
   }
+  var payBtn =
+    '<a href="' + esc(stripeUrl) + '" target="_blank" rel="noopener noreferrer" ' +
+      'style="display:flex;align-items:center;justify-content:center;gap:0.5rem;' +
+        'background:#635bff;color:#fff;border-radius:8px;padding:0.875rem 1.5rem;' +
+        'font-size:1rem;font-weight:600;text-decoration:none;margin-bottom:0.875rem;">' +
+      '💳 Pay ' + fmt$(fee) + ' with Stripe' +
+    '</a>' +
+    '<p style="font-size:0.8125rem;color:var(--text-400);margin-bottom:1rem;text-align:center;">' +
+      'Secure payment via Stripe. After paying, email ' +
+      '<a href="mailto:support@macronations.com">support@macronations.com</a> ' +
+      'with your team name and receipt to activate your account.' +
+    '</p>';
 
   el.innerHTML =
     '<div class="payment-card">' +
@@ -7358,7 +7515,7 @@ async function renderAdmin() {
   var badgeEl = document.getElementById('admin-page-badge');
   if (_isAdmin()) {
     if (titleEl) { titleEl.textContent = 'Admin Panel'; }
-    if (subEl)   { subEl.textContent   = 'MacroNations LLC · Platform Management'; }
+    if (subEl)   { subEl.textContent   = 'MacroNations · Platform Management'; }
     if (badgeEl) { badgeEl.innerHTML = '<span class="badge badge--red badge--no-dot">Admin</span>'; }
   } else {
     if (titleEl) { titleEl.textContent = 'Professor Panel'; }
@@ -7418,6 +7575,7 @@ PAGE_LOADERS['admin'] = renderAdmin;
 
 // ── Super-admin: Delete tournament ────────────────────────────────
 async function doDeleteTournament(tournId) {
+  if (!_isAdmin()) { flash('Super admin access required.', 'error'); return; }
   var t = _getTournById(tournId);
   var name = (t && t.name) ? t.name : 'this tournament';
   if (!confirm('PERMANENTLY DELETE "' + name + '"?\n\nThis removes the tournament and cannot be undone. Teams and economy records are NOT automatically deleted — contact support to remove those.')) { return; }
@@ -7489,6 +7647,7 @@ async function openManageTeamsModal(tournId) {
 }
 
 async function doRemoveTeam(teamId, teamName) {
+  if (!_isAdmin()) { flash('Super admin access required.', 'error'); return; }
   if (!confirm('Remove team "' + teamName + '" from this tournament?\n\nThis action logs a misconduct removal. The team will lose access to the dashboard for this tournament.')) { return; }
   try {
     await sbDelete('teams', 'id=eq.' + teamId);
@@ -7652,7 +7811,8 @@ function renderAdminTournaments(el) {
       '<td>' + _statusBadge(t.status) + '</td>' +
       '<td class="text-mono">' + teamCount + (t.max_teams ? '/' + t.max_teams : '') + '</td>' +
       '<td class="text-mono">R' + (t.current_round || 0) + '/' + (t.rounds_total || '?') + '</td>' +
-      '<td>' + (fee > 0 ? fmt$(pp.pool) : '<em style="color:var(--text-400);">Free</em>') + '</td>' +
+      '<td>' + (fee > 0 ? fmt$(pp.pool) : '<em style="color:var(--text-400);">Free</em>') +
+        (t.is_global_elected ? ' <span class="badge badge--gold badge--no-dot" style="font-size:0.7rem;">🌍 World Cup</span>' : '') + '</td>' +
       '<td><div class="admin-action-row">' + actions + '</div></td>' +
       '</tr>';
   }
@@ -7749,6 +7909,7 @@ function openCreateTournament(isClass) {
 }
 
 async function doCreateTournament() {
+  if (!currentUser || (!_isAdmin() && !_isProfessor())) { _setFormErr('ct-error','Admin or professor access required.'); return; }
   _setFormErr('ct-error', '');
   var name     = (document.getElementById('ct-name').value || '').trim();
   var tier     = document.getElementById('ct-tier').value || 'university';
@@ -7770,30 +7931,29 @@ async function doCreateTournament() {
   // Check global election
   var electBox  = document.getElementById('ct-global-elect');
   var isElected = electBox ? electBox.checked : false;
-  if (isElected) {
-    var profLink = document.getElementById('ct-stripe-link-prof');
-    if (profLink && profLink.value.trim()) {
-      try { localStorage.setItem('mn_stripe_elected_' + name.replace(/\s+/g,'_'), profLink.value.trim()); } catch(e) {}
-    }
+  // If elected for world cup, override fee to WORLD_CUP_ENTRY_FEE
+  if (isElected && _isProfessor() && !_isAdmin()) {
+    fee = WORLD_CUP_ENTRY_FEE;
   }
 
   setLoading('btn-do-create-tournament', true, 'Creating…');
   try {
     var schedule = buildSchedule(startDate, rounds, interval);
     var newTourn = await sbPost('tournaments', {
-      name:          name,
-      tier:          tier,
-      season_year:   season,
-      rounds_total:  rounds,
-      entry_fee:     fee,
-      max_teams:     maxTeams || null,
-      description:   desc,
-      status:        'upcoming',
-      current_round: 0,
-      created_by:    currentUser.id,
-      schedule:      schedule,
-      playoff_teams: [],
-      playoff_bracket: {}
+      name:             name,
+      tier:             tier,
+      season_year:      season,
+      rounds_total:     rounds,
+      entry_fee:        fee,
+      max_teams:        maxTeams || null,
+      description:      desc,
+      status:           'upcoming',
+      current_round:    0,
+      created_by:       currentUser.id,
+      schedule:         schedule,
+      playoff_teams:    [],
+      playoff_bracket:  {},
+      is_global_elected: isElected ? true : false
     });
     if (!newTourn || newTourn.code) {
       _setFormErr('ct-error', (newTourn && newTourn.message) || 'Failed to create tournament.');
@@ -7811,6 +7971,7 @@ async function doCreateTournament() {
 }
 
 async function doSetTournamentStatus(id, status) {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin or professor access required.', 'error'); return; }
   try {
     var patch = { status: status };
     if (status === 'active' && _getTournById(id) && _getTournById(id).current_round === 0) {
@@ -7843,6 +8004,7 @@ function promptCompleteTournament(id) {
 }
 
 async function doConfirmComplete() {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin or professor access required.', 'error'); return; }
   if (!_completeTargetId) { return; }
   var tid = _completeTargetId;
   await doSetTournamentStatus(tid, 'completed');
@@ -7899,6 +8061,7 @@ function renderAdminTeams(el) {
 }
 
 async function doMarkPaid(teamId) {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin access required.', 'error'); return; }
   try {
     await sbPatch('teams', 'id=eq.' + teamId, { fee_paid: true });
     for (var i = 0; i < _adminTeams.length; i++) {
@@ -8010,6 +8173,7 @@ function _buildRoundCard(t, isCompleted) {
 
 // ── SIMULATION ENGINE ─────────────────────────────────────────────
 async function runSimulation(tournId) {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin or professor access required.', 'error'); return; }
   var logContainer = document.getElementById('sim-log-container');
   var logEl        = document.getElementById('sim-log');
   if (logContainer) { logContainer.style.display = 'block'; }
@@ -8042,13 +8206,19 @@ async function runSimulation(tournId) {
 
   log('=== MacroNations Simulation Engine ===', 'head');
   log('Tournament: ' + (t.name || tournId));
+  log('Tournament ID: ' + tournId);
   log('Advancing: Round ' + round + ' → ' + newRound);
   log('');
 
   try {
     // Get all teams in this tournament
     var teams = await sbGet('teams', 'tournament_id=eq.' + tournId + '&limit=200');
-    if (!teams || !teams.length) { log('No teams found.', 'warn'); return; }
+    if (!teams || !teams.length) {
+      log('No teams found for tournament ID: ' + tournId, 'warn');
+      log('Check that teams were created with this exact tournament ID.', 'warn');
+      if (btn) { btn.disabled = false; btn.textContent = '▶ Run Simulation'; }
+      return;
+    }
 
     log('Processing ' + teams.length + ' teams…');
 
@@ -8206,6 +8376,9 @@ async function runSimulation(tournId) {
     log('ERROR: ' + (e.message || e), 'err');
     flash('Simulation error: ' + (e.message || ''), 'error');
     if (btn) { btn.disabled = false; btn.textContent = '▶ Run Simulation'; }
+  } finally {
+    // Always ensure button is re-enabled
+    if (btn && btn.disabled) { btn.disabled = false; btn.textContent = '▶ Run Simulation'; }
   }
 }
 
@@ -8435,6 +8608,7 @@ function renderAdminWaivers(el) {
 }
 
 async function doGrantWaiver() {
+  if (!_isAdmin() && !_isProfessor()) { flash('Admin access required.', 'error'); return; }
   _setFormErr('waiver-error', '');
   var email   = (document.getElementById('waiver-email').value || '').trim().toLowerCase();
   var tournId = document.getElementById('waiver-tournament').value || '';
@@ -8768,7 +8942,7 @@ function makeCertSVG(type, recipientName, tournName, score, year) {
     '<line x1="120" y1="88" x2="790" y2="88" stroke="' + accentBar + '" stroke-width="0.75" opacity="0.25"/>' +
 
     // Ribbon emoji
-'<defs><clipPath id="csc"><path d="M450,100 L475,108 L475,128 Q475,148 450,155 Q425,148 425,128 L425,108 Z"/></clipPath></defs><path d="M450,100 L475,108 L475,128 Q475,148 450,155 Q425,148 425,128 L425,108 Z" fill="#0D1F3C"/><rect x="425" y="112" width="50" height="8" fill="#1A3260" clip-path="url(#csc)"/><path d="M450,100 L475,108 L475,128 Q475,148 450,155 Q425,148 425,128 L425,108 Z" fill="none" stroke="#FFD700" stroke-width="2"/><path d="M450,102 L473,110 L473,128 Q473,146 450,153 Q427,146 427,128 L427,110 Z" fill="none" stroke="#FFD700" stroke-width="0.8" opacity="0.5"/><polygon points="450,103 451,106 454,106 451.5,108 452.5,111 450,109.5 447.5,111 448.5,108 446,106 449,106" fill="#FFD700"/><polygon points="440,106 440.7,108.1 442.8,108.1 441.1,109.4 441.8,111.5 440,110.2 438.2,111.5 438.9,109.4 437.2,108.1 439.3,108.1" fill="#FFD700" opacity="0.6"/><polygon points="460,106 460.7,108.1 462.8,108.1 461.1,109.4 461.8,111.5 460,110.2 458.2,111.5 458.9,109.4 457.2,108.1 459.3,108.1" fill="#FFD700" opacity="0.6"/><text x="450" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="10" font-weight="700" fill="#FFD700" letter-spacing="2">MN</text><line x1="432" y1="123" x2="468" y2="123" stroke="#FFD700" stroke-width="1"/><rect x="448.5" y="121.5" width="3" height="3" fill="#FFD700" transform="rotate(45 450 123)"/><rect x="429" y="143" width="4" height="7" fill="#60A5FA" opacity="0.85" clip-path="url(#csc)"/><rect x="434.5" y="140" width="4" height="10" fill="#60A5FA" opacity="0.85" clip-path="url(#csc)"/><rect x="440" y="137" width="4" height="13" fill="#60A5FA" opacity="0.85" clip-path="url(#csc)"/><rect x="445.5" y="134" width="4" height="16" fill="#60A5FA" opacity="0.85" clip-path="url(#csc)"/><rect x="451" y="131" width="4" height="19" fill="#60A5FA" opacity="0.85" clip-path="url(#csc)"/><polyline points="431,144.5 436.5,141.5 442,138 447.5,135 453,131.5" fill="none" stroke="#00FF88" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#csc)"/><circle cx="431" cy="144.5" r="1.4" fill="#00FF88" clip-path="url(#csc)"/><circle cx="436.5" cy="141.5" r="1.7" fill="#00FF88" clip-path="url(#csc)"/><circle cx="442" cy="138" r="2" fill="#00FF88" clip-path="url(#csc)"/><circle cx="447.5" cy="135" r="2.3" fill="#00FF88" clip-path="url(#csc)"/><circle cx="453" cy="131.5" r="2.7" fill="#00FF88" clip-path="url(#csc)"/><polyline points="451,130 453,131.5 451.5,133.5" fill="none" stroke="#00FF88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#csc)"/>' +
+    '<text x="450" y="155" text-anchor="middle" font-size="36">' + cfg.ribbon + '</text>' +
 
     // MACRONATIONS wordmark
     '<text x="450" y="188" text-anchor="middle" font-family="\'DM Serif Display\',serif" font-size="18" fill="#0d1526" letter-spacing="0.04em">MACRONATIONS</text>' +
@@ -9032,6 +9206,7 @@ async function revokeChampion(id) {
 
 // ── crownChampion(tournId) — called after tournament completes ────
 async function crownChampion(tournId) {
+  if (!_isAdmin() && !_isProfessor()) { return; }
   try {
     var tRows = await sbGet('tournaments', 'id=eq.' + tournId + '&limit=1');
     var tourn = (tRows && tRows.length) ? tRows[0] : null;
@@ -9101,7 +9276,7 @@ async function renderRankings() {
 
   try {
     // Fetch active + completed tournaments
-    var tourns = await sbGet('tournaments',
+    var tourns = await sbGetPublic('tournaments',
       'status=in.(active,completed)&order=created_at.desc&limit=50') || [];
 
     if (!tourns.length) {
@@ -9202,42 +9377,41 @@ PAGE_LOADERS['rankings'] = renderRankings;
 var LEGAL_CONTENT = {
   terms: {
     title: 'Terms of Service',
-    updated: 'January 2025',
+    updated: 'January 2026',
     sections: [
-      { h: 'Agreement to Terms', p: 'By accessing or using the MacroNations platform at macronations.com, you agree to be bound by these Terms of Service. MacroNations is operated by MacroNations LLC, a New York Limited Liability Company. If you do not agree to these terms, please do not use the platform.' },
+      { h: 'Agreement to Terms', p: 'By accessing or using the MacroNations platform at macronations.com, you agree to be bound by these Terms of Service. MacroNations is operated by MacroNations (owned by a New York LLC). If you do not agree to these terms, please do not use the platform.' },
       { h: 'Eligibility', p: 'You must be enrolled as a student at an accredited university or college to participate in any MacroNations competition. Professors and educators may access the platform in a non-competing capacity to create and manage class tournaments. By registering, you affirm that the information you provide is accurate and complete.' },
-      { h: 'User Accounts', p: 'You are responsible for maintaining the confidentiality of your login credentials. You agree to notify us immediately of any unauthorized access to your account at support@macronations.com. MacroNations LLC is not liable for losses resulting from unauthorized account use.' },
+      { h: 'User Accounts', p: 'You are responsible for maintaining the confidentiality of your login credentials. You agree to notify us immediately of any unauthorized access to your account at support@macronations.com. MacroNations is not liable for losses resulting from unauthorized account use.' },
       { h: 'One-Team-Per-Season Rule', p: 'Each registered user may only be a member of one (1) team per tournament season year. Participation in multiple teams within the same season year across different tournaments is prohibited and may result in disqualification.' },
       { h: 'Academic Integrity', p: 'All policy submissions must reflect the independent judgment of your team. Sharing policy decisions, collusion with other teams, exploiting simulation bugs, reverse-engineering scoring algorithms, or any other conduct inconsistent with academic integrity will result in immediate disqualification without refund.' },
-      { h: 'Platform Availability', p: 'MacroNations LLC makes no warranty that the platform will be available at all times. We reserve the right to suspend, modify, or terminate the platform at any time. In the event of platform disruption that prevents policy submission, affected round deadlines may be extended at our discretion.' },
-      { h: 'Limitation of Liability', p: 'To the maximum extent permitted by applicable law, MacroNations LLC shall not be liable for any indirect, incidental, special, consequential, or punitive damages. Our total liability shall not exceed the entry fee paid by the affected party for the current tournament season.' },
+      { h: 'Platform Availability', p: 'MacroNations makes no warranty that the platform will be available at all times. We reserve the right to suspend, modify, or terminate the platform at any time. In the event of platform disruption that prevents policy submission, affected round deadlines may be extended at our discretion.' },
+      { h: 'Limitation of Liability', p: 'To the maximum extent permitted by applicable law, MacroNations shall not be liable for any indirect, incidental, special, consequential, or punitive damages. Our total liability shall not exceed the entry fee paid by the affected party for the current tournament season.' },
       { h: 'Governing Law', p: 'These Terms of Service are governed by the laws of the State of New York, without regard to its conflict of law provisions. Any dispute arising from these terms shall be resolved exclusively in the state or federal courts of New York County, New York. You waive any objection to personal jurisdiction in those courts.' },
       { h: 'Changes to Terms', p: 'We may modify these terms at any time. Continued use of the platform after changes constitutes acceptance of the revised terms. We will notify registered users of material changes via email.' }
     ]
   },
   prizes: {
     title: 'Prize Rules & Distribution',
-    updated: 'January 2025',
-    highlight: 'Prize pool = 10% of total entry fees collected. Winner receives 70%, Runner-up receives 30%.',
+    updated: 'January 2026',
+    highlight: 'Prize pool is a fixed percentage of total entry fees collected, as determined by MacroNations management.',
     math: [
-      'Example with $200 entry fee and 14 teams:',
-      '  Total collected:  $200 × 14 = $2,800',
-      '  Prize pool (10%): $2,800 × 0.10 = $280',
-      '  1st place (70%):  $280 × 0.70 = $196',
-      '  2nd place (30%):  $280 × 0.30 = $84'
+      'Example with a $50 entry fee and 14 teams:',
+      '  Total collected:    $50 × 14 = $700',
+      '  Prize pool:         Fixed % of $700 (set by management)',
+      '  Distribution:       Determined by MacroNations management'
     ],
     sections: [
-      { h: 'Prize Pool Calculation', p: 'The prize pool consists of 10% of all entry fees collected from paid teams in a tournament. For a $200 entry fee with 14 paid teams, the prize pool is $280. The pool grows as more teams register.' },
-      { h: 'Winner Distribution', p: 'The team with the highest aggregate score at the conclusion of all scheduled rounds receives 70% of the prize pool. The team with the second highest score receives the remaining 30%. In the event of a tie, the tied teams share the applicable prize tranche equally.' },
+      { h: 'Prize Pool Calculation', p: 'The prize pool consists of a fixed percentage of all entry fees collected from paid teams in a tournament, as determined by MacroNations management. The pool grows as more teams register.' },
+      { h: 'Winner Distribution', p: 'Prize distribution among top-performing teams is determined by MacroNations management and communicated prior to tournament conclusion. In the event of a tie, tied teams share the applicable prize tranche equally.' },
       { h: 'Eligibility for Prizes', p: 'To be eligible for prize distribution, a team must: (1) have paid the full entry fee, (2) have submitted policy decisions in at least one tournament round, and (3) not have been disqualified for any violation of these rules. Free tournaments (entry fee = $0) do not carry cash prizes.' },
-      { h: 'Payment of Prizes', p: 'Prizes are paid within 14 business days of tournament conclusion via bank transfer or PayPal. Prize recipients must provide payment details within 30 days of notification or the prize may be forfeited. MacroNations LLC is responsible for any applicable withholding or tax reporting obligations.' },
+      { h: 'Payment of Prizes', p: 'Prizes are paid within 14 business days of tournament conclusion via bank transfer or PayPal. Prize recipients must provide payment details within 30 days of notification or the prize may be forfeited. MacroNations is responsible for any applicable withholding or tax reporting obligations.' },
       { h: 'Waivers and Adjustments', p: 'Teams that received a fee waiver may compete but are excluded from prize eligibility unless their waiver covered 100% of the fee. Partial waivers require the remaining balance to be paid for prize eligibility.' },
-      { h: 'Disqualification', p: 'Any team found to have violated academic integrity rules forfeits all prize claims without refund. The prize pool amount is not redistributed to the remaining teams; forfeited prizes remain with MacroNations LLC.' }
+      { h: 'Disqualification', p: 'Any team found to have violated academic integrity rules forfeits all prize claims without refund. The prize pool amount is not redistributed to the remaining teams; forfeited prizes remain with MacroNations.' }
     ]
   },
   privacy: {
     title: 'Privacy Policy',
-    updated: 'January 2025',
+    updated: 'January 2026',
     sections: [
       { h: 'Information We Collect', p: 'We collect: (1) Registration information including name, email address, university affiliation, and country. (2) Tournament participation data including policy submissions, scores, and team membership. (3) Technical data including browser type, IP address, and usage patterns. We do not collect payment card information directly — any payment processing uses third-party services.' },
       { h: 'How We Use Your Information', p: 'Your information is used to: operate the tournament platform; calculate and display scores and rankings; send round notifications and tournament updates; populate the public leaderboard and Hall of Champions; enforce eligibility and integrity requirements; and improve the platform.' },
@@ -9245,30 +9419,30 @@ var LEGAL_CONTENT = {
       { h: 'Data Storage', p: 'Data is stored on Supabase infrastructure hosted in the United States. We implement industry-standard security measures including encryption in transit and access controls. We retain your data for the duration of your account and for a period of 7 years thereafter for record-keeping.' },
       { h: 'Your Rights', p: 'Under applicable law, you may have rights to access, correct, or delete your personal data. To exercise these rights, email support@macronations.com. We will respond within 30 days. Note that certain data (such as leaderboard records) may be retained even after account deletion as part of the public tournament record.' },
       { h: 'Governing Law', p: 'This Privacy Policy is governed by the laws of the State of New York and applicable federal privacy law, including the New York SHIELD Act. For users in the European Economic Area, additional rights may apply under the GDPR.' },
-      { h: 'Contact', p: 'For privacy inquiries, contact: MacroNations LLC, support@macronations.com, macronations.com. As a New York Limited Liability Company, we are subject to New York State jurisdiction.' }
+      { h: 'Contact', p: 'For privacy inquiries, contact: MacroNations, support@macronations.com, macronations.com. As owned by a New York LLC, we are subject to New York State jurisdiction.' }
     ]
   },
   disclaimer: {
     title: 'Disclaimer',
-    updated: 'January 2025',
+    updated: 'January 2026',
     sections: [
       { h: 'Educational Purpose', p: 'MacroNations is an educational simulation platform. The macroeconomic model used in the tournament is a simplified representation designed for pedagogical purposes. It does not constitute financial, investment, or economic advice. Results in the simulation do not predict real-world economic outcomes.' },
-      { h: 'No Warranty', p: 'The MacroNations platform is provided "as is" without warranty of any kind, express or implied. MacroNations LLC makes no warranties regarding the accuracy of the simulation engine, the availability of the platform, or the fitness of the platform for any particular purpose.' },
+      { h: 'No Warranty', p: 'The MacroNations platform is provided "as is" without warranty of any kind, express or implied. MacroNations makes no warranties regarding the accuracy of the simulation engine, the availability of the platform, or the fitness of the platform for any particular purpose.' },
       { h: 'Simulation Accuracy', p: 'The economic simulation engine incorporates simplified versions of real economic relationships (Okun\'s Law, Phillips Curve, Laffer Curve, Reinhart-Rogoff debt threshold, etc.). These relationships are approximations. Real economies are substantially more complex and uncertain. Participants should not rely on simulation outcomes as predictions of real-world economic behavior.' },
-      { h: 'Prize Disclaimer', p: 'Prize amounts depend on the number of paid teams in a tournament. MacroNations LLC does not guarantee any minimum prize amount. In the event of technical failure that corrupts tournament data, MacroNations LLC\'s maximum liability is limited to refund of entry fees.' },
-      { h: 'Third-Party Services', p: 'The platform integrates with third-party services including Supabase (database), Anthropic (AI advisory feature), and payment processors. MacroNations LLC is not responsible for the availability, accuracy, or privacy practices of these third-party services.' }
+      { h: 'Prize Disclaimer', p: 'Prize amounts depend on the number of paid teams in a tournament. MacroNations does not guarantee any minimum prize amount. In the event of technical failure that corrupts tournament data, MacroNations\'s maximum liability is limited to refund of entry fees.' },
+      { h: 'Third-Party Services', p: 'The platform integrates with third-party services including Supabase (database), Anthropic (AI advisory feature), and payment processors. MacroNations is not responsible for the availability, accuracy, or privacy practices of these third-party services.' }
     ]
   },
   copyright: {
     title: 'Copyright & Intellectual Property',
-    updated: 'January 2025',
+    updated: 'January 2026',
     sections: [
-      { h: 'Ownership', p: 'MacroNations, the MacroNations logo, the line-chart-with-star mark, the simulation engine, scoring algorithms, website design, and all associated content are the exclusive intellectual property of MacroNations LLC, a New York Limited Liability Company. All rights reserved.' },
+      { h: 'Ownership', p: 'MacroNations, the MacroNations logo, the line-chart-with-star mark, the simulation engine, scoring algorithms, website design, and all associated content are the exclusive intellectual property of MacroNations (owned by a New York LLC). All rights reserved.' },
       { h: 'Limited License', p: 'Registered users are granted a limited, non-exclusive, non-transferable license to access and use the platform solely for participation in authorized MacroNations tournaments. This license does not include the right to copy, reproduce, distribute, modify, or create derivative works from any MacroNations content.' },
       { h: 'Prohibited Uses', p: 'You may not: (1) reproduce or distribute the simulation engine or scoring algorithms; (2) use the MacroNations name or logo without written permission; (3) reverse-engineer, decompile, or disassemble any portion of the platform; (4) frame or mirror any part of the platform on any other site; or (5) use automated means to access the platform.' },
-      { h: 'User Content', p: 'Policy submissions, team names, and rationale text entered by users remain the intellectual property of the respective users. By submitting content, you grant MacroNations LLC a non-exclusive, royalty-free license to display your content on the platform (including leaderboards and the Hall of Champions).' },
-      { h: 'DMCA', p: 'If you believe any content on the platform infringes your copyright, please send a notice to support@macronations.com including identification of the work claimed to be infringed, the allegedly infringing material, and your contact information. MacroNations LLC will respond in accordance with the Digital Millennium Copyright Act.' },
-      { h: 'Contact for Permissions', p: 'For licensing inquiries, partnership proposals, or academic use permissions, contact MacroNations LLC at support@macronations.com. We welcome educational partnerships and can discuss appropriate licensing arrangements for classroom use of the platform.' }
+      { h: 'User Content', p: 'Policy submissions, team names, and rationale text entered by users remain the intellectual property of the respective users. By submitting content, you grant MacroNations a non-exclusive, royalty-free license to display your content on the platform (including leaderboards and the Hall of Champions).' },
+      { h: 'DMCA', p: 'If you believe any content on the platform infringes your copyright, please send a notice to support@macronations.com including identification of the work claimed to be infringed, the allegedly infringing material, and your contact information. MacroNations will respond in accordance with the Digital Millennium Copyright Act.' },
+      { h: 'Contact for Permissions', p: 'For licensing inquiries, partnership proposals, or academic use permissions, contact MacroNations at support@macronations.com. We welcome educational partnerships and can discuss appropriate licensing arrangements for classroom use of the platform.' }
     ]
   }
 };
@@ -9288,7 +9462,7 @@ function showLegal(section) {
   if (!data) { el.innerHTML = '<p>Section not found.</p>'; return; }
 
   var html = '<h2 style="font-size:1.75rem;margin-bottom:0.25rem;">' + esc(data.title) + '</h2>';
-  html += '<p style="font-size:0.875rem;color:var(--text-400);margin-bottom:2rem;">MacroNations LLC · A New York Limited Liability Company · Last updated: ' + esc(data.updated) + '</p>';
+  html += '<p style="font-size:0.875rem;color:var(--text-400);margin-bottom:2rem;">MacroNations — owned by a New York LLC · Last updated: ' + esc(data.updated) + '</p>';
 
   if (data.highlight) {
     html += '<div class="legal-highlight">' + esc(data.highlight) + '</div>';
@@ -9304,7 +9478,7 @@ function showLegal(section) {
   }
 
   html += '<div class="legal-section-date">' +
-    'MacroNations LLC · A New York Limited Liability Company<br>' +
+    'MacroNations — owned by a New York LLC<br>' +
     'Contact: <a href="mailto:support@macronations.com">support@macronations.com</a> · macronations.com<br>' +
     'Governing law: State of New York, New York County<br>' +
     'Last updated: ' + esc(data.updated) +
@@ -9353,12 +9527,12 @@ function _aboutHowItWorks() {
       '<div class="card__body">' +
         '<div class="steps">' +
           _step('1','Register & Join','Create a free account with your university email. Go to Tournaments, find a competition open for registration, and either create a new team or join an existing one with an 8-character invite code. Each team can have up to 5 members.') +
-          _step('2','Pay the Entry Fee (if applicable)','For paid tournaments ($200/team), go to Dashboard → Payment. Pay via the Stripe link or email support@macronations.com. Your policy submissions are locked until payment is confirmed by the admin.') +
+          _step('2','Pay the Entry Fee (if applicable)','For paid tournaments, go to Dashboard → Payment and use the Stripe payment button. Your policy submissions are unlocked once payment is confirmed by the admin.') +
           _step('3','Set Your 10 Policy Levers','Every round, go to Dashboard → Policy. Adjust your 10 macroeconomic levers: Interest Rate, Government Spending, Tax Rate, Trade Openness, R&D Investment, Green Energy Mix, Welfare Spending, Regulation, Foreign Aid, and Infrastructure. Write a brief rationale and hit Submit Final Decision before the round deadline.') +
           _step('4','Respond to Crises','Some rounds trigger an economic crisis (banking crash, pandemic, trade war, debt crisis). Go to Crisis tab first — choose your response option — then separately submit your policy. These are two independent steps. If you skip the crisis response, the full unmitigated shock applies to your economy.') +
           _step('5','Consult the AI Advisor','Use Dashboard → AI Advisor to think through trade-offs. The advisor uses the Socratic method — it raises questions about your economy but never tells you which levers to move. That judgment is yours.') +
           _step('6','Track Your Score','Your economy is scored on 5 pillars (200 points each, 1000 total): GDP Performance, Stability, Equality, Sustainability, and Innovation. Check Dashboard → Overview after each round simulation runs.') +
-          _step('7','Prizes','The top-scoring team wins 70% of the prize pool. Runner-up wins 30%. The pool = 10% of all entry fees collected. Example: 14 teams × $200 = $2,800 collected → $280 prize pool → $196 to winner, $84 to runner-up.') +
+          _step('7','Prizes','Top performers share a prize pool funded by a fixed percentage of all entry fees collected — the exact split is determined by MacroNations management. Certificates are issued to all finalists.') +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -9466,9 +9640,9 @@ function _aboutFounder() {
           '<div style="flex-shrink:0;text-align:center;min-width:160px;">' + photoHtml + '</div>' +
           '<div style="flex:1;min-width:220px;">' +
             '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.75rem;margin-bottom:0.25rem;">Amarendra Sharma, PhD</h2>' +
-            '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder &amp; Director, MacroNations LLC</p>' +
+            '<p style="color:var(--blue);font-weight:600;margin-bottom:1rem;">Founder &amp; Director, MacroNations</p>' +
             '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">MacroNations was founded with a vision to make macroeconomic education experiential, competitive, and globally accessible. The platform bridges the gap between classroom theory and real-world policy-making by immersing students in the decisions that shape economies.</p>' +
-            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations LLC is a New York Limited Liability Company.</p>' +
+            '<p style="color:var(--text-500);line-height:1.8;margin-bottom:1rem;">Dr. Sharma brings extensive expertise in economics education, tournament design, and educational technology. MacroNations is owned by a New York LLC.</p>' +
             '<p style="color:var(--text-400);font-size:0.875rem;">📧 <a href="mailto:support@macronations.com">support@macronations.com</a> &nbsp;&middot;&nbsp; 🌐 macronations.com</p>' +
           '</div>' +
         '</div>' +
@@ -9586,40 +9760,23 @@ showPage = function(id) {
 // Read stored signer names (admin can set via settings)
 function _getCertSigners() {
   var director = '';
-  var directorTitle = 'Director, MacroNations LLC';
+  var directorTitle = 'Director, MacroNations';
   try {
     director = localStorage.getItem('mn_cert_director') || 'Amarendra Sharma, PhD';
-    directorTitle = localStorage.getItem('mn_cert_director_title') || 'Director, MacroNations LLC';
+    directorTitle = localStorage.getItem('mn_cert_director_title') || 'Director, MacroNations';
   } catch(e) { director = 'Amarendra Sharma, PhD'; }
 
-  // Tournament director — pull from _professorMap or currentUser
+  // Tournament director: professor who created the tournament
   var tournDirector = '';
-  var _certTourn = _dashTourn || {};
-  if (_certTourn.created_by) {
-    var _profRec = (typeof _professorMap !== 'undefined') && _professorMap[_certTourn.created_by];
-    if (_profRec && _profRec.name) {
-      tournDirector = _profRec.name;
-      if (_profRec.institution) { tournDirector += ', ' + _profRec.institution; }
-    } else if (currentUser && _certTourn.created_by === currentUser.id) {
+  if (_dashTourn && _dashTourn.created_by && currentUser) {
+    // If current user created it, use their name
+    if (_dashTourn.created_by === currentUser.id) {
       tournDirector = currentUser.name || currentUser.username || '';
-      if (currentUser.institution) { tournDirector += ', ' + currentUser.institution; }
-    } else {
-      // Fetch from DB async and cache — update cert when done
-      var _creatorId = _certTourn.created_by;
-      sbGetPublic('mn_users', 'id=eq.' + _creatorId + '&select=id,name,institution&limit=1').then(function(rows) {
-        if (rows && rows.length && rows[0].name) {
-          if (typeof _professorMap === 'undefined') { _professorMap = {}; }
-          _professorMap[_creatorId] = rows[0];
-          // Re-render certificate with the now-fetched name
-          var el = document.getElementById('dash-panel-certificates');
-          if (el && el.style.display !== 'none') { renderDashCertificates(el); }
-        }
-      }).catch(function() {});
     }
   }
   try {
-    var _storedDir = localStorage.getItem('mn_cert_tourndirector_' + (_certTourn.id || ''));
-    if (_storedDir) { tournDirector = _storedDir; }
+    var stored = localStorage.getItem('mn_cert_tourndirector_' + (_dashTourn && _dashTourn.id || ''));
+    if (stored) { tournDirector = stored; }
   } catch(e) {}
   if (!tournDirector) { tournDirector = 'Tournament Director'; }
 
@@ -9634,49 +9791,62 @@ renderDashCertificates = function(el) {
   var tourn  = _dashTourn || {};
   var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
   var scores = computeScores(eco);
-  var signers = _getCertSigners();
-  var isAdmin    = currentUser && (currentUser.is_admin || currentUser.role === 'professor');
-  var isEditable = isAdmin;
-  var isCompleted = (tourn.status === 'completed');
-  var isCaptain   = team.captain_id === (currentUser && currentUser.id);
+  var signers  = _getCertSigners();
+  var isAdmin  = currentUser && (currentUser.is_admin || currentUser.role === 'professor');
 
-  // Determine which cert types the student is eligible for
+  // Completed = status is 'completed' OR all rounds have been played
+  var isCompleted = (tourn.status === 'completed') ||
+    (Number(tourn.current_round) > 0 &&
+     Number(tourn.rounds_total) > 0 &&
+     Number(tourn.current_round) >= Number(tourn.rounds_total));
+
+  // Determine rank for this team (for winner/runner-up eligibility)
   var myRank = 999;
   if (_dashAllTeams && _dashAllTeams.length) {
-    var sorted = _dashAllTeams.slice().sort(function(a,b){ return (b._score||0)-(a._score||0); });
-    for(var ri=0;ri<sorted.length;ri++) { if(sorted[ri].id === team.id){ myRank = ri+1; break; } }
+    var sorted = _dashAllTeams.slice().sort(function(a, b) { return (b._score || 0) - (a._score || 0); });
+    for (var ri = 0; ri < sorted.length; ri++) {
+      if (sorted[ri].id === team.id) { myRank = ri + 1; break; }
+    }
   }
-  // winner/runner_up/playoff reserved for fee-paying global tournaments only
-  var hasFee = Number(tourn.entry_fee || 0) > 0;
-  var eligible = { participation: isAdmin || isCompleted, winner: isAdmin || (isCompleted && hasFee && myRank===1), runner_up: isAdmin || (isCompleted && hasFee && myRank===2), playoff: isAdmin || (isCompleted && hasFee && myRank<=8) };
 
+  // Eligibility per cert type
+  var eligible = {
+    participation: isAdmin || isCompleted,
+    winner:        isAdmin || (isCompleted && myRank === 1),
+    runner_up:     isAdmin || (isCompleted && myRank === 2),
+    playoff:       isAdmin || (isCompleted && myRank <= 8)
+  };
+
+  // Students: block entirely if tournament not completed
   if (!isAdmin && !isCompleted) {
     el.innerHTML =
       '<div class="empty-state" style="padding:4rem 2rem;">' +
         '<div class="empty-state__icon">🔒</div>' +
         '<div class="empty-state__title">Certificates not yet available</div>' +
-        '<div class="empty-state__desc">Certificates are issued when the tournament concludes. Complete all rounds and your certificates will appear here.</div>' +
+        '<div class="empty-state__desc">Certificates are issued when the tournament concludes.<br>' +
+        'Status: <strong>' + esc(tourn.status || 'unknown') + '</strong> · ' +
+        'Round ' + (Number(tourn.current_round) || 0) + ' of ' + (Number(tourn.rounds_total) || '?') + '</div>' +
       '</div>';
     return;
   }
-  var activeCertType = 'participation';
 
-  // Build type buttons — track firstElig
-  var typeKeys   = ['participation','winner','runner_up','playoff'];
-  var typeLabels = { participation:'Participation', winner:'Champion', runner_up:'Runner-Up', playoff:'Playoff Qualifier' };
-  var typeIcons  = { participation:'🎓', winner:'🏆', runner_up:'🥈', playoff:'⭐' };
+  // Build type buttons — track firstElig for initial display
+  var typeKeys   = ['participation', 'winner', 'runner_up', 'playoff'];
+  var typeLabels = { participation: 'Participation', winner: 'Champion', runner_up: 'Runner-Up', playoff: 'Playoff Qualifier' };
+  var typeIcons  = { participation: '🎓', winner: '🏆', runner_up: '🥈', playoff: '⭐' };
   var typeBtns   = '';
   var firstElig  = null;
+
   for (var i = 0; i < typeKeys.length; i++) {
     var tk     = typeKeys[i];
     var isElig = eligible[tk];
     if (isElig && !firstElig) { firstElig = tk; }
     typeBtns +=
-      '<button class="cert-type-btn' + (isElig && firstElig === tk ? ' active' : '') +
+      '<button class="cert-type-btn' + (firstElig === tk ? ' active' : '') +
         (isElig ? '' : ' btn--disabled') + '" data-cert="' + tk + '" ' +
         (isElig
           ? 'onclick="_certSelectType(\'' + tk + '\')"'
-          : 'onclick="flash(\'Reserved for paid global tournament participants.\',\'info\')"') + '>' +
+          : 'onclick="flash(\'You are not eligible for this certificate.\',\'info\')"') + '>' +
         '<span class="cert-type-btn__icon">' + typeIcons[tk] + (isElig ? '' : ' 🔒') + '</span>' +
         '<span class="cert-type-btn__label">' + typeLabels[tk] + '</span>' +
       '</button>';
@@ -9685,7 +9855,7 @@ renderDashCertificates = function(el) {
 
   // Signer editor (admin/professor only)
   var signerEditor = '';
-  if (isEditable) {
+  if (isAdmin) {
     signerEditor =
       '<div class="card" style="margin-bottom:1.25rem;">' +
         '<div class="card__header"><span class="card__title">Certificate Signatories</span>' +
@@ -9697,7 +9867,7 @@ renderDashCertificates = function(el) {
               '<input type="text" id="cert-signer-tourndirector" class="form-input" value="' + esc(signers.tournDirector) + '" oninput="_certUpdateSigners()">' +
             '</div>' +
             '<div class="form-field">' +
-              '<label class="form-label">MacroNations LLC Director (Line 2)</label>' +
+              '<label class="form-label">MacroNations Director (Line 2)</label>' +
               '<input type="text" id="cert-signer-director" class="form-input" value="' + esc(signers.director) + '" oninput="_certUpdateSigners()">' +
             '</div>' +
           '</div>' +
@@ -9705,9 +9875,9 @@ renderDashCertificates = function(el) {
       '</div>';
   }
 
-  // Initial cert
+  // Initial cert SVG using first eligible type
   var recipName = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
-  var initSvg   = makeCertSVG(firstElig || 'participation', recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, signers.tournDirector, signers.director);
+  var initSvg   = makeCertSVG(firstElig, recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, signers.tournDirector, signers.director);
 
   el.innerHTML =
     '<div class="cert-wrap">' +
@@ -9722,8 +9892,7 @@ renderDashCertificates = function(el) {
       '</div>' +
     '</div>';
 
-  // Store current cert type
-  el._activeCertType = 'participation';
+  el._activeCertType = firstElig;
 };
 
 function _certSelectType(type) {
@@ -9791,8 +9960,7 @@ makeCertSVG = function(type, recipientName, tournName, score, year, tournDirecto
   // Defaults
   if (!tournDirector) { tournDirector = _getCertSigners().tournDirector; }
   if (!directorName)  { directorName  = _getCertSigners().director; }
-  year = year || new Date().getFullYear();
-  var certYear = new Date().getFullYear();
+  year = year || 2026;
 
   var cfg  = CERT_TYPES[type] || CERT_TYPES.participation;
   var W    = 900;
@@ -9847,31 +10015,10 @@ makeCertSVG = function(type, recipientName, tournName, score, year, tournDirecto
       '<path d="M 44 ' + (H-44) + ' L 80 ' + (H-44) + ' M 44 ' + (H-44) + ' L 44 ' + (H-80) + '"/>' +
       '<path d="M ' + (W-44) + ' ' + (H-44) + ' L ' + (W-80) + ' ' + (H-44) + ' M ' + (W-44) + ' ' + (H-44) + ' L ' + (W-44) + ' ' + (H-80) + '"/>' +
     '</g>' +
+    _svgLogoMark(60, 18, 40, accentBar) +
     sealSvg +
     '<line x1="120" y1="88" x2="790" y2="88" stroke="' + accentBar + '" stroke-width="0.75" opacity="0.25"/>' +
-    '<defs><clipPath id="csc2"><path d="M450,100 L475,108 L475,128 Q475,148 450,155 Q425,148 425,128 L425,108 Z"/></clipPath></defs>' +
-    '<path d="M450,100 L475,108 L475,128 Q475,148 450,155 Q425,148 425,128 L425,108 Z" fill="#0D1F3C"/>' +
-    '<rect x="425" y="112" width="50" height="8" fill="#1A3260" clip-path="url(#csc2)"/>' +
-    '<path d="M450,100 L475,108 L475,128 Q475,148 450,155 Q425,148 425,128 L425,108 Z" fill="none" stroke="#FFD700" stroke-width="2"/>' +
-    '<path d="M450,102 L473,110 L473,128 Q473,146 450,153 Q427,146 427,128 L427,110 Z" fill="none" stroke="#FFD700" stroke-width="0.8" opacity="0.5"/>' +
-    '<polygon points="450,103 451,106 454,106 451.5,108 452.5,111 450,109.5 447.5,111 448.5,108 446,106 449,106" fill="#FFD700"/>' +
-    '<polygon points="440,106 440.7,108.1 442.8,108.1 441.1,109.4 441.8,111.5 440,110.2 438.2,111.5 438.9,109.4 437.2,108.1 439.3,108.1" fill="#FFD700" opacity="0.6"/>' +
-    '<polygon points="460,106 460.7,108.1 462.8,108.1 461.1,109.4 461.8,111.5 460,110.2 458.2,111.5 458.9,109.4 457.2,108.1 459.3,108.1" fill="#FFD700" opacity="0.6"/>' +
-    '<text x="450" y="120" text-anchor="middle" font-family="Georgia,serif" font-size="10" font-weight="700" fill="#FFD700" letter-spacing="2">MN</text>' +
-    '<line x1="432" y1="123" x2="468" y2="123" stroke="#FFD700" stroke-width="1"/>' +
-    '<rect x="448.5" y="121.5" width="3" height="3" fill="#FFD700" transform="rotate(45 450 123)"/>' +
-    '<rect x="429" y="143" width="4" height="7"  fill="#60A5FA" opacity="0.85" clip-path="url(#csc2)"/>' +
-    '<rect x="434.5" y="140" width="4" height="10" fill="#60A5FA" opacity="0.85" clip-path="url(#csc2)"/>' +
-    '<rect x="440" y="137" width="4" height="13" fill="#60A5FA" opacity="0.85" clip-path="url(#csc2)"/>' +
-    '<rect x="445.5" y="134" width="4" height="16" fill="#60A5FA" opacity="0.85" clip-path="url(#csc2)"/>' +
-    '<rect x="451" y="131" width="4" height="19" fill="#60A5FA" opacity="0.85" clip-path="url(#csc2)"/>' +
-    '<polyline points="431,144.5 436.5,141.5 442,138 447.5,135 453,131.5" fill="none" stroke="#00FF88" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#csc2)"/>' +
-    '<circle cx="431" cy="144.5" r="1.4" fill="#00FF88" clip-path="url(#csc2)"/>' +
-    '<circle cx="436.5" cy="141.5" r="1.7" fill="#00FF88" clip-path="url(#csc2)"/>' +
-    '<circle cx="442" cy="138" r="2" fill="#00FF88" clip-path="url(#csc2)"/>' +
-    '<circle cx="447.5" cy="135" r="2.3" fill="#00FF88" clip-path="url(#csc2)"/>' +
-    '<circle cx="453" cy="131.5" r="2.7" fill="#00FF88" clip-path="url(#csc2)"/>' +
-    '<polyline points="451,130 453,131.5 451.5,133.5" fill="none" stroke="#00FF88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#csc2)"/>' +
+    '<text x="450" y="155" text-anchor="middle" font-size="36">' + cfg.ribbon + '</text>' +
     '<text x="450" y="188" text-anchor="middle" font-family="\'DM Serif Display\',serif" font-size="18" fill="#0d1526" letter-spacing="0.04em">MACRONATIONS</text>' +
     '<text x="450" y="220" text-anchor="middle" font-family="\'Cinzel\',serif" font-size="13" fill="' + accentBar + '" letter-spacing="0.18em" font-weight="600">' + _svgEsc(cfg.label.toUpperCase()) + '</text>' +
     '<line x1="300" y1="234" x2="600" y2="234" stroke="' + accentBar + '" stroke-width="1" opacity="0.35"/>' +
@@ -9888,7 +10035,7 @@ makeCertSVG = function(type, recipientName, tournName, score, year, tournDirecto
     '<text x="195" y="600" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="9" fill="#8494b0" letter-spacing="0.06em">TOURNAMENT DIRECTOR</text>' +
     '<text x="705" y="588" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#0d1526" font-weight="600">' + _svgEsc(_truncateName(directorName,28)) + '</text>' +
     '<text x="705" y="600" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="9" fill="#8494b0" letter-spacing="0.04em">MACRONATIONS LLC — NEW YORK</text>' +
-    '<text x="450" y="600" text-anchor="middle" font-family="\'DM Mono\',monospace" font-size="10" fill="#8494b0">' + certYear + '</text>' +
+    '<text x="450" y="600" text-anchor="middle" font-family="\'DM Mono\',monospace" font-size="10" fill="#8494b0">' + year + '</text>' +
     '</svg>'
   );
 };
@@ -10188,7 +10335,7 @@ async function renderChampions() {
     '<div class="empty-state__title">Loading champions…</div></div>';
 
   try {
-    var champs = await sbGet('champions', 'order=year.desc,score.desc&limit=100');
+    var champs = await sbGetPublic('champions', 'order=year.desc,score.desc&limit=100');
     champs = champs || [];
 
     if (!champs.length) {
@@ -10202,7 +10349,7 @@ async function renderChampions() {
     // Fetch profile images for champion users
     var profileMap = {};
     try {
-      var allUsers = await sbGet('mn_users', 'select=id,name,profile_image_url,is_champion&limit=500');
+      var allUsers = await sbGetPublic('mn_users', 'select=id,name,profile_image_url,is_champion&limit=500');
       if (allUsers) {
         for (var ui = 0; ui < allUsers.length; ui++) {
           if (allUsers[ui].name) { profileMap[allUsers[ui].name] = allUsers[ui]; }
