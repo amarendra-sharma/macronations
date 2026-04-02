@@ -4720,10 +4720,10 @@ function _renderLoggedInNav() {
 async function loadHomeStats() {
   try {
     var results = await Promise.all([
-      sbGetPublic('mn_users',    'select=id&limit=1000'),
-      sbGetPublic('tournaments', 'select=id,status&status=neq.draft'),
-      sbGetPublic('teams',       'select=id,fee_paid&fee_paid=eq.true&limit=1000'),
-      sbGetPublic('mn_users',    'select=country&limit=1000')
+      sbGet('mn_users',    'select=id&limit=1000'),
+      sbGet('tournaments', 'select=id,status&status=neq.draft'),
+      sbGet('teams',       'select=id,fee_paid&fee_paid=eq.true&limit=1000'),
+      sbGet('mn_users',    'select=country&limit=1000')
     ]);
     var users    = results[0] || [];
     var tourneys = results[1] || [];
@@ -4904,14 +4904,14 @@ function defaultEconomy() {
 function simRound(state, policy, crises) {
   crises = crises || [];
 
-  // Snapshot previous state
+  // Snapshot the previous state before computing
   var prev = {};
   var keys = Object.keys(state);
   for (var i = 0; i < keys.length; i++) {
     if (keys[i] !== 'history') { prev[keys[i]] = state[keys[i]]; }
   }
 
-  // Policy defaults
+  // ── Policy defaults (fill in missing levers) ─────────────────
   var p = {
     interest_rate_target: (policy && policy.interest_rate_target !== undefined) ? policy.interest_rate_target : prev.interest_rate,
     gov_spending_pct:     (policy && policy.gov_spending_pct     !== undefined) ? policy.gov_spending_pct     : prev.gov_spending,
@@ -4925,94 +4925,80 @@ function simRound(state, policy, crises) {
     infrastructure:       (policy && policy.infrastructure       !== undefined) ? policy.infrastructure       : 5
   };
 
-  // ── 1. MONETARY POLICY ───────────────────────────────────────────
-  // BUG FIX: Use LEVEL not change. IS-LM: a persistently high rate keeps
-  // exerting drag every period, not just when the rate moves.
+  // ── 1. MONETARY POLICY ───────────────────────────────────────
+  var rate_change     = p.interest_rate_target - prev.interest_rate;
   var new_rate        = _clamp(p.interest_rate_target, 0, 20);
-  var neutral_rate    = 4.0;   // rough "neutral" real rate (Taylor rule intercept)
-  var rate_gap        = new_rate - neutral_rate;  // positive = restrictive
-  var monetary_gdp    = -0.5 * rate_gap;          // level effect on GDP each period
-  var monetary_inf    = -0.4 * rate_gap;          // level effect on inflation each period
+  // Higher rates: tighten demand → drag on GDP, reduce inflation
+  var monetary_gdp    = -0.8 * rate_change;
+  var monetary_inf    = -0.5 * rate_change;       // higher rates cool inflation
+  // Currency: higher rates attract capital → appreciation
+  var new_currency    = prev.currency * (1 + 0.03 * rate_change / 100);
+  new_currency        = _clamp(new_currency, 50, 200);
+  // Trade effect of currency: appreciation hurts exports
+  var currency_trade  = -(new_currency - prev.currency) * 0.02;
 
-  // BUG FIX: Currency responds meaningfully to rate level vs trading partners.
-  // A 1pp rate increase appreciates currency by ~1.5% (UIP approximation, simplified).
-  var rate_change_raw  = new_rate - prev.interest_rate;
-  var new_currency     = _clamp(prev.currency * (1 + 0.015 * rate_change_raw), 50, 200);
-  // Trade effect: appreciation of 1% hurts net exports by ~0.15pp GDP
-  var currency_trade   = -(new_currency - prev.currency) / prev.currency * 15;
-
-  // ── 2. FISCAL POLICY ─────────────────────────────────────────────
-  // Keynesian multiplier on CHANGE in spending (∆G × multiplier)
+  // ── 2. FISCAL POLICY ─────────────────────────────────────────
+  // Spending: multiplier 1.4, expressed as pp-of-GDP change directly
   var spending_change     = p.gov_spending_pct - prev.gov_spending;
-  var fiscal_spending_gdp = 1.4 * (spending_change * 0.15);
+  var fiscal_spending_gdp = 1.4 * (spending_change * 0.15); // 0.15 = calibration so 10pp ≈ +2.1pp GDP
 
-  // Tax multiplier on CHANGE in taxes (negative: tax cut → expansion)
-  var tax_change      = p.tax_rate - prev.tax_revenue;
-  var fiscal_tax_gdp  = -1.1 * (tax_change * 0.12);
+  // Tax: negative multiplier -1.1. Cutting taxes raises GDP.
+  var tax_change          = p.tax_rate - prev.tax_revenue;
+  var fiscal_tax_gdp      = -1.1 * (tax_change * 0.12); // cutting tax boosts GDP
 
-  // Laffer curve: optimal ~40%. Quadratic drag above 40; underfunding below 15.
+  // Laffer curve: optimal tax ~40%. Above 40 = efficiency drag. Below 12 = underfunding drag.
   var laffer_penalty = 0;
   if (p.tax_rate > 40) {
     laffer_penalty = -0.008 * (p.tax_rate - 40);
-  } else if (p.tax_rate < 15) {
-    laffer_penalty = -0.010 * (15 - p.tax_rate);
+  } else if (p.tax_rate < 12) {
+    laffer_penalty = -0.015 * (12 - p.tax_rate);
   }
   var fiscal_gdp = fiscal_spending_gdp + fiscal_tax_gdp + laffer_penalty;
 
+  // New tax revenue and spending
   var new_tax_revenue  = _clamp(p.tax_rate, 5, 60);
   var new_gov_spending = _clamp(p.gov_spending_pct, 10, 60);
 
-  // ── 3. BUDGET BALANCE & DEBT ─────────────────────────────────────
+  // ── 3. BUDGET BALANCE & DEBT ─────────────────────────────────
   var new_budget_balance = new_tax_revenue - new_gov_spending;
-  // BUG FIX: Interest payments = debt × rate / 100 (not /1000).
-  // Scaled to GDP units: 60% debt × 4.5% rate = 2.7pp GDP interest cost per year.
-  var interest_payments  = (prev.debt * prev.interest_rate) / 100;
-  // Scale down to simulation time-step (each round ≈ 1 quarter → /4)
-  var interest_period    = interest_payments / 4;
-  var new_debt = prev.debt - new_budget_balance + interest_period;
+  var interest_payments  = (prev.debt * prev.interest_rate) / 1000;
+  var new_debt = prev.debt - new_budget_balance + interest_payments;
   new_debt     = _clamp(new_debt, 0, 300);
 
-  // ── 4. REINHART-ROGOFF DEBT DRAG ─────────────────────────────────
+  // ── 4. REINHART-ROGOFF DEBT DRAG ─────────────────────────────
   var debt_drag = 0;
   if (new_debt > 90) {
-    debt_drag = -0.03 * (new_debt - 90) / 10;
+    debt_drag = -0.02 * (new_debt - 90) / 10;
   }
 
-  // ── 5. POTENTIAL GDP (Supply side: R&D + infrastructure) ─────────
-  var rd_boost      = 0.04 * (p.rd_investment - 2);
-  var infra_boost   = 0.015 * (p.infrastructure - 5) / 5;
-  // BUG FIX: green_energy now affects potential via energy cost reduction
-  var green_boost   = 0.008 * (p.green_energy - 30) / 70;   // above 30% baseline
-  var new_potential = _clamp(
-    prev.potential + rd_boost * 0.5 + infra_boost * 0.5 + green_boost * 0.3,
-    0.5, 5.5
-  );
+  // ── 5. POTENTIAL GDP (R&D + infrastructure) ──────────────────
+  // Potential grows slowly — supply-side takes time
+  var rd_boost       = 0.04 * (p.rd_investment - 2);
+  var infra_boost    = 0.015 * (p.infrastructure - 5) / 5;
+  var new_potential  = _clamp(prev.potential + rd_boost * 0.5 + infra_boost * 0.5, 0.5, 5.0);
 
-  // ── 6. PRODUCTIVITY ──────────────────────────────────────────────
-  var prod_change      = rd_boost * 0.4 + infra_boost * 0.25 + green_boost * 0.1 + 0.005;
+  // ── 6. PRODUCTIVITY ──────────────────────────────────────────
+  var prod_change    = rd_boost * 0.4 + infra_boost * 0.25 + 0.01;
   var new_productivity = _clamp(prev.productivity + prod_change, 0.5, 5.0);
 
-  // ── 7. STRUCTURAL / TRADE EFFECTS ────────────────────────────────
+  // ── 7. STRUCTURAL / TRADE EFFECTS ────────────────────────────
   var trade_openness_norm = p.trade_openness / 100;
   var trade_gdp = 0.6 * (trade_openness_norm - 0.65) + currency_trade;
 
-  // Regulation: peaks at 50%; zero at 50% so neutral = no drag/boost
+  // Regulation: peaks at 50% — zero at 50% so neutral policy = zero drag/boost
   var reg_norm  = p.regulation / 100;
-  var reg_gdp   = -0.5 * (reg_norm - 0.5) * (reg_norm - 0.5);
+  var reg_gdp   = -0.5 * (reg_norm - 0.5) * (reg_norm - 0.5); // 0 at 50%, negative elsewhere
 
-  // BUG FIX: Foreign aid now affects diplomatic trade access (small GDP boost)
-  var aid_gdp   = 0.05 * (p.foreign_aid - 0.5);   // above 0.5% baseline
+  var structural_gdp = trade_gdp + reg_gdp;
 
-  var structural_gdp = trade_gdp + reg_gdp + aid_gdp;
-
-  // ── 8. CRISIS SHOCKS ─────────────────────────────────────────────
+  // ── 8. CRISIS SHOCKS ─────────────────────────────────────────
   var crisis_gdp_shock   = 0;
   var crisis_unemp_shock = 0;
   var crisis_inf_shock   = 0;
   var crisis_fin_shock   = 0;
 
   for (var ci = 0; ci < crises.length; ci++) {
-    var cr  = crises[ci];
+    var cr = crises[ci];
     var eff = (cr.chosen_effectiveness !== undefined) ? (1 - cr.chosen_effectiveness / 100) : 1;
     crisis_gdp_shock   += ((cr.gdp_shock   || 0) * eff);
     crisis_unemp_shock += ((cr.unemp_shock || 0) * eff);
@@ -5020,86 +5006,82 @@ function simRound(state, policy, crises) {
     crisis_fin_shock   += ((cr.fin_shock   || 0) * eff);
   }
 
-  // ── 9. GDP GROWTH ────────────────────────────────────────────────
-  // GDP anchors to potential + sustained policy gap + momentum
-  var policy_gap     = monetary_gdp + fiscal_gdp + structural_gdp + debt_drag;
-  var last_gap       = prev.gdp_growth - prev.potential;
-  var noise          = _gaussianNoise(0.25);
+  // ── 9. GDP GROWTH ────────────────────────────────────────────
+  // GDP = potential + policy_effects + noise
+  // Sustained policy shifts keep GDP above/below potential as long as policy is held
+  var policy_gap   = monetary_gdp + fiscal_gdp + structural_gdp + debt_drag;
+  var noise        = _gaussianNoise(0.25);
+  // Momentum: 20% persistence of last period's gap above potential
+  var last_gap     = prev.gdp_growth - prev.potential;
   var new_gdp_growth = _round2(
-    new_potential +
-    0.60 * policy_gap +
-    0.20 * last_gap +
+    new_potential +              // anchor to potential
+    0.60 * policy_gap +          // sustained policy effect (60% pass-through)
+    0.20 * last_gap +            // momentum of prior policy gap
     crisis_gdp_shock +
     noise
   );
   new_gdp_growth = _clamp(new_gdp_growth, -12, 12);
 
-  // ── 10. UNEMPLOYMENT (Okun's Law) ────────────────────────────────
-  // ΔU = -0.5 × output_gap. Sustained positive gap → sustained low unemployment.
+  // ── 10. UNEMPLOYMENT (Okun's Law) ────────────────────────────
+  // ΔU = -0.5 × (Y_actual - Y_potential)
+  // When GDP exceeds potential, unemployment falls. Sustained above-potential = sustained low unemp.
   var NAIRU        = 4.5;
-  var output_gap_u = new_gdp_growth - new_potential;
+  var output_gap_u = new_gdp_growth - new_potential;  // positive = above potential → unemp falls
   var okun_change  = -0.5 * output_gap_u;
   var new_unemployment = _round2(
     prev.unemployment + okun_change + crisis_unemp_shock + _gaussianNoise(0.08)
   );
   new_unemployment = _clamp(new_unemployment, 1.5, 25);
 
-  // ── 11. INFLATION (Phillips Curve + expectations anchor + cost-push) ─
-  // BUG FIX: Inflation expectations are anchored to 2% target (hybrid model).
-  // Pure adaptive (prev.inflation × 0.3) caused collapse toward 0. 
-  // Use: 50% adaptive + 50% anchored to 2% target (Calvo-style partial credibility).
-  var output_gap       = new_gdp_growth - new_potential;
-  var phillips         = 0.4 * output_gap;
-  var cost_push        = 0.03 * (trade_openness_norm - 0.5);
-  var inf_expectations = 0.5 * prev.inflation + 0.5 * 2.0;  // anchor at 2%
-  var new_inflation    = _round2(
+  // ── 11. INFLATION (Phillips Curve + cost-push + expectations) ─
+  var output_gap        = new_gdp_growth - new_potential;
+  var phillips          = 0.4 * output_gap;                      // demand-pull
+  var cost_push         = 0.03 * (trade_openness_norm - 0.5);   // import prices
+  var inf_expectations  = 0.3 * prev.inflation;                  // adaptive expectations
+  var new_inflation     = _round2(
     inf_expectations + phillips + monetary_inf + cost_push + crisis_inf_shock + _gaussianNoise(0.15)
   );
-  new_inflation = _clamp(new_inflation, -3, 25);
+  new_inflation = _clamp(new_inflation, -2, 20);
 
-  // ── 12. STOCK MARKET ─────────────────────────────────────────────
-  var stock_return = (new_gdp_growth * 0.06) - (rate_change_raw * 0.04) -
+  // ── 12. STOCK MARKET ─────────────────────────────────────────
+  // Stocks: driven by growth, hurt by rates and inflation surprises
+  var stock_return = (new_gdp_growth * 0.06) - (rate_change * 0.04) -
                      (Math.abs(new_inflation - 2) * 0.02) +
                      _gaussianNoise(0.025);
   var new_stock = _round2(prev.stock * (1 + stock_return) + crisis_fin_shock * 50);
-  new_stock     = _clamp(new_stock, 500, 50000);
+  new_stock = _clamp(new_stock, 500, 50000);
 
-  // ── 13. FINANCIAL HEALTH ─────────────────────────────────────────
-  var fin_delta = (-0.10 * Math.max(0, new_debt - 80)) +
-                  (-0.50 * Math.max(0, new_rate - 8)) +
-                  ( 0.30 * _clamp(reg_norm, 0.3, 0.7)) +
-                  (-0.20 * Math.abs(new_budget_balance)) +
+  // ── 13. FINANCIAL HEALTH ─────────────────────────────────────
+  // Hurt by high debt, high rates, crisis; helped by low deficit, high regulation
+  var fin_delta = (-0.1 * Math.max(0, new_debt - 80)) +
+                  (-0.5 * Math.max(0, new_rate - 8)) +
+                  (0.3  * _clamp(reg_norm, 0.3, 0.7)) +
+                  (-0.2 * Math.abs(new_budget_balance)) +
                   crisis_fin_shock * 3 +
                   _gaussianNoise(0.5);
   var new_fin_health = _round2(_clamp(prev.fin_health + fin_delta, 10, 100));
 
-  // ── 14. GINI (inequality) ─────────────────────────────────────────
-  // BUG FIX: Progressive taxation REDUCES inequality (Gini falls with higher tax).
-  // Old code had wrong sign: high taxes above 40% INCREASED inequality (backwards).
-  // Fix: taxes above 25% progressively reduce Gini; below 15% = regressive.
-  var welfare_norm   = p.welfare_spending / 30;
-  var tax_equality   = 0;
-  if (p.tax_rate >= 25) {
-    tax_equality = -0.5 * (p.tax_rate - 25) / 35;  // progressive tax reduces Gini
-  } else if (p.tax_rate < 15) {
-    tax_equality = 0.3 * (15 - p.tax_rate) / 15;   // very low tax → more inequality
-  }
-  var unemp_gini   = 0.5 * Math.max(0, new_unemployment - NAIRU);
-  var gini_change  = (-2.0 * welfare_norm) + tax_equality + unemp_gini + _gaussianNoise(0.2);
-
+  // ── 14. GINI (inequality) ─────────────────────────────────────
+  // Higher welfare spending + lower tax_rate_deviation → better equality
+  var welfare_norm  = p.welfare_spending / 30;
+  var gini_change   = (-2.0 * welfare_norm) +
+                      (0.8  * Math.max(0, p.tax_rate - 40) / 20) +  // high tax on rich
+                      (0.5  * Math.max(0, unemployment_gap(new_unemployment, NAIRU))) +
+                      _gaussianNoise(0.2);
   function unemployment_gap(u, nairu) { return u - nairu; }
   var new_gini = _round2(_clamp(prev.gini + gini_change, 20, 65));
 
-  // ── 15. HDI ──────────────────────────────────────────────────────
+  // ── 15. HDI ───────────────────────────────────────────────────
+  // Rises with welfare, R&D, low unemployment, falls with very high inflation
   var hdi_change = (0.005 * welfare_norm) +
                    (0.003 * (p.rd_investment / 10)) +
-                   (0.002 * green_boost * 10) +
                    (-0.004 * Math.max(0, new_unemployment - NAIRU)) +
                    (-0.003 * Math.max(0, new_inflation - 4)) +
                    _gaussianNoise(0.003);
   var new_hdi = _round2(_clamp(prev.hdi + hdi_change, 0.30, 0.99));
 
-  // ── 16. BUILD NEW STATE ───────────────────────────────────────────
+  // ── 16. BUILD NEW STATE ───────────────────────────────────────
+  // Record previous snapshot
   var newHistory = state.history ? state.history.slice() : [];
   newHistory.push(prev);
 
@@ -5400,7 +5382,7 @@ async function renderTournaments() {
     '</div>';
 
   try {
-    var rows = await sbGetPublic('tournaments',
+    var rows = await sbGet('tournaments',
       'status=neq.draft&order=created_at.desc&limit=100'
     );
     _allTournaments = rows || [];
@@ -5421,32 +5403,21 @@ async function renderTournaments() {
             _professorMap[profRows[pi].id] = profRows[pi];
           }
         }
-      } catch(ex) {
-        // Non-fatal: cards render without professor name
-      }
+      } catch(ex) {}
     }
 
-    // Load user teams — only if logged in, never blocks public view
-    if (currentUser) {
-      try { await _loadUserTeams(); } catch(ex2) {}
-    }
+    if (currentUser) { await _loadUserTeams(); }
     _wireFilterChips();
     _wireSearch();
     _renderTournamentHeaderActions();
     _renderTournamentGrid();
 
   } catch(e) {
-    var errMsg = e.message || 'Network error';
-    // If RLS is blocking public access, show a helpful message
-    if (errMsg.indexOf('permission') !== -1 || errMsg.indexOf('policy') !== -1 || errMsg.indexOf('JWT') !== -1) {
-      errMsg = 'Tournaments temporarily unavailable. If you are an admin, please check that public read policies are enabled in Supabase (RLS → pub_read_tournaments).';
-    }
     grid.innerHTML =
       '<div class="empty-state" style="grid-column:1/-1;">' +
         '<div class="empty-state__icon">⚠️</div>' +
         '<div class="empty-state__title">Could not load tournaments</div>' +
-        '<div class="empty-state__desc">' + esc(errMsg) + '</div>' +
-        '<button class="btn btn--ghost" style="margin-top:1rem;" onclick="renderTournaments()">Retry</button>' +
+        '<div class="empty-state__desc">' + esc(e.message || 'Network error') + '</div>' +
       '</div>';
   }
 }
