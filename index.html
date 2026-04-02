@@ -4518,7 +4518,28 @@ async function doRegister() {
     // Only include id if we have it from Auth — avoids the NOT NULL violation
     if (authUserId) { profileData.id = authUserId; }
 
-    profile = await sbPost('mn_users', profileData);
+    // If no session yet (e.g. email confirmation required), insert bypassing RLS
+    // by using a direct fetch with the anon key and Prefer: return=representation
+    if (!currentSession || !currentSession.access_token) {
+      // No user JWT available — use anon key insert with explicit id
+      // The RLS policy must allow this; see SQL note below.
+      var insUrl = SUPA_URL + '/rest/v1/mn_users';
+      var insRes = await fetch(insUrl, {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'apikey':        SUPA_ANON,
+          'Authorization': 'Bearer ' + SUPA_ANON,
+          'Prefer':        'return=representation'
+        },
+        body: JSON.stringify(profileData)
+      });
+      var insData = await insRes.json();
+      if (!insRes.ok) { throw new Error((insData && insData.message) || 'Profile insert failed'); }
+      profile = Array.isArray(insData) ? insData[0] : insData;
+    } else {
+      profile = await sbPost('mn_users', profileData);
+    }
   } catch(e) {
     _setFormErr('register-error', 'Auth account created but profile save failed: ' + (e.message || 'unknown error') + '. Please contact support@macronations.com');
     setLoading('btn-do-register',false,'Create Account');
@@ -4749,7 +4770,8 @@ function _setStatEl(id, val) {
 //  PAGE LOADERS REGISTRY
 // ═══════════════════════════════════════════════════════════════════
 var PAGE_LOADERS = {
-  home: loadHomeStats
+  home:        loadHomeStats,
+  tournaments: renderTournaments
 };
 
 // ── DATABASE SETUP: fix missing DEFAULT on id columns ─────────────
@@ -5397,55 +5419,82 @@ async function renderTournaments() {
       '<div class="empty-state__title">Loading tournaments…</div>' +
     '</div>';
 
-  try {
-    // Fetch all non-draft tournaments. Use 'in' list instead of 'neq'
-    // because neq can fail with some RLS configurations.
-    var rows = await sbGetPublic('tournaments',
-      'status=in.(upcoming,registration,active,completed)&order=created_at.desc&limit=200'
-    );
-    _allTournaments = rows || [];
+  var rows = [];
+  var loadErr = '';
 
-    // Fetch professor names for all tournaments in one query
-    var creatorIds = [];
-    for (var ci = 0; ci < _allTournaments.length; ci++) {
-      var cid = _allTournaments[ci].created_by;
-      if (cid && creatorIds.indexOf(cid) === -1) { creatorIds.push(cid); }
-    }
-    _professorMap = {};
-    if (creatorIds.length) {
-      try {
-        var profRows = await sbGetPublic('mn_users',
-          'id=in.(' + creatorIds.join(',') + ')&select=id,name,institution');
-        if (profRows) {
-          for (var pi = 0; pi < profRows.length; pi++) {
-            _professorMap[profRows[pi].id] = profRows[pi];
-          }
-        }
-      } catch(ex) {
-        // Non-fatal: cards render without professor name
+  try {
+    // Fetch all tournaments visible to anon key (no status filter — show everything)
+    var url = SUPA_URL + '/rest/v1/tournaments' +
+      '?order=created_at.desc&limit=200';
+    var res = await fetch(url, {
+      method: 'GET',
+      headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + SUPA_ANON, 'Accept': 'application/json' }
+    });
+    var raw = await res.text();
+    var data = null;
+    try { data = JSON.parse(raw); } catch(pe) { loadErr = 'Invalid response from server'; }
+
+    if (res.ok && Array.isArray(data)) {
+      rows = data;
+    } else if (!res.ok) {
+      loadErr = (data && data.message) ? data.message : ('HTTP ' + res.status);
+      // If RLS blocks the in.() filter, fall back to no filter (get all rows)
+      if (res.status === 400 || res.status === 401 || res.status === 403) {
+        var res2 = await fetch(SUPA_URL + '/rest/v1/tournaments?order=created_at.desc&limit=200', {
+          method: 'GET',
+          headers: { 'apikey': SUPA_ANON, 'Authorization': 'Bearer ' + SUPA_ANON, 'Accept': 'application/json' }
+        });
+        var raw2 = await res2.text();
+        try {
+          var data2 = JSON.parse(raw2);
+          if (res2.ok && Array.isArray(data2)) { rows = data2; loadErr = ''; }
+        } catch(pe2) {}
       }
     }
-
-    // Load user teams — only if logged in, never blocks public view
-    if (currentUser) {
-      try { await _loadUserTeams(); } catch(ex2) {}
-    }
-    _wireFilterChips();
-    _wireSearch();
-    _renderTournamentHeaderActions();
-    _renderTournamentGrid();
-
   } catch(e) {
-    var errMsg = e.message || 'Unknown error';
-    console.error('[MacroNations] Tournament load failed:', errMsg);
+    loadErr = e.message || 'Network error';
+  }
+
+  if (loadErr && !rows.length) {
+    console.error('[MacroNations] Tournament load failed:', loadErr);
     grid.innerHTML =
       '<div class="empty-state" style="grid-column:1/-1;">' +
         '<div class="empty-state__icon">⚠️</div>' +
         '<div class="empty-state__title">Could not load tournaments</div>' +
-        '<div class="empty-state__desc">' + esc(errMsg) + '</div>' +
-        '<button class="btn btn--primary" style="margin-top:1rem;" onclick="renderTournaments()">Retry</button>' +
+        '<div class="empty-state__desc">' + esc(loadErr) + '</div>' +
+        '<button class="btn btn--primary" style="margin-top:1rem;" onclick="renderTournaments()">↺ Retry</button>' +
       '</div>';
+    return;
   }
+
+  _allTournaments = rows;
+
+  // Fetch professor names — non-fatal
+  var creatorIds = [];
+  for (var ci = 0; ci < _allTournaments.length; ci++) {
+    var cid = _allTournaments[ci].created_by;
+    if (cid && creatorIds.indexOf(cid) === -1) { creatorIds.push(cid); }
+  }
+  _professorMap = {};
+  if (creatorIds.length) {
+    try {
+      var profRows = await sbGetPublic('mn_users',
+        'id=in.(' + creatorIds.join(',') + ')&select=id,name,institution');
+      if (profRows) {
+        for (var pi = 0; pi < profRows.length; pi++) {
+          _professorMap[profRows[pi].id] = profRows[pi];
+        }
+      }
+    } catch(ex) {}
+  }
+
+  if (currentUser) {
+    try { await _loadUserTeams(); } catch(ex2) {}
+  }
+  _wireFilterChips();
+  _wireSearch();
+  _renderTournamentHeaderActions();
+  _renderTournamentGrid();
 }
 
 function _renderTournamentHeaderActions() {
