@@ -2841,34 +2841,57 @@ h1, h2, h3, h4, h5 {
     <div class="nav__brand">
       <a href="#" class="wordmark" aria-label="MacroNations home">
         <span class="logo-mark logo-mark--sm">
-          <!-- SVG: line chart with gold star on blue rounded square -->
-          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect width="36" height="36" rx="8" fill="#0f3d9e"/>
-            <!-- Line chart path -->
-            <polyline
-              points="5,27 11,20 16,23 21,14 27,17"
-              fill="none"
-              stroke="rgba(255,255,255,0.5)"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <!-- Peak line (highlighted) -->
-            <polyline
-              points="16,23 21,14"
-              fill="none"
-              stroke="white"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <!-- Gold star at peak (21,14) -->
-            <polygon
-              points="21,9.5 22.1,12.8 25.6,12.8 22.8,14.8 23.9,18.1 21,16.1 18.1,18.1 19.2,14.8 16.4,12.8 19.9,12.8"
-              fill="#f5a623"
-            />
-            <!-- Dot at chart line point -->
-            <circle cx="21" cy="14" r="1.5" fill="white"/>
-          </svg>
+<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        .sh-fill { fill: #2E5F9E; }
+        .sh-band1 { fill: #345FA0; }
+        .sh-band2 { fill: #2A5890; }
+        .gold { stroke: #D4A843; }
+        .gold-fill { fill: #D4A843; }
+        .tl { stroke: #2EE89A; }
+      }
+    </style>
+    <clipPath id="sc">
+      <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z"/>
+    </clipPath>
+  </defs>
+  <!-- Shield fill -->
+  <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z" fill="#4A8AD0" class="sh-fill"/>
+  <!-- Subtle bands clipped to shield -->
+  <rect x="5" y="8" width="26" height="5" fill="#5294D6" class="sh-band1" clip-path="url(#sc)" opacity="0.5"/>
+  <rect x="5" y="18" width="26" height="5" fill="#3E80C4" class="sh-band2" clip-path="url(#sc)" opacity="0.4"/>
+  <!-- Gold shield border -->
+  <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z" fill="none" stroke="#B8942E" stroke-width="1.2" class="gold"/>
+  <!-- Inner shield border -->
+  <path d="M18 4 L29 7.5 L29 20 Q29 28.5 18 32 Q7 28.5 7 20 L7 7.5 Z" fill="none" stroke="#B8942E" stroke-width="0.5" opacity="0.6" class="gold"/>
+  <!-- Top stars -->
+  <polygon points="18,5.5 18.5,7 20,7 18.8,7.9 19.3,9.4 18,8.5 16.7,9.4 17.2,7.9 16,7 17.5,7" fill="#B8942E" class="gold-fill"/>
+  <polygon points="12,7 12.3,8 13.3,8 12.5,8.6 12.8,9.6 12,9 11.2,9.6 11.5,8.6 10.7,8 11.7,8" fill="#B8942E" opacity="0.55" class="gold-fill"/>
+  <polygon points="24,7 24.3,8 25.3,8 24.5,8.6 24.8,9.6 24,9 23.2,9.6 23.5,8.6 22.7,8 23.7,8" fill="#B8942E" opacity="0.55" class="gold-fill"/>
+  <!-- MN monogram -->
+  <text x="18" y="15.5" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C8A030" letter-spacing="1.5" class="gold-fill">MN</text>
+  <!-- Gold divider with diamond -->
+  <line x1="9" y1="17.5" x2="27" y2="17.5" stroke="#B8942E" stroke-width="0.6" opacity="0.8" class="gold"/>
+  <rect x="17.3" y="16.8" width="1.4" height="1.4" fill="#B8942E" transform="rotate(45 18 17.5)" opacity="0.9" class="gold-fill"/>
+  <!-- Bar chart (5 bars ascending) -->
+  <rect x="8"  y="26" width="2.2" height="4" fill="#7BB8F0" opacity="0.6" clip-path="url(#sc)"/>
+  <rect x="11" y="24.5" width="2.2" height="5.5" fill="#7BB8F0" opacity="0.6" clip-path="url(#sc)"/>
+  <rect x="14" y="23" width="2.2" height="7" fill="#7BB8F0" opacity="0.65" clip-path="url(#sc)"/>
+  <rect x="17" y="21.5" width="2.2" height="8.5" fill="#7BB8F0" opacity="0.65" clip-path="url(#sc)"/>
+  <rect x="20" y="20" width="2.2" height="10" fill="#7BB8F0" opacity="0.7" clip-path="url(#sc)"/>
+  <!-- Trendline -->
+  <polyline points="9.1,27.5 12.1,25.5 15.1,23.5 18.1,21 21.1,19.5" fill="none" stroke="#0DBF6E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="tl" clip-path="url(#sc)"/>
+  <!-- Trendline dots -->
+  <circle cx="9.1"  cy="27.5" r="0.7" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <circle cx="12.1" cy="25.5" r="0.9" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <circle cx="15.1" cy="23.5" r="1.1" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <circle cx="18.1" cy="21"   r="1.3" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <circle cx="21.1" cy="19.5" r="1.5" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <!-- Arrow tip -->
+  <polyline points="20,18.5 21.1,19.5 20.2,20.8" fill="none" stroke="#0DBF6E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="tl" clip-path="url(#sc)"/>
+</svg>
         </span>
         <span class="wordmark__text"><em>Macro</em>Nations</span>
       </a>
@@ -2914,13 +2937,57 @@ h1, h2, h3, h4, h5 {
 
   <div class="mobile-menu__brand">
     <span class="logo-mark">
-      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="36" height="36" rx="8" fill="#0f3d9e"/>
-        <polyline points="5,27 11,20 16,23 21,14 27,17" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <polyline points="16,23 21,14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
-        <polygon points="21,9.5 22.1,12.8 25.6,12.8 22.8,14.8 23.9,18.1 21,16.1 18.1,18.1 19.2,14.8 16.4,12.8 19.9,12.8" fill="#f5a623"/>
-        <circle cx="21" cy="14" r="1.5" fill="white"/>
-      </svg>
+<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        .sh-fill { fill: #2E5F9E; }
+        .sh-band1 { fill: #345FA0; }
+        .sh-band2 { fill: #2A5890; }
+        .gold { stroke: #D4A843; }
+        .gold-fill { fill: #D4A843; }
+        .tl { stroke: #2EE89A; }
+      }
+    </style>
+    <clipPath id="sc">
+      <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z"/>
+    </clipPath>
+  </defs>
+  <!-- Shield fill -->
+  <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z" fill="#4A8AD0" class="sh-fill"/>
+  <!-- Subtle bands clipped to shield -->
+  <rect x="5" y="8" width="26" height="5" fill="#5294D6" class="sh-band1" clip-path="url(#sc)" opacity="0.5"/>
+  <rect x="5" y="18" width="26" height="5" fill="#3E80C4" class="sh-band2" clip-path="url(#sc)" opacity="0.4"/>
+  <!-- Gold shield border -->
+  <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z" fill="none" stroke="#B8942E" stroke-width="1.2" class="gold"/>
+  <!-- Inner shield border -->
+  <path d="M18 4 L29 7.5 L29 20 Q29 28.5 18 32 Q7 28.5 7 20 L7 7.5 Z" fill="none" stroke="#B8942E" stroke-width="0.5" opacity="0.6" class="gold"/>
+  <!-- Top stars -->
+  <polygon points="18,5.5 18.5,7 20,7 18.8,7.9 19.3,9.4 18,8.5 16.7,9.4 17.2,7.9 16,7 17.5,7" fill="#B8942E" class="gold-fill"/>
+  <polygon points="12,7 12.3,8 13.3,8 12.5,8.6 12.8,9.6 12,9 11.2,9.6 11.5,8.6 10.7,8 11.7,8" fill="#B8942E" opacity="0.55" class="gold-fill"/>
+  <polygon points="24,7 24.3,8 25.3,8 24.5,8.6 24.8,9.6 24,9 23.2,9.6 23.5,8.6 22.7,8 23.7,8" fill="#B8942E" opacity="0.55" class="gold-fill"/>
+  <!-- MN monogram -->
+  <text x="18" y="15.5" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#C8A030" letter-spacing="1.5" class="gold-fill">MN</text>
+  <!-- Gold divider with diamond -->
+  <line x1="9" y1="17.5" x2="27" y2="17.5" stroke="#B8942E" stroke-width="0.6" opacity="0.8" class="gold"/>
+  <rect x="17.3" y="16.8" width="1.4" height="1.4" fill="#B8942E" transform="rotate(45 18 17.5)" opacity="0.9" class="gold-fill"/>
+  <!-- Bar chart (5 bars ascending) -->
+  <rect x="8"  y="26" width="2.2" height="4" fill="#7BB8F0" opacity="0.6" clip-path="url(#sc)"/>
+  <rect x="11" y="24.5" width="2.2" height="5.5" fill="#7BB8F0" opacity="0.6" clip-path="url(#sc)"/>
+  <rect x="14" y="23" width="2.2" height="7" fill="#7BB8F0" opacity="0.65" clip-path="url(#sc)"/>
+  <rect x="17" y="21.5" width="2.2" height="8.5" fill="#7BB8F0" opacity="0.65" clip-path="url(#sc)"/>
+  <rect x="20" y="20" width="2.2" height="10" fill="#7BB8F0" opacity="0.7" clip-path="url(#sc)"/>
+  <!-- Trendline -->
+  <polyline points="9.1,27.5 12.1,25.5 15.1,23.5 18.1,21 21.1,19.5" fill="none" stroke="#0DBF6E" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" class="tl" clip-path="url(#sc)"/>
+  <!-- Trendline dots -->
+  <circle cx="9.1"  cy="27.5" r="0.7" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <circle cx="12.1" cy="25.5" r="0.9" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <circle cx="15.1" cy="23.5" r="1.1" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <circle cx="18.1" cy="21"   r="1.3" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <circle cx="21.1" cy="19.5" r="1.5" fill="#0DBF6E" class="tl" clip-path="url(#sc)"/>
+  <!-- Arrow tip -->
+  <polyline points="20,18.5 21.1,19.5 20.2,20.8" fill="none" stroke="#0DBF6E" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="tl" clip-path="url(#sc)"/>
+</svg>
     </span>
     <span class="wordmark__text"><em>Macro</em>Nations</span>
   </div>
@@ -3742,14 +3809,34 @@ h1, h2, h3, h4, h5 {
     <div>
       <a href="#" class="wordmark wordmark--footer" aria-label="MacroNations home">
         <span class="logo-mark">
-          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect width="36" height="36" rx="8" fill="rgba(255,255,255,0.1)"/>
-            <rect width="36" height="36" rx="8" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-            <polyline points="5,27 11,20 16,23 21,14 27,17" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="16,23 21,14" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round"/>
-            <polygon points="21,9.5 22.1,12.8 25.6,12.8 22.8,14.8 23.9,18.1 21,16.1 18.1,18.1 19.2,14.8 16.4,12.8 19.9,12.8" fill="#f5a623"/>
-            <circle cx="21" cy="14" r="1.5" fill="white"/>
-          </svg>
+<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <clipPath id="scf">
+      <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z"/>
+    </clipPath>
+  </defs>
+  <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z" fill="rgba(255,255,255,0.12)"/>
+  <path d="M18 2 L31 6 L31 20 Q31 30 18 34 Q5 30 5 20 L5 6 Z" fill="none" stroke="#D4A843" stroke-width="1.2"/>
+  <path d="M18 4 L29 7.5 L29 20 Q29 28.5 18 32 Q7 28.5 7 20 L7 7.5 Z" fill="none" stroke="#D4A843" stroke-width="0.5" opacity="0.5"/>
+  <polygon points="18,5.5 18.5,7 20,7 18.8,7.9 19.3,9.4 18,8.5 16.7,9.4 17.2,7.9 16,7 17.5,7" fill="#D4A843"/>
+  <polygon points="12,7 12.3,8 13.3,8 12.5,8.6 12.8,9.6 12,9 11.2,9.6 11.5,8.6 10.7,8 11.7,8" fill="#D4A843" opacity="0.55"/>
+  <polygon points="24,7 24.3,8 25.3,8 24.5,8.6 24.8,9.6 24,9 23.2,9.6 23.5,8.6 22.7,8 23.7,8" fill="#D4A843" opacity="0.55"/>
+  <text x="18" y="15.5" text-anchor="middle" font-family="Georgia,serif" font-size="7" font-weight="700" fill="#D4A843" letter-spacing="1.5">MN</text>
+  <line x1="9" y1="17.5" x2="27" y2="17.5" stroke="#D4A843" stroke-width="0.6" opacity="0.7"/>
+  <rect x="17.3" y="16.8" width="1.4" height="1.4" fill="#D4A843" transform="rotate(45 18 17.5)" opacity="0.8"/>
+  <rect x="8"  y="26" width="2.2" height="4" fill="#93C5FD" opacity="0.5" clip-path="url(#scf)"/>
+  <rect x="11" y="24.5" width="2.2" height="5.5" fill="#93C5FD" opacity="0.5" clip-path="url(#scf)"/>
+  <rect x="14" y="23" width="2.2" height="7" fill="#93C5FD" opacity="0.55" clip-path="url(#scf)"/>
+  <rect x="17" y="21.5" width="2.2" height="8.5" fill="#93C5FD" opacity="0.55" clip-path="url(#scf)"/>
+  <rect x="20" y="20" width="2.2" height="10" fill="#93C5FD" opacity="0.6" clip-path="url(#scf)"/>
+  <polyline points="9.1,27.5 12.1,25.5 15.1,23.5 18.1,21 21.1,19.5" fill="none" stroke="#2EE89A" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#scf)"/>
+  <circle cx="9.1"  cy="27.5" r="0.7" fill="#2EE89A" clip-path="url(#scf)"/>
+  <circle cx="12.1" cy="25.5" r="0.9" fill="#2EE89A" clip-path="url(#scf)"/>
+  <circle cx="15.1" cy="23.5" r="1.1" fill="#2EE89A" clip-path="url(#scf)"/>
+  <circle cx="18.1" cy="21"   r="1.3" fill="#2EE89A" clip-path="url(#scf)"/>
+  <circle cx="21.1" cy="19.5" r="1.5" fill="#2EE89A" clip-path="url(#scf)"/>
+  <polyline points="20,18.5 21.1,19.5 20.2,20.8" fill="none" stroke="#2EE89A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#scf)"/>
+</svg>
         </span>
         <span class="wordmark__text"><em>Macro</em>Nations</span>
       </a>
@@ -8847,14 +8934,95 @@ function _truncateName(name, max) {
 
 // ── SVG logo mark (inline) ────────────────────────────────────────
 function _svgLogoMark(x, y, size, bgColor) {
-  var r = size / 2;
-  return '<g transform="translate(' + x + ',' + y + ')">' +
-    '<rect width="' + size + '" height="' + size + '" rx="' + Math.round(size * 0.22) + '" fill="' + bgColor + '"/>' +
-    '<polyline points="' + [size*0.14,size*0.75, size*0.31,size*0.56, size*0.44,size*0.64, size*0.58,size*0.39, size*0.75,size*0.47].join(' ') + '" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="' + (size*0.042) + '" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<polyline points="' + [size*0.44,size*0.64, size*0.58,size*0.39].join(' ') + '" fill="none" stroke="white" stroke-width="' + (size*0.056) + '" stroke-linecap="round"/>' +
-    '<polygon points="' + [size*0.58,size*0.26, size*0.61,size*0.356, size*0.71,size*0.356, size*0.633,size*0.411, size*0.664,size*0.503, size*0.58,size*0.448, size*0.503,size*0.503, size*0.530,size*0.411, size*0.455,size*0.356, size*0.554,size*0.356].join(' ') + '" fill="#f5a623"/>' +
-    '<circle cx="' + (size*0.58) + '" cy="' + (size*0.39) + '" r="' + (size*0.042) + '" fill="white"/>' +
-  '</g>';
+  // Crest/shield logo mark scaled to 'size' px, positioned at (x,y) within an SVG
+  var s = size;
+  var cx = s / 2;
+  // Shield path scaled to size
+  function sp(rx, ry) { return (rx * s) + ' ' + (ry * s); }
+  var shield = 'M' + sp(0.5,0.055) + ' L' + sp(0.861,0.166) + ' L' + sp(0.861,0.555) +
+    ' Q' + sp(0.861,0.944) + ' ' + sp(0.5,1.0) + ' Q' + sp(0.139,0.944) + ' ' + sp(0.139,0.555) +
+    ' L' + sp(0.139,0.166) + ' Z';
+  var innershield = 'M' + sp(0.5,0.11) + ' L' + sp(0.806,0.208) + ' L' + sp(0.806,0.555) +
+    ' Q' + sp(0.806,0.9) + ' ' + sp(0.5,0.944) + ' Q' + sp(0.194,0.9) + ' ' + sp(0.194,0.555) +
+    ' L' + sp(0.194,0.208) + ' Z';
+  var clipId = 'mnc' + Math.round(x) + Math.round(y);
+
+  // Star helper
+  function star(cx2, cy2, r1, r2, pts) {
+    var out = [];
+    for (var i = 0; i < pts * 2; i++) {
+      var angle = (i * Math.PI / pts) - Math.PI / 2;
+      var r = (i % 2 === 0) ? r1 : r2;
+      out.push((cx2 + Math.cos(angle)*r) + ',' + (cy2 + Math.sin(angle)*r));
+    }
+    return out.join(' ');
+  }
+
+  var bs = s * 0.078; // bar segment width
+  var bx = s * 0.222; // bar start x
+  var by = s * 0.72;  // bar bottom y
+  var bars = '';
+  var barHs = [0.11, 0.153, 0.194, 0.236, 0.278]; // heights as fraction of s
+  for (var bi = 0; bi < 5; bi++) {
+    var bw = s * 0.058;
+    var bh = s * barHs[bi];
+    var bxi = bx + bi * (bw + s*0.022);
+    bars += '<rect x="' + (x+bxi) + '" y="' + (y+by-bh) + '" width="' + bw + '" height="' + bh + '" fill="#7BB8F0" opacity="0.6" clip-path="url(#' + clipId + ')"/>';
+  }
+
+  // Trendline points
+  var tpts = [];
+  for (var ti = 0; ti < 5; ti++) {
+    var tx = x + bx + ti * (s*0.058 + s*0.022) + s*0.029;
+    var th2 = barHs[ti];
+    var ty2 = y + by - s * th2 * 1.1;
+    tpts.push(tx + ',' + ty2);
+  }
+  var tlineStr = tpts.join(' ');
+  var tlast = tpts[4].split(',');
+  var tprev = tpts[3].split(',');
+
+  var dots = '';
+  var dotR = [0.018, 0.022, 0.026, 0.031, 0.038];
+  for (var di = 0; di < 5; di++) {
+    var dpt = tpts[di].split(',');
+    dots += '<circle cx="' + dpt[0] + '" cy="' + dpt[1] + '" r="' + (s*dotR[di]) + '" fill="#0DBF6E" clip-path="url(#' + clipId + ')"/>';
+  }
+
+  return (
+    '<defs>' +
+      '<clipPath id="' + clipId + '">' +
+        '<path d="' + shield + '" transform="translate(' + x + ',' + y + ')"/>' +
+      '</clipPath>' +
+    '</defs>' +
+    '<g transform="translate(' + x + ',' + y + ')">' +
+      // Shield fill
+      '<path d="' + shield + '" fill="#4A8AD0"/>' +
+      // Band overlays
+      '<rect x="' + (s*0.139) + '" y="' + (s*0.22) + '" width="' + (s*0.722) + '" height="' + (s*0.14) + '" fill="#5294D6" opacity="0.4" clip-path="url(#' + clipId + ')"/>' +
+      '<rect x="' + (s*0.139) + '" y="' + (s*0.5) + '" width="' + (s*0.722) + '" height="' + (s*0.14) + '" fill="#3E80C4" opacity="0.35" clip-path="url(#' + clipId + ')"/>' +
+      // Gold border
+      '<path d="' + shield + '" fill="none" stroke="#B8942E" stroke-width="' + (s*0.033) + '"/>' +
+      // Inner border
+      '<path d="' + innershield + '" fill="none" stroke="#B8942E" stroke-width="' + (s*0.014) + '" opacity="0.55"/>' +
+      // Stars
+      '<polygon points="' + star(s*0.5, s*0.165, s*0.075, s*0.035, 5) + '" fill="#B8942E"/>' +
+      '<polygon points="' + star(s*0.3, s*0.195, s*0.042, s*0.018, 5) + '" fill="#B8942E" opacity="0.55"/>' +
+      '<polygon points="' + star(s*0.7, s*0.195, s*0.042, s*0.018, 5) + '" fill="#B8942E" opacity="0.55"/>' +
+      // MN monogram
+      '<text x="' + (s*0.5) + '" y="' + (s*0.43) + '" text-anchor="middle" font-family="Georgia,serif" font-size="' + (s*0.2) + '" font-weight="700" fill="#C8A030" letter-spacing="' + (s*0.04) + '">MN</text>' +
+      // Divider
+      '<line x1="' + (s*0.25) + '" y1="' + (s*0.485) + '" x2="' + (s*0.75) + '" y2="' + (s*0.485) + '" stroke="#B8942E" stroke-width="' + (s*0.016) + '" opacity="0.75"/>' +
+      '<rect x="' + (s*0.48) + '" y="' + (s*0.465) + '" width="' + (s*0.04) + '" height="' + (s*0.04) + '" fill="#B8942E" transform="rotate(45 ' + (s*0.5) + ' ' + (s*0.485) + ')" opacity="0.85"/>' +
+    '</g>'
+  ) +
+  // Bars (positioned absolutely because they use clip-path)
+  bars +
+  // Trendline
+  '<polyline points="' + tlineStr + '" fill="none" stroke="#0DBF6E" stroke-width="' + (s*0.04) + '" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#' + clipId + ')"/>' +
+  dots +
+  // Arrow tip
+  '<polyline points="' + (parseFloat(tprev[0])+s*0.04) + ',' + (parseFloat(tprev[1])-s*0.04) + ' ' + tlast[0] + ',' + tlast[1] + ' ' + (parseFloat(tprev[0])+s*0.09) + ',' + (parseFloat(tprev[1])+s*0.02) + '" fill="none" stroke="#0DBF6E" stroke-width="' + (s*0.033) + '" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#' + clipId + ')"/>';
 }
 
 // ── makeCertSVG(type, recipientName, tournName, score, year) ──────
