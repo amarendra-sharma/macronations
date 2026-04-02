@@ -9649,19 +9649,27 @@ renderDashCertificates = function(el) {
   }
   var activeCertType = 'participation';
 
-  // Build type buttons
+  // Build type buttons — track firstElig
   var typeKeys   = ['participation','winner','runner_up','playoff'];
   var typeLabels = { participation:'Participation', winner:'Champion', runner_up:'Runner-Up', playoff:'Playoff Qualifier' };
   var typeIcons  = { participation:'🎓', winner:'🏆', runner_up:'🥈', playoff:'⭐' };
   var typeBtns   = '';
+  var firstElig  = null;
   for (var i = 0; i < typeKeys.length; i++) {
-    var tk = typeKeys[i];
+    var tk     = typeKeys[i];
+    var isElig = eligible[tk];
+    if (isElig && !firstElig) { firstElig = tk; }
     typeBtns +=
-      '<button class="cert-type-btn' + (tk==='participation'?' active':'') + '" data-cert="' + tk + '" onclick="_certSelectType(\''+tk+'\')">' +
-        '<span class="cert-type-btn__icon">' + typeIcons[tk] + '</span>' +
+      '<button class="cert-type-btn' + (isElig && firstElig === tk ? ' active' : '') +
+        (isElig ? '' : ' btn--disabled') + '" data-cert="' + tk + '" ' +
+        (isElig
+          ? 'onclick="_certSelectType(\'' + tk + '\')"'
+          : 'onclick="flash(\'Reserved for paid global tournament participants.\',\'info\')"') + '>' +
+        '<span class="cert-type-btn__icon">' + typeIcons[tk] + (isElig ? '' : ' 🔒') + '</span>' +
         '<span class="cert-type-btn__label">' + typeLabels[tk] + '</span>' +
       '</button>';
   }
+  if (!firstElig) { firstElig = 'participation'; }
 
   // Signer editor (admin/professor only)
   var signerEditor = '';
