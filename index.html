@@ -7174,16 +7174,18 @@ async function renderDashRankings() {
   el.innerHTML = '<div class="empty-state"><div class="spinner" style="width:24px;height:24px;margin:0 auto 0.75rem;"></div><div class="empty-state__title">Loading rankings…</div></div>';
 
   try {
-    // Fetch all economies for this tournament
+    // Fetch all economies for this tournament — must include 'current' for score calculation
     var econRows = await sbGet('economies',
-      'tournament_id=eq.' + _dashTeam.tournament_id + '&select=team_id,scores_history,current_round');
+      'tournament_id=eq.' + _dashTeam.tournament_id + '&select=team_id,current,scores_history,current_round');
 
     // Build score map
     var scoreMap = {};
     if (econRows) {
       for (var ei = 0; ei < econRows.length; ei++) {
         var er = econRows[ei];
-        var state = er.current || {};
+        var state = er.current
+          ? (typeof er.current === 'string' ? JSON.parse(er.current) : er.current)
+          : {};
         var s = computeScores(state);
         scoreMap[er.team_id] = s.total;
       }
@@ -9821,12 +9823,17 @@ function _certSelectType(type) {
   var tourn  = _dashTourn || {};
   var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
   var scores = computeScores(eco);
-  var signers = _getCertSigners();
-  // Read live signer inputs if open
+
+  // Always read live input values first — these are the admin's explicit edits
   var td = document.getElementById('cert-signer-tourndirector');
   var dd = document.getElementById('cert-signer-director');
-  var tournDir  = td ? td.value : signers.tournDirector;
-  var dirName   = dd ? dd.value : signers.director;
+  var signers = _getCertSigners();
+  var tournDir = td ? td.value : signers.tournDirector;
+  var dirName  = dd ? dd.value : signers.director;
+
+  // If input is empty string, fall back to signers
+  if (!tournDir) { tournDir = signers.tournDirector; }
+  if (!dirName)  { dirName  = signers.director; }
 
   var btns = document.querySelectorAll('.cert-type-btn');
   for (var i = 0; i < btns.length; i++) {
@@ -9834,7 +9841,7 @@ function _certSelectType(type) {
     else { btns[i].classList.remove('active'); }
   }
   var recipName = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
-  var svg = makeCertSVG(type, recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || 2026, tournDir, dirName);
+  var svg = makeCertSVG(type, recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || new Date().getFullYear(), tournDir, dirName);
   var preview = document.getElementById('cert-preview');
   if (preview) { preview.innerHTML = svg; }
   var panel = document.getElementById('dash-panel-certificates');
@@ -9878,9 +9885,9 @@ function _certDownloadSVG() {
 // Override makeCertSVG to accept signer params
 var _origMakeCertSVG = makeCertSVG;
 makeCertSVG = function(type, recipientName, tournName, score, year, tournDirector, directorName) {
-  // Defaults
-  if (!tournDirector) { tournDirector = _getCertSigners().tournDirector; }
-  if (!directorName)  { directorName  = _getCertSigners().director; }
+  // Use passed-in values; only fall back to getCertSigners when truly absent
+  if (tournDirector === undefined || tournDirector === null) { tournDirector = _getCertSigners().tournDirector; }
+  if (directorName  === undefined || directorName  === null) { directorName  = _getCertSigners().director; }
   year = year || new Date().getFullYear();
   var certYear = new Date().getFullYear();
 
