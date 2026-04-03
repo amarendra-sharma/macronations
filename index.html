@@ -9659,7 +9659,7 @@ function _getCertSigners() {
 
 // Override renderDashCertificates to include editable signers for admin/prof, read-only for students
 var _origRenderDashCertificates = renderDashCertificates;
-renderDashCertificates = function(el) {
+renderDashCertificates = async function(el) {
   if (!el) { return; }
   var team   = _dashTeam  || {};
   var tourn  = _dashTourn || {};
@@ -9671,12 +9671,28 @@ renderDashCertificates = function(el) {
   var isCompleted = (tourn.status === 'completed');
   var isCaptain   = team.captain_id === (currentUser && currentUser.id);
 
-  // Determine which cert types the student is eligible for
+  // Determine rank — compute scores from economies (same logic as rankings tab)
   var myRank = 999;
-  if (_dashAllTeams && _dashAllTeams.length) {
-    var sorted = _dashAllTeams.slice().sort(function(a,b){ return (b._score||0)-(a._score||0); });
-    for(var ri=0;ri<sorted.length;ri++) { if(sorted[ri].id === team.id){ myRank = ri+1; break; } }
-  }
+  try {
+    var ecoRows = await sbGet('economies',
+      'tournament_id=eq.' + (tourn.id || '') + '&select=team_id,current&limit=200');
+    if (ecoRows && ecoRows.length && _dashAllTeams && _dashAllTeams.length) {
+      var certScoreMap = {};
+      for (var csi = 0; csi < ecoRows.length; csi++) {
+        var er = ecoRows[csi];
+        if (er.current) {
+          var st = (typeof er.current === 'string') ? JSON.parse(er.current) : er.current;
+          certScoreMap[er.team_id] = computeScores(st).total;
+        }
+      }
+      var certSorted = _dashAllTeams.slice().sort(function(a, b) {
+        return (certScoreMap[b.id] || 0) - (certScoreMap[a.id] || 0);
+      });
+      for (var cri = 0; cri < certSorted.length; cri++) {
+        if (certSorted[cri].id === team.id) { myRank = cri + 1; break; }
+      }
+    }
+  } catch(rankErr) {}  // non-fatal — defaults to rank 999 (no winner/runner-up cert)
   // winner/runner_up/playoff reserved for fee-paying global tournaments only
   var hasFee = Number(tourn.entry_fee || 0) > 0;
   var eligible = { participation: isAdmin || isCompleted, winner: isAdmin || (isCompleted && hasFee && myRank===1), runner_up: isAdmin || (isCompleted && hasFee && myRank===2), playoff: isAdmin || (isCompleted && hasFee && myRank<=8) };
@@ -10238,13 +10254,14 @@ async function renderChampions() {
       return;
     }
 
-    // Fetch profile images for champion users
+    // Fetch profile images for champion users — use public endpoint (no auth needed)
     var profileMap = {};
     try {
-      var allUsers = await sbGet('mn_users', 'select=id,name,profile_image_url,is_champion&limit=500');
+      var allUsers = await sbGetPublic('mn_users', 'select=id,name,profile_image_url,is_champion&limit=500');
       if (allUsers) {
         for (var ui = 0; ui < allUsers.length; ui++) {
-          if (allUsers[ui].name) { profileMap[allUsers[ui].name] = allUsers[ui]; }
+          var u = allUsers[ui];
+          if (u.name) { profileMap[u.name.toLowerCase().trim()] = u; }
         }
       }
     } catch(ex) {}
@@ -10255,7 +10272,7 @@ async function renderChampions() {
       var c    = champs[i];
       var rank = i + 1;
       var rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '<span style="font-size:1rem;font-weight:700;color:var(--text-400);">#' + rank + '</span>';
-      var userRec   = profileMap[c.captain] || profileMap[c.team] || null;
+      var userRec   = profileMap[(c.captain || '').toLowerCase().trim()] || profileMap[(c.team || '').toLowerCase().trim()] || null;
       var imgUrl    = (userRec && userRec.profile_image_url) ? userRec.profile_image_url : '';
       var nameParts = (c.captain || c.team || '?').split(' ');
       var initials  = nameParts.length >= 2
