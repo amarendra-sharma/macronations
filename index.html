@@ -9793,9 +9793,23 @@ renderDashCertificates = async function(el) {
         '</div>';
     }
 
+    // Use the rank-computed score if available, else fall back to own economy
+    var certScore = scores.total;
+    if (tourn.id && _dashAllTeams && _dashAllTeams.length) {
+      try {
+        var certEcoRows = await sbGet('economies',
+          'tournament_id=eq.' + tourn.id + '&team_id=eq.' + team.id + '&select=current&limit=1');
+        if (certEcoRows && certEcoRows.length && certEcoRows[0].current) {
+          var certSt = (typeof certEcoRows[0].current === 'string')
+            ? JSON.parse(certEcoRows[0].current) : certEcoRows[0].current;
+          certScore = computeScores(certSt).total;
+        }
+      } catch(e) {}
+    }
+
     // Initial cert
     var recipName = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
-    var initSvg   = makeCertSVG(firstElig, recipName, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || new Date().getFullYear(), signers.tournDirector, signers.director);
+    var initSvg   = makeCertSVG(firstElig, recipName, tourn.name || 'MacroNations Tournament', certScore, tourn.season_year || new Date().getFullYear(), signers.tournDirector, signers.director);
 
     el.innerHTML =
       '<div class="cert-wrap">' +
@@ -9826,7 +9840,8 @@ renderDashCertificates = async function(el) {
 function _certSelectType(type) {
   var team   = _dashTeam  || {};
   var tourn  = _dashTourn || {};
-  var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
+  var ecoRaw = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
+  var eco    = (typeof ecoRaw === 'string') ? JSON.parse(ecoRaw) : ecoRaw;
   var scores = computeScores(eco);
 
   // Always read live input values first — these are the admin's explicit edits
