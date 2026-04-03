@@ -3864,6 +3864,25 @@ async function sbGet(table, params) {
   return data;
 }
 
+async function sbGetPublic(table, params) {
+  var url = SUPA_URL + '/rest/v1/' + table;
+  if (params) { url += '?' + params; }
+  var res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type':  'application/json',
+      'apikey':        SUPA_ANON,
+      'Authorization': 'Bearer ' + SUPA_ANON,
+      'Accept':        'application/json'
+    }
+  });
+  var txt = await res.text();
+  var data = null;
+  try { data = JSON.parse(txt); } catch(e) { throw new Error('Invalid response from server'); }
+  if (!res.ok) { throw new Error((data && data.message) || 'Public GET failed'); }
+  return Array.isArray(data) ? data : (data ? [data] : []);
+}
+
 async function sbPost(table, body) {
   await _ensureFreshToken();
   // Strip any undefined/null id — let Postgres generate it via DEFAULT
@@ -10110,13 +10129,22 @@ async function uploadProfilePicture(file, statusEl, previewEl) {
 
   var publicUrl = sbStoragePublicUrl(STORAGE_BUCKET, storagePath);
 
-  // Save URL to mn_users — use upsert approach to bypass RLS UPDATE issues
+  // Save URL to mn_users using direct fetch with count header to detect silent RLS block
   try {
-    var patchRes = await sbPatch('mn_users', 'id=eq.' + currentUser.id, { profile_image_url: publicUrl });
-    // Supabase returns empty array when RLS silently blocks — detect and warn
-    if (!patchRes) {
-      // Try direct fetch with explicit Prefer: return=minimal to check
-      flash('Photo uploaded but profile URL may not have saved — check DB permissions.', 'info');
+    var patchUrl = SUPA_URL + '/rest/v1/mn_users?id=eq.' + currentUser.id;
+    var patchRes = await fetch(patchUrl, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPA_ANON,
+        'Authorization': 'Bearer ' + _authToken(),
+        'Prefer':        'return=representation,count=exact'
+      },
+      body: JSON.stringify({ profile_image_url: publicUrl })
+    });
+    var patchData = await patchRes.json();
+    if (!patchRes.ok) {
+      throw new Error((patchData && patchData.message) || 'Patch failed: ' + patchRes.status);
     }
   } catch(patchErr) {
     throw new Error('Profile save failed: ' + patchErr.message);
@@ -10283,20 +10311,17 @@ async function renderChampions() {
       return;
     }
 
-    // Fetch profile images for champion users — public endpoint, filter to champions only
+    // Fetch profile images — public endpoint, match by name case-insensitively
     var profileMap = {};
     try {
-      var allUsers = await sbGetPublic('mn_users', 'is_champion=eq.true&select=id,name,profile_image_url&limit=200');
-      if (!allUsers || !allUsers.length) {
-        // Fallback: fetch all users if is_champion column doesn't exist yet
-        allUsers = await sbGetPublic('mn_users', 'select=id,name,profile_image_url&limit=500');
-      }
+      var allUsers = await sbGetPublic('mn_users', 'select=id,name,profile_image_url&limit=500');
       if (allUsers) {
         for (var ui = 0; ui < allUsers.length; ui++) {
           var u = allUsers[ui];
-          if (u.name) {
+          if (u.name && u.profile_image_url) {
+            // Index by full name normalised
             profileMap[u.name.toLowerCase().trim()] = u;
-            // Also index first+last name only in case full name has middle name
+            // Also index first+last only (handles middle names)
             var parts = u.name.trim().split(/\s+/);
             if (parts.length > 2) {
               profileMap[(parts[0] + ' ' + parts[parts.length-1]).toLowerCase()] = u;
