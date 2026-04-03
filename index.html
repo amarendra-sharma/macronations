@@ -4277,7 +4277,16 @@ async function doLogin() {
 
     var sess = { access_token: auth.access_token, refresh_token: auth.refresh_token, expires_at: Date.now() + ((auth.expires_in||3600)*1000) };
     currentSession = sess;
-    var rows = await sbGet('mn_users','email=eq.'+encodeURIComponent(email)+'&limit=1');
+
+    // Look up profile by auth user ID first (most reliable), fall back to email
+    var authUserId = (auth.user && auth.user.id) ? auth.user.id : null;
+    var rows = null;
+    if (authUserId) {
+      try { rows = await sbGet('mn_users', 'id=eq.' + authUserId + '&limit=1'); } catch(e2) {}
+    }
+    if (!rows || !rows.length) {
+      try { rows = await sbGet('mn_users', 'email=eq.' + encodeURIComponent(email) + '&limit=1'); } catch(e3) {}
+    }
     if (!rows || !rows.length) {
       _setFormErr('signin-error','Account authenticated but profile not found. Please contact support@macronations.com.');
       setLoading('btn-do-login', false, 'Sign In');
