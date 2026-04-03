@@ -3834,7 +3834,7 @@ h1, h2, h3, h4, h5 {
 //  1. SUPABASE CONFIG & REST HELPERS
 // ═══════════════════════════════════════════════════════════════════
 var SUPA_URL  = 'https://rtaiivegcqqmdchpguzn.supabase.co';
-var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0YWlpdmVnY3FxbWRjaHBndXpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMzQ3NTEsImV4cCI6MjA4OTcxMDc1MX0.5BrafKPYNNyR_xpgbr3a6LWztaCOeBVbDktsFMCMH5Y';
+var SUPA_ANON = 'sb_publishable_KCPCMiKYQoEUgG45DVF5uA_ke-UxQKm';
 
 function _authToken() {
   var sess = _loadSession();
@@ -4264,6 +4264,10 @@ async function doLogin() {
         friendlyMsg = 'No account found with that email address. Please register first.';
       } else if (rawMsg.indexOf('Too many requests') !== -1) {
         friendlyMsg = 'Too many sign-in attempts. Please wait a few minutes and try again.';
+      } else if (rawMsg.indexOf('JWT') !== -1 || rawMsg.indexOf('expired') !== -1 || rawMsg.indexOf('token') !== -1) {
+        // Clear any stale cached session that may be interfering
+        _clearSession(); currentSession = null;
+        friendlyMsg = 'Session error. Please try signing in again.';
       }
 
       _setFormErr('signin-error', friendlyMsg);
@@ -4285,7 +4289,12 @@ async function doLogin() {
     afterLogin();
     flash('Welcome back, ' + esc(currentUser.name || currentUser.username || 'Economist') + '!', 'success');
   } catch(e) {
-    _setFormErr('signin-error', 'Network error: ' + (e.message || 'Could not reach server. Check your connection.'));
+    var errMsg = e.message || 'Could not reach server. Check your connection.';
+    if (errMsg.indexOf('JWT') !== -1 || errMsg.indexOf('expired') !== -1) {
+      _clearSession(); currentSession = null;
+      errMsg = 'Session error — please try signing in again.';
+    }
+    _setFormErr('signin-error', errMsg);
     setLoading('btn-do-login', false, 'Sign In');
   }
 }
@@ -4835,8 +4844,13 @@ async function dbSetupDefaults() {
           currentUser = rows[0];
           _saveSession(sess, currentUser);
           _renderLoggedInNav();
-        } else { _clearSession(); }
-      } catch(e) { _clearSession(); }
+        } else { _clearSession(); currentSession = null; }
+      } catch(e) {
+        // JWT expired or network error — clear stale session so user can sign in fresh
+        _clearSession();
+        currentSession = null;
+        currentUser    = null;
+      }
     }
   }
 
