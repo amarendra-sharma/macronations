@@ -7214,8 +7214,8 @@ async function renderDashRankings() {
 // Stripe payment link — admin sets this per tournament in settings
 // Falls back to email if not configured
 var STRIPE_PAYMENT_LINKS = {};
-// Default GoDaddy payment link for all paid tournaments
-var DEFAULT_PAYMENT_LINK = 'https://bcb769f9-c141-4e9a-ae69-a71cdfa4764c.paylinks.godaddy.com/e20b2adf-394f-4684-aff2-112';
+// Default Stripe payment link for all paid tournaments
+var DEFAULT_PAYMENT_LINK = 'https://buy.stripe.com/dRmeV6afb8c475313Q5ZC02';
 var WORLD_CUP_ENTRY_FEE  = 50;
 
 function renderDashPayment() {
@@ -7785,12 +7785,8 @@ async function doCreateTournament() {
 
   if (!name)      { _setFormErr('ct-error', 'Tournament name is required.'); return; }
   if (!startDate) { _setFormErr('ct-error', 'Start date is required.'); return; }
-  // Professors can only create free tournaments
-  if (_isProfessor() && !_isAdmin() && fee > 0) {
-    _setFormErr('ct-error', 'Professors can only create free class tournaments (entry fee must be $0). To run a paid tournament, contact support@macronations.com.');
-    return;
-  }
-  // Check global election
+
+  // Check global election FIRST — elected professors are allowed to charge WORLD_CUP_ENTRY_FEE
   var electBox  = document.getElementById('ct-global-elect');
   var isElected = electBox ? electBox.checked : false;
   if (isElected) {
@@ -7799,6 +7795,12 @@ async function doCreateTournament() {
     if (profLink && profLink.value.trim()) {
       try { localStorage.setItem('mn_stripe_elected_' + name.replace(/\s+/g,'_'), profLink.value.trim()); } catch(e) {}
     }
+  }
+
+  // Professors can only create free tournaments UNLESS electing for the World Cup
+  if (_isProfessor() && !_isAdmin() && fee > 0 && !isElected) {
+    _setFormErr('ct-error', 'Professors can only create free class tournaments (entry fee must be $0). To run a paid tournament, contact support@macronations.com.');
+    return;
   }
 
   setLoading('btn-do-create-tournament', true, 'Creating…');
