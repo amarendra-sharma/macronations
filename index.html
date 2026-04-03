@@ -3620,6 +3620,7 @@ h1, h2, h3, h4, h5 {
         <div class="form-field">
           <label class="form-label form-label--required" for="reg-email">University Email</label>
           <input type="email" id="reg-email" class="form-input" placeholder="jsmith@university.edu" autocomplete="email">
+          <div class="form-hint">Must be a .edu address (e.g. jsmith@university.edu)</div>
         </div>
         <div class="form-field">
           <label class="form-label form-label--required" for="reg-institution">Institution</label>
@@ -4449,6 +4450,10 @@ async function doRegister() {
   if (pass.length < 8)  { _setFormErr('register-error','Password must be at least 8 characters.'); return; }
   if (username.length < 3) { _setFormErr('register-error','Username must be at least 3 characters.'); return; }
   if (!/^[a-z0-9_]+$/.test(username)) { _setFormErr('register-error','Username may only contain letters, numbers, and underscores.'); return; }
+  if (!email.match(/^[^\s@]+@[^\s@]+\.edu$/i) && !email.match(/^[^\s@]+@[^\s@]+\.edu\.[a-z]{2}$/i)) {
+    _setFormErr('register-error','MacroNations requires a university email address ending in .edu (e.g. you@university.edu). Please use your institutional email.');
+    return;
+  }
 
   setLoading('btn-do-register', true, 'Creating account…');
 
