@@ -9660,15 +9660,20 @@ function _getCertSigners() {
       tournDirector = currentUser.name || currentUser.username || '';
       if (currentUser.institution) { tournDirector += ', ' + currentUser.institution; }
     } else {
-      // Fetch from DB async and cache — update cert when done
+      // Fetch from DB async and cache — update only the input field, not the whole panel
       var _creatorId = _certTourn.created_by;
       sbGetPublic('mn_users', 'id=eq.' + _creatorId + '&select=id,name,institution&limit=1').then(function(rows) {
         if (rows && rows.length && rows[0].name) {
           if (typeof _professorMap === 'undefined') { _professorMap = {}; }
           _professorMap[_creatorId] = rows[0];
-          // Re-render certificate with the now-fetched name
-          var el = document.getElementById('dash-panel-certificates');
-          if (el && el.style.display !== 'none') { renderDashCertificates(el); }
+          // Only update the input if the admin hasn't already typed something
+          var tdEl = document.getElementById('cert-signer-tourndirector');
+          if (tdEl && (!tdEl.value || tdEl.value === 'Tournament Director')) {
+            var fetchedName = rows[0].name;
+            if (rows[0].institution) { fetchedName += ', ' + rows[0].institution; }
+            tdEl.value = fetchedName;
+            _certUpdateSigners();
+          }
         }
       }).catch(function() {});
     }
