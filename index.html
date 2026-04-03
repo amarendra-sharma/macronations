@@ -9114,7 +9114,7 @@ async function _countTeams(tournId) {
   } catch(e) { return 0; }
 }
 
-PAGE_LOADERS['champions'] = renderChampions;
+PAGE_LOADERS['champions'] = function() { return renderChampions(); };
 
 // ═══════════════════════════════════════════════════════════════════
 //  RANKINGS PAGE
