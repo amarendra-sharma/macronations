@@ -9005,65 +9005,11 @@ function downloadCert(filename) {
 
 // ── renderDashCertificates(el) — dashboard tab ────────────────────
 function renderDashCertificates(el) {
-  if (!el) { return; }
-  var team   = _dashTeam  || {};
-  var tourn  = _dashTourn || {};
-  var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
-  var scores = computeScores(eco);
-  var activeCertType = 'participation';
-
-  function renderPreview(type) {
-    activeCertType = type;
-    var name   = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
-    var svg    = makeCertSVG(type, name, tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || new Date().getFullYear());
-    var preview = document.getElementById('cert-preview');
-    if (preview) { preview.innerHTML = svg; }
-    var dlBtn = document.getElementById('btn-download-cert');
-    if (dlBtn) { dlBtn.onclick = function() { downloadCert('macronations-' + type + '-' + (team.name || 'cert').replace(/\s+/g,'-').toLowerCase()); }; }
-    // Update active button
-    var btns = document.querySelectorAll('.cert-type-btn');
-    for (var i = 0; i < btns.length; i++) {
-      if (btns[i].getAttribute('data-cert') === type) { btns[i].classList.add('active'); }
-      else { btns[i].classList.remove('active'); }
-    }
+  // Delegates to the async override defined later in the file
+  // which fetches real scores from DB and populates tournament director
+  if (typeof _asyncRenderDashCertificates === 'function') {
+    _asyncRenderDashCertificates(el);
   }
-
-  var typeBtns = '';
-  var typeKeys = ['participation', 'winner', 'runner_up', 'playoff'];
-  var typeLabels = { participation:'Participation', winner:'Champion', runner_up:'Runner-Up', playoff:'Playoff Qualifier' };
-  var typeIcons  = { participation:'🎓', winner:'🏆', runner_up:'🥈', playoff:'⭐' };
-  for (var i = 0; i < typeKeys.length; i++) {
-    var tk = typeKeys[i];
-    typeBtns +=
-      '<button class="cert-type-btn' + (tk === activeCertType ? ' active' : '') + '" data-cert="' + tk + '" onclick="(function(t){' +
-        'var btns=document.querySelectorAll(\'.cert-type-btn\');for(var i=0;i<btns.length;i++){btns[i].classList.remove(\'active\');}' +
-        'this.classList.add(\'active\');' +
-        'var name=\'' + _jsEscStr((currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant')) + '\';' +
-        'var svg=makeCertSVG(t,name,\'' + _jsEscStr(tourn.name || 'MacroNations Tournament') + '\',' + scores.total + ',' + (tourn.season_year || new Date().getFullYear()) + ');' +
-        'var p=document.getElementById(\'cert-preview\');if(p){p.innerHTML=svg;}' +
-        'var d=document.getElementById(\'btn-download-cert\');if(d){d.setAttribute(\'data-cert\',t);}' +
-      '})(\''+tk+'\')">' +
-        '<span class="cert-type-btn__icon">' + typeIcons[tk] + '</span>' +
-        '<span class="cert-type-btn__label">' + typeLabels[tk] + '</span>' +
-      '</button>';
-  }
-
-  // Initial SVG
-  var initSvg = makeCertSVG('participation',
-    (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant'),
-    tourn.name || 'MacroNations Tournament', scores.total, tourn.season_year || new Date().getFullYear());
-
-  el.innerHTML =
-    '<div class="cert-wrap">' +
-      '<div class="cert-type-grid">' + typeBtns + '</div>' +
-      '<div class="cert-preview-area">' +
-        '<div id="cert-preview">' + initSvg + '</div>' +
-        '<div style="margin-top:1.5rem;display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">' +
-          '<button class="btn btn--primary" id="btn-download-cert" data-cert="participation" onclick="downloadCert(\'macronations-certificate\')">⬇ Download PNG</button>' +
-          '<button class="btn btn--ghost" onclick="(function(){var s=document.getElementById(\'cert-svg\');if(s){var b=new Blob([new XMLSerializer().serializeToString(s)],{type:\'image/svg+xml\'});var a=document.createElement(\'a\');a.href=URL.createObjectURL(b);a.download=\'macronations-certificate.svg\';document.body.appendChild(a);a.click();document.body.removeChild(a);}})()">⬇ Download SVG</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
 }
 
 // Add Certificates tab to dashboard
@@ -9789,7 +9735,7 @@ function _getCertSigners() {
 
 // Override renderDashCertificates to include editable signers for admin/prof, read-only for students
 var _origRenderDashCertificates = renderDashCertificates;
-renderDashCertificates = async function(el) {
+var _asyncRenderDashCertificates = async function(el) {
   if (!el) { return; }
 
   // Show spinner while we fetch rank data
@@ -9803,6 +9749,21 @@ renderDashCertificates = async function(el) {
   try {
     var team   = _dashTeam  || {};
     var tourn  = _dashTourn || {};
+
+    // Pre-fetch professor name so _getCertSigners() has it synchronously
+    if (tourn.created_by) {
+      var _profAlready = (typeof _professorMap !== 'undefined') && _professorMap[tourn.created_by];
+      if (!_profAlready) {
+        try {
+          var _profFetch = await sbGetPublic('mn_users', 'id=eq.' + tourn.created_by + '&select=id,name,institution&limit=1');
+          if (_profFetch && _profFetch.length && _profFetch[0].name) {
+            if (typeof _professorMap === 'undefined') { _professorMap = {}; }
+            _professorMap[tourn.created_by] = _profFetch[0];
+          }
+        } catch(pfe) {}
+      }
+    }
+
     var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
     var scores = computeScores(eco);
     var signers = _getCertSigners();
@@ -9893,19 +9854,11 @@ renderDashCertificates = async function(el) {
         '</div>';
     }
 
-    // Use the rank-computed score if available, else fall back to own economy
-    var certScore = scores.total;
-    if (tourn.id && _dashAllTeams && _dashAllTeams.length) {
-      try {
-        var certEcoRows = await sbGet('economies',
-          'tournament_id=eq.' + tourn.id + '&team_id=eq.' + team.id + '&select=current&limit=1');
-        if (certEcoRows && certEcoRows.length && certEcoRows[0].current) {
-          var certSt = (typeof certEcoRows[0].current === 'string')
-            ? JSON.parse(certEcoRows[0].current) : certEcoRows[0].current;
-          certScore = computeScores(certSt).total;
-        }
-      } catch(e) {}
-    }
+    // Score: use certScoreMap[team.id] computed from all economies above
+    // This gives the correct score regardless of whether viewer is admin or student
+    var certScore = (typeof certScoreMap !== 'undefined' && certScoreMap[team.id])
+      ? certScoreMap[team.id]
+      : scores.total;
 
     // Initial cert
     var recipName = (currentUser && currentUser.name) ? currentUser.name : (team.name || 'Participant');
@@ -9936,6 +9889,9 @@ renderDashCertificates = async function(el) {
       '</div>';
   }
 };
+
+// Make renderDashCertificates point to the async version
+renderDashCertificates = _asyncRenderDashCertificates;
 
 function _certSelectType(type) {
   var team   = _dashTeam  || {};
