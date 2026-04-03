@@ -10062,12 +10062,20 @@ async function uploadProfilePicture(file, statusEl, previewEl) {
 
   // Upload to Supabase Storage: users/{user_id}/{timestamp}.jpg
   var storagePath = currentUser.id + '/' + Date.now() + '.jpg';
-  await sbStorageUpload(STORAGE_BUCKET, storagePath, compressed);
+  try {
+    await sbStorageUpload(STORAGE_BUCKET, storagePath, compressed);
+  } catch(storageErr) {
+    throw new Error('Storage upload failed: ' + storageErr.message);
+  }
 
   var publicUrl = sbStoragePublicUrl(STORAGE_BUCKET, storagePath);
 
   // Save URL to mn_users
-  await sbPatch('mn_users', 'id=eq.' + currentUser.id, { profile_image_url: publicUrl });
+  try {
+    await sbPatch('mn_users', 'id=eq.' + currentUser.id, { profile_image_url: publicUrl });
+  } catch(patchErr) {
+    throw new Error('Profile save failed: ' + patchErr.message);
+  }
   currentUser.profile_image_url = publicUrl;
 
   // Persist updated user
