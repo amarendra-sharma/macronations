@@ -5687,7 +5687,7 @@ function openTeamModal(tournamentId) {
   var fee = tourn ? Number(tourn.entry_fee) || 0 : 0;
   if (fee > 0 && feeEl && feeText) {
     feeEl.style.display = 'block';
-    feeText.textContent = 'Entry fee of ' + fmt$(fee) + ' per team is required to compete for prizes. Payment is handled offline — contact support@macronations.com after registering.';
+    feeText.textContent = 'Entry fee of ' + fmt$(fee) + ' per team is required to compete for prizes. After joining, go to Dashboard → Payment to pay securely via Stripe.';
   } else if (feeEl) {
     feeEl.style.display = 'none';
   }
@@ -7187,7 +7187,6 @@ async function renderDashRankings() {
         '<tr class="' + (isMe ? 'rank-my-row' : '') + '">' +
           '<td>' + medal + '</td>' +
           '<td>' + esc(r.team.name || 'Unknown') + (isMe ? ' <span class="badge badge--blue badge--no-dot" style="font-size:0.7rem;">You</span>' : '') + '</td>' +
-          '<td>' + esc(r.team.invite_code || '—') + '</td>' +
           '<td><span class="rank-score">' + r.score + '</span></td>' +
         '</tr>';
     }
