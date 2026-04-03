@@ -5872,6 +5872,25 @@ async function doCreateTeam() {
       return;
     }
 
+    // Email domain check for class/university tournaments
+    if (tourn.tier === 'class' || tourn.tier === 'university') {
+      var studentDomain = (currentUser.email || '').split('@')[1] || '';
+      var creatorEmail  = '';
+      try {
+        var creatorRows = await sbGetPublic('mn_users', 'id=eq.' + tourn.created_by + '&select=email&limit=1');
+        if (creatorRows && creatorRows.length) { creatorEmail = creatorRows[0].email || ''; }
+      } catch(de) {}
+      var creatorDomain = creatorEmail.split('@')[1] || '';
+      if (creatorDomain && studentDomain && studentDomain.toLowerCase() !== creatorDomain.toLowerCase()) {
+        _setFormErr('create-team-error',
+          'This tournament is restricted to ' + creatorDomain + ' email addresses. ' +
+          'Your account uses ' + studentDomain + '. Please use your institutional email to register.'
+        );
+        setLoading('btn-do-create-team',false,'Create Team');
+        return;
+      }
+    }
+
     // One-team-per-season check
     var conflict = await _checkSeasonConflict(tourn.season_year);
     if (conflict) {
@@ -6039,6 +6058,25 @@ async function doJoinTeam() {
       _setFormErr('join-team-error','This tournament is already underway (Round ' + tourn.current_round + '). New members cannot join after Round 1 has begun.');
       setLoading('btn-do-join-team',false,'Join This Team');
       return;
+    }
+
+    // Email domain check for class/university tournaments
+    if (tourn && (tourn.tier === 'class' || tourn.tier === 'university')) {
+      var jStudentDomain = (currentUser.email || '').split('@')[1] || '';
+      var jCreatorEmail  = '';
+      try {
+        var jCreatorRows = await sbGetPublic('mn_users', 'id=eq.' + tourn.created_by + '&select=email&limit=1');
+        if (jCreatorRows && jCreatorRows.length) { jCreatorEmail = jCreatorRows[0].email || ''; }
+      } catch(jde) {}
+      var jCreatorDomain = jCreatorEmail.split('@')[1] || '';
+      if (jCreatorDomain && jStudentDomain && jStudentDomain.toLowerCase() !== jCreatorDomain.toLowerCase()) {
+        _setFormErr('join-team-error',
+          'This tournament is restricted to ' + jCreatorDomain + ' email addresses. ' +
+          'Your account uses ' + jStudentDomain + '. Please contact your professor.'
+        );
+        setLoading('btn-do-join-team',false,'Join This Team');
+        return;
+      }
     }
 
     // One-team-per-season check
