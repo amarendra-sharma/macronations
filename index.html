@@ -8972,7 +8972,11 @@ function renderDashCertificates(el) {
     // Register in page loaders hook
     var origRender = _renderDashTab;
     _renderDashTab = function(id) {
-      if (id === 'certificates') { renderDashCertificates(document.getElementById('dash-panel-certificates')); }
+      if (id === 'certificates') {
+        var panel = document.getElementById('dash-panel-certificates');
+        if (panel) { panel.style.display = 'block'; }
+        renderDashCertificates(panel);
+      }
       else { origRender(id); }
     };
   }
@@ -9661,6 +9665,15 @@ function _getCertSigners() {
 var _origRenderDashCertificates = renderDashCertificates;
 renderDashCertificates = async function(el) {
   if (!el) { return; }
+
+  // Show spinner while we fetch rank data
+  el.style.display = 'block';
+  el.innerHTML =
+    '<div class="empty-state" style="padding:3rem 2rem;">' +
+      '<div class="spinner" style="width:28px;height:28px;margin:0 auto 1rem;"></div>' +
+      '<div class="empty-state__title">Loading certificates…</div>' +
+    '</div>';
+
   var team   = _dashTeam  || {};
   var tourn  = _dashTourn || {};
   var eco    = (_dashEconomy && _dashEconomy.current) ? _dashEconomy.current : defaultEconomy();
@@ -9669,30 +9682,31 @@ renderDashCertificates = async function(el) {
   var isAdmin    = currentUser && (currentUser.is_admin || currentUser.role === 'professor');
   var isEditable = isAdmin;
   var isCompleted = (tourn.status === 'completed');
-  var isCaptain   = team.captain_id === (currentUser && currentUser.id);
 
-  // Determine rank — compute scores from economies (same logic as rankings tab)
+  // Fetch economies and compute real rank
   var myRank = 999;
-  try {
-    var ecoRows = await sbGet('economies',
-      'tournament_id=eq.' + (tourn.id || '') + '&select=team_id,current&limit=200');
-    if (ecoRows && ecoRows.length && _dashAllTeams && _dashAllTeams.length) {
-      var certScoreMap = {};
-      for (var csi = 0; csi < ecoRows.length; csi++) {
-        var er = ecoRows[csi];
-        if (er.current) {
-          var st = (typeof er.current === 'string') ? JSON.parse(er.current) : er.current;
-          certScoreMap[er.team_id] = computeScores(st).total;
+  if (tourn.id) {
+    try {
+      var ecoRows = await sbGet('economies',
+        'tournament_id=eq.' + tourn.id + '&select=team_id,current&limit=200');
+      if (ecoRows && ecoRows.length && _dashAllTeams && _dashAllTeams.length) {
+        var certScoreMap = {};
+        for (var csi = 0; csi < ecoRows.length; csi++) {
+          var er = ecoRows[csi];
+          if (er.current) {
+            var st = (typeof er.current === 'string') ? JSON.parse(er.current) : er.current;
+            certScoreMap[er.team_id] = computeScores(st).total;
+          }
+        }
+        var certSorted = _dashAllTeams.slice().sort(function(a, b) {
+          return (certScoreMap[b.id] || 0) - (certScoreMap[a.id] || 0);
+        });
+        for (var cri = 0; cri < certSorted.length; cri++) {
+          if (certSorted[cri].id === team.id) { myRank = cri + 1; break; }
         }
       }
-      var certSorted = _dashAllTeams.slice().sort(function(a, b) {
-        return (certScoreMap[b.id] || 0) - (certScoreMap[a.id] || 0);
-      });
-      for (var cri = 0; cri < certSorted.length; cri++) {
-        if (certSorted[cri].id === team.id) { myRank = cri + 1; break; }
-      }
-    }
-  } catch(rankErr) {}  // non-fatal — defaults to rank 999 (no winner/runner-up cert)
+    } catch(rankErr) {}
+  }
   // winner/runner_up/playoff reserved for fee-paying global tournaments only
   var hasFee = Number(tourn.entry_fee || 0) > 0;
   var eligible = { participation: isAdmin || isCompleted, winner: isAdmin || (isCompleted && hasFee && myRank===1), runner_up: isAdmin || (isCompleted && hasFee && myRank===2), playoff: isAdmin || (isCompleted && hasFee && myRank<=8) };
