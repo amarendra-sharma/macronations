@@ -8947,7 +8947,8 @@ function makeCertSVG(type, recipientName, tournName, score, year) {
     // Signature lines
     '<line x1="120" y1="576" x2="320" y2="576" stroke="#0d1526" stroke-width="0.75" opacity="0.3"/>' +
     '<line x1="580" y1="576" x2="780" y2="576" stroke="#0d1526" stroke-width="0.75" opacity="0.3"/>' +
-    '<text x="220" y="592" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#8494b0" letter-spacing="0.08em">TOURNAMENT DIRECTOR</text>' +
+    '<text x="220" y="588" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#0d1526" font-weight="600">' + today + '</text>' +
+    '<text x="220" y="600" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="9" fill="#8494b0" letter-spacing="0.08em">DATE OF ISSUANCE</text>' +
     '<text x="680" y="592" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#8494b0" letter-spacing="0.08em">MACRONATIONS LLC — NEW YORK</text>' +
 
     // Year
@@ -10057,8 +10058,8 @@ makeCertSVG = function(type, recipientName, tournName, score, year, tournDirecto
     // Signature lines with actual names
     '<line x1="80" y1="574" x2="310" y2="574" stroke="#0d1526" stroke-width="0.75" opacity="0.3"/>' +
     '<line x1="590" y1="574" x2="820" y2="574" stroke="#0d1526" stroke-width="0.75" opacity="0.3"/>' +
-    '<text x="195" y="588" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#0d1526" font-weight="600">' + _svgEsc(_truncateName(tournDirector,28)) + '</text>' +
-    '<text x="195" y="600" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="9" fill="#8494b0" letter-spacing="0.06em">TOURNAMENT DIRECTOR</text>' +
+    '<text x="195" y="588" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#0d1526" font-weight="600">' + certYear + '</text>' +
+    '<text x="195" y="600" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="9" fill="#8494b0" letter-spacing="0.06em">DATE OF ISSUANCE</text>' +
     '<text x="705" y="588" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="10" fill="#0d1526" font-weight="600">' + _svgEsc(_truncateName(directorName,28)) + '</text>' +
     '<text x="705" y="600" text-anchor="middle" font-family="\'DM Sans\',sans-serif" font-size="9" fill="#8494b0" letter-spacing="0.04em">MACRONATIONS LLC — NEW YORK</text>' +
     '<text x="450" y="600" text-anchor="middle" font-family="\'DM Mono\',monospace" font-size="10" fill="#8494b0">' + certYear + '</text>' +
