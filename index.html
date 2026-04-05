@@ -3836,6 +3836,9 @@ h1, h2, h3, h4, h5 {
 var SUPA_URL  = 'https://rtaiivegcqqmdchpguzn.supabase.co';
 var SUPA_ANON = 'sb_publishable_KCPCMiKYQoEUgG45DVF5uA_ke-UxQKm';
 
+// ⚠️ DEPENDENCY WARNING: _authToken() is called by every authenticated DB operation (sbGet x57, sbPatch x12, sbPost x12).
+// It MUST check currentSession before localStorage — reversing breaks password reset and profile upload.
+// If SUPA_ANON changes, update it here AND verify sbGetPublic() still works (uses SUPA_ANON as Bearer).
 function _authToken() {
   // Always prefer in-memory currentSession (freshest, set on login or recovery)
   if (currentSession && currentSession.access_token) { return currentSession.access_token; }
@@ -3964,6 +3967,9 @@ async function _supaRefresh(refreshToken) {
   return res.json();
 }
 
+// ⚠️ DEPENDENCY WARNING: _ensureFreshToken() is called before every sbGet/sbPost/sbPatch/sbDelete.
+// If it fails silently (catch(e){}), the request proceeds with an expired token → 401 errors.
+// _clearSession() here also clears currentTeamId — do not add team-state logic after it.
 // Auto-refresh the session if within 5 minutes of expiry.
 // Called before every API request.
 async function _ensureFreshToken() {
@@ -4631,6 +4637,10 @@ async function doLogout() {
   flash('You have been signed out.', 'info');
 }
 
+// ⚠️ DEPENDENCY WARNING: afterLogin() is overridden once (search "_origAfterLogin").
+// The override calls _origAfterLogin() then fetches profile_image_url and is_champion.
+// If _origAfterLogin() throws, the override's catch will skip is_champion → profile upload gate fails.
+// currentTeamId is set here — it must be set before renderDashboard() loads team data.
 async function afterLogin() {
   _renderLoggedInNav();
   // Run DB setup check for admins/professors once
@@ -4821,6 +4831,12 @@ function _setStatEl(id, val) {
 // ═══════════════════════════════════════════════════════════════════
 //  PAGE LOADERS REGISTRY
 // ═══════════════════════════════════════════════════════════════════
+// ⚠️ DEPENDENCY WARNING: PAGE_LOADERS is assigned at parse time (home here) and then extended
+// via assignment later in the file (tournaments, dashboard, admin, champions, rankings, legal, about).
+// JavaScript captures function REFERENCES at assignment time — not names.
+// PAGE_LOADERS['champions'] uses a late-binding wrapper to avoid capturing a stale reference.
+// _renderDashTab is overridden TWICE (certificates IIFE + profile IIFE) in a chain — each wraps
+// the previous. Break the chain (e.g. by removing one IIFE) and that tab stops rendering entirely.
 var PAGE_LOADERS = {
   home: loadHomeStats
 };
@@ -4977,6 +4993,12 @@ function defaultEconomy() {
 //
 //  returns: new state object (does NOT mutate input)
 // ─────────────────────────────────────────────────────────────────
+// ⚠️ DEPENDENCY WARNING: simRound() is the core simulation engine.
+// Called by runSimulation() (admin) only. Changes here affect ALL economy outcomes:
+// GDP, unemployment, inflation, Gini, HDI, stock, debt, currency, financial health.
+// computeScores() reads these outputs — changing output field names will silently break scoring.
+// The 7 bug fixes applied (rate_gap, inflation anchor, green_boost, aid_gdp, Gini sign,
+// currency UIP, debt /100/4) are intentional — do not revert without re-testing all pillars.
 function simRound(state, policy, crises) {
   crises = crises || [];
 
@@ -5202,6 +5224,12 @@ function simRound(state, policy, crises) {
 //                             sustainability, innovation, total }
 //  Each pillar 0–200, total 0–1000
 // ─────────────────────────────────────────────────────────────────
+// ⚠️ DEPENDENCY WARNING: computeScores() has 14 call sites across the platform.
+// It affects: student rankings, admin round display, certificate scores, playoff bracket seeding,
+// crownChampion(), prize pool calculation, CSV export, AI advisor context, and notification emails.
+// The state object MUST contain all economy fields (gdp_growth, unemployment, inflation, gini,
+// hdi, stock, fin_health, debt, potential, productivity) or scores silently return 0 for missing pillars.
+// Any formula change here propagates to ALL of the above instantly — test with runSimulation first.
 function computeScores(state) {
   var s = state;
 
@@ -5333,6 +5361,11 @@ var CRISES = {
 //  calcPrizePool(entryFee, numTeams)
 //  returns { pool, winner, runner_up }
 // ─────────────────────────────────────────────────────────────────
+// ⚠️ DEPENDENCY WARNING: calcPrizePool() has 8 call sites.
+// The pool percentage (0.25 = 25%, hypothetical) is hardcoded here.
+// Changing it requires also updating: prize pool widget label, legal prize rules text,
+// How It Works step 7, and the legal math example strings (5 locations total).
+// The 70%/30% winner/runner-up split is also hardcoded here AND separately in legal text.
 function calcPrizePool(entryFee, numTeams) {
   entryFee  = Number(entryFee)  || 0;
   numTeams  = Number(numTeams)  || 0;
@@ -6237,6 +6270,11 @@ var PILLARS = [
 // ─────────────────────────────────────────────────────────────────
 //  ENTRY POINT: renderDashboard()
 // ─────────────────────────────────────────────────────────────────
+// ⚠️ DEPENDENCY WARNING: renderDashboard() is the SINGLE SOURCE OF TRUTH for all dashboard state.
+// It sets: _dashTeam, _dashTourn, _dashEconomy, _dashAllTeams, _dashDecision, _dashCrises.
+// All dashboard tabs (Overview, Policy, Crisis, Rankings, Payment, Certificates, Advisor)
+// read these globals WITHOUT re-fetching. If renderDashboard() has not run, all tabs show defaults.
+// Do NOT clear or reassign _dash* globals outside of renderDashboard() or tab data will desync.
 async function renderDashboard() {
   if (!currentUser) { openAuthModal('login'); return; }
 
@@ -8156,6 +8194,11 @@ function _buildRoundCard(t, isCompleted) {
 }
 
 // ── SIMULATION ENGINE ─────────────────────────────────────────────
+// ⚠️ DEPENDENCY WARNING: runSimulation() is the ONLY function that writes economy state to the DB.
+// After it runs, students see stale data until they re-navigate to their dashboard (re-runs renderDashboard).
+// It reads _adminTournaments and _adminTeams — these must be loaded (renderAdmin must have run first).
+// It calls crownChampion() on final round completion. Crisis events fire here (rounds 3, 6, 9).
+// Do NOT call runSimulation() more than once per round — it increments current_round unconditionally.
 async function runSimulation(tournId) {
   var logContainer = document.getElementById('sim-log-container');
   var logEl        = document.getElementById('sim-log');
@@ -8831,6 +8874,11 @@ function _svgLogoMark(x, y, size, bgColor) {
 }
 
 // ── makeCertSVG(type, recipientName, tournName, score, year) ──────
+// ⚠️ DEPENDENCY WARNING: makeCertSVG() is defined TWICE.
+// THIS is the original 5-param version (no tournDirector/directorName).
+// The 7-param OVERRIDE at the bottom of the file (search "makeCertSVG = function") wins at runtime.
+// Any SVG layout changes (positions, fonts, colors) MUST be made in BOTH definitions.
+// The clipPath id="csc" here vs id="csc2" in the override MUST remain different or chart bars vanish.
 function makeCertSVG(type, recipientName, tournName, score, year) {
   var cfg  = CERT_TYPES[type] || CERT_TYPES.participation;
   var W    = 900;
@@ -9129,6 +9177,11 @@ async function revokeChampion(id) {
 }
 
 // ── crownChampion(tournId) — called after tournament completes ────
+// ⚠️ DEPENDENCY WARNING: crownChampion() is overridden once (search "_origCrownChampion").
+// This original writes to the champions table. The override calls this, then sets is_champion=true
+// on the winning captain in mn_users (required for profile photo upload gate).
+// If champions table RLS blocks the insert, the override's is_champion patch is never reached.
+// renderChampions() is defined TWICE — PAGE_LOADERS uses a late-binding wrapper for the second one.
 async function crownChampion(tournId) {
   try {
     var tRows = await sbGet('tournaments', 'id=eq.' + tournId + '&limit=1');
@@ -9493,23 +9546,48 @@ function _aboutHowItWorks() {
 
     // SIMULATION ENGINE
     '<div class="card" style="margin-bottom:1.5rem;">' +
-      '<div class="card__header"><span class="card__title">⚙️ Simulation Engine</span></div>' +
+      '<div class="card__header"><span class="card__title">⚙️ How the Simulation Works</span></div>' +
       '<div class="card__body" style="color:var(--text-500);font-size:0.9375rem;line-height:1.8;">' +
-        '<p>The MacroNations engine implements established macroeconomic relationships across 10 policy levers, computed each round in sequence:</p>' +
-        '<div class="legal-math">' +
-          'Monetary Transmission (level):  ΔGDP = −0.5 × (i − 4%)   [persistent, not just on change]\n' +
-          'Inflation Expectations:         πₑ = 0.5×π₍ₜ₋₁₎ + 0.5×2%  [anchored to 2% target]\n' +
-          'Phillips Curve:                 π = πₑ + 0.4×(Y−Y*) + cost-push + monetary effect\n' +
-          'Okun\'s Law:                    ΔU ≈ −0.5 × (Y − Y*)\n' +
-          'Fiscal Multiplier:              ΔGDP = 1.4×ΔG − 1.1×ΔT\n' +
-          'Laffer Curve:                   Revenue drag above 40% or below 12% tax burden\n' +
-          'Reinhart-Rogoff Debt Drag:      −0.02 × (Debt−90)/10 when Debt > 90% GDP\n' +
-          'Green Energy:                   Potential GDP boost = 0.008 × (Green% − 30) / 70\n' +
-          'Foreign Aid:                    GDP boost = 0.05 × (Aid% − 0.5%)  [trade access]\n' +
-          'Currency (UIP):                 Δcurrency ≈ 1.5% per 1pp rate change\n' +
-          'Inequality (Gini):              Progressive taxes (>25%) reduce Gini; low taxes (<15%) raise it' +
+        '<p style="margin-bottom:1.25rem;">Every round, the engine processes your 10 policy decisions and updates your economy. Here is what actually matters when you play:</p>' +
+
+        '<div style="margin-bottom:1rem;">' +
+          '<div style="font-weight:600;color:var(--text-700);margin-bottom:0.25rem;">🏦 Interest rates work on your current level, not just changes</div>' +
+          '<p>Holding rates high keeps dragging GDP down every round — not just when you first raise them. Keeping rates persistently above 4% is contractionary. Below 4% is stimulative. The effect accumulates, so be deliberate about where you hold rates, not just where you move them.</p>' +
         '</div>' +
-        '<p style="margin-top:1rem;">Gaussian noise N(0, 0.25) is added to GDP each round to reflect real-world uncertainty. Crisis events fire on rounds 3, 6, and 9 with partial mitigation based on your chosen response. All 10 policy levers have measurable, directionally correct effects on outcomes.</p>' +
+
+        '<div style="margin-bottom:1rem;">' +
+          '<div style="font-weight:600;color:var(--text-700);margin-bottom:0.25rem;">💰 Fiscal policy has a multiplier — but so does debt</div>' +
+          '<p>Spending more boosts GDP with a multiplier of 1.4 — every extra dollar of government spending produces more than a dollar of output. Cutting taxes also stimulates growth, but the sweet spot for tax rates is between 25% and 40%. Go too high and you hit efficiency losses. Go too low and you starve public services. Watch your debt — once it crosses 90% of GDP, growth starts to drag every single round regardless of what else you do.</p>' +
+        '</div>' +
+
+        '<div style="margin-bottom:1rem;">' +
+          '<div style="font-weight:600;color:var(--text-700);margin-bottom:0.25rem;">📊 Inflation anchors around 2% — pulling it far away costs you</div>' +
+          '<p>The engine targets 2% inflation as the equilibrium. High output gaps push inflation up; tight monetary policy brings it down. If inflation runs very high or tips into deflation, your Stability score takes a hit. The best teams keep inflation between 1% and 4% by balancing rate levels against fiscal stimulus.</p>' +
+        '</div>' +
+
+        '<div style="margin-bottom:1rem;">' +
+          '<div style="font-weight:600;color:var(--text-700);margin-bottom:0.25rem;">👷 Jobs follow growth — but with a lag</div>' +
+          '<p>Unemployment falls when your economy grows faster than its potential and rises when growth falls short. Strong consistent growth reduces unemployment over several rounds. There is no shortcut — you cannot cut unemployment directly. Growth is the only path.</p>' +
+        '</div>' +
+
+        '<div style="margin-bottom:1rem;">' +
+          '<div style="font-weight:600;color:var(--text-700);margin-bottom:0.25rem;">🌱 Long-run levers compound quietly in the background</div>' +
+          '<p>R&D investment, infrastructure, and green energy do not move the needle dramatically in round 1 — they raise your potential GDP gradually across rounds. Teams that neglect these early find themselves with a lower ceiling later in the tournament. Green energy above 30% also improves your HDI score. Foreign aid above 0.5% opens trade relationships that feed into GDP. These are not flashy — but they separate the top teams from the middle of the pack.</p>' +
+        '</div>' +
+
+        '<div style="margin-bottom:1rem;">' +
+          '<div style="font-weight:600;color:var(--text-700);margin-bottom:0.25rem;">⚖️ Equality is about welfare and tax design — not just spending more</div>' +
+          '<p>Your Gini coefficient (inequality score) improves with welfare spending and progressive taxation. Taxes above 25% progressively reduce inequality; very low taxes below 15% increase it. High unemployment also worsens inequality. You cannot buy equality with a single high-welfare round — it requires sustained policy commitment.</p>' +
+        '</div>' +
+
+        '<div style="margin-bottom:1rem;">' +
+          '<div style="font-weight:600;color:var(--text-700);margin-bottom:0.25rem;">⚡ Crises hit on rounds 3, 6, and 9 — your response matters</div>' +
+          '<p>Random economic shocks fire at these intervals. Each crisis gives you a response option in the Crisis tab. Responding reduces the shock by a partial amount — ignoring it means absorbing the full hit to GDP, unemployment, inflation, or financial health. Fast, decisive crisis responses can be the difference between first and fifth place.</p>' +
+        '</div>' +
+
+        '<div style="background:var(--blue-light);border-left:3px solid var(--blue);padding:0.875rem 1rem;border-radius:0 6px 6px 0;font-size:0.875rem;">' +
+          '<strong style="color:var(--blue);">Strategy summary:</strong> <span style="color:var(--text-600);">Hold interest rates near 4%, keep debt below 90%, invest steadily in R&D and infrastructure from round 1, maintain inflation near 2%, protect welfare spending for equality, and respond to every crisis. Teams that try to do everything at once usually sacrifice one pillar badly. Pick your strengths early and defend them.</span>' +
+        '</div>' +
       '</div>' +
     '</div>' +
 
@@ -9686,6 +9764,12 @@ showPage = function(id) {
 //  CERTIFICATE — Signature fix (professor name + admin name)
 // ═══════════════════════════════════════════════════════════════════
 
+// ⚠️ DEPENDENCY WARNING: _getCertSigners() is SYNCHRONOUS but fires an async sbGetPublic call
+// for the professor name when _professorMap is empty. The async callback only updates the
+// input field — it no longer re-renders the whole panel (that was causing the director wipe bug).
+// _asyncRenderDashCertificates() pre-fetches the professor before calling _getCertSigners()
+// to ensure the name is available synchronously. If you add new signer fields, add the same
+// pre-fetch pattern in _asyncRenderDashCertificates or the field will show empty on first load.
 // Read stored signer names (admin can set via settings)
 function _getCertSigners() {
   var director = '';
