@@ -2821,6 +2821,146 @@ h1, h2, h3, h4, h5 {
 @media (max-width: 380px) {
   .champions-leaderboard { grid-template-columns: 1fr; }
 }
+/* ── Landing page: tier cards ───────────────────────────────────── */
+.lp-tiers-section { background: var(--bg-subtle); }
+.lp-tiers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.lp-tier {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.lp-tier--gold {
+  border: 2px solid #FFD700;
+  background: #fffdf0;
+}
+.lp-tier__badge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  border-radius: 100px;
+  margin-bottom: 0.875rem;
+  width: fit-content;
+}
+.lp-tier__badge--free { background: #e8f5e9; color: #1b5e20; }
+.lp-tier__badge--global { background: #FFF3CD; color: #7B5800; }
+.lp-tier__name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.25rem;
+  color: var(--text-900);
+  margin-bottom: 0.375rem;
+}
+.lp-tier__price {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.75rem;
+  color: var(--text-900);
+  margin-bottom: 0.75rem;
+  line-height: 1;
+}
+.lp-tier__price span {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8125rem;
+  color: var(--text-400);
+  font-weight: 400;
+}
+.lp-tier__desc {
+  font-size: 0.875rem;
+  color: var(--text-500);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+  flex: 1;
+}
+.lp-tier__features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.lp-tier__features li {
+  font-size: 0.875rem;
+  color: var(--text-600);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.4;
+}
+.lp-tier__features li::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.lp-tier .lp-tier__features li::before { background: #e8f5e9; border: 1.5px solid #4caf50; }
+.lp-tier--gold .lp-tier__features li::before { background: #FFF3CD; border: 1.5px solid #FFD700; }
+
+/* ── Landing page: World Cup prize section ──────────────────────── */
+.lp-wc-section {
+  background: #0D1F3C;
+  padding: 4rem 0;
+}
+.lp-prize-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.lp-prize-card {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
+.lp-prize-card--gold {
+  border-color: #FFD700;
+  background: rgba(255,215,0,0.08);
+}
+.lp-prize-medal {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 0.625rem;
+}
+.lp-prize-pct {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.25rem;
+  color: #FFD700;
+  line-height: 1;
+}
+.lp-prize-card:not(.lp-prize-card--gold) .lp-prize-pct {
+  color: rgba(255,255,255,0.85);
+}
+.lp-prize-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.55);
+  margin-top: 0.375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.lp-prize-note {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.6;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .lp-tiers-grid { grid-template-columns: 1fr; }
+  .lp-prize-row { flex-direction: column; }
+}
   </style>
 </head>
 <body>
@@ -2997,7 +3137,7 @@ h1, h2, h3, h4, h5 {
           <p class="hero__sub">
             MacroNations is the premier macroeconomic policy simulation tournament
             for university students. Compete across 5 pillars, manage crises, and
-            earn real cash prizes.
+            prove your team has what it takes to run a country.
           </p>
           <div class="hero__actions">
             <button class="btn btn--gold btn--xl" onclick="openAuthModal('register')">Register Your Team</button>
@@ -3008,16 +3148,16 @@ h1, h2, h3, h4, h5 {
           </div>
           <div class="hero__stats" role="list">
             <div role="listitem">
+              <span class="hero__stat-value">Free</span>
+              <span class="hero__stat-label">Class Tournaments</span>
+            </div>
+            <div role="listitem">
               <span class="hero__stat-value">1,000</span>
               <span class="hero__stat-label">Max Points</span>
             </div>
             <div role="listitem">
               <span class="hero__stat-value">10</span>
               <span class="hero__stat-label">Policy Levers</span>
-            </div>
-            <div role="listitem">
-              <span class="hero__stat-value">$50</span>
-              <span class="hero__stat-label">Entry Fee</span>
             </div>
             <div role="listitem">
               <span class="hero__stat-value">Top 8</span>
@@ -3122,6 +3262,74 @@ h1, h2, h3, h4, h5 {
       </div>
     </section>
 
+    <!-- Play your way: Free vs Global tiers -->
+    <section class="section lp-tiers-section" aria-labelledby="tiers-heading">
+      <div class="container">
+        <div class="section__header">
+          <span class="section__eyebrow">Play Your Way</span>
+          <h2 class="section__title" id="tiers-heading">Free for every classroom. Competitive for the world.</h2>
+          <p class="section__desc">Your professor sets up a class tournament at no cost. Teams that want to compete beyond their university can elect into the MacroNations Global Championship.</p>
+        </div>
+        <div class="lp-tiers-grid">
+          <div class="lp-tier">
+            <div class="lp-tier__badge lp-tier__badge--free">Free</div>
+            <h3 class="lp-tier__name">Class Tournament</h3>
+            <div class="lp-tier__price">$0 <span>per team</span></div>
+            <p class="lp-tier__desc">Your professor creates a private tournament for your course. Compete against classmates, earn a certificate, and climb your class leaderboard.</p>
+            <ul class="lp-tier__features">
+              <li>Full simulation — all 10 policy levers</li>
+              <li>Live class leaderboard</li>
+              <li>Crisis response rounds</li>
+              <li>Participation certificate for all</li>
+              <li>Top 8 enter playoff bracket</li>
+            </ul>
+            <button class="btn btn--primary" style="margin-top:1.25rem;width:100%;" onclick="openAuthModal('register')">Register Free</button>
+          </div>
+          <div class="lp-tier lp-tier--gold">
+            <div class="lp-tier__badge lp-tier__badge--global">Global Championship</div>
+            <h3 class="lp-tier__name">World Cup</h3>
+            <div class="lp-tier__price">$50 <span>per team</span></div>
+            <p class="lp-tier__desc">Your professor elects your class tournament into the global season. Compete against top teams from universities worldwide for a shared prize pool.</p>
+            <ul class="lp-tier__features">
+              <li>Everything in class tournament</li>
+              <li>Global cross-university rankings</li>
+              <li>Year-long season standings</li>
+              <li>Winner &amp; runner-up certificates</li>
+              <li>Cash prize pool — 70/30 split</li>
+            </ul>
+            <button class="btn btn--gold" style="margin-top:1.25rem;width:100%;" onclick="openAuthModal('register')">Join the Championship</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- World Cup prize pool -->
+    <section class="lp-wc-section" aria-labelledby="wc-heading">
+      <div class="container">
+        <div class="section__eyebrow" style="color:rgba(255,215,0,0.7);margin-bottom:0.5rem;">Global Championship</div>
+        <h2 class="section__title" id="wc-heading" style="color:#fff;margin-bottom:0.625rem;">One prize pool. Two teams share it.</h2>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9375rem;line-height:1.7;max-width:520px;margin-bottom:2rem;">The MacroNations World Cup prize pool is funded by entry fees from all elected global tournaments across the season. At the end of the year, the top two finalists split it.</p>
+        <div class="lp-prize-row">
+          <div class="lp-prize-card lp-prize-card--gold">
+            <div class="lp-prize-medal">🥇</div>
+            <div class="lp-prize-pct">70%</div>
+            <div class="lp-prize-label">Winner takes</div>
+          </div>
+          <div class="lp-prize-card">
+            <div class="lp-prize-medal">🥈</div>
+            <div class="lp-prize-pct">30%</div>
+            <div class="lp-prize-label">Runner-up takes</div>
+          </div>
+          <div class="lp-prize-card">
+            <div class="lp-prize-medal">🏫</div>
+            <div class="lp-prize-pct">Top 8</div>
+            <div class="lp-prize-label">Playoff qualification</div>
+          </div>
+        </div>
+        <p class="lp-prize-note">Prize pool grows with the number of elected teams. Estimated at 25% of total entry fees collected. Final percentage at management discretion.</p>
+      </div>
+    </section>
+
     <!-- How it works -->
     <section class="section" id="how-it-works" aria-labelledby="how-heading">
       <div class="container">
@@ -3136,7 +3344,7 @@ h1, h2, h3, h4, h5 {
               <div class="step__num" aria-hidden="true">1</div>
               <div>
                 <h3 class="step__title">Register Your Team</h3>
-                <p class="step__desc">Form a team of up to 4 students, pay the entry fee, and enter your chosen tournament tier.</p>
+                <p class="step__desc">Form a team of up to 5 students using your university email. Join your professor's class tournament for free, or elect into the Global Championship.</p>
               </div>
             </div>
             <div class="step">
