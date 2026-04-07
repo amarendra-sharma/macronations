@@ -4050,8 +4050,13 @@ var SUPA_ANON = 'sb_publishable_KCPCMiKYQoEUgG45DVF5uA_ke-UxQKm';
 function _authToken() {
   // Always prefer in-memory currentSession (freshest, set on login or recovery)
   if (currentSession && currentSession.access_token) { return currentSession.access_token; }
+  // Check localStorage — but only if the stored session is not expired
   var sess = _loadSession();
-  return (sess && sess.access_token) ? sess.access_token : SUPA_ANON;
+  if (sess && sess.access_token && sess.expires_at && Date.now() < sess.expires_at) {
+    return sess.access_token;
+  }
+  // No valid session — return anon key so public reads still work
+  return SUPA_ANON;
 }
 
 function _restHeaders(extra) {
@@ -5715,7 +5720,7 @@ async function renderTournaments() {
     '</div>';
 
   try {
-    var rows = await sbGet('tournaments',
+    var rows = await sbGetPublic('tournaments',
       'status=neq.draft&order=created_at.desc&limit=100'
     );
     _allTournaments = rows || [];
@@ -9321,7 +9326,7 @@ async function renderChampions() {
   el.innerHTML = '<div class="empty-state"><div class="spinner" style="width:28px;height:28px;margin:0 auto 0.75rem;"></div><div class="empty-state__title">Loading…</div></div>';
 
   try {
-    var champs = await sbGet('champions', 'order=year.desc&limit=100');
+    var champs = await sbGetPublic('champions', 'order=year.desc,score.desc&limit=100');
     champs = champs || [];
 
     if (!champs.length) {
@@ -9460,7 +9465,7 @@ async function renderRankings() {
 
   try {
     // Fetch active + completed tournaments
-    var tourns = await sbGet('tournaments',
+    var tourns = await sbGetPublic('tournaments',
       'status=in.(active,completed)&order=created_at.desc&limit=50') || [];
 
     if (!tourns.length) {
@@ -9476,11 +9481,11 @@ async function renderRankings() {
       var t = tourns[ti];
 
       // Fetch teams
-      var teams = await sbGet('teams', 'tournament_id=eq.' + t.id + '&limit=200') || [];
+      var teams = await sbGetPublic('teams', 'tournament_id=eq.' + t.id + '&limit=200') || [];
       if (!teams.length) { continue; }
 
       // Fetch economies for this tournament
-      var econs = await sbGet('economies',
+      var econs = await sbGetPublic('economies',
         'tournament_id=eq.' + t.id + '&select=team_id,current&limit=200') || [];
 
       var scoreMap = {};
@@ -10676,7 +10681,7 @@ async function renderChampions() {
     '<div class="empty-state__title">Loading champions…</div></div>';
 
   try {
-    var champs = await sbGet('champions', 'order=year.desc,score.desc&limit=100');
+    var champs = await sbGetPublic('champions', 'order=year.desc,score.desc&limit=100');
     champs = champs || [];
 
     if (!champs.length) {
