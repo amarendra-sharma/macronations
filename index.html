@@ -5287,10 +5287,10 @@ function simRound(state, policy, crises) {
 
   // ── 5. POTENTIAL GDP (R&D + infrastructure + green energy) ────
   // Potential grows slowly — supply-side takes time
-  var rd_boost       = 0.04 * (p.rd_investment - 2);
-  var infra_boost    = 0.015 * (p.infrastructure - 5) / 5;
-  // BUG4 FIX: green_energy now reduces energy costs → boosts potential GDP
-  var green_boost    = 0.008 * (p.green_energy - 30) / 70;  // above 30% baseline
+  // RECALIBRATION: coefficients scaled so 1pp lever change produces visible effect over 2-3 rounds
+  var rd_boost       = 0.12 * (p.rd_investment - 2);        // was 0.04 — 3× stronger
+  var infra_boost    = 0.10 * (p.infrastructure - 5);       // was 0.015*(x-5)/5 — removed /5 normaliser
+  var green_boost    = 0.008 * (p.green_energy - 30);       // was 0.008*(x-30)/70 — removed /70 normaliser
   var new_potential  = _clamp(prev.potential + rd_boost * 0.5 + infra_boost * 0.5 + green_boost * 0.3, 0.5, 5.5);
 
   // ── 6. PRODUCTIVITY ──────────────────────────────────────────
@@ -5299,14 +5299,14 @@ function simRound(state, policy, crises) {
 
   // ── 7. STRUCTURAL / TRADE EFFECTS ────────────────────────────
   var trade_openness_norm = p.trade_openness / 100;
-  var trade_gdp = 0.6 * (trade_openness_norm - 0.65) + currency_trade;
+  var trade_gdp = 1.5 * (trade_openness_norm - 0.65) + currency_trade;  // was 0.6 — 2.5× stronger
 
-  // Regulation: peaks at 50% — zero at 50% so neutral policy = zero drag/boost
+  // Regulation: linear penalty away from 50% optimal (was quadratic — near-zero near neutral)
   var reg_norm  = p.regulation / 100;
-  var reg_gdp   = -0.5 * (reg_norm - 0.5) * (reg_norm - 0.5);
+  var reg_gdp   = -0.3 * Math.abs(reg_norm - 0.5);                       // was -0.5*(norm-0.5)^2
 
-  // BUG7 FIX: foreign_aid adds diplomatic trade access → small GDP boost
-  var aid_gdp   = 0.05 * (p.foreign_aid - 0.5);  // above 0.5% baseline
+  // Foreign aid: stronger trade access effect
+  var aid_gdp   = 0.15 * (p.foreign_aid - 0.5);                          // was 0.05 — 3× stronger
 
   var structural_gdp = trade_gdp + reg_gdp + aid_gdp;
 
@@ -5385,6 +5385,7 @@ function simRound(state, policy, crises) {
   // ── 14. GINI (inequality) ─────────────────────────────────────
   // BUG5 FIX: Old code had wrong sign — taxes above 40% INCREASED Gini (inequality).
   // Progressive taxes above 25% should REDUCE Gini. Very low taxes increase it.
+  // RECALIBRATION: welfare coefficient -4.0 (was -2.0) so 1pp welfare produces visible score change
   var welfare_norm   = p.welfare_spending / 30;
   var tax_equality   = 0;
   if (p.tax_rate >= 25) {
@@ -5394,13 +5395,14 @@ function simRound(state, policy, crises) {
   }
   function unemployment_gap(u, nairu) { return u - nairu; }
   var unemp_gini   = 0.5 * Math.max(0, unemployment_gap(new_unemployment, NAIRU));
-  var gini_change  = (-2.0 * welfare_norm) + tax_equality + unemp_gini + _gaussianNoise(0.2);
+  var gini_change  = (-4.0 * welfare_norm) + tax_equality + unemp_gini + _gaussianNoise(0.2);  // was -2.0
   var new_gini = _round2(_clamp(prev.gini + gini_change, 20, 65));
 
   // ── 15. HDI ───────────────────────────────────────────────────
-  var hdi_change = (0.005 * welfare_norm) +
-                   (0.003 * (p.rd_investment / 10)) +
-                   (0.002 * Math.max(0, green_boost * 10)) +
+  // RECALIBRATION: welfare and R&D coefficients scaled so changes register in scoring
+  var hdi_change = (0.35 * welfare_norm) +                               // was 0.005 — 70× stronger
+                   (0.01 * (p.rd_investment / 10)) +                    // was 0.003
+                   (0.005 * Math.max(0, green_boost)) +                 // was 0.002*max(0,green_boost*10)
                    (-0.004 * Math.max(0, new_unemployment - NAIRU)) +
                    (-0.003 * Math.max(0, new_inflation - 4)) +
                    _gaussianNoise(0.003);
@@ -6700,12 +6702,16 @@ function renderDashOverview() {
   var fee    = Number(tourn.entry_fee) || 0;
   var feePaid = team.fee_paid;
 
-  // Metric cards
+  // Metric cards — all economy variables visible to student
   var metrics = [
-    { label:'GDP Growth',    val: _sign(eco.gdp_growth) + '%',    color:'#2563eb', delta: _ecoStatus('gdp', eco) },
-    { label:'Inflation',     val: eco.inflation + '%',            color:'#d97706', delta: _ecoStatus('inf', eco) },
-    { label:'Unemployment',  val: eco.unemployment + '%',         color:'#dc2626', delta: _ecoStatus('unemp', eco) },
-    { label:'Debt / GDP',    val: eco.debt + '%',                 color:'#7c3aed', delta: _ecoStatus('debt', eco) }
+    { label:'GDP Growth',      val: _sign(eco.gdp_growth) + '%',              color:'#2563eb', delta: _ecoStatus('gdp', eco) },
+    { label:'Inflation',       val: eco.inflation + '%',                      color:'#d97706', delta: _ecoStatus('inf', eco) },
+    { label:'Unemployment',    val: eco.unemployment + '%',                   color:'#dc2626', delta: _ecoStatus('unemp', eco) },
+    { label:'Debt / GDP',      val: eco.debt + '%',                           color:'#7c3aed', delta: _ecoStatus('debt', eco) },
+    { label:'Stock Index',     val: eco.stock ? Math.round(eco.stock).toLocaleString() : '—', color:'#0891b2', delta: _ecoStatus('stock', eco) },
+    { label:'Financial Health',val: (eco.fin_health || 0) + ' / 100',         color:'#059669', delta: _ecoStatus('fin', eco) },
+    { label:'Gini Index',      val: eco.gini || '—',                          color:'#b45309', delta: _ecoStatus('gini', eco) },
+    { label:'HDI',             val: eco.hdi || '—',                           color:'#4f46e5', delta: _ecoStatus('hdi', eco) }
   ];
 
   var metricsHtml = '';
@@ -6861,6 +6867,31 @@ function _ecoStatus(type, eco) {
     if (eco.debt <= 60)   { return { cls:'up',   text:'▲ Sustainable' }; }
     if (eco.debt <= 90)   { return { cls:'warn', text:'△ Watch level' }; }
     return { cls:'down', text:'▼ Above safe threshold' };
+  }
+  if (type === 'stock') {
+    if (!eco.stock) { return { cls:'neu', text:'—' }; }
+    if (eco.stock >= 5000)  { return { cls:'up',   text:'▲ Bull market' }; }
+    if (eco.stock >= 2500)  { return { cls:'neu',  text:'→ Stable' }; }
+    if (eco.stock >= 1500)  { return { cls:'warn', text:'△ Declining' }; }
+    return { cls:'down', text:'▼ Bear market' };
+  }
+  if (type === 'fin') {
+    if (eco.fin_health >= 75) { return { cls:'up',   text:'▲ Healthy' }; }
+    if (eco.fin_health >= 50) { return { cls:'neu',  text:'→ Stable' }; }
+    if (eco.fin_health >= 30) { return { cls:'warn', text:'△ Fragile' }; }
+    return { cls:'down', text:'▼ At risk' };
+  }
+  if (type === 'gini') {
+    if (eco.gini <= 30)  { return { cls:'up',   text:'▲ Low inequality' }; }
+    if (eco.gini <= 40)  { return { cls:'neu',  text:'→ Moderate' }; }
+    if (eco.gini <= 50)  { return { cls:'warn', text:'△ High inequality' }; }
+    return { cls:'down', text:'▼ Very unequal' };
+  }
+  if (type === 'hdi') {
+    if (eco.hdi >= 0.8)  { return { cls:'up',   text:'▲ Very high' }; }
+    if (eco.hdi >= 0.7)  { return { cls:'neu',  text:'→ High' }; }
+    if (eco.hdi >= 0.55) { return { cls:'warn', text:'△ Medium' }; }
+    return { cls:'down', text:'▼ Low development' };
   }
   return { cls:'neu', text:'—' };
 }
