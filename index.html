@@ -3759,9 +3759,10 @@ h1, h2, h3, h4, h5 {
     <div style="background:var(--bg-white);border-bottom:1px solid var(--border);">
       <div class="container" style="padding-top:0;padding-bottom:0;">
         <div class="admin-tabs" role="tablist" style="border-bottom:none;margin-bottom:0;overflow-x:auto;">
-          <button class="admin-tab active" data-about-tab="how"     onclick="showAbout('how')">How It Works</button>
-          <button class="admin-tab"        data-about-tab="founder" onclick="showAbout('founder')">Founder</button>
-          <button class="admin-tab"        data-about-tab="legal"   onclick="showAbout('legal')">Legal</button>
+          <button class="admin-tab active" data-about-tab="how"        onclick="showAbout('how')">How It Works</button>
+          <button class="admin-tab"        data-about-tab="curriculum" onclick="showAbout('curriculum')">Curriculum Guide</button>
+          <button class="admin-tab"        data-about-tab="founder"    onclick="showAbout('founder')">Founder</button>
+          <button class="admin-tab"        data-about-tab="legal"      onclick="showAbout('legal')">Legal</button>
         </div>
       </div>
     </div>
@@ -4009,7 +4010,7 @@ h1, h2, h3, h4, h5 {
       <ul class="footer__links">
         <li><a href="#" class="footer__link" onclick="openAuthModal('register');return false;">Professor Portal</a></li>
         <li><a href="#" class="footer__link" onclick="showPage('tournaments');return false;">Class Tournaments</a></li>
-        <li><a href="#" class="footer__link" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\'how\']');if(e){e.click();}},100);return false;">Curriculum Guide</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\'curriculum\']');if(e){e.click();}},100);return false;">Curriculum Guide</a></li>
         <li><a href="mailto:support@macronations.com" class="footer__link">Contact Us</a></li>
       </ul>
     </div>
@@ -7742,15 +7743,16 @@ function _canAdmin()    { return _isAdmin() || _isProfessor(); }
 
 // ── TABS CONFIG ────────────────────────────────────────────────────
 var ADMIN_TABS_FULL = [
-  { id:'overview',    label:'📊 Overview' },
-  { id:'tournaments', label:'🏆 Tournaments' },
-  { id:'teams',       label:'👥 Teams' },
-  { id:'rounds',      label:'🔄 Rounds' },
-  { id:'playoffs',    label:'🥊 Playoffs' },
-  { id:'payments',    label:'💰 Payments' },
-  { id:'waivers',     label:'🎟️ Waivers' },
-  { id:'notify',      label:'📧 Notifications' },
-  { id:'analytics',   label:'📈 Analytics' }
+  { id:'overview',       label:'📊 Overview' },
+  { id:'tournaments',    label:'🏆 Tournaments' },
+  { id:'teams',          label:'👥 Teams' },
+  { id:'rounds',         label:'🔄 Rounds' },
+  { id:'playoffs',       label:'🥊 Playoffs' },
+  { id:'globalseasons',  label:'🌐 Global Season' },
+  { id:'payments',       label:'💰 Payments' },
+  { id:'waivers',        label:'🎟️ Waivers' },
+  { id:'notify',         label:'📧 Notifications' },
+  { id:'analytics',      label:'📈 Analytics' }
 ];
 var ADMIN_TABS_PROF = [
   { id:'overview',    label:'📊 My Tournaments' },
@@ -7924,15 +7926,16 @@ async function doRemoveTeam(teamId, teamName) {
 function _renderAdminTab(id) {
   var el = document.getElementById('admin-panel-content');
   if (!el) { return; }
-  if (id === 'overview')    { renderAdminOverview(el); }
-  else if (id === 'tournaments') { renderAdminTournaments(el); }
-  else if (id === 'teams')  { renderAdminTeams(el); }
-  else if (id === 'rounds') { renderAdminRounds(el); }
-  else if (id === 'playoffs') { renderAdminPlayoffs(el); }
-  else if (id === 'payments') { renderAdminPayments(el); }
-  else if (id === 'waivers')  { renderAdminWaivers(el); }
-  else if (id === 'notify')   { renderAdminNotify(el); }
-  else if (id === 'analytics'){ renderAdminAnalytics(el); }
+  if (id === 'overview')       { renderAdminOverview(el); }
+  else if (id === 'tournaments')    { renderAdminTournaments(el); }
+  else if (id === 'teams')          { renderAdminTeams(el); }
+  else if (id === 'rounds')         { renderAdminRounds(el); }
+  else if (id === 'playoffs')       { renderAdminPlayoffs(el); }
+  else if (id === 'globalseasons')  { renderAdminGlobalSeasons(el); }
+  else if (id === 'payments')       { renderAdminPayments(el); }
+  else if (id === 'waivers')        { renderAdminWaivers(el); }
+  else if (id === 'notify')         { renderAdminNotify(el); }
+  else if (id === 'analytics')      { renderAdminAnalytics(el); }
 }
 
 // ── shared: small metric card ─────────────────────────────────────
@@ -8277,8 +8280,25 @@ async function doConfirmComplete() {
   await doSetTournamentStatus(tid, 'completed');
   closeModal('modal-complete-warning');
   _completeTargetId = null;
+
   // Crown the champion
   try { await crownChampion(tid); } catch(e) { flash('Note: could not record champion automatically. Use Hall of Champions.', 'info'); }
+
+  // For global elected tournaments: register top-8 qualifiers and auto-create bracket
+  var tourn = _getTournById(tid);
+  if (tourn && tourn.is_global_elected) {
+    try {
+      await _registerGlobalQualifiers(tid);
+    } catch(qe) {
+      flash('Note: could not register global qualifiers: ' + (qe.message || ''), 'info');
+    }
+    try {
+      await doCreateBracket(tid, false);
+      flash('Global tournament complete — qualifiers registered and Top-8 bracket created.', 'success');
+    } catch(be) {
+      flash('Tournament complete. Qualifiers registered. Create the playoff bracket manually in the Playoffs tab.', 'info');
+    }
+  }
 }
 
 function _getTournById(id) {
@@ -8959,6 +8979,322 @@ function sendCustomEmail() {
 // ─────────────────────────────────────────────────────────────────
 //  TAB 9: ANALYTICS
 // ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────
+//  GLOBAL SEASON INFRASTRUCTURE
+// ─────────────────────────────────────────────────────────────────
+
+// Ensure a global_seasons record exists for the given year. Returns the record.
+async function _ensureGlobalSeason(year) {
+  year = year || new Date().getFullYear();
+  try {
+    var existing = await sbGet('global_seasons', 'year=eq.' + year + '&limit=1');
+    if (existing && existing.length) { return existing[0]; }
+    // Create new season record
+    var newSeason = await sbPost('global_seasons', {
+      year:   year,
+      status: 'active',
+      prize_pool: 0,
+      entry_fees_collected: 0,
+      playoff_bracket: {}
+    });
+    return newSeason;
+  } catch(e) {
+    flash('Could not ensure global season record: ' + (e.message || ''), 'error');
+    return null;
+  }
+}
+
+// Called when a global elected tournament completes.
+// Inserts the top-8 teams into global_qualifiers for the season.
+async function _registerGlobalQualifiers(tournId) {
+  try {
+    var tourn = _getTournById(tournId);
+    if (!tourn) {
+      var tRows = await sbGet('tournaments', 'id=eq.' + tournId + '&limit=1');
+      tourn = (tRows && tRows.length) ? tRows[0] : null;
+    }
+    if (!tourn) { throw new Error('Tournament not found'); }
+
+    var seasonYear = tourn.season_year || new Date().getFullYear();
+
+    // Ensure season exists
+    await _ensureGlobalSeason(seasonYear);
+
+    // Fetch all economies for this tournament to rank teams
+    var econRows = await sbGet('economies',
+      'tournament_id=eq.' + tournId + '&select=team_id,current&limit=200') || [];
+
+    var ranked = [];
+    for (var ei = 0; ei < econRows.length; ei++) {
+      var er = econRows[ei];
+      var st = (er && er.current)
+        ? (typeof er.current === 'string' ? JSON.parse(er.current) : er.current)
+        : defaultEconomy();
+      ranked.push({ teamId: er.team_id, score: computeScores(st).total });
+    }
+    ranked.sort(function(a, b) { return b.score - a.score; });
+    var top8 = ranked.slice(0, 8);
+
+    // Fetch team details
+    var teamIds = top8.map(function(r) { return r.teamId; });
+    var teamsRes = teamIds.length
+      ? await sbGet('teams', 'id=in.(' + teamIds.join(',') + ')&limit=8')
+      : [];
+    var teamMap = {};
+    if (teamsRes) {
+      for (var ti = 0; ti < teamsRes.length; ti++) {
+        teamMap[teamsRes[ti].id] = teamsRes[ti];
+      }
+    }
+
+    // Fetch captain details for institution / country
+    var captainIds = [];
+    for (var ci = 0; ci < teamsRes.length; ci++) {
+      if (teamsRes[ci].captain_id) { captainIds.push(teamsRes[ci].captain_id); }
+    }
+    var captainMap = {};
+    if (captainIds.length) {
+      var capRows = await sbGet('mn_users', 'id=in.(' + captainIds.join(',') + ')&select=id,name,institution,country&limit=8') || [];
+      for (var capi = 0; capi < capRows.length; capi++) {
+        captainMap[capRows[capi].id] = capRows[capi];
+      }
+    }
+
+    // Update season prize pool
+    var teamCount = econRows.length;
+    var entryFee  = Number(tourn.entry_fee) || 0;
+    var feesFromThisTourn = entryFee * teamCount;
+    // Increment entry_fees_collected on the season
+    var season = await sbGet('global_seasons', 'year=eq.' + seasonYear + '&limit=1');
+    if (season && season.length) {
+      var newFees = (Number(season[0].entry_fees_collected) || 0) + feesFromThisTourn;
+      var newPool = Math.round(newFees * 0.25);
+      await sbPatch('global_seasons', 'year=eq.' + seasonYear, {
+        entry_fees_collected: newFees,
+        prize_pool: newPool
+      });
+    }
+
+    // Insert qualifiers — skip if already exists (UNIQUE constraint on season_year+team_id)
+    var insertCount = 0;
+    for (var qi = 0; qi < top8.length; qi++) {
+      var entry = top8[qi];
+      var team  = teamMap[entry.teamId] || {};
+      var cap   = team.captain_id ? (captainMap[team.captain_id] || {}) : {};
+      try {
+        await sbPost('global_qualifiers', {
+          season_year:     seasonYear,
+          team_id:         entry.teamId,
+          team_name:       team.name || 'Unknown',
+          captain_name:    cap.name || '',
+          institution:     cap.institution || team.institution || '',
+          country:         cap.country || '',
+          tournament_id:   tournId,
+          tournament_name: tourn.name || '',
+          score:           entry.score,
+          rank_in_tourn:   qi + 1,
+          is_playoff_seed: false
+        });
+        insertCount++;
+      } catch(dupErr) {
+        // Silently skip duplicates (team already qualified this season from another tournament)
+      }
+    }
+
+    flash(insertCount + ' team(s) added to Season ' + seasonYear + ' global qualifiers.', 'success');
+  } catch(e) {
+    flash('Could not register global qualifiers: ' + (e.message || ''), 'error');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  TAB: GLOBAL SEASON ADMIN
+// ─────────────────────────────────────────────────────────────────
+async function renderAdminGlobalSeasons(el) {
+  if (!el) { return; }
+  el.innerHTML =
+    '<div class="empty-state"><div class="spinner" style="width:24px;height:24px;margin:0 auto 0.75rem;"></div>' +
+    '<div class="empty-state__title">Loading global season data…</div></div>';
+
+  try {
+    var curYear = new Date().getFullYear();
+
+    // Fetch all seasons
+    var seasons = await sbGet('global_seasons', 'order=year.desc&limit=10') || [];
+
+    // Fetch all qualifiers for current year
+    var qualifiers = await sbGet('global_qualifiers',
+      'season_year=eq.' + curYear + '&order=score.desc&limit=200') || [];
+
+    // Current season
+    var curSeason = null;
+    for (var si = 0; si < seasons.length; si++) {
+      if (seasons[si].year === curYear) { curSeason = seasons[si]; break; }
+    }
+
+    // Season summary cards
+    var seasonCards = '';
+    if (!seasons.length) {
+      seasonCards = '<div class="dash-alert dash-alert--info"><div class="dash-alert__icon">ℹ️</div>' +
+        '<div class="dash-alert__body"><div class="dash-alert__title">No global seasons yet</div>' +
+        'A season record is created automatically when the first global elected tournament completes.</div></div>';
+    } else {
+      for (var sci = 0; sci < seasons.length; sci++) {
+        var seas = seasons[sci];
+        var isCur = seas.year === curYear;
+        var qCount = isCur ? qualifiers.length : '—';
+        seasonCards +=
+          '<div class="card" style="margin-bottom:1rem;' + (isCur ? 'border:2px solid #FFD700;' : '') + '">' +
+            '<div class="card__header">' +
+              '<span class="card__title">Season ' + seas.year + (isCur ? ' · Current' : '') + '</span>' +
+              '<span class="badge badge--' + (seas.status === 'active' ? 'green' : 'subtle') + ' badge--no-dot">' + esc(seas.status) + '</span>' +
+            '</div>' +
+            '<div class="card__body">' +
+              '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1rem;">' +
+                _metricCard('💰', fmt$(seas.prize_pool || 0), 'Est. Prize Pool') +
+                _metricCard('📋', fmt$(seas.entry_fees_collected || 0), 'Fees Collected') +
+                _metricCard('🏫', String(qCount), 'Qualified Teams') +
+                _metricCard('📊', seas.status === 'active' ? 'Open' : 'Closed', 'Season Status') +
+              '</div>' +
+              (isCur && seas.status === 'active'
+                ? '<button class="btn btn--primary btn--sm" onclick="doCreateGlobalPlayoff(' + curYear + ')">🏆 Seed Year-End Playoff (Top 8)</button> ' +
+                  '<button class="btn btn--ghost btn--sm" onclick="doCloseGlobalSeason(' + curYear + ')" style="margin-left:0.5rem;">Close Season</button>'
+                : '') +
+            '</div>' +
+          '</div>';
+      }
+    }
+
+    // Qualifiers table
+    var qRows = '';
+    for (var qi2 = 0; qi2 < qualifiers.length; qi2++) {
+      var q = qualifiers[qi2];
+      var medal = qi2 === 0 ? '🥇' : qi2 === 1 ? '🥈' : qi2 === 2 ? '🥉' : (qi2 + 1);
+      var inTop8 = qi2 < 8;
+      qRows +=
+        '<tr>' +
+        '<td>' + medal + '</td>' +
+        '<td><strong>' + esc(q.team_name || '') + '</strong></td>' +
+        '<td>' + esc(q.institution || '—') + '</td>' +
+        '<td>' + esc(q.tournament_name || '—') + '</td>' +
+        '<td><span class="text-mono">' + (q.score || 0) + '</span></td>' +
+        '<td>' + (inTop8 ? '<span class="badge badge--gold">Playoff</span>' : '') +
+          (q.is_playoff_seed ? ' <span class="badge badge--green badge--no-dot">Seeded</span>' : '') +
+        '</td>' +
+        '<td><button class="btn btn--ghost btn--sm" onclick="doRemoveQualifier(\'' + q.id + '\')">Remove</button></td>' +
+        '</tr>';
+    }
+
+    var qTable = qualifiers.length
+      ? '<div class="card" style="margin-top:1.5rem;">' +
+          '<div class="card__header"><span class="card__title">Season ' + curYear + ' Qualifiers</span>' +
+            '<span class="text-sm text-muted">' + qualifiers.length + ' teams · top 8 will seed year-end playoff</span>' +
+          '</div>' +
+          '<div class="table-wrap">' +
+            '<table class="table">' +
+              '<thead><tr><th>#</th><th>Team</th><th>Institution</th><th>From Tournament</th><th>Score</th><th>Status</th><th></th></tr></thead>' +
+              '<tbody>' + qRows + '</tbody>' +
+            '</table>' +
+          '</div>' +
+        '</div>'
+      : '<div class="empty-state" style="margin-top:1.5rem;"><div class="empty-state__icon">🏫</div>' +
+        '<div class="empty-state__title">No qualifiers yet for ' + curYear + '</div>' +
+        '<div class="empty-state__desc">Teams are added automatically when a global elected tournament completes.</div></div>';
+
+    el.innerHTML =
+      '<div style="max-width:900px;">' +
+        '<div class="dash-alert dash-alert--info" style="margin-bottom:1.5rem;">' +
+          '<div class="dash-alert__icon">🌐</div>' +
+          '<div class="dash-alert__body"><div class="dash-alert__title">How the global season works</div>' +
+          'When an elected professor tournament completes, the top 8 teams are automatically added here as qualifiers. ' +
+          'At year end, click "Seed Year-End Playoff" to build the final bracket from the top 8 qualifiers across all universities.</div>' +
+        '</div>' +
+        seasonCards +
+        qTable +
+        '<div style="margin-top:1rem;">' +
+          '<button class="btn btn--ghost btn--sm" onclick="_ensureGlobalSeason(' + curYear + ').then(function(){renderAdminGlobalSeasons(document.getElementById(\'admin-panel-content\'));})">+ Create ' + curYear + ' Season Record</button>' +
+        '</div>' +
+      '</div>';
+
+  } catch(e) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-state__icon">⚠️</div>' +
+      '<div class="empty-state__title">Could not load global season</div>' +
+      '<div class="empty-state__desc">' + esc(e.message || '') + '</div></div>';
+  }
+}
+
+async function doCreateGlobalPlayoff(year) {
+  if (!confirm('Build the year-end playoff bracket from the top 8 qualifiers for Season ' + year + '?')) { return; }
+  try {
+    var qualifiers = await sbGet('global_qualifiers',
+      'season_year=eq.' + year + '&order=score.desc&limit=8') || [];
+    if (qualifiers.length < 2) { flash('Need at least 2 qualifiers to build a bracket.', 'error'); return; }
+
+    var pairs = [[0,7],[1,6],[2,5],[3,4]];
+    var qfMatches = [];
+    for (var pi = 0; pi < pairs.length; pi++) {
+      var a = qualifiers[pairs[pi][0]];
+      var b = qualifiers[pairs[pi][1]];
+      qfMatches.push({
+        team1:  a ? (a.team_name || 'TBD') : 'TBD',
+        team2:  b ? (b.team_name || 'TBD') : 'TBD',
+        inst1:  a ? (a.institution || '') : '',
+        inst2:  b ? (b.institution || '') : '',
+        score1: a ? a.score : 0,
+        score2: b ? b.score : 0,
+        winner: a && b ? (a.score >= b.score ? 1 : 2) : null
+      });
+    }
+
+    var bracket = {
+      rounds: [
+        { label: 'Quarterfinals', matches: qfMatches },
+        { label: 'Semifinals', matches: [
+          { team1: 'QF1 winner', team2: 'QF2 winner' },
+          { team1: 'QF3 winner', team2: 'QF4 winner' }
+        ]},
+        { label: 'Final', matches: [
+          { team1: 'SF1 winner', team2: 'SF2 winner' }
+        ]}
+      ]
+    };
+
+    await sbPatch('global_seasons', 'year=eq.' + year, { playoff_bracket: bracket });
+
+    // Mark top-8 qualifiers as seeded
+    for (var qi = 0; qi < qualifiers.length; qi++) {
+      await sbPatch('global_qualifiers', 'id=eq.' + qualifiers[qi].id, { is_playoff_seed: true });
+    }
+
+    flash('Year-end playoff bracket created for Season ' + year + '!', 'success');
+    renderAdminGlobalSeasons(document.getElementById('admin-panel-content'));
+  } catch(e) {
+    flash('Could not create playoff: ' + (e.message || ''), 'error');
+  }
+}
+
+async function doCloseGlobalSeason(year) {
+  if (!confirm('Close Season ' + year + '? This marks the season as completed.')) { return; }
+  try {
+    await sbPatch('global_seasons', 'year=eq.' + year, { status: 'completed' });
+    flash('Season ' + year + ' closed.', 'success');
+    renderAdminGlobalSeasons(document.getElementById('admin-panel-content'));
+  } catch(e) {
+    flash('Error: ' + (e.message || ''), 'error');
+  }
+}
+
+async function doRemoveQualifier(qualId) {
+  if (!confirm('Remove this team from global qualifiers?')) { return; }
+  try {
+    await sbDelete('global_qualifiers', 'id=eq.' + qualId);
+    flash('Qualifier removed.', 'success');
+    renderAdminGlobalSeasons(document.getElementById('admin-panel-content'));
+  } catch(e) {
+    flash('Error: ' + (e.message || ''), 'error');
+  }
+}
+
 function renderAdminAnalytics(el) {
   var totalRevenue = 0;
   var paidCount = 0;
@@ -9495,9 +9831,9 @@ async function renderRankings() {
   el.innerHTML = '<div class="empty-state"><div class="spinner" style="width:28px;height:28px;margin:0 auto 0.75rem;"></div><div class="empty-state__title">Loading standings…</div></div>';
 
   try {
-    // Fetch active + completed tournaments
+    // Fetch all active + completed tournaments
     var tourns = await sbGetPublic('tournaments',
-      'status=in.(active,completed)&order=created_at.desc&limit=50') || [];
+      'status=in.(active,completed)&order=created_at.desc&limit=100') || [];
 
     if (!tourns.length) {
       el.innerHTML = '<div class="empty-state"><div class="empty-state__icon">📊</div>' +
@@ -9506,27 +9842,173 @@ async function renderRankings() {
       return;
     }
 
+    // Split into global elected vs class
+    var globalTourns = [], classTourns = [];
+    for (var ti = 0; ti < tourns.length; ti++) {
+      if (tourns[ti].is_global_elected) { globalTourns.push(tourns[ti]); }
+      else { classTourns.push(tourns[ti]); }
+    }
+
     var html = '';
 
-    for (var ti = 0; ti < tourns.length; ti++) {
-      var t = tourns[ti];
+    // ── GLOBAL CHAMPIONSHIP LEADERBOARD ─────────────────────────────
+    if (globalTourns.length) {
+      var curYear = new Date().getFullYear();
 
-      // Fetch teams
+      // Read persisted qualifiers (from completed elected tournaments)
+      var persistedQuals = [];
+      try {
+        persistedQuals = await sbGetPublic('global_qualifiers',
+          'season_year=eq.' + curYear + '&order=score.desc&limit=200') || [];
+      } catch(qe) {}
+
+      // Index persisted team IDs so we don't double-count
+      var persistedTeamIds = {};
+      for (var pqi = 0; pqi < persistedQuals.length; pqi++) {
+        persistedTeamIds[persistedQuals[pqi].team_id] = true;
+      }
+
+      // Add live scores from active elected tournaments (not yet completed/qualified)
+      var liveEntries = [];
+      for (var gi = 0; gi < globalTourns.length; gi++) {
+        var gt = globalTourns[gi];
+        if (gt.status === 'completed') { continue; } // completed ones are in persistedQuals
+        var gTeams = await sbGetPublic('teams', 'tournament_id=eq.' + gt.id + '&limit=200') || [];
+        var gEcons = await sbGetPublic('economies',
+          'tournament_id=eq.' + gt.id + '&select=team_id,current&limit=200') || [];
+        var gScoreMap = {};
+        for (var gei = 0; gei < gEcons.length; gei++) {
+          var ger = gEcons[gei];
+          var gst = (ger && ger.current)
+            ? (typeof ger.current === 'string' ? JSON.parse(ger.current) : ger.current)
+            : defaultEconomy();
+          gScoreMap[ger.team_id] = computeScores(gst).total;
+        }
+        for (var gti = 0; gti < gTeams.length; gti++) {
+          var gtm = gTeams[gti];
+          if (persistedTeamIds[gtm.id]) { continue; }
+          liveEntries.push({
+            name:       gtm.name || 'Unknown',
+            captainId:  gtm.captain_id,
+            score:      gScoreMap[gtm.id] || 0,
+            tournament: gt.name || '',
+            institution:'',
+            qualified:  false
+          });
+        }
+      }
+
+      // Merge: persisted (completed/qualified) + live (active)
+      var globalEntries = [];
+      for (var pqi2 = 0; pqi2 < persistedQuals.length; pqi2++) {
+        var pq = persistedQuals[pqi2];
+        globalEntries.push({
+          name:       pq.team_name || 'Unknown',
+          captainId:  null,
+          score:      Number(pq.score) || 0,
+          tournament: pq.tournament_name || '',
+          institution: pq.institution || '',
+          qualified:  true
+        });
+      }
+      for (var li2 = 0; li2 < liveEntries.length; li2++) {
+        globalEntries.push(liveEntries[li2]);
+      }
+      globalEntries.sort(function(a, b) { return b.score - a.score; });
+
+      // Get prize pool from global_seasons record
+      var seasonPool = 0;
+      try {
+        var seasonRows = await sbGetPublic('global_seasons', 'year=eq.' + curYear + '&limit=1') || [];
+        if (seasonRows.length) { seasonPool = Number(seasonRows[0].prize_pool) || 0; }
+      } catch(se) {}
+      // Fallback estimate
+      if (!seasonPool) {
+        for (var fgi = 0; fgi < globalTourns.length; fgi++) {
+          var fee = Number(globalTourns[fgi].entry_fee) || 0;
+          var gTf = await sbGetPublic('teams', 'tournament_id=eq.' + globalTourns[fgi].id + '&select=id&limit=200') || [];
+          seasonPool += Math.round(fee * gTf.length * 0.25);
+        }
+      }
+
+      // Build rows
+      var globalRows = '';
+      if (!globalEntries.length) {
+        globalRows = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4);">No teams yet in Season ' + curYear + '. Teams appear here when global elected tournaments are completed.</td></tr>';
+      }
+      for (var gri = 0; gri < globalEntries.length; gri++) {
+        var gr    = globalEntries[gri];
+        var isMe  = currentUser && gr.captainId && (gr.captainId === currentUser.id);
+        var inTop8 = gri < 8;
+        var medal = gri === 0 ? '🥇' : gri === 1 ? '🥈' : gri === 2 ? '🥉' : '<span class="rank-num">' + (gri+1) + '</span>';
+        globalRows +=
+          '<tr class="' + (isMe ? 'rank-my-row' : '') + '">' +
+          '<td>' + medal + '</td>' +
+          '<td>' +
+            '<strong>' + esc(gr.name) + '</strong>' +
+            (isMe ? ' <span class="badge badge--blue badge--no-dot" style="font-size:0.7rem;">You</span>' : '') +
+            (gr.institution ? '<br><span class="text-muted" style="font-size:0.75rem;">' + esc(gr.institution) + '</span>' : '') +
+            '<br><span class="text-muted" style="font-size:0.75rem;">' + esc(gr.tournament) + '</span>' +
+          '</td>' +
+          '<td><span class="rank-score">' + gr.score + '</span> / 1000</td>' +
+          '<td>' +
+            (gr.qualified ? '<span class="badge badge--green badge--no-dot" style="margin-right:4px;">Qualified</span>' : '<span class="badge badge--subtle badge--no-dot" style="margin-right:4px;">Live</span>') +
+            (inTop8 ? '<span class="badge badge--gold">Top 8</span>' : '') +
+          '</td>' +
+          '</tr>';
+      }
+
+      var poolHtml = seasonPool > 0
+        ? '<div style="display:flex;gap:1.5rem;padding:0.75rem 1rem;background:rgba(255,255,255,0.05);border-radius:var(--radius);margin-bottom:1rem;flex-wrap:wrap;">' +
+            '<div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;">Est. Prize Pool</div><div style="font-family:\'DM Mono\',monospace;font-size:1.25rem;color:#FFD700;">' + fmt$(seasonPool) + '</div></div>' +
+            '<div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;">🥇 Winner (70%)</div><div style="font-family:\'DM Mono\',monospace;font-size:1.25rem;color:#fff;">' + fmt$(Math.round(seasonPool * 0.7)) + '</div></div>' +
+            '<div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;">🥈 Runner-up (30%)</div><div style="font-family:\'DM Mono\',monospace;font-size:1.25rem;color:#fff;">' + fmt$(Math.round(seasonPool * 0.3)) + '</div></div>' +
+            '<div><div style="font-size:0.75rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;">Qualified Teams</div><div style="font-family:\'DM Mono\',monospace;font-size:1.25rem;color:#fff;">' + persistedQuals.length + '</div></div>' +
+          '</div>'
+        : '';
+
+      html +=
+        '<div class="ranking-tournament-section" style="border:2px solid #FFD700;border-radius:var(--radius-xl);margin-bottom:2rem;overflow:hidden;">' +
+          '<div style="background:#0D1F3C;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">' +
+            '<div>' +
+              '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.25rem;color:#FFD700;margin-bottom:0.125rem;">MacroNations World Cup · Season ' + curYear + '</h2>' +
+              '<span style="font-size:0.8125rem;color:rgba(255,255,255,0.6);">Global Championship Standings · Top 8 qualify for year-end playoff · ' +
+                '<span style="color:#6EE7B7;">Qualified</span> = locked in · ' +
+                '<span style="color:rgba(255,255,255,0.5);">Live</span> = active tournament</span>' +
+            '</div>' +
+            '<span class="badge badge--gold">🏆 Global</span>' +
+          '</div>' +
+          '<div style="padding:1.25rem 1.5rem;">' +
+            poolHtml +
+            '<div class="table-wrap">' +
+              '<table class="table table--rank">' +
+                '<thead><tr><th>#</th><th>Team · Institution · Tournament</th><th>Score</th><th>Status</th></tr></thead>' +
+                '<tbody>' + globalRows + '</tbody>' +
+              '</table>' +
+            '</div>' +
+            '<p class="text-sm text-muted" style="margin-top:0.75rem;">Prize pool estimated at 25% of entry fees. Qualified teams are locked in from completed tournaments. Live teams are still competing.</p>' +
+          '</div>' +
+        '</div>';
+    }
+
+    // ── PER-TOURNAMENT SECTIONS (class + non-global) ─────────────────
+    for (var ci = 0; ci < classTourns.length; ci++) {
+      var t = classTourns[ci];
       var teams = await sbGetPublic('teams', 'tournament_id=eq.' + t.id + '&limit=200') || [];
       if (!teams.length) { continue; }
 
-      // Fetch economies for this tournament
       var econs = await sbGetPublic('economies',
         'tournament_id=eq.' + t.id + '&select=team_id,current&limit=200') || [];
 
       var scoreMap = {};
       for (var ei = 0; ei < econs.length; ei++) {
         var er = econs[ei];
-        var st = (er && er.current) ? er.current : defaultEconomy();
+        var st = (er && er.current)
+          ? (typeof er.current === 'string' ? JSON.parse(er.current) : er.current)
+          : defaultEconomy();
         scoreMap[er.team_id] = computeScores(st).total;
       }
 
-      // Build ranked list
       var ranked = [];
       for (var ri = 0; ri < teams.length; ri++) {
         var tm = teams[ri];
@@ -9534,12 +10016,11 @@ async function renderRankings() {
       }
       ranked.sort(function(a, b) { return b.score - a.score; });
 
-      // Show top 10
       var top10 = ranked.slice(0, 10);
       var rows  = '';
       for (var rj = 0; rj < top10.length; rj++) {
-        var r     = top10[rj];
-        var isMe  = currentUser && (r.team.captain_id === currentUser.id);
+        var r    = top10[rj];
+        var isMe = currentUser && (r.team.captain_id === currentUser.id);
         var medal = rj === 0 ? '🥇' : rj === 1 ? '🥈' : rj === 2 ? '🥉' : '<span class="rank-num">' + (rj+1) + '</span>';
         rows +=
           '<tr class="' + (isMe ? 'rank-my-row' : '') + '">' +
@@ -9548,8 +10029,7 @@ async function renderRankings() {
             (isMe ? ' <span class="badge badge--blue badge--no-dot" style="font-size:0.7rem;">You</span>' : '') +
           '</td>' +
           '<td><span class="rank-score">' + r.score + '</span> / 1000</td>' +
-          '<td>' + (rj < Math.ceil(ranked.length * 0.1) && t.entry_fee > 0
-              ? '<span class="badge badge--gold">Top 10% · Prize</span>' : '') + '</td>' +
+          '<td>' + (rj < 8 ? '<span class="badge badge--subtle badge--no-dot">Top 8</span>' : '') + '</td>' +
           '</tr>';
       }
 
@@ -9729,10 +10209,140 @@ function showAbout(tab) {
   }
   var el = document.getElementById('about-content');
   if (!el) { return; }
-  if (tab === 'how')     { el.innerHTML = _aboutHowItWorks(); }
-  if (tab === 'founder') { el.innerHTML = _aboutFounder(); }
-  if (tab === 'legal')   { el.innerHTML = _aboutLegal(); }
+  if (tab === 'how')        { el.innerHTML = _aboutHowItWorks(); }
+  if (tab === 'curriculum') { el.innerHTML = _aboutCurriculum(); }
+  if (tab === 'founder')    { el.innerHTML = _aboutFounder(); }
+  if (tab === 'legal')      { el.innerHTML = _aboutLegal(); }
   window.scrollTo(0, 0);
+}
+
+function _aboutCurriculum() {
+  function concept(num, icon, title, subtitle, body, levers, scoreEffect) {
+    return '<div class="card" style="margin-bottom:1.5rem;">' +
+      '<div class="card__header" style="gap:0.75rem;align-items:flex-start;">' +
+        '<div style="width:2.25rem;height:2.25rem;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:1.125rem;flex-shrink:0;">' + icon + '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="display:flex;align-items:center;gap:0.625rem;flex-wrap:wrap;">' +
+            '<span class="text-mono" style="font-size:0.75rem;color:var(--text-400);">Concept ' + num + '</span>' +
+          '</div>' +
+          '<span class="card__title" style="display:block;margin-top:0.125rem;">' + esc(title) + '</span>' +
+          '<span style="font-size:0.875rem;color:var(--text-400);">' + esc(subtitle) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card__body">' +
+        '<div style="font-size:0.9375rem;line-height:1.8;color:var(--text-700);margin-bottom:1rem;">' + body + '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">' +
+          '<div style="background:var(--bg-subtle);border-radius:var(--radius);padding:0.75rem 1rem;">' +
+            '<div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-400);margin-bottom:0.375rem;">Platform lever</div>' +
+            '<div style="font-size:0.875rem;color:var(--text-700);">' + levers + '</div>' +
+          '</div>' +
+          '<div style="background:var(--bg-subtle);border-radius:var(--radius);padding:0.75rem 1rem;">' +
+            '<div style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-400);margin-bottom:0.375rem;">Score impact</div>' +
+            '<div style="font-size:0.875rem;color:var(--text-700);">' + scoreEffect + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  return '<div style="max-width:860px;margin:0 auto;">' +
+    '<div style="margin-bottom:2rem;">' +
+      '<p style="font-size:0.9375rem;color:var(--text-500);line-height:1.8;">This guide explains the macroeconomic principles behind each policy lever in MacroNations. Use it as a refresher when deciding how to set your levers each round.</p>' +
+    '</div>' +
+
+    concept('1','🏦','Monetary Policy & Interest Rates','Taylor Rule · Monetary transmission · UIP',
+      '<strong>The concept:</strong> Central banks set a target interest rate to influence economic activity. When rates are <em>above neutral</em> (4% on this platform), borrowing becomes more expensive — investment and consumption fall, slowing GDP. When rates are <em>below neutral</em>, money is cheap, stimulating growth but risking inflation.<br><br>' +
+      '<strong>Monetary transmission</strong> means the effect is persistent, not one-off. Holding rates at 6% keeps dragging GDP every round, not just the round you raised them. This reflects how real central banks work — rate decisions accumulate in the economy over months.<br><br>' +
+      '<strong>Currency effect (Uncovered Interest Parity):</strong> Higher rates attract foreign capital, appreciating your currency. A stronger currency makes exports more expensive, adding a trade drag on top of the direct GDP effect.<br><br>' +
+      '<strong>Inflation link:</strong> The Phillips Curve connects output gaps to inflation. If your GDP runs well above potential (output gap is positive), inflation rises. Tight monetary policy closes the output gap and brings inflation down.<br><br>' +
+      '<strong>Practical rule of thumb:</strong> Neutral is 4%. Every 1pp above neutral costs roughly 0.4pp of GDP growth per round (including momentum effects). Every 1pp below neutral adds roughly 0.4pp. The effect is persistent — it applies every round the rate stays away from neutral, not just the round you move it.',
+      'Interest Rate (0–20%). Neutral = 4%.',
+      'GDP pillar (major). Inflation via Phillips Curve. Currency via UIP. Stock market via rate_change.'
+    ) +
+
+    concept('2','💰','Fiscal Policy — Government Spending','Keynesian multiplier · Aggregate demand',
+      '<strong>The concept:</strong> Government spending directly increases aggregate demand. The Keynesian <em>fiscal multiplier</em> means each dollar of spending produces more than one dollar of GDP — because the recipients spend part of their income, which then circulates further. In standard macroeconomic theory, multipliers typically range from 0.5 to 1.5 depending on the economy\'s openness, the monetary policy stance, and whether the economy is at full capacity.<br><br>' +
+      '<strong>In this simulation:</strong> The platform implements a calibrated multiplier. A 1 percentage-point increase in government spending as a share of GDP raises GDP growth by approximately 0.13pp in the same round. This is intentionally conservative — reflecting that monetary policy is also active (interest rates partially offset fiscal stimulus), trade leakage reduces the domestic multiplier, and supply-side constraints limit how much spending translates directly to output. The effect is persistent: sustained higher spending keeps GDP above its baseline each round, not just the round you raised it.<br><br>' +
+      '<strong>The trade-off:</strong> More spending widens the budget deficit (spending minus tax revenue). A deficit adds to debt each round. High debt eventually triggers the debt drag — when debt exceeds 90% of GDP, growth slows every round regardless of other policy. This is the core fiscal discipline lesson: stimulus has a cost, and the cost accumulates.<br><br>' +
+      '<strong>Practical rule:</strong> Expansionary fiscal policy works best when the economy is below potential (recession). Contracting it during growth phases rebuilds fiscal space for the next crisis. Teams that spend heavily in early rounds and never consolidate find themselves trapped by debt drag in later rounds.',
+      'Government Spending (10–60% of GDP). Default = 35%.',
+      'GDP pillar. Stability pillar negatively (debt + budget balance). Sustainability negatively (debt).'
+    ) +
+
+    concept('3','📊','Fiscal Policy — Taxation','Laffer Curve · Revenue elasticity · Progressive taxation',
+      '<strong>The concept:</strong> Taxes reduce private consumption and investment, slowing GDP. In standard Keynesian theory, the tax multiplier is slightly smaller than the spending multiplier because some of a tax cut is saved rather than spent — households pocket part of the windfall rather than circulating it through the economy. This is sometimes called the balanced budget theorem: a simultaneous equal increase in spending and taxes has a net positive GDP effect because the spending multiplier exceeds the tax multiplier.<br><br>' +
+      '<strong>In this simulation:</strong> A 1 percentage-point increase in the tax rate reduces GDP growth by approximately 0.08pp in the same round — slightly less than the 0.13pp boost from a 1pp spending increase, consistent with the textbook relationship. The effect passes through the same 60% GDP transmission as spending, meaning the tax lever is responsive but not dominant. Cutting taxes stimulates growth; raising them consolidates debt at a modest growth cost.<br><br>' +
+      '<strong>Laffer Curve:</strong> There is an optimal tax rate that maximises revenue. Above ~40%, high marginal rates create efficiency losses — workers and firms reduce productive activity, so revenue grows less than expected. Below ~12%, the government starves public services and fiscal stability collapses. The platform applies a drag at both extremes.<br><br>' +
+      '<strong>Progressive taxation and inequality:</strong> Higher taxes (above 25%) fund redistribution, reducing the Gini coefficient. Very low taxes (below 15%) concentrate income at the top, increasing inequality. This links the Tax Rate lever directly to the Equality pillar.<br><br>' +
+      '<strong>Fiscal balance:</strong> Tax revenue minus government spending equals the budget balance. A surplus reduces debt; a deficit adds to it. Tax rate is your primary tool for fiscal consolidation without cutting spending.',
+      'Tax Rate (5–60%). Optimal zone: 25–40%.',
+      'GDP slightly negative. Stability positively (debt reduction, budget balance). Equality (via Gini). Sustainability (via debt).'
+    ) +
+
+    concept('4','🌍','Trade Policy & Openness','Comparative advantage · Exchange rate effects · Cost-push inflation',
+      '<strong>The concept:</strong> Open economies gain from specialisation and larger markets. Trade openness above the neutral level (65%) adds to GDP growth by improving resource allocation and market access. Closing the economy sacrifices these gains.<br><br>' +
+      '<strong>Currency interaction:</strong> When your interest rate rises, your currency appreciates (UIP effect). A stronger currency makes exports more expensive in foreign markets, partially offsetting the GDP gains from high rates. This creates a real trade-off between monetary tightening and export competitiveness.<br><br>' +
+      '<strong>Inflation link:</strong> More open economies import some price pressure. If global prices rise, open economies absorb more cost-push inflation. The platform reflects a small positive inflation effect from very high trade openness.<br><br>' +
+      '<strong>Important note:</strong> Trade is a slow-burn lever. A 1pp change has a near-invisible immediate effect — the gains accumulate over multiple rounds. Moving trade openness by 15–20pp produces clearly visible GDP and score differences.',
+      'Trade Openness (0–100%). Neutral = 65%.',
+      'GDP pillar (accumulates over rounds). Inflation via cost-push. Interacts with Interest Rate via currency.'
+    ) +
+
+    concept('5','🔬','Research & Development','Total Factor Productivity · Endogenous growth · Innovation',
+      '<strong>The concept:</strong> R&D investment raises <em>Total Factor Productivity</em> (TFP) — the efficiency with which an economy converts inputs into output. Unlike fiscal stimulus, which boosts demand, R&D expands the economy\'s <em>supply-side capacity</em>. This raises potential GDP: the maximum sustainable growth rate without triggering inflation.<br><br>' +
+      '<strong>Endogenous growth theory</strong> (Romer, 1990) argues that knowledge is non-rival — one firm\'s idea doesn\'t prevent another from using it. Public R&D investment generates spillovers that raise productivity economy-wide. This is why governments fund basic research.<br><br>' +
+      '<strong>Compounding effect:</strong> R&D doesn\'t give immediate results — it raises potential GDP incrementally each round. Teams that invest 6–8% in R&D from round 1 have a meaningfully higher ceiling by round 5 than teams that invest 2%. The payoff is real but delayed.<br><br>' +
+      '<strong>HDI link:</strong> R&D investment also builds human capital (knowledge workers, universities), which improves the Human Development Index.',
+      'R&D Investment (0–10% of GDP). Default = 2%.',
+      'GDP via potential. Innovation pillar (productivity). Sustainability (potential GDP). HDI slightly.'
+    ) +
+
+    concept('6','🌱','Green Energy & Environmental Policy','Energy transition · Potential GDP · HDI',
+      '<strong>The concept:</strong> Transitioning to renewable energy reduces dependence on volatile fossil fuel prices, lowering long-run energy costs and raising economic resilience. In the platform, higher green energy share raises <em>potential GDP</em> — the economy\'s supply-side capacity — over time.<br><br>' +
+      '<strong>Why it\'s slow:</strong> Energy transitions require capital investment and infrastructure buildout over many years. A 1pp shift in the green energy mix has a tiny immediate effect but compounds across rounds. Moving from 30% to 70% green energy over a 5-round tournament produces a meaningful potential GDP advantage in later rounds.<br><br>' +
+      '<strong>HDI link:</strong> Cleaner energy improves public health, air quality, and community wellbeing — all components of the Human Development Index. This feeds into the Equality and Sustainability pillars.<br><br>' +
+      '<strong>Sustainability pillar:</strong> Green energy is one of the three drivers of the Sustainability score (alongside debt and HDI), reflecting the real-world push to embed environmental sustainability in macroeconomic policy.',
+      'Green Energy Mix (0–100%). Default = 30%.',
+      'Sustainability pillar (potential GDP, HDI). Innovation slightly. Slow-burn: meaningful over 3+ rounds.'
+    ) +
+
+    concept('7','🤝','Welfare Spending & Redistribution','Gini coefficient · Social safety nets · HDI',
+      '<strong>The concept:</strong> Welfare spending transfers income to lower-income households, reducing market inequality as measured by the <em>Gini coefficient</em> (0 = perfect equality, 100 = one person owns everything). It also funds health, education, and social services — all components of the <em>Human Development Index</em>.<br><br>' +
+      '<strong>Gini coefficient:</strong> The platform\'s Equality pillar is primarily driven by Gini. Low welfare spending leaves the Gini high; sustained welfare investment at 10–15% of GDP progressively reduces it. The effect is cumulative — Gini falls each round welfare is high.<br><br>' +
+      '<strong>HDI:</strong> The Human Development Index combines income, health, and education. Welfare spending improves health and education outcomes directly, raising HDI each round. This feeds into Equality, Sustainability, and Innovation scores simultaneously — making welfare one of the most cross-cutting levers on the platform.<br><br>' +
+      '<strong>Trade-off:</strong> Welfare spending is part of government spending. Higher welfare without higher taxes widens the deficit and adds to debt, hurting the Stability pillar. The challenge is funding welfare sustainably.',
+      'Welfare Spending (0–30% of GDP). Default = 5%.',
+      'Equality pillar (Gini + HDI). Sustainability pillar (HDI). Innovation pillar (HDI). Strong cross-pillar lever.'
+    ) +
+
+    concept('8','⚖️','Regulation','Market efficiency · Financial stability · Optimal regulation',
+      '<strong>The concept:</strong> Regulation governs market conduct, environmental standards, financial rules, and labour protections. Too little regulation leads to market failures, externalities, and financial instability. Too much creates compliance costs that reduce productive efficiency.<br><br>' +
+      '<strong>Optimal regulation:</strong> The platform models a regulatory sweet spot at 50% — neutral, neither drag nor boost. Deviation in either direction imposes a cost. Very low regulation (20–30%) allows excessive risk-taking in financial markets, threatening financial health. Very high regulation (70–80%) burdens businesses with compliance costs, reducing efficiency.<br><br>' +
+      '<strong>Financial health link:</strong> Regulation affects the stability of the financial system, which flows into the Stability pillar via the Financial Health metric. This is consistent with post-2008 thinking about macro-prudential regulation.<br><br>' +
+      '<strong>Note:</strong> Like green energy and trade, regulation is a slow-acting lever. Individual 1pp changes are below the scoring threshold — meaningful movements require 5–10pp adjustments.',
+      'Regulation (0–100%). Optimal = 50%.',
+      'Stability pillar via financial health. GDP via efficiency. Linear penalty both sides of 50%.'
+    ) +
+
+    concept('9','🌐','Foreign Aid & Diplomatic Trade','Soft power · Trade access · Aid effectiveness',
+      '<strong>The concept:</strong> Foreign aid builds diplomatic relationships that open trade corridors and improve market access. Economically, aid above a baseline level (0.5% of GDP) generates a small but measurable GDP boost through improved terms of trade and diplomatic goodwill.<br><br>' +
+      '<strong>Aid effectiveness debate:</strong> Development economists debate whether aid promotes growth or creates dependency. The platform takes an optimistic view — that aid above a minimal threshold improves diplomatic access to trade partners, reflected as a direct GDP effect. Below the baseline, this benefit is lost.<br><br>' +
+      '<strong>Gini link:</strong> Higher foreign aid reduces domestic Gini slightly, reflecting the idea that outward-looking, globally engaged economies tend to adopt more redistributive domestic norms.<br><br>' +
+      '<strong>Scale matters:</strong> Foreign aid ranges from 0–5% of GDP. A 1pp increase produces a visible but modest effect (~0.09pp GDP). The lever rewards teams that maintain sustained, above-baseline aid rather than ignoring it entirely.',
+      'Foreign Aid (0–5% of GDP). Baseline = 0.5%.',
+      'GDP pillar (trade access). Gini slightly. 1pp = approx. +1 score point.'
+    ) +
+
+    concept('10','🏗️','Infrastructure Investment','Public capital · Potential GDP · Crowding-in',
+      '<strong>The concept:</strong> Public infrastructure — roads, ports, broadband, energy grids — raises the economy\'s productive capacity by reducing transaction costs and enabling private investment. This is the <em>public capital</em> channel: government investment crowds in private investment rather than crowding it out, because better infrastructure makes private projects more viable.<br><br>' +
+      '<strong>Potential GDP:</strong> Infrastructure is a supply-side lever. Like R&D, it raises potential GDP — the maximum sustainable growth rate. More infrastructure means the economy can grow faster without overheating and generating inflation.<br><br>' +
+      '<strong>Productivity link:</strong> Better infrastructure raises Total Factor Productivity directly, feeding into the Innovation pillar alongside R&D.<br><br>' +
+      '<strong>Compounding:</strong> Infrastructure, like R&D, pays off over time. A sustained infrastructure push from round 1 gives a 2–4pp potential GDP advantage by round 5. Teams that neglect infrastructure in favour of short-term fiscal stimulus often find their growth ceiling falling in later rounds.',
+      'Infrastructure (0–20% of GDP). Default = 5%.',
+      'GDP via potential. Innovation (productivity). Sustainability (potential). 1pp = approx. +3 score points.'
+    ) +
+
+  '</div>';
 }
 
 function _aboutHowItWorks() {
