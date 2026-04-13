@@ -9289,10 +9289,27 @@ function _buildRoundCard(t, isCompleted) {
 
   var actionHtml = '';
   if (!isCompleted) {
+    // Build replay options for all completed rounds (rounds before current)
+    var replayOptions = '';
+    for (var rr = 1; rr < round; rr++) {
+      replayOptions += '<option value="' + rr + '">Round ' + rr + '</option>';
+    }
+    var replayHtml = round > 1
+      ? '<span style="display:inline-flex;align-items:center;gap:0.375rem;margin-left:0.5rem;">' +
+          '<select id="replay-round-sel-' + t.id + '" class="form-select" style="font-size:0.8125rem;padding:0.25rem 0.5rem;height:auto;">' +
+            replayOptions +
+          '</select>' +
+          '<button class="btn btn--ghost btn--sm" onclick="replayRounds(\'' + t.id + '\')" title="Re-run simulation for selected rounds using stored decisions. Does NOT advance the round counter.">' +
+            '↺ Replay' +
+          '</button>' +
+        '</span>'
+      : '';
+
     actionHtml =
       '<button class="btn btn--primary" id="btn-run-sim-' + t.id + '" onclick="runSimulation(\'' + t.id + '\')">' +
         '▶ Run Simulation &amp; Advance to Round ' + (round + 1) + '</button> ' +
-      '<button class="btn btn--ghost btn--sm" onclick="promptCompleteTournament(\'' + t.id + '\')">Mark Complete</button>';
+      '<button class="btn btn--ghost btn--sm" onclick="promptCompleteTournament(\'' + t.id + '\')">Mark Complete</button>' +
+      replayHtml;
   } else {
     actionHtml =
       '<span class="text-sm text-muted">Completed. </span>' +
@@ -9322,6 +9339,160 @@ function _buildRoundCard(t, isCompleted) {
       '</div>' +
     '</div>' +
   '</div>';
+}
+
+// ── REPLAY PAST ROUNDS ────────────────────────────────────────────
+// Re-runs simulation for rounds 1..targetRound in sequence using stored
+// decisions. Does NOT increment current_round. Safe to run on live tournaments.
+async function replayRounds(tournId) {
+  var sel = document.getElementById('replay-round-sel-' + tournId);
+  var targetRound = sel ? Number(sel.value) : 1;
+  var t = _getTournById(tournId);
+  if (!t) { flash('Tournament not found.', 'error'); return; }
+
+  var currentRound = t.current_round || 0;
+  if (targetRound >= currentRound) {
+    flash('Can only replay completed rounds (before Round ' + currentRound + ').', 'error');
+    return;
+  }
+
+  if (!confirm(
+    'Replay Rounds 1 → ' + targetRound + ' for "' + (t.name || 'tournament') + '"?\n\n' +
+    'This re-runs the simulation for each round in sequence using the decisions students actually submitted.\n' +
+    'It will OVERWRITE current economy states but will NOT advance the round counter.\n\n' +
+    'Safe to run on a live tournament.'
+  )) { return; }
+
+  var logContainer = document.getElementById('sim-log-container');
+  var logEl        = document.getElementById('sim-log');
+  if (logContainer) { logContainer.style.display = 'block'; }
+  if (logEl)        { logEl.innerHTML = ''; }
+
+  function log(msg, cls) {
+    if (!logEl) { return; }
+    var line = document.createElement('div');
+    line.className = 'sim-log-line' + (cls ? ' sim-log-line--' + cls : '');
+    line.textContent = msg;
+    logEl.appendChild(line);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  log('=== REPLAY: Rounds 1 → ' + targetRound + ' ===', 'head');
+  log('Tournament: ' + (t.name || tournId));
+  log('');
+
+  try {
+    var teams = await sbGet('teams', 'tournament_id=eq.' + tournId + '&limit=200') || [];
+    if (!teams.length) { log('No teams found.', 'warn'); return; }
+    log('Teams found: ' + teams.length);
+
+    // For each team, replay rounds 1..targetRound in sequence
+    for (var ti = 0; ti < teams.length; ti++) {
+      var team = teams[ti];
+      log('');
+      log('--- Team: ' + (team.name || team.id) + ' ---', 'head');
+
+      // Load existing economy record
+      var econRows = await sbGet('economies',
+        'team_id=eq.' + team.id + '&tournament_id=eq.' + tournId + '&limit=1') || [];
+      var econRecord = econRows.length ? econRows[0] : null;
+
+      // Start from default economy
+      var state = defaultEconomy();
+      var snapshots  = [];
+      var scoresHist = [];
+
+      // Replay each round sequentially
+      for (var r = 1; r <= targetRound; r++) {
+        // Load decision for this round
+        var decRows = await sbGet('decisions',
+          'team_id=eq.' + team.id + '&tournament_id=eq.' + tournId +
+          '&round=eq.' + r + '&is_final=eq.true&limit=1') || [];
+        var decision = decRows.length ? decRows[0] : null;
+
+        var policy = {};
+        if (decision && decision.policy) {
+          policy = decision.policy;
+          log('  Round ' + r + ': using submitted policy');
+        } else {
+          for (var li = 0; li < LEVERS.length; li++) {
+            policy[LEVERS[li].key] = LEVERS[li].def;
+          }
+          log('  Round ' + r + ': no submission — using defaults', 'warn');
+        }
+
+        // Load crisis for this round
+        var crRows = await sbGet('crises_active',
+          'team_id=eq.' + team.id + '&tournament_id=eq.' + tournId +
+          '&round=eq.' + r + '&limit=1') || [];
+        var activeCrises = [];
+        if (crRows.length) {
+          var cr = crRows[0];
+          var crDef = (CRISES && CRISES[cr.crisis_id]) ? CRISES[cr.crisis_id] : null;
+          if (crDef) {
+            var eff = 0;
+            if (cr.response) {
+              var opts = crDef.options || [];
+              for (var oi = 0; oi < opts.length; oi++) {
+                if (opts[oi].id === cr.response) { eff = opts[oi].effectiveness; break; }
+              }
+            }
+            activeCrises.push({
+              gdp_shock:            crDef.gdp_shock,
+              unemp_shock:          crDef.unemp_shock,
+              inf_shock:            crDef.inf_shock,
+              fin_shock:            crDef.fin_shock,
+              chosen_effectiveness: eff
+            });
+          }
+        }
+
+        // Save pre-round state as snapshot, then simulate
+        snapshots.push(JSON.parse(JSON.stringify(state)));
+        var newState = simRound(state, policy, activeCrises);
+        var scores   = computeScores(newState);
+        scoresHist.push({ round: r, scores: scores });
+        log('  Round ' + r + ' result → GDP: ' + newState.gdp_growth + '% | Score: ' + scores.total + '/1000');
+        state = newState;
+      }
+
+      // Write final state to database
+      try {
+        if (econRecord) {
+          await sbPatch('economies', 'team_id=eq.' + team.id + '&tournament_id=eq.' + tournId, {
+            current:        state,
+            snapshots:      snapshots,
+            current_round:  targetRound,
+            scores_history: scoresHist
+          });
+          log('  ✓ Economy written to database (Round ' + targetRound + ' state).');
+        } else {
+          await sbPost('economies', {
+            team_id:        team.id,
+            tournament_id:  tournId,
+            current:        state,
+            snapshots:      snapshots,
+            current_round:  targetRound,
+            scores_history: scoresHist
+          });
+          log('  ✓ Economy record created in database.');
+        }
+      } catch(dbErr) {
+        log('  ✗ DB write failed: ' + (dbErr && dbErr.message ? dbErr.message : String(dbErr)), 'err');
+      }
+    }
+
+    log('');
+    log('=== Replay complete. ' + teams.length + ' teams updated to Round ' + targetRound + ' state. ===', 'head');
+    flash('Replay complete — economies updated through Round ' + targetRound + '.', 'success');
+
+    // Refresh scores panel
+    _loadAndRenderScores(tournId);
+
+  } catch(e) {
+    log('ERROR: ' + (e.message || e), 'err');
+    flash('Replay error: ' + (e.message || ''), 'error');
+  }
 }
 
 // ── SIMULATION ENGINE ─────────────────────────────────────────────
