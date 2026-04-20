@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MacroNations — Global Economic Strategy Tournament</title>
-  <meta name="description" content="The premier macroeconomic policy simulation tournament for university students worldwide.">
+  <meta name="description" content="The premier macroeconomic policy simulation tournament worldwide.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
@@ -3165,7 +3165,7 @@ h1, h2, h3, h4, h5 {
           </h1>
           <p class="hero__sub">
             MacroNations is the premier macroeconomic policy simulation tournament
-            for university students. Compete across 5 pillars, manage crises, and
+            for university teams and open competitors worldwide. Compete across 5 pillars, manage crises, and
             prove your team has what it takes to run a country.
           </p>
           <div class="hero__actions">
@@ -3323,8 +3323,8 @@ h1, h2, h3, h4, h5 {
               <li>Everything in class tournament</li>
               <li>Global cross-university rankings</li>
               <li>Year-long season standings</li>
-              <li>Winner &amp; runner-up certificates</li>
-              <li>Cash awards — 70/30 split</li>
+              <li>Participation certificates for all · Winner certificate for champion</li>
+              <li>Cash awards — top finalists share the fund</li>
             </ul>
             <button class="btn btn--gold" style="margin-top:1.25rem;width:100%;" onclick="openAuthModal('register')">Join the Championship</button>
           </div>
@@ -3337,7 +3337,7 @@ h1, h2, h3, h4, h5 {
       <div class="container">
         <div class="section__eyebrow" style="color:rgba(255,215,0,0.7);margin-bottom:0.5rem;">Global Championship</div>
         <h2 class="section__title" id="wc-heading" style="color:#fff;margin-bottom:0.625rem;">One award fund. Two teams share it.</h2>
-        <p style="color:rgba(255,255,255,0.6);font-size:0.9375rem;line-height:1.7;max-width:520px;margin-bottom:2rem;">The MacroNations World Cup Award Fund rewards the top finalists from universities worldwide. It grows with every team that enters the global season. At the end of the year, the top two finalists split it.</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.9375rem;line-height:1.7;max-width:520px;margin-bottom:2rem;">The MacroNations World Cup Award Fund rewards the top finalists from both university tournaments and the Open Championship worldwide. It grows with every team that enters the global season. At the end of the year, the top finalists share it — distributed at management discretion per the Award Rules.</p>
         <div class="lp-prize-row">
           <div class="lp-prize-card lp-prize-card--gold">
             <div class="lp-prize-medal">🥇</div>
@@ -3369,13 +3369,13 @@ h1, h2, h3, h4, h5 {
             <p class="section__desc" style="text-align:left;max-width:none;">No professor required. Register your team, pay the entry fee, and compete in a 10-day rolling simulation. Your personal clock starts when you submit your first round — start any time before November 21.</p>
             <ul style="list-style:none;padding:0;margin:1.5rem 0;display:flex;flex-direction:column;gap:0.75rem;">
               <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">1</span><span><strong>Register your team</strong> — up to 5 members, <span id="lp-fee-oc-step">$50</span> entry fee per team</span></li>
-              <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">2</span><span><strong>Submit Round 1</strong> — your personal 10-day clock starts</span></li>
+              <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">2</span><span><strong>Submit Round 1</strong> — once fee is confirmed, your 10-day clock starts on first submission</span></li>
               <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">3</span><span><strong>Complete 10 rounds</strong> — one every 24 hours, auto-advancing</span></li>
               <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">4</span><span><strong>Qualify for the World Cup</strong> — finish by Nov 30 to enter the playoff bracket</span></li>
             </ul>
             <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
               <button class="btn btn--gold" onclick="ocLandingRegister()">Register for Open Championship</button>
-              <span style="align-self:center;font-size:0.875rem;color:var(--text-400);">Jan 1 – before Nov 21</span>
+              <span style="align-self:center;font-size:0.875rem;color:var(--text-400);">Open Jan 1 – Nov 20 · Must finish by Nov 30</span>
             </div>
           </div>
           <div>
@@ -3468,7 +3468,7 @@ h1, h2, h3, h4, h5 {
           <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;" aria-hidden="true"></div>
           <div style="position:relative;">
             <h2 style="font-family:'DM Serif Display',serif;font-size:2.25rem;color:#fff;margin-bottom:0.875rem;letter-spacing:-0.02em;">Ready to Govern?</h2>
-            <p style="font-size:1rem;color:rgba(255,255,255,0.6);max-width:480px;margin-inline:auto;margin-bottom:2rem;line-height:1.7;">Join university teams from around the world competing in the world's most rigorous economic policy simulation.</p>
+            <p style="font-size:1rem;color:rgba(255,255,255,0.6);max-width:480px;margin-inline:auto;margin-bottom:2rem;line-height:1.7;">Join teams from around the world competing in the world's most rigorous macroeconomic policy simulation. Universities, independent players, and open competitors welcome.</p>
             <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
               <button class="btn btn--gold btn--xl" onclick="openAuthModal('register')">Register Your Team</button>
               <button class="btn btn--ghost btn--xl" style="color:rgba(255,255,255,0.8);border-color:rgba(255,255,255,0.25);" onclick="showPage('about')">Learn More</button>
@@ -4093,7 +4093,7 @@ h1, h2, h3, h4, h5 {
         <span class="wordmark__text"><em>Macro</em>Nations</span>
       </a>
       <p class="footer__brand-desc">
-        The premier macroeconomic policy simulation tournament for university students worldwide.
+        The premier macroeconomic policy simulation tournament — open to university teams and independent players worldwide.
       </p>
     </div>
 
@@ -4146,7 +4146,8 @@ h1, h2, h3, h4, h5 {
 // ═══════════════════════════════════════════════════════════════════
 var SUPA_URL  = 'https://rtaiivegcqqmdchpguzn.supabase.co';
 var SUPA_ANON = 'sb_publishable_KCPCMiKYQoEUgG45DVF5uA_ke-UxQKm';
-var SIM_EDGE_URL = SUPA_URL + '/functions/v1/simulate';
+var SIM_EDGE_URL      = SUPA_URL + '/functions/v1/simulate';
+var CHECKOUT_EDGE_URL = SUPA_URL + '/functions/v1/create-checkout';
 
 // ⚠️ DEPENDENCY WARNING: _authToken() is called by every authenticated DB operation (sbGet x57, sbPatch x12, sbPost x12).
 // It MUST check currentSession before localStorage — reversing breaks password reset and profile upload.
@@ -5982,7 +5983,7 @@ async function _renderWCBanner() {
     var sched = (season && season.playoff_bracket && season.playoff_bracket.schedule)
       ? season.playoff_bracket.schedule
       : [
-          { label: 'Qualifying period',    date: 'Jan 1 – Nov 30, ' + curYear,  note: 'All paid teams in elected tournaments qualify' },
+          { label: 'Qualifying period',    date: 'Jan 1 – Nov 30, ' + curYear,  note: 'Paid teams in elected tournaments and Open Championship qualifiers' },
           { label: 'Qualification cutoff', date: 'Nov 30, ' + curYear,          note: 'Elected tournaments must complete by this date' },
           { label: 'Quarterfinals',        date: 'Dec 7, ' + curYear,           note: 'Top 8 teams compete' },
           { label: 'Semifinals',           date: 'Dec 14, ' + curYear,          note: 'Top 4 advance' },
@@ -6440,12 +6441,12 @@ function _switchTeamTab(which) {
 // ── ONE-TEAM-PER-SEASON CHECK ─────────────────────────────────────
 // Returns the conflicting team object if user is already in any tournament
 // with the same season_year, otherwise returns null.
-async function _checkSeasonConflict(seasonYear) {
+async function _checkSeasonConflict(seasonYear, excludeTier) {
   if (!currentUser || !seasonYear) { return null; }
-  // Get all tournaments with this season_year
-  var sameSeason = await sbGet('tournaments',
-    'season_year=eq.' + encodeURIComponent(seasonYear) + '&select=id'
-  );
+  // Get all tournaments with this season_year, optionally excluding a tier
+  var query = 'season_year=eq.' + encodeURIComponent(seasonYear) + '&select=id,tier';
+  if (excludeTier) { query += '&tier=neq.' + encodeURIComponent(excludeTier); }
+  var sameSeason = await sbGet('tournaments', query);
   if (!sameSeason || !sameSeason.length) { return null; }
   var ids = [];
   for (var i = 0; i < sameSeason.length; i++) { ids.push(sameSeason[i].id); }
@@ -6502,7 +6503,8 @@ async function doCreateTeam() {
     if (!tourn) { _setFormErr('create-team-error','Tournament not found.'); setLoading('btn-do-create-team',false,'Create Team'); return; }
 
     // Block joining if tournament has already started (round > 0)
-    if (Number(tourn.current_round) > 0) {
+    // Exception: Open Championship is always open during the season window
+    if (Number(tourn.current_round) > 0 && tourn.tier !== 'open_championship') {
       _setFormErr('create-team-error','This tournament has already started (Round ' + tourn.current_round + '). New teams cannot join after Round 1 has begun.');
       setLoading('btn-do-create-team',false,'Create Team');
       return;
@@ -6527,8 +6529,8 @@ async function doCreateTeam() {
       }
     }
 
-    // One-team-per-season check
-    var conflict = await _checkSeasonConflict(tourn.season_year);
+    // One-team-per-season check (OC has its own guard — exclude it from cross-tournament conflict)
+    var conflict = await _checkSeasonConflict(tourn.season_year, tourn.tier === 'open_championship' ? 'open_championship' : null);
     if (conflict) {
       _setFormErr('create-team-error',
         'You are already on team "' + ((conflict && conflict.name) || 'another team') +
@@ -6584,6 +6586,18 @@ async function doCreateTeam() {
     _userTeams[_teamModalTournId] = team;
 
     closeModal('modal-team');
+
+    // For Open Championship — show payment + social sharing screen
+    if (tourn.tier === 'open_championship') {
+      showPage('open-champ');
+      setTimeout(function() {
+        var container = document.getElementById('oc-container');
+        if (container && typeof ocRenderPostRegistration === 'function') {
+          ocRenderPostRegistration(container, team, tourn);
+        }
+      }, 200);
+      return;
+    }
 
     // Show invite code in a toast + refresh grid
     flash('Team "' + teamName + '" created! Invite code: ' + inviteCode, 'success');
@@ -6708,10 +6722,11 @@ async function doJoinTeam() {
       }
     }
 
-    // One-team-per-season check
+    // One-team-per-season check (OC has its own guard)
     var seasonYear = (tourn && tourn.season_year) ? tourn.season_year : null;
     if (seasonYear) {
-      var conflict = await _checkSeasonConflict(seasonYear);
+      var excludeTierJoin = (tourn && tourn.tier === 'open_championship') ? 'open_championship' : null;
+      var conflict = await _checkSeasonConflict(seasonYear, excludeTierJoin);
       if (conflict && conflict.id !== team.id) {
         _setFormErr('join-team-error',
           'You are already on team "' + ((conflict && conflict.name) || 'another team') +
@@ -7957,7 +7972,43 @@ async function renderDashRankings() {
 // Falls back to email if not configured
 var STRIPE_PAYMENT_LINKS = {};
 // Default Stripe payment link for all paid tournaments
-var DEFAULT_PAYMENT_LINK = 'https://buy.stripe.com/dRmeV6afb8c475313Q5ZC02';
+var DEFAULT_PAYMENT_LINK = 'https://buy.stripe.com/8x2cMYbjfcsk2ON7se5ZC01';
+
+// Dynamic Stripe Checkout — creates a session with team metadata so webhook can auto-mark paid
+async function doStripeCheckout(teamId, tournamentId, amountDollars, teamName) {
+  if (!teamId) { flash('Team not found — cannot initiate payment.', 'error'); return; }
+  try {
+    var btn = document.getElementById('pay-btn-' + teamId);
+    if (btn) { btn.disabled = true; btn.textContent = 'Opening Stripe...'; }
+
+    var res = await fetch(CHECKOUT_EDGE_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPA_ANON },
+      body: JSON.stringify({
+        team_id:       teamId,
+        user_id:       currentUser ? currentUser.id : '',
+        tournament_id: tournamentId || '',
+        amount_cents:  Math.round((amountDollars || 50) * 100),
+        team_name:     teamName || '',
+        success_url:   window.location.origin || 'https://macronations.com',
+        cancel_url:    window.location.origin || 'https://macronations.com',
+      })
+    });
+
+    var data = await res.json();
+    if (data.url) {
+      window.location.href = data.url; // redirect to Stripe Checkout
+    } else {
+      throw new Error(data.error || 'Could not create checkout session');
+    }
+  } catch(e) {
+    // Fallback to static payment link if edge function not deployed yet
+    flash('Dynamic checkout unavailable — opening payment link. Ask admin to confirm payment.', 'info');
+    window.open(DEFAULT_PAYMENT_LINK, '_blank');
+    var btn2 = document.getElementById('pay-btn-' + teamId);
+    if (btn2) { btn2.disabled = false; btn2.textContent = 'Pay Entry Fee'; }
+  }
+}
 var WORLD_CUP_ENTRY_FEE  = 50;
 var AWARD_SEED           = 1000;  // Seed contribution — overridden by global_seasons.award_seed
 
@@ -8003,25 +8054,22 @@ function renderDashPayment() {
   if (!stripeLink) { stripeLink = (STRIPE_PAYMENT_LINKS[tourn.id]) || DEFAULT_PAYMENT_LINK || ''; }
 
   var payBtn = '';
-  if (stripeLink) {
-    // Pre-fill Stripe with team name and email via URL params where supported
-    var stripeUrl = stripeLink;
-    if (currentUser && currentUser.email) {
-      stripeUrl += (stripeUrl.indexOf('?') === -1 ? '?' : '&') +
-        'prefilled_email=' + encodeURIComponent(currentUser.email);
-    }
+  if (fee > 0 && _dashTeam) {
+    var teamIdPay = _dashTeam.id;
+    var tournIdPay = (tourn && tourn.id) ? tourn.id : '';
+    var teamNamePay = (_dashTeam.name || '').replace(/'/g, "\\'");
     payBtn =
-      '<a href="' + esc(stripeUrl) + '" target="_blank" rel="noopener" ' +
-        'class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;text-decoration:none;">' +
-        '💳 Pay ' + fmt$(fee) + ' — Secure Payment' +
-      '</a>' +
+      '<button id="pay-btn-' + teamIdPay + '" class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;" ' +
+        'onclick="doStripeCheckout(\'' + teamIdPay + '\',\'' + tournIdPay + '\',' + fee + ',\'' + teamNamePay + '\')">' +
+        '&#x1F4B3; Pay ' + fmt$(fee) + ' — Secure Checkout via Stripe' +
+      '</button>' +
       '<p style="font-size:0.8125rem;color:var(--text-400);margin-bottom:1rem;text-align:center;">' +
-        'Click to pay securely. After completing payment, email support@macronations.com with your team name and receipt so we can activate your account.' +
+        'Processed securely by Stripe. Your team is automatically activated once payment is confirmed.' +
       '</p>';
   } else {
     payBtn =
       '<button class="btn btn--gold btn--xl btn--full" style="margin-bottom:0.875rem;opacity:0.6;cursor:default;">' +
-        '💳 Card Payment (Link not yet set by admin)' +
+        '&#x1F4B3; Card Payment (not available)' +
       '</button>';
   }
 
@@ -12276,24 +12324,51 @@ function _aboutCurriculum() {
         '<p style="margin-bottom:1rem;">MacroNations is designed to work as a graded assignment with zero extra class time. Here is how to use it across different course formats.</p>' +
 
         '<div style="font-weight:600;color:var(--text-900);margin-bottom:0.375rem;">What the platform captures automatically</div>' +
-        '<p style="margin-bottom:1rem;">Every student team\'s final score (0–1000) across five pillars, their policy decisions for every round (all 10 lever values), their written rationale for each round\'s decisions, the round timestamp and whether they submitted before the deadline, and the full leaderboard ranking within your class. All of this is exportable from Admin → Analytics → Export Grades (CSV) — one file, ready for your gradebook.</p>' +
+        '<p style="margin-bottom:1rem;">Every student team\'s final score (0–1000) across five pillars, their policy decisions for every round (all 10 lever values), their written rationale for each round\'s decisions, the round timestamp and whether they submitted before the deadline, and the full leaderboard ranking within your class. All of this is exportable directly from each tournament.</p>' +
+
+        '<div style="font-weight:600;color:var(--text-900);margin-bottom:0.375rem;">How to export grades</div>' +
+        '<p style="margin-bottom:0.5rem;">Go to <strong>Admin → Tournaments</strong> and click the <strong>📊 Grades</strong> button on any tournament row. The platform automatically scores every team and downloads two files:</p>' +
+        '<ul style="margin:0 0 1rem 1.25rem;line-height:2;">' +
+          '<li><strong>Full report</strong> — one row per team, all pillar scores, rank, grade components, letter grade, and every round\'s rationale text with AI rubric scores and feedback comments</li>' +
+          '<li><strong>LMS-import ready</strong> — one row per student (not per team), ready to upload directly to Canvas, Brightspace, or Moodle using the student email address as the match key</li>' +
+        '</ul>' +
+
+        '<div style="font-weight:600;color:var(--text-900);margin-bottom:0.375rem;">Uploading to your LMS</div>' +
+        '<div style="background:var(--bg-subtle);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;">' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">' +
+            '<div><div style="font-weight:500;margin-bottom:0.25rem;font-size:0.875rem;">Canvas</div><p style="font-size:0.8125rem;color:var(--text-500);">Grades → Import → upload the LMS file → map by SIS Login ID (email). Assign the "Final Grade (0-100)" column to your assignment.</p></div>' +
+            '<div><div style="font-weight:500;margin-bottom:0.25rem;font-size:0.875rem;">Brightspace</div><p style="font-size:0.8125rem;color:var(--text-500);">Grades → Import → upload the LMS file → match by Username or email. The grade column imports directly as a numeric grade.</p></div>' +
+            '<div><div style="font-weight:500;margin-bottom:0.25rem;font-size:0.875rem;">Moodle</div><p style="font-size:0.8125rem;color:var(--text-500);">Grades → Import CSV → upload the LMS file → match by Email address. Map "Final Grade" to your gradebook item.</p></div>' +
+          '</div>' +
+          '<p style="font-size:0.8125rem;color:var(--text-400);margin-top:0.75rem;margin-bottom:0;">The student email in MacroNations must match the email in your LMS. If they differ, you can manually adjust the email column in the CSV before importing.</p>' +
+        '</div>' +
+
+        '<div style="font-weight:600;color:var(--text-900);margin-bottom:0.375rem;">How the composite grade is calculated</div>' +
+        '<div style="background:var(--bg-subtle);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;font-family:\'DM Mono\',monospace;font-size:0.8125rem;line-height:2;">' +
+          'Final Grade (0–100) =<br>' +
+          '&nbsp;&nbsp;Simulation Score / 1000 &times; 40 &nbsp;&nbsp;(0–40 pts)<br>' +
+          '&nbsp;&nbsp;Avg Rationale Score / 10 &times; 30 &nbsp;&nbsp;(0–30 pts)<br>' +
+          '&nbsp;&nbsp;Rounds Submitted / Total &times; 20 &nbsp;&nbsp;(0–20 pts)<br>' +
+          '&nbsp;&nbsp;Rank bonus: top 25%=10, top 50%=5 &nbsp;&nbsp;(0–10 pts)' +
+        '</div>' +
+        '<p style="margin-bottom:1rem;">The rationale component is scored automatically using a keyword rubric across three dimensions: economic concept usage, trade-off acknowledgment, and internal consistency with the levers chosen. The CSV shows each dimension score and a feedback comment so you can review or override the grade in your LMS.</p>' +
 
         '<div style="font-weight:600;color:var(--text-900);margin-bottom:0.375rem;">Suggested grading approaches</div>' +
 
         '<div style="background:var(--bg-subtle);border-radius:var(--radius);padding:1rem;margin-bottom:0.875rem;">' +
-          '<div style="font-weight:500;color:var(--text-900);margin-bottom:0.25rem;">Approach 1 — Outcome-based (simplest)</div>' +
-          '<p>Grade entirely on final score. Assign letter grades by score band — for example A = 700+, B = 550–699, C = 400–549, D = 250–399. This requires no manual review and takes five minutes to enter in your gradebook after the tournament ends. Works well for extra credit or short assignments.</p>' +
+          '<div style="font-weight:500;color:var(--text-900);margin-bottom:0.25rem;">Approach 1 — Use the composite grade directly (simplest)</div>' +
+          '<p>Click 📊 Grades, download, upload the LMS file to your gradebook. The composite grade (0–100) is ready to import as-is. Total time: under 5 minutes. Works well for extra credit or short assignments.</p>' +
         '</div>' +
 
         '<div style="background:var(--bg-subtle);border-radius:var(--radius);padding:1rem;margin-bottom:0.875rem;">' +
-          '<div style="font-weight:500;color:var(--text-900);margin-bottom:0.25rem;">Approach 2 — Process + outcome (recommended)</div>' +
-          '<p style="margin-bottom:0.5rem;">Split the grade 50/50: half on final score, half on the quality of written rationale submitted each round. Students write up to 500 characters explaining why they set their levers the way they did. The Export Grades CSV includes every rationale in a dedicated column — open it in Excel and read across each team\'s reasoning round by round.</p>' +
+          '<div style="font-weight:500;color:var(--text-900);margin-bottom:0.25rem;">Approach 2 — Review rationale scores (recommended)</div>' +
+          '<p style="margin-bottom:0.5rem;">Open the full report CSV in Excel. Review the per-round rationale text and AI feedback comments. Adjust any rationale scores that need human judgment. Recalculate the grade using the formula above, then import the LMS file to your gradebook.</p>' +
           '<p>Rubric for rationale: <strong>Full marks</strong> — references at least one economic concept (e.g. "We held rates low to stimulate demand given our output gap"), explains the trade-off acknowledged, and is internally consistent with the levers chosen. <strong>Partial marks</strong> — explains the decision without economic framing. <strong>Minimal marks</strong> — empty or purely descriptive ("we raised spending").</p>' +
         '</div>' +
 
         '<div style="background:var(--bg-subtle);border-radius:var(--radius);padding:1rem;margin-bottom:1rem;">' +
           '<div style="font-weight:500;color:var(--text-900);margin-bottom:0.25rem;">Approach 3 — Full analytical assessment</div>' +
-          '<p>Treat the tournament as a policy memo assignment. After the tournament ends, ask each team to submit a 2-page reflection covering: what strategy they chose, which trade-offs they faced, how their economy responded, what they would do differently, and what real-world policy parallel their approach resembles. Grade the memo on analytical depth. The tournament score and round-by-round decisions in the CSV give you the factual record to verify their claims.</p>' +
+          '<p>Treat the tournament as a policy memo assignment. After the tournament ends, ask each team to submit a 2-page reflection covering: what strategy they chose, which trade-offs they faced, how their economy responded, what they would do differently, and what real-world policy parallel their approach resembles. Grade the memo on analytical depth. The tournament score and round-by-round decisions in the full report CSV give you the factual record to verify their claims.</p>' +
         '</div>' +
 
         '<div style="font-weight:600;color:var(--text-900);margin-bottom:0.375rem;">Pillar scores as a diagnostic tool</div>' +
@@ -12415,7 +12490,7 @@ function _aboutHowItWorks() {
       '<div class="card__header"><span class="card__title">🎓 For Students</span></div>' +
       '<div class="card__body">' +
         '<div class="steps">' +
-          _step('1','Register & Join','Create a free account with any valid email. Professors use their .edu address to create class tournaments. Students can use any email. Go to Tournaments, find a competition open for registration, and either create a new team or join an existing one with an 8-character invite code. Each team can have up to 5 members.') +
+          _step('1','Register & Join','Create a free account with any valid email. Professors who want to create class tournaments need a .edu address. Open Championship participants need no affiliation. Go to Tournaments, find a competition open for registration, and create or join a team with an 8-character invite code. Teams have up to 5 members.') +
           _step('2','Pay the Entry Fee (if applicable)','For paid tournaments, go to Dashboard → Payment to pay the entry fee via Stripe. Your policy submissions are locked until payment is confirmed by the admin.') +
           _step('3','Set Your 10 Policy Levers','Every round, go to Dashboard → Policy. Adjust your 10 macroeconomic levers: Interest Rate, Government Spending, Tax Rate, Trade Openness, R&D Investment, Green Energy Mix, Welfare Spending, Regulation, Foreign Aid, and Infrastructure. Write a brief rationale and hit Submit Final Decision before the round deadline.') +
           _step('4','Respond to Crises','Some rounds trigger an economic crisis (banking crash, pandemic, trade war, debt crisis). Go to Crisis tab first — choose your response option — then separately submit your policy. These are two independent steps. If you skip the crisis response, the full unmitigated shock applies to your economy.') +
@@ -12434,9 +12509,9 @@ function _aboutHowItWorks() {
           _step('1','Register as Professor','When registering, select the Professor role. After email confirmation, you gain access to the Admin tab in your navigation.') +
           _step('2','Create a Class Tournament','Admin → Tournaments → New Tournament. Set Tier = Class Tournament, Entry Fee = 0 (free for students), enter your class size as Max Teams. Set a start date and choose days between rounds (7 days is recommended for weekly assignments). Click Create.') +
           _step('3','Open Registration','After creating, click "Open Registration" on your tournament. Share the tournament name with students so they can find and join it. Students create teams and share their invite code with teammates.') +
-          _step('4','Advance Rounds','When ready for the next round: Admin → Rounds → Run Simulation & Advance. The simulation engine applies each team\'s submitted policies, processes crises, updates all economies, and advances the round counter. You will be prompted to send an email notification to all participants.') +
-          _step('5','Monitor & Grade','Use Admin → Teams to see all teams and their payment status. Admin → Analytics exports full data as CSV or JSON for grading. The AI Advisor\'s Socratic questioning encourages genuine economic reasoning rather than guess-and-check.') +
-          _step('6','Complete & Crown Champion','When all rounds are done, Admin → Tournaments → Complete. The system automatically records the champion in the Hall of Champions. Use Admin → Rounds to advance if you have rounds remaining.') +
+          _step('4','Advance Rounds','When ready for the next round: Admin → Rounds → Run Simulation & Advance. The simulation engine applies each team\'s submitted policies, processes crises, updates all economies, and advances the round counter. You will be prompted to send an email notification to all participants — the platform automatically populates all team members\' email addresses.') +
+          _step('5','Export Grades & Upload to LMS','Admin → Tournaments → click the 📊 Grades button on your tournament. The platform scores every submission using a composite formula (40% simulation performance, 30% rationale quality, 20% participation, 10% rank bonus) and downloads two CSV files: a full report with per-round rationale scores and AI feedback, and an LMS-import ready file with one row per student matched by email. Upload the LMS file directly to Canvas, Brightspace, or Moodle gradebooks.') +
+          _step('6','Complete & Crown Champion','When all rounds are done, Admin → Tournaments → Complete. The system automatically records the champion in the Hall of Champions. Elected global tournaments feed their top qualifiers into the World Cup season standings.') +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -14084,25 +14159,27 @@ window.OC.register = async function() {
 // -- Post-registration -----------------------------------------------
 function ocRenderPostRegistration(el, team, tourn) {
   if (!el) { return; }
-  var payLink = DEFAULT_PAYMENT_LINK || '#';
   var invCode = team.invite_code || '';
   var isCap   = team.captain_id === (currentUser && currentUser.id);
+  var fee     = (tourn && tourn.entry_fee) ? Number(tourn.entry_fee) : OC_ENTRY_FEE;
+  var tid     = team.id;
+  var tnid    = (tourn && tourn.id) ? tourn.id : '';
 
   var msg = encodeURIComponent(
     "I just registered for the MacroNations Open Championship - a real-time macroeconomic policy simulation open to everyone! " +
     "Join me at macronations.com and test your economic thinking against teams worldwide! #MacroNations #Economics"
   );
-  var url    = encodeURIComponent('https://macronations.com');
-  var fbUrl  = 'https://www.facebook.com/sharer/sharer.php?u=' + url + '&quote=' + msg;
-  var twUrl  = 'https://twitter.com/intent/tweet?text=' + msg + '&url=' + url;
-  var liUrl  = 'https://www.linkedin.com/sharing/share-offsite/?url=' + url + '&summary=' + msg;
-  var waUrl  = 'https://wa.me/?text=' + msg + '%20' + url;
+  var url     = encodeURIComponent('https://macronations.com');
+  var fbUrl   = 'https://www.facebook.com/sharer/sharer.php?u=' + url + '&quote=' + msg;
+  var twUrl   = 'https://twitter.com/intent/tweet?text=' + msg + '&url=' + url;
+  var liUrl   = 'https://www.linkedin.com/sharing/share-offsite/?url=' + url + '&summary=' + msg;
+  var waUrl   = 'https://wa.me/?text=' + msg + '%20' + url;
   var mailUrl = 'mailto:?subject=' + encodeURIComponent('[MacroNations] Join me in the Open Championship!') +
     '&body=' + encodeURIComponent("I just joined the MacroNations Open Championship!\n\nJoin me at https://macronations.com\n\n#MacroNations");
 
   el.innerHTML =
     '<div class="dash-alert dash-alert--success" style="margin-bottom:1.5rem;">' +
-      '<div class="dash-alert__icon">v</div>' +
+      '<div class="dash-alert__icon">&#10003;</div>' +
       '<div class="dash-alert__body">' +
         '<div class="dash-alert__title">You\'re registered!</div>' +
         (isCap
@@ -14114,9 +14191,10 @@ function ocRenderPostRegistration(el, team, tourn) {
     '<div class="card" style="margin-bottom:1.5rem;border:2px solid var(--blue);">' +
       '<div class="card__header"><span class="card__title">Step 1 — Pay Entry Fee</span></div>' +
       '<div class="card__body">' +
-        '<p style="margin-bottom:1rem;">Pay the <strong>' + ocFmt$(OC_ENTRY_FEE) + '</strong> entry fee to unlock policy submission. Your 10-day clock starts when you submit Round 1.</p>' +
-        '<a href="' + ocEsc(payLink) + '" target="_blank" class="btn btn--gold" style="margin-bottom:0.75rem;">Pay ' + ocFmt$(OC_ENTRY_FEE) + ' via Stripe</a>' +
-        '<p class="text-sm text-muted" style="margin-top:0.5rem;">After paying, go to your dashboard to submit your Round 1 policy and start the clock.</p>' +
+        '<p style="margin-bottom:1rem;">Pay the <strong>' + ocFmt$(fee) + '</strong> entry fee to unlock policy submission. Your 10-day clock starts when you submit Round 1.</p>' +
+        '<button id="pay-btn-' + tid + '" class="btn btn--gold" style="margin-bottom:0.75rem;" ' +
+          'onclick="doStripeCheckout(\'' + tid + '\',\'' + tnid + '\',' + fee + ',\'' + ocEsc(team.name || '') + '\')">Pay ' + ocFmt$(fee) + ' via Stripe</button>' +
+        '<p class="text-sm text-muted" style="margin-top:0.5rem;">Payment is processed by Stripe. Your team is automatically unlocked once payment is confirmed — no admin action required.</p>' +
       '</div>' +
     '</div>' +
 
@@ -14138,7 +14216,7 @@ function ocRenderPostRegistration(el, team, tourn) {
     '</div>' +
 
     '<div style="text-align:center;">' +
-      '<button class="btn btn--ghost" onclick="showPage(\'open-champ\')">Go to my dashboard</button>' +
+      '<button class="btn btn--ghost" onclick="ocRenderPage()">Go to my dashboard</button>' +
     '</div>';
 }
 
@@ -14147,6 +14225,23 @@ async function ocRenderParticipantDashboard(el, tourn, team) {
   if (!tourn) {
     el.innerHTML = '<div class="empty-state"><div class="empty-state__title">No active championship found.</div></div>';
     return;
+  }
+
+  // Handle return from Stripe Checkout — ?payment=success in URL
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('payment') === 'success') {
+    window.history.replaceState({}, '', window.location.pathname);
+    ocRenderPostRegistration(el, team, tourn);
+    return;
+  }
+
+  // Show social sharing banner if team was just registered (within 10 mins) and not yet paid
+  if (!team.fee_paid && !team.started_at && team.created_at) {
+    var age = Date.now() - new Date(team.created_at).getTime();
+    if (age < 10 * 60 * 1000) {
+      ocRenderPostRegistration(el, team, tourn);
+      return;
+    }
   }
 
   var econRows = [];
@@ -14237,7 +14332,9 @@ async function ocRenderParticipantDashboard(el, tourn, team) {
           '<div class="card__header"><span class="card__title">Pay Entry Fee to Start</span></div>' +
           '<div class="card__body">' +
             '<p style="margin-bottom:1rem;">Pay the <strong>' + ocFmt$(OC_ENTRY_FEE) + '</strong> entry fee to unlock policy submission and start competing.</p>' +
-            '<a href="' + ocEsc(DEFAULT_PAYMENT_LINK || '#') + '" target="_blank" class="btn btn--gold">Pay ' + ocFmt$(OC_ENTRY_FEE) + ' via Stripe</a>' +
+            '<button id="pay-btn-' + team.id + '" class="btn btn--gold" ' +
+              'onclick="doStripeCheckout(\'' + team.id + '\',\'' + ((tourn && tourn.id) || '') + '\',' + OC_ENTRY_FEE + ',\'' + ocEsc(team.name || '') + '\')">Pay ' + ocFmt$(OC_ENTRY_FEE) + ' via Stripe</button>' +
+            '<p class="text-sm text-muted" style="margin-top:0.5rem;">Your team is automatically unlocked once payment is confirmed — no admin action needed.</p>' +
           '</div>' +
         '</div>'
       : !started
