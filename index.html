@@ -275,6 +275,7 @@ h1, h2, h3, h4, h5 {
   margin-left: auto;
   padding-left: 0.375rem;
 }
+.nav__cta { flex-shrink: 0; }
 .nav__cta .btn { white-space: nowrap; flex-shrink: 0; }
 .nav__cta .nav-user-pill {
   display: flex;
@@ -3045,7 +3046,7 @@ h1, h2, h3, h4, h5 {
 .tb-sb-ch__title { flex: 1 1 auto; }
 
 /* Main iframe area */
-.tb-main { flex: 1 1 auto; overflow: hidden; background: #f8fafc; min-height: 0; position: relative; }
+.tb-main { flex: 1 1 auto; overflow: hidden; background: #f8fafc; min-height: 0; display: flex; flex-direction: column; }
 
 /* Mobile: stack vertically, hide sidebar on small screens */
 @media (max-width: 768px) {
@@ -3113,7 +3114,7 @@ h1, h2, h3, h4, h5 {
       <a href="#" class="nav__tab" data-page="champions">Champions</a>
       <a href="#" class="nav__tab" data-page="about">About</a>
       <span class="nav__divider" aria-hidden="true"></span>
-      <a href="#" class="nav__tab nav__tab--how" data-page="how">How it works ↗</a>
+      <a href="#" class="nav__tab nav__tab--how" data-page="how">How it works</a>
     </nav>
 
     <!-- Desktop CTA -->
@@ -5250,7 +5251,8 @@ function _renderLoggedInNav() {
     var s = document.createElement('span');
     s.id = 'nav-dynamic-links';
     s.style.display = 'contents';
-    nl.appendChild(s);
+    var divider = nl.querySelector('.nav__divider');
+    if (divider) { nl.insertBefore(s, divider); } else { nl.appendChild(s); }
   }
 })();
 
@@ -12963,14 +12965,17 @@ async function crownChampion(tournId) {
 
     // Insert champion record
     await sbPost('champions', {
-      season:      tourn.season_year,
-      team:        team.name || 'Unknown',
-      captain:     (captain && captain.name) ? captain.name : '',
-      country:     (captain && captain.country) ? captain.country : '',
-      institution: (captain && captain.institution) ? captain.institution : '',
-      score:       bestScore,
-      year:        new Date().getFullYear(),
-      prize_won:   pp.winner
+      season:          tourn.season_year,
+      team:            team.name || 'Unknown',
+      captain:         (captain && captain.name) ? captain.name : '',
+      country:         (captain && captain.country) ? captain.country : '',
+      institution:     (captain && captain.institution) ? captain.institution : '',
+      score:           bestScore,
+      year:            new Date().getFullYear(),
+      prize_won:       pp.winner,
+      tournament_id:   tournId,
+      tier:            tourn.tier || 'class',
+      tournament_name: tourn.name || ''
     });
 
     flash('Champion crowned: ' + (team.name || 'Team') + '!', 'success');
@@ -14692,13 +14697,12 @@ afterLogin = async function() {
 
 async function renderChampions() {
   var el = document.getElementById('champions-content');
-  if (!el) { return; }
+  if (!el) return;
   el.innerHTML =
     '<div class="empty-state"><div class="spinner" style="width:28px;height:28px;margin:0 auto 0.75rem;"></div>' +
-    '<div class="empty-state__title">Loading champions…</div></div>';
+    '<div class="empty-state__title">Loading champions...</div></div>';
 
   try {
-    // Fetch all champion records — no score ordering, we group by season/tournament
     var champs = await sbGetPublic('champions', 'order=year.desc,season.desc&limit=200');
     champs = champs || [];
 
@@ -14710,140 +14714,135 @@ async function renderChampions() {
       return;
     }
 
-    // Also fetch tournaments so we can label each champion correctly
-    var tournMap = {};
-    try {
-      var allTourns = await sbGetPublic('tournaments',
-        'select=id,name,type,season_year,is_global_elected&limit=500');
-      if (allTourns) {
-        for (var ti = 0; ti < allTourns.length; ti++) {
-          var t = allTourns[ti];
-          tournMap[String(t.id)] = t;
-        }
-      }
-    } catch(ex) {}
-
-    // Fetch profile images
+    // Profile images
     var profileMap = {};
     try {
       var allUsers = await sbGetPublic('mn_users', 'select=id,name,profile_image_url&limit=500');
       if (allUsers) {
         for (var ui = 0; ui < allUsers.length; ui++) {
           var u = allUsers[ui];
-          if (u.name && u.profile_image_url) {
+          if (u.name) {
             profileMap[u.name.toLowerCase().trim()] = u;
-            var parts = u.name.trim().split(/\s+/);
-            if (parts.length > 2) {
-              profileMap[(parts[0] + ' ' + parts[parts.length-1]).toLowerCase()] = u;
-            }
+            var np = u.name.trim().split(/\s+/);
+            if (np.length > 2) { profileMap[(np[0]+' '+np[np.length-1]).toLowerCase()] = u; }
           }
         }
       }
-    } catch(ex2) {}
+    } catch(ex) {}
 
-    // Group champions by season+year (each group = one tournament's results)
-    // Key = season + '|' + year to handle multiple tournaments per year
-    var groups = [];
-    var groupIndex = {};
-    for (var i = 0; i < champs.length; i++) {
-      var c = champs[i];
-      var tourn = (c.tournament_id && tournMap[String(c.tournament_id)]) ? tournMap[String(c.tournament_id)] : null;
-      // Determine tournament type label
-      var typeLabel = 'Class Tournament';
-      if (tourn) {
-        if (tourn.is_global_elected || tourn.type === 'global') { typeLabel = 'Global Championship'; }
-        else if (tourn.type === 'open') { typeLabel = 'Open Championship'; }
-        else if (tourn.type === 'university') { typeLabel = 'University Tournament'; }
-      } else if (c.prize_won && Number(c.prize_won) > 500) {
-        typeLabel = 'Global Championship';
-      }
-      var groupKey = String(c.season || c.year || '') + '|' + typeLabel + '|' + String(c.year || '');
-      if (!(groupKey in groupIndex)) {
-        groupIndex[groupKey] = groups.length;
-        groups.push({ key: groupKey, season: c.season, year: c.year, typeLabel: typeLabel, champs: [] });
-      }
-      groups[groupIndex[groupKey]].champs.push(c);
+    // Determine label from tier field (saved since this fix) or heuristic for old records
+    function getTierLabel(c) {
+      if (c.tier === 'global' || c.tier === 'open_championship') return 'Global Championship';
+      if (c.tier === 'university') return 'University Tournament';
+      if (c.tier === 'class') return 'Class Tournament';
+      // Old records without tier: large prize = global
+      if (c.prize_won && Number(c.prize_won) >= 500) return 'Global Championship';
+      return 'Class Tournament';
     }
 
-    // Within each group, sort by score desc — rank within tournament
+    // Group: each unique season+tier combination = one tournament block
+    // Use tournament_id if available (new records), else season+tier
+    var groups = [];
+    var seen = {};
+    for (var i = 0; i < champs.length; i++) {
+      var c = champs[i];
+      var label = getTierLabel(c);
+      var groupKey = c.tournament_id
+        ? 'tid_' + String(c.tournament_id)
+        : String(c.year||'') + '_' + String(c.season||'') + '_' + label;
+      if (!(groupKey in seen)) {
+        seen[groupKey] = groups.length;
+        groups.push({
+          label: label,
+          season: c.season,
+          year:   c.year,
+          name:   c.tournament_name || '',
+          champs: []
+        });
+      }
+      groups[seen[groupKey]].champs.push(c);
+    }
+
+    // Within each group, rank by score desc
     for (var gi = 0; gi < groups.length; gi++) {
-      groups[gi].champs.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+      groups[gi].champs.sort(function(a,b){ return (b.score||0)-(a.score||0); });
     }
 
     var isAdmin = currentUser && currentUser.is_admin;
-    var html = '';
+    var out = '';
 
     for (var gi = 0; gi < groups.length; gi++) {
       var grp = groups[gi];
-      // Section header
-      html +=
-        '<div style="margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--border);">' +
-          '<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">' +
-            '<span style="font-size:1.25rem;">🏆</span>' +
+      var icon = grp.label === 'Global Championship' ? '🏆' :
+                 grp.label === 'University Tournament' ? '🏛️' : '🏫';
+
+      out +=
+        '<div style="margin:2rem 0 1rem;padding-bottom:0.625rem;border-bottom:2px solid var(--border);">' +
+          '<div style="display:flex;align-items:center;gap:0.75rem;">' +
+            '<span style="font-size:1.5rem;">' + icon + '</span>' +
             '<div>' +
-              '<div style="font-size:1rem;font-weight:700;color:var(--text-900);">' + esc(grp.typeLabel) + '</div>' +
+              '<div style="font-size:1rem;font-weight:700;color:var(--text-900);">' +
+                esc(grp.label) + (grp.name ? ' — ' + esc(grp.name) : '') +
+              '</div>' +
               '<div style="font-size:0.8125rem;color:var(--text-400);">' +
-                (grp.season ? 'Season ' + esc(String(grp.season)) + ' · ' : '') +
+                (grp.season ? 'Season ' + esc(String(grp.season)) + '  ·  ' : '') +
                 esc(String(grp.year || '')) +
               '</div>' +
             '</div>' +
           '</div>' +
-        '</div>';
-
-      html += '<div class="champions-leaderboard">';
+        '</div>' +
+        '<div class="champions-leaderboard">';
 
       for (var ci = 0; ci < grp.champs.length; ci++) {
         var c = grp.champs[ci];
-        var rank = ci + 1; // rank within this tournament, not globally
+        var rank = ci + 1;
         var rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉'
           : '<span style="font-size:1rem;font-weight:700;color:var(--text-400);">#' + rank + '</span>';
-
-        var userRec = profileMap[(c.captain || '').toLowerCase().trim()]
-          || profileMap[(c.team || '').toLowerCase().trim()] || null;
+        var userRec = profileMap[(c.captain||'').toLowerCase().trim()]
+                   || profileMap[(c.team||'').toLowerCase().trim()] || null;
         var imgUrl  = (userRec && userRec.profile_image_url) ? userRec.profile_image_url : '';
-        var nameParts = (c.captain || c.team || '?').split(' ');
-        var initials  = nameParts.length >= 2
-          ? nameParts[0][0] + nameParts[nameParts.length-1][0]
-          : (nameParts[0][0] || '?');
-        initials = initials.toUpperCase();
-
+        var np2 = (c.captain||c.team||'?').split(' ');
+        var ini = (np2.length >= 2 ? np2[0][0]+np2[np2.length-1][0] : (np2[0][0]||'?')).toUpperCase();
         var avatarHtml = imgUrl
-          ? '<img src="' + esc(imgUrl) + '" class="champ-card-new__avatar-img" alt="' + esc(c.captain || '') + '">'
-          : '<div class="champ-card-new__avatar-initials">' + esc(initials) + '</div>';
+          ? '<img src="' + esc(imgUrl) + '" class="champ-card-new__avatar-img" alt="' + esc(c.captain||'') + '">'
+          : '<div class="champ-card-new__avatar-initials">' + esc(ini) + '</div>';
 
-        html +=
+        out +=
           '<article class="champ-card-new">' +
             '<div class="champ-card-new__rank">' + rankBadge + '</div>' +
             '<div class="champ-card-new__avatar">' + avatarHtml + '</div>' +
             '<div class="champ-card-new__body">' +
-              '<div class="champ-card-new__season">' + esc(grp.typeLabel) + (grp.season ? ' · Season ' + esc(String(grp.season)) : '') + '</div>' +
-              '<h2 class="champ-card-new__team">' + esc(c.team || 'Unknown') + '</h2>' +
-              '<p class="champ-card-new__captain">' + esc(c.captain || '') + '</p>' +
-              '<p class="champ-card-new__meta">' + esc(c.institution || '') + (c.country ? ' · ' + esc(c.country) : '') + '</p>' +
+              '<div class="champ-card-new__season">' + esc(grp.label) +
+                (grp.season ? ' · Season ' + esc(String(grp.season)) : '') + '</div>' +
+              '<h2 class="champ-card-new__team">' + esc(c.team||'Unknown') + '</h2>' +
+              '<p class="champ-card-new__captain">' + esc(c.captain||'') + '</p>' +
+              '<p class="champ-card-new__meta">' + esc(c.institution||'') +
+                (c.country ? ' · ' + esc(c.country) : '') + '</p>' +
               '<div class="champ-card-new__stats">' +
-                '<div class="champ-card-new__score">' + esc(String(Math.round(c.score || 0))) + '<span>/1000</span></div>' +
+                '<div class="champ-card-new__score">' +
+                  esc(String(Math.round(c.score||0))) + '<span>/1000</span>' +
+                '</div>' +
                 (c.prize_won ? '<div class="champ-card-new__prize">💰 ' + fmt$(c.prize_won) + '</div>' : '') +
               '</div>' +
             '</div>' +
             (isAdmin
-              ? '<button class="btn btn--danger btn--sm champ-card-new__revoke" onclick="revokeChampion(\'' + esc(c.id) + '\')">Revoke</button>'
+              ? '<button class="btn btn--danger btn--sm champ-card-new__revoke"' +
+                ' onclick="revokeChampion(\'' + esc(c.id) + '\')">Revoke</button>'
               : '') +
           '</article>';
       }
-      html += '</div>';
+      out += '</div>';
     }
 
-    el.innerHTML = html;
+    el.innerHTML = out;
 
   } catch(e) {
     el.innerHTML =
       '<div class="empty-state"><div class="empty-state__icon">⚠️</div>' +
       '<div class="empty-state__title">Could not load champions</div>' +
-      '<div class="empty-state__desc">' + esc((e && e.message) || '') + '</div></div>';
+      '<div class="empty-state__desc">' + esc((e&&e.message)||'') + '</div></div>';
   }
 }
-
-// ── Mark user as champion when tournament completes ─────────────────
 var _origCrownChampion = crownChampion;
 crownChampion = async function(tournId) {
   await _origCrownChampion(tournId);
@@ -16381,28 +16380,26 @@ function tbLoadIframe() {
 
   var tbUrl = tbGetTextbookUrl();
 
-  // Show spinner while loading
+  // Simple full-height iframe — no position tricks needed
+  main.style.cssText = 'flex:1 1 auto;overflow:hidden;min-height:0;display:flex;flex-direction:column;';
   main.innerHTML =
-    '<div id="tb-spinner" style="display:flex;align-items:center;justify-content:center;' +
-    'position:absolute;inset:0;flex-direction:column;gap:1rem;color:#64748b;background:#f8fafc;z-index:1;">' +
+    '<div id="tb-spinner" style="padding:3rem;text-align:center;color:#64748b;">' +
       '<div style="width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#3b82f6;' +
-      'border-radius:50%;animation:spin 0.8s linear infinite;"></div>' +
-      '<div style="font-size:0.9375rem;">Loading textbook…</div>' +
-      '<a href="' + tbUrl + '" target="_blank" ' +
-      'style="font-size:0.8125rem;color:#3b82f6;margin-top:0.5rem;">Or open in new tab ↗</a>' +
-    '</div>';
+      'border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;"></div>' +
+      '<div>Loading textbook...</div>' +
+      '<div style="margin-top:0.75rem;">' +
+        '<a href="' + tbUrl + '" target="_blank" style="color:#3b82f6;font-size:0.875rem;">Open in new tab if this takes too long ↗</a>' +
+      '</div>' +
+    '</div>' +
+    '<iframe id="tb-iframe" src="' + tbUrl + '" ' +
+      'style="flex:1;width:100%;border:none;display:none;" ' +
+      'title="Applied Macroeconomics Textbook"></iframe>';
 
-  // Create iframe separately so we can set src after load listener
-  var frame = document.createElement('iframe');
-  frame.id = 'tb-iframe';
-  frame.title = 'Applied Macroeconomics Textbook';
-  frame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;z-index:0;';
-  main.style.position = 'relative';
-  main.appendChild(frame);
-
+  var frame = document.getElementById('tb-iframe');
   frame.addEventListener('load', function() {
     var spinner = document.getElementById('tb-spinner');
-    if (spinner) spinner.remove();
+    if (spinner) spinner.style.display = 'none';
+    frame.style.display = 'block';
     _tbLoaded = true;
     tbRenderSidebar();
     setTimeout(function() {
@@ -16413,8 +16410,6 @@ function tbLoadIframe() {
       } catch(e) {}
     }, 300);
   });
-
-  frame.src = tbUrl;
 }
 
 // Keep old name as alias
