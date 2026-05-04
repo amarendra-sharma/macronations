@@ -5616,13 +5616,27 @@ async function fredFetch(series, limit, units) {
   limit = limit || 20; units = units || 'lin';
   var url = FRED_BASE + '?series_id=' + series + '&api_key=' + FRED_KEY + '&file_type=json&sort_order=desc&limit=' + limit + '&units=' + units;
   var r = await fetch(url);
+  if (!r.ok) { throw new Error('FRED API error: ' + r.status + ' for ' + series); }
   var d = await r.json();
+  if (d.error_message) { throw new Error('FRED: ' + d.error_message); }
   return (d.observations || []).reverse().filter(function(o) { return o.value !== '.'; });
 }
 
 function makeChart(canvasId, obs, label, color) {
   var canvas = document.getElementById(canvasId);
   if (!canvas) { return; }
+  if (!obs || obs.length === 0) {
+    // Show a no-data message instead of a blank canvas
+    var wrap = canvas.parentElement;
+    if (wrap) {
+      canvas.style.display = 'none';
+      var msg = document.createElement('div');
+      msg.style.cssText = 'padding:1rem;font-size:0.8125rem;color:#94a3b8;text-align:center;border:1px dashed #e2e8f0;border-radius:6px;';
+      msg.textContent = label + ' — chart data unavailable. Visit FRED directly for live data.';
+      wrap.appendChild(msg);
+    }
+    return;
+  }
   var labels = obs.map(function(o) { return o.date.slice(0,7); });
   var data   = obs.map(function(o) { return parseFloat(o.value); });
   new Chart(canvas, {
@@ -5635,6 +5649,20 @@ function makeChart(canvasId, obs, label, color) {
 async function loadChartsForChapter(ch) {
   if (loadedCharts[ch]) { return; }
   loadedCharts[ch] = true;
+  // Show a notice if FRED API key needs updating
+  if (!window._fredKeyChecked) {
+    window._fredKeyChecked = true;
+    try {
+      var testR = await fetch(FRED_BASE + '?series_id=UNRATE&api_key=' + FRED_KEY + '&file_type=json&limit=1');
+      if (!testR.ok) {
+        var notice = document.createElement('div');
+        notice.id = 'fred-notice';
+        notice.style.cssText = 'position:fixed;bottom:1rem;right:1rem;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:0.75rem 1rem;font-size:0.8125rem;color:#92400e;max-width:320px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.1);';
+        notice.innerHTML = '<strong>📊 Live charts unavailable</strong><br>The FRED API key needs to be updated to allow requests from macronations.com. Charts will show placeholder messages. <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" style="color:#92400e;">Get a new key →</a> <button onclick="this.parentElement.remove()" style="float:right;background:none;border:none;cursor:pointer;color:#92400e;">✕</button>';
+        document.body.appendChild(notice);
+      }
+    } catch(e2) {}
+  }
   try {
     if (ch === 'ch1') {
       var obs = await fredFetch('A191RL1Q225SBEA', 40);

@@ -1904,9 +1904,7 @@ h1, h2, h3, h4, h5 {
 @media (max-width: 1100px) {
   .nav__tab { font-size: 0.8125rem; padding: 0.375rem 0.5rem; }
 }
-@media (max-width: 900px) {
-  #nav-textbook-tab { display: none; }
-}
+
 
 /* ═══════════════════════════════════════════
    25. RESPONSIVE
@@ -3053,8 +3051,7 @@ h1, h2, h3, h4, h5 {
 .tb-sb-ch__title { flex: 1 1 auto; }
 
 /* Main iframe area */
-.tb-main { flex: 1 1 auto; overflow: hidden; background: #f8fafc; min-height: 0; display: flex; flex-direction: column; }
-.tb-main iframe, .tb-main > div { flex: 1 1 auto; min-height: 0; }
+.tb-main { flex: 1 1 auto; overflow: hidden; background: #f8fafc; min-height: 0; position: relative; }
 
 /* Mobile: stack vertically, hide sidebar on small screens */
 @media (max-width: 768px) {
@@ -4753,7 +4750,6 @@ async function doLogin() {
     currentUser = rows[0];
     _saveSession(sess, currentUser);
     closeModal('modal-auth');
-    tbUpdateNavVisibility();
     afterLogin();
     flash('Welcome back, ' + esc(currentUser.name || currentUser.username || 'Economist') + '!', 'success');
   } catch(e) {
@@ -16080,17 +16076,20 @@ window.addEventListener('message', function(evt) {
 });
 
 // Inject/remove the textbook nav tab based on access
+var _tbNavUpdating = false;
 async function tbUpdateNavVisibility() {
+  if (_tbNavUpdating) return;
+  _tbNavUpdating = true;
   var existing = document.getElementById('nav-textbook-tab');
   var existingMob = document.getElementById('nav-textbook-mobile');
   var access = await tbCheckAccess();
 
   if (access) {
-    // Inject desktop tab if not present
+    // Inject into nav-dynamic-links (same container as Dashboard/Admin tabs)
+    // so it appears in the right-hand authenticated nav, not the public nav
     if (!existing) {
-      var nl = document.querySelector('.nav__links');
-      var divider = nl ? nl.querySelector('.nav__divider') : null;
-      if (divider) {
+      var dyn = document.getElementById('nav-dynamic-links');
+      if (dyn) {
         var a = document.createElement('a');
         a.href = '#'; a.className = 'nav__tab nav__tab--textbook';
         a.setAttribute('data-page', 'textbook');
@@ -16099,10 +16098,12 @@ async function tbUpdateNavVisibility() {
         a.addEventListener('click', function(e) {
           e.preventDefault(); showPage('textbook');
         });
-        divider.parentNode.insertBefore(a, divider);
+        // Insert before the first child (before Dashboard) so order is:
+        // Textbook | Dashboard | Admin
+        dyn.insertBefore(a, dyn.firstChild);
       }
     }
-    // Inject mobile link if not present
+    // Mobile menu
     if (!existingMob) {
       var mm = document.querySelector('.mobile-menu__links');
       if (mm) {
@@ -16119,13 +16120,12 @@ async function tbUpdateNavVisibility() {
         mm.appendChild(ml);
       }
     }
-    // Store the tournament id for progress tracking
     window._tbTournId = (typeof access === 'object') ? access.tournId : null;
   } else {
-    // Remove tab if user lost access
     if (existing) existing.remove();
     if (existingMob) existingMob.remove();
   }
+  _tbNavUpdating = false;
   return access;
 }
 
@@ -16366,39 +16366,42 @@ function tbLoadIframe() {
     return;
   }
 
-  // Build iframe with direct src — simplest and most reliable approach
   var tbUrl = tbGetTextbookUrl();
+
+  // Show spinner while loading
   main.innerHTML =
     '<div id="tb-spinner" style="display:flex;align-items:center;justify-content:center;' +
-    'padding:3rem;flex-direction:column;gap:1rem;color:#64748b;">' +
+    'position:absolute;inset:0;flex-direction:column;gap:1rem;color:#64748b;background:#f8fafc;z-index:1;">' +
       '<div style="width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#3b82f6;' +
       'border-radius:50%;animation:spin 0.8s linear infinite;"></div>' +
       '<div style="font-size:0.9375rem;">Loading textbook…</div>' +
-      '<div style="font-size:0.8125rem;color:#94a3b8;">If this takes more than 10 seconds, ' +
-      '<a href="' + tbUrl + '" target="_blank">open the standalone version</a>.</div>' +
-    '</div>' +
-    '<iframe id="tb-iframe" src="' + tbUrl + '" ' +
-    'style="display:none;width:100%;height:100%;border:none;min-height:calc(100vh - 130px);" ' +
-    'title="Applied Macroeconomics Textbook" ' +
-    'allow="same-origin"></iframe>';
+      '<a href="' + tbUrl + '" target="_blank" ' +
+      'style="font-size:0.8125rem;color:#3b82f6;margin-top:0.5rem;">Or open in new tab ↗</a>' +
+    '</div>';
 
-  var frame = document.getElementById('tb-iframe');
+  // Create iframe separately so we can set src after load listener
+  var frame = document.createElement('iframe');
+  frame.id = 'tb-iframe';
+  frame.title = 'Applied Macroeconomics Textbook';
+  frame.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;z-index:0;';
+  main.style.position = 'relative';
+  main.appendChild(frame);
+
   frame.addEventListener('load', function() {
-    // Hide spinner, show iframe
     var spinner = document.getElementById('tb-spinner');
-    if (spinner) spinner.style.display = 'none';
-    frame.style.display = 'block';
+    if (spinner) spinner.remove();
     _tbLoaded = true;
     tbRenderSidebar();
-    // Navigate to active chapter
     setTimeout(function() {
       try {
         if (frame.contentWindow && frame.contentWindow.showChapter) {
           frame.contentWindow.showChapter(TB_ACTIVE_CH || 'ch1');
         }
       } catch(e) {}
-    }, 200);
+    }, 300);
   });
+
+  frame.src = tbUrl;
 }
 
 // Keep old name as alias
@@ -16408,6 +16411,10 @@ function tbFetchAndInject() { tbLoadIframe(); }
 PAGE_LOADERS['textbook'] = function() {
   tbReadProgress();
   tbRenderSidebar();
+  // Reset _tbLoaded if iframe was destroyed by page navigation
+  if (_tbLoaded && !document.getElementById('tb-iframe')) {
+    _tbLoaded = false;
+  }
 
   tbCheckAccess().then(function(access) {
     var main = document.getElementById('tb-main');
