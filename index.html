@@ -218,8 +218,11 @@ h1, h2, h3, h4, h5 {
   gap: 0.125rem;
   flex: 1;
   min-width: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
 }
+.nav__links::-webkit-scrollbar { display: none; }
 
 .nav__tab {
   display: inline-flex;
@@ -1894,6 +1897,17 @@ h1, h2, h3, h4, h5 {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* Prevent nav tabs from overlapping when textbook tab is added */
+.nav__links { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+.nav__links::-webkit-scrollbar { display: none; }
+.nav__tab { white-space: nowrap; flex-shrink: 0; }
+@media (max-width: 1100px) {
+  .nav__tab { font-size: 0.8125rem; padding: 0.375rem 0.5rem; }
+}
+@media (max-width: 900px) {
+  #nav-textbook-tab { display: none; }
+}
+
 /* ═══════════════════════════════════════════
    25. RESPONSIVE
 ═══════════════════════════════════════════ */
@@ -2994,24 +3008,8 @@ h1, h2, h3, h4, h5 {
 /* ═══════════════════════════════════════════════════
    TEXTBOOK PAGE
 ═══════════════════════════════════════════════════ */
-.nav__tab--textbook {
-  background: linear-gradient(135deg, #0f3d9e, #1e56c9) !important;
-  color: #fff !important;
-  border-radius: 6px !important;
-  padding: 0.25rem 0.875rem !important;
-  font-weight: 600 !important;
-  margin-left: 0.25rem !important;
-  font-size: 0.875rem !important;
-}
-.nav__tab--textbook:hover {
-  opacity: 0.9 !important;
-  color: #fff !important;
-}
-.nav__tab--textbook.active {
-  background: linear-gradient(135deg, #1e3a8a, #1e56c9) !important;
-  color: #fff !important;
-  box-shadow: 0 0 0 2px rgba(30,86,201,0.3) !important;
-}
+/* Textbook nav tab — subtle book icon style */
+.nav__tab--textbook { }
 .page-textbook { flex-direction: column; height: calc(100vh - 64px); max-height: calc(100vh - 64px); overflow: hidden; }
 .page-textbook.on { display: flex !important; }
 .page-textbook .page-header { flex: 0 0 auto; padding: 1rem 2rem; }
@@ -16025,60 +16023,45 @@ if (document.readyState === 'loading') {
 // OR be the professor who created such a tournament
 async function tbCheckAccess() {
   if (!currentUser) return false;
-  var role = currentUser.role || '';
   var userId = currentUser.id;
+  var role   = currentUser.role || '';
 
-  // ── Admins always have access — no DB query needed ────────────
-  if (currentUser.is_admin) return { access: true, tournId: null };
-
-  // ── Professors: check if they have a textbook-enabled tournament ─
-  // Falls back to granting access if the column doesn't exist yet (staging)
-  if (role === 'professor') {
+  // Admins and professors always have access
+  if (currentUser.is_admin || role === 'professor') {
+    // Try to find a relevant tournament for the progress dashboard
     try {
-      var myTourns = await sbGet('tournaments',
-        'created_by=eq.' + userId + '&textbook_enabled=eq.true&limit=1');
-      if (myTourns && myTourns.length > 0) return { access: true, tournId: myTourns[0].id };
-      // If column doesn't exist yet, sbGet returns an error or empty
-      // Fall back: give professor access if they have ANY tournament
-      var anyTourn = await sbGet('tournaments',
-        'created_by=eq.' + userId + '&limit=1');
-      if (anyTourn && anyTourn.length > 0) return { access: true, tournId: anyTourn[0].id };
+      var myT = await sbGet('tournaments', 'created_by=eq.' + userId + '&limit=1&select=id');
+      return { access: true, tournId: myT && myT.length ? myT[0].id : null };
     } catch(e) {
-      // DB error (e.g. column not yet created) — grant access anyway
       return { access: true, tournId: null };
     }
-    return false;
   }
 
-  // Students: check any team they belong to (paid check + textbook_enabled)
-  var allTeams = [];
+  // Students: access if they have paid for any team in any tournament
   try {
-    var capTeams = await sbGet('teams', 'captain_id=eq.' + userId + '&limit=100&select=id,tournament_id,fee_paid');
-    if (capTeams && capTeams.length) allTeams = allTeams.concat(capTeams);
+    var capTeams = await sbGet('teams',
+      'captain_id=eq.' + userId + '&fee_paid=eq.true&limit=1&select=id,tournament_id');
+    if (capTeams && capTeams.length > 0) {
+      return { access: true, tournId: capTeams[0].tournament_id || null };
+    }
   } catch(e) {}
-  try {
-    var memTeams = await sbGet('teams', 'members=cs.{"' + userId + '"}&limit=100&select=id,tournament_id,fee_paid');
-    if (memTeams && memTeams.length) allTeams = allTeams.concat(memTeams);
-  } catch(e2) {
-    try {
-      var memTeams2 = await sbGet('teams', 'members=cs.{' + userId + '}&limit=100&select=id,tournament_id,fee_paid');
-      if (memTeams2 && memTeams2.length) allTeams = allTeams.concat(memTeams2);
-    } catch(e3) {}
-  }
 
-  for (var i = 0; i < allTeams.length; i++) {
-    var tid = allTeams[i].tournament_id;
-    if (!tid) continue;
-    try {
-      var tourn = await sbGetPublic('tournaments',
-        'id=eq.' + tid + '&textbook_enabled=eq.true&limit=1&select=id,entry_fee');
-      if (tourn && tourn.length > 0) {
-        if (allTeams[i].fee_paid || !tourn[0].entry_fee || Number(tourn[0].entry_fee) === 0) {
-          return { access: true, tournId: tid };
+  // Also check if user is a member of any paid team
+  // Try the sbGetPublic route which works without auth
+  try {
+    var allTeams = await sbGetPublic('teams',
+      'fee_paid=eq.true&limit=500&select=id,tournament_id,captain_id,members');
+    if (allTeams) {
+      for (var i = 0; i < allTeams.length; i++) {
+        var t = allTeams[i];
+        var members = t.members || [];
+        if (t.captain_id === userId || members.indexOf(userId) >= 0) {
+          return { access: true, tournId: t.tournament_id || null };
         }
       }
-    } catch(e4) {}
-  }
+    }
+  } catch(e2) {}
+
   return false;
 }
 
@@ -16340,122 +16323,86 @@ function tbGoChapter(chId) {
   TB_ACTIVE_CH = chId;
   tbRenderSidebar();
   var frame = document.getElementById('tb-iframe');
-  if (frame && frame.contentWindow && frame.contentWindow.showChapter) {
-    try { frame.contentWindow.showChapter(chId); } catch(e) {}
-  }
+  if (!frame) return;
+  try {
+    if (frame.contentWindow && frame.contentWindow.showChapter) {
+      frame.contentWindow.showChapter(chId);
+    }
+  } catch(e) {}
 }
 
 function tbSetDifficulty(level) {
   var frame = document.getElementById('tb-iframe');
-  if (frame && frame.contentWindow && frame.contentWindow.setDifficulty) {
-    try { frame.contentWindow.setDifficulty(level); } catch(e) {}
-  }
+  if (!frame) return;
+  try {
+    if (frame.contentWindow && frame.contentWindow.setDifficulty) {
+      frame.contentWindow.setDifficulty(level);
+    }
+  } catch(e) {}
 }
 
-// ─── TEXTBOOK: srcdoc iframe loader ──────────────────────────────
-async function tbFetchAndInject() {
+// ─── TEXTBOOK LOADER ─────────────────────────────────────────────
+function tbGetTextbookUrl() {
+  // Reliably resolve the textbook URL regardless of deployment pattern
+  var a = document.createElement('a');
+  a.href = 'macronations-textbook.html';  // browser resolves relative to current page
+  return a.href;
+}
+
+function tbLoadIframe() {
   var main = document.getElementById('tb-main');
   if (!main) return;
 
-  // If already loaded, just re-navigate the existing iframe
-  if (_tbLoaded) {
-    var existingFrame = document.getElementById('tb-iframe');
-    if (existingFrame && existingFrame.contentWindow && existingFrame.contentWindow.showChapter) {
-      try {
-        if (existingFrame.contentWindow.loadedCharts) existingFrame.contentWindow.loadedCharts = {};
-        existingFrame.contentWindow.showChapter(TB_ACTIVE_CH || 'ch1');
-      } catch(e) {}
-    }
+  // Already have an iframe — just navigate it
+  var existing = document.getElementById('tb-iframe');
+  if (existing) {
+    try {
+      if (existing.contentWindow && existing.contentWindow.showChapter) {
+        if (existing.contentWindow.loadedCharts) existing.contentWindow.loadedCharts = {};
+        existing.contentWindow.showChapter(TB_ACTIVE_CH || 'ch1');
+      }
+    } catch(e) {}
     tbRenderSidebar();
     return;
   }
 
-  // Show spinner
+  // Build iframe with direct src — simplest and most reliable approach
+  var tbUrl = tbGetTextbookUrl();
   main.innerHTML =
-    '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:1rem;color:#64748b;">' +
-      '<div style="width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite;"></div>' +
-      '<div>Loading textbook…</div>' +
-    '</div>';
+    '<div id="tb-spinner" style="display:flex;align-items:center;justify-content:center;' +
+    'padding:3rem;flex-direction:column;gap:1rem;color:#64748b;">' +
+      '<div style="width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#3b82f6;' +
+      'border-radius:50%;animation:spin 0.8s linear infinite;"></div>' +
+      '<div style="font-size:0.9375rem;">Loading textbook…</div>' +
+      '<div style="font-size:0.8125rem;color:#94a3b8;">If this takes more than 10 seconds, ' +
+      '<a href="' + tbUrl + '" target="_blank">open the standalone version</a>.</div>' +
+    '</div>' +
+    '<iframe id="tb-iframe" src="' + tbUrl + '" ' +
+    'style="display:none;width:100%;height:100%;border:none;min-height:calc(100vh - 130px);" ' +
+    'title="Applied Macroeconomics Textbook" ' +
+    'allow="same-origin"></iframe>';
 
-  try {
-    // Fetch textbook HTML from same directory
-    // Build the textbook URL robustly — works for all deployment patterns:
-    // macronations.com, macronations.com/, macronations.com/index.html
-    var loc = window.location;
-    var path = loc.pathname;  // e.g. "/" or "/index.html" or "/macronations.html"
-    var dir  = path.endsWith('/') ? path : path.substring(0, path.lastIndexOf('/') + 1);
-    var tbUrl = loc.origin + dir + 'macronations-textbook.html';
-    var resp = await fetch(tbUrl, { cache: 'no-cache' });
-    if (!resp.ok) throw new Error('Could not fetch textbook (HTTP ' + resp.status + '). URL tried: ' + tbUrl);
-    var tbHtml = await resp.text();
-
-    // Inject a bridge script that postMessages progress back to the platform
-    var bridge = [
-      '<script data-bridge="1">',
-      '(function() {',
-      '  function waitReady(fn) {',
-      '    if (document.readyState === "complete") { fn(); }',
-      '    else { window.addEventListener("load", fn); }',
-      '  }',
-      '  waitReady(function() {',
-      '    // Patch markComplete',
-      '    var origMC = window.markComplete;',
-      '    window.markComplete = function(ch) {',
-      '      if (origMC) origMC(ch);',
-      '      try { window.parent.postMessage({type:"tb-progress",ch:ch,scores:{}}, "*"); } catch(e) {}',
-      '    };',
-      '    // Patch showChapter',
-      '    var origSC = window.showChapter;',
-      '    window.showChapter = function(ch) {',
-      '      if (origSC) origSC(ch);',
-      '      try { window.parent.postMessage({type:"tb-navigate",ch:ch}, "*"); } catch(e) {}',
-      '    };',
-      '  });',
-      '})();',
-      '<\/script>'
-    ].join('\n');
-
-    // Insert bridge just before </body>
-    tbHtml = tbHtml.replace(/<\/body>/i, bridge + '</body>');
-
-    // Create the srcdoc iframe — gives full document isolation
-    // so Chart.js, FRED fetch, CSS all work exactly as in standalone
-    main.innerHTML =
-      '<iframe id="tb-iframe"' +
-      ' style="width:100%;height:100%;border:none;display:block;min-height:calc(100vh - 130px);"' +
-      ' sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"' +
-      ' title="Applied Macroeconomics Textbook"></iframe>';
-
-    var frame = document.getElementById('tb-iframe');
-
-    frame.addEventListener('load', function onTbLoad() {
-      frame.removeEventListener('load', onTbLoad);
-      _tbLoaded = true;
-      tbRenderSidebar();
-      setTimeout(function() {
-        try {
-          if (frame.contentWindow && frame.contentWindow.showChapter) {
-            frame.contentWindow.showChapter(TB_ACTIVE_CH || 'ch1');
-          }
-        } catch(e) { console.warn('tb navigate error', e); }
-      }, 250);
-    });
-
-    // Set srcdoc AFTER attaching the load listener
-    frame.srcdoc = tbHtml;
-
-  } catch(err) {
-    console.error('[textbook]', err);
-    main.innerHTML =
-      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;' +
-      'height:300px;gap:1rem;text-align:center;padding:2rem;">' +
-        '<div style="font-size:2rem;">📖</div>' +
-        '<div style="font-weight:600;color:#1e293b;">Could not load textbook</div>' +
-        '<div style="font-size:0.85rem;color:#64748b;">' + (err.message || err) + '</div>' +
-        '<a href="macronations-textbook.html" target="_blank" class="btn btn--primary btn--sm">Open Standalone ↗</a>' +
-      '</div>';
-  }
+  var frame = document.getElementById('tb-iframe');
+  frame.addEventListener('load', function() {
+    // Hide spinner, show iframe
+    var spinner = document.getElementById('tb-spinner');
+    if (spinner) spinner.style.display = 'none';
+    frame.style.display = 'block';
+    _tbLoaded = true;
+    tbRenderSidebar();
+    // Navigate to active chapter
+    setTimeout(function() {
+      try {
+        if (frame.contentWindow && frame.contentWindow.showChapter) {
+          frame.contentWindow.showChapter(TB_ACTIVE_CH || 'ch1');
+        }
+      } catch(e) {}
+    }, 200);
+  });
 }
+
+// Keep old name as alias
+function tbFetchAndInject() { tbLoadIframe(); }
 
 // ─── PAGE LOADER — with access gating ────────────────────────────
 PAGE_LOADERS['textbook'] = function() {
