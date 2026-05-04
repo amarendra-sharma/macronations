@@ -2994,7 +2994,24 @@ h1, h2, h3, h4, h5 {
 /* ═══════════════════════════════════════════════════
    TEXTBOOK PAGE
 ═══════════════════════════════════════════════════ */
-.nav__tab--textbook { font-weight: 700; }
+.nav__tab--textbook {
+  background: linear-gradient(135deg, #0f3d9e, #1e56c9) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  padding: 0.25rem 0.875rem !important;
+  font-weight: 600 !important;
+  margin-left: 0.25rem !important;
+  font-size: 0.875rem !important;
+}
+.nav__tab--textbook:hover {
+  opacity: 0.9 !important;
+  color: #fff !important;
+}
+.nav__tab--textbook.active {
+  background: linear-gradient(135deg, #1e3a8a, #1e56c9) !important;
+  color: #fff !important;
+  box-shadow: 0 0 0 2px rgba(30,86,201,0.3) !important;
+}
 .page-textbook { flex-direction: column; height: calc(100vh - 64px); max-height: calc(100vh - 64px); overflow: hidden; }
 .page-textbook.on { display: flex !important; }
 .page-textbook .page-header { flex: 0 0 auto; padding: 1rem 2rem; }
@@ -16362,9 +16379,12 @@ async function tbFetchAndInject() {
 
   try {
     // Fetch textbook HTML from same directory
-    var base = window.location.href.replace(/\/[^\/]*$/, '/');
-    // Handle both root and subdirectory GitHub Pages deployments
-    var tbUrl = base + 'macronations-textbook.html';
+    // Build the textbook URL robustly — works for all deployment patterns:
+    // macronations.com, macronations.com/, macronations.com/index.html
+    var loc = window.location;
+    var path = loc.pathname;  // e.g. "/" or "/index.html" or "/macronations.html"
+    var dir  = path.endsWith('/') ? path : path.substring(0, path.lastIndexOf('/') + 1);
+    var tbUrl = loc.origin + dir + 'macronations-textbook.html';
     var resp = await fetch(tbUrl, { cache: 'no-cache' });
     if (!resp.ok) throw new Error('Could not fetch textbook (HTTP ' + resp.status + '). URL tried: ' + tbUrl);
     var tbHtml = await resp.text();
