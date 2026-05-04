@@ -200,11 +200,11 @@ h1, h2, h3, h4, h5 {
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: 0.25rem;
   max-width: var(--max-w);
   margin-inline: auto;
   padding-inline: 1rem;
-  overflow: hidden;
+  overflow: visible;
   min-width: 0;
 }
 
@@ -227,16 +227,16 @@ h1, h2, h3, h4, h5 {
 .nav__tab {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: 0.25rem;
   height: 38px;
-  padding: 0 0.875rem;
+  padding: 0 0.625rem;
   border-radius: var(--radius-sm);
-  font-size: 0.9rem;
+  font-size: 0.8375rem;
   font-weight: 500;
   color: var(--text-500);
   transition: color var(--t-fast), background var(--t-fast);
   white-space: nowrap;
-  min-width: 44px;
+  min-width: 0;
   justify-content: center;
 }
 .nav__tab:hover {
@@ -1897,13 +1897,7 @@ h1, h2, h3, h4, h5 {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Prevent nav tabs from overlapping when textbook tab is added */
-.nav__links { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-.nav__links::-webkit-scrollbar { display: none; }
-.nav__tab { white-space: nowrap; flex-shrink: 0; }
-@media (max-width: 1100px) {
-  .nav__tab { font-size: 0.8125rem; padding: 0.375rem 0.5rem; }
-}
+
 
 
 /* ═══════════════════════════════════════════
@@ -14704,7 +14698,8 @@ async function renderChampions() {
     '<div class="empty-state__title">Loading champions…</div></div>';
 
   try {
-    var champs = await sbGetPublic('champions', 'order=year.desc,score.desc&limit=100');
+    // Fetch all champion records — no score ordering, we group by season/tournament
+    var champs = await sbGetPublic('champions', 'order=year.desc,season.desc&limit=200');
     champs = champs || [];
 
     if (!champs.length) {
@@ -14715,7 +14710,20 @@ async function renderChampions() {
       return;
     }
 
-    // Fetch profile images — public endpoint, match by name case-insensitively
+    // Also fetch tournaments so we can label each champion correctly
+    var tournMap = {};
+    try {
+      var allTourns = await sbGetPublic('tournaments',
+        'select=id,name,type,season_year,is_global_elected&limit=500');
+      if (allTourns) {
+        for (var ti = 0; ti < allTourns.length; ti++) {
+          var t = allTourns[ti];
+          tournMap[String(t.id)] = t;
+        }
+      }
+    } catch(ex) {}
+
+    // Fetch profile images
     var profileMap = {};
     try {
       var allUsers = await sbGetPublic('mn_users', 'select=id,name,profile_image_url&limit=500');
@@ -14723,9 +14731,7 @@ async function renderChampions() {
         for (var ui = 0; ui < allUsers.length; ui++) {
           var u = allUsers[ui];
           if (u.name && u.profile_image_url) {
-            // Index by full name normalised
             profileMap[u.name.toLowerCase().trim()] = u;
-            // Also index first+last only (handles middle names)
             var parts = u.name.trim().split(/\s+/);
             if (parts.length > 2) {
               profileMap[(parts[0] + ' ' + parts[parts.length-1]).toLowerCase()] = u;
@@ -14733,49 +14739,101 @@ async function renderChampions() {
           }
         }
       }
-    } catch(ex) {}
+    } catch(ex2) {}
 
-    // Build grid
-    var cards = '';
+    // Group champions by season+year (each group = one tournament's results)
+    // Key = season + '|' + year to handle multiple tournaments per year
+    var groups = [];
+    var groupIndex = {};
     for (var i = 0; i < champs.length; i++) {
-      var c    = champs[i];
-      var rank = i + 1;
-      var rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '<span style="font-size:1rem;font-weight:700;color:var(--text-400);">#' + rank + '</span>';
-      var userRec   = profileMap[(c.captain || '').toLowerCase().trim()] || profileMap[(c.team || '').toLowerCase().trim()] || null;
-      var imgUrl    = (userRec && userRec.profile_image_url) ? userRec.profile_image_url : '';
-      var nameParts = (c.captain || c.team || '?').split(' ');
-      var initials  = nameParts.length >= 2
-        ? nameParts[0][0] + nameParts[nameParts.length-1][0]
-        : (nameParts[0][0] || '?');
-      initials = initials.toUpperCase();
-
-      var avatarHtml = imgUrl
-        ? '<img src="' + esc(imgUrl) + '" class="champ-card-new__avatar-img" alt="' + esc(c.captain || '') + '">'
-        : '<div class="champ-card-new__avatar-initials">' + esc(initials) + '</div>';
-
-      var isAdmin = currentUser && currentUser.is_admin;
-
-      cards +=
-        '<article class="champ-card-new">' +
-          '<div class="champ-card-new__rank">' + rankBadge + '</div>' +
-          '<div class="champ-card-new__avatar">' + avatarHtml + '</div>' +
-          '<div class="champ-card-new__body">' +
-            '<div class="champ-card-new__season">Season ' + esc(String(c.season || c.year || '')) + '</div>' +
-            '<h2 class="champ-card-new__team">' + esc(c.team || 'Unknown') + '</h2>' +
-            '<p class="champ-card-new__captain">' + esc(c.captain || '') + '</p>' +
-            '<p class="champ-card-new__meta">' + esc(c.institution || '') + (c.country ? ' · ' + esc(c.country) : '') + '</p>' +
-            '<div class="champ-card-new__stats">' +
-              '<div class="champ-card-new__score">' + esc(String(c.score || '—')) + '<span>/1000</span></div>' +
-              (c.prize_won ? '<div class="champ-card-new__prize">💰 ' + fmt$(c.prize_won) + '</div>' : '') +
-            '</div>' +
-          '</div>' +
-          (isAdmin
-            ? '<button class="btn btn--danger btn--sm champ-card-new__revoke" onclick="revokeChampion(\'' + esc(c.id) + '\')">Revoke</button>'
-            : '') +
-        '</article>';
+      var c = champs[i];
+      var tourn = (c.tournament_id && tournMap[String(c.tournament_id)]) ? tournMap[String(c.tournament_id)] : null;
+      // Determine tournament type label
+      var typeLabel = 'Class Tournament';
+      if (tourn) {
+        if (tourn.is_global_elected || tourn.type === 'global') { typeLabel = 'Global Championship'; }
+        else if (tourn.type === 'open') { typeLabel = 'Open Championship'; }
+        else if (tourn.type === 'university') { typeLabel = 'University Tournament'; }
+      } else if (c.prize_won && Number(c.prize_won) > 500) {
+        typeLabel = 'Global Championship';
+      }
+      var groupKey = String(c.season || c.year || '') + '|' + typeLabel + '|' + String(c.year || '');
+      if (!(groupKey in groupIndex)) {
+        groupIndex[groupKey] = groups.length;
+        groups.push({ key: groupKey, season: c.season, year: c.year, typeLabel: typeLabel, champs: [] });
+      }
+      groups[groupIndex[groupKey]].champs.push(c);
     }
 
-    el.innerHTML = '<div class="champions-leaderboard">' + cards + '</div>';
+    // Within each group, sort by score desc — rank within tournament
+    for (var gi = 0; gi < groups.length; gi++) {
+      groups[gi].champs.sort(function(a, b) { return (b.score || 0) - (a.score || 0); });
+    }
+
+    var isAdmin = currentUser && currentUser.is_admin;
+    var html = '';
+
+    for (var gi = 0; gi < groups.length; gi++) {
+      var grp = groups[gi];
+      // Section header
+      html +=
+        '<div style="margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--border);">' +
+          '<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">' +
+            '<span style="font-size:1.25rem;">🏆</span>' +
+            '<div>' +
+              '<div style="font-size:1rem;font-weight:700;color:var(--text-900);">' + esc(grp.typeLabel) + '</div>' +
+              '<div style="font-size:0.8125rem;color:var(--text-400);">' +
+                (grp.season ? 'Season ' + esc(String(grp.season)) + ' · ' : '') +
+                esc(String(grp.year || '')) +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      html += '<div class="champions-leaderboard">';
+
+      for (var ci = 0; ci < grp.champs.length; ci++) {
+        var c = grp.champs[ci];
+        var rank = ci + 1; // rank within this tournament, not globally
+        var rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉'
+          : '<span style="font-size:1rem;font-weight:700;color:var(--text-400);">#' + rank + '</span>';
+
+        var userRec = profileMap[(c.captain || '').toLowerCase().trim()]
+          || profileMap[(c.team || '').toLowerCase().trim()] || null;
+        var imgUrl  = (userRec && userRec.profile_image_url) ? userRec.profile_image_url : '';
+        var nameParts = (c.captain || c.team || '?').split(' ');
+        var initials  = nameParts.length >= 2
+          ? nameParts[0][0] + nameParts[nameParts.length-1][0]
+          : (nameParts[0][0] || '?');
+        initials = initials.toUpperCase();
+
+        var avatarHtml = imgUrl
+          ? '<img src="' + esc(imgUrl) + '" class="champ-card-new__avatar-img" alt="' + esc(c.captain || '') + '">'
+          : '<div class="champ-card-new__avatar-initials">' + esc(initials) + '</div>';
+
+        html +=
+          '<article class="champ-card-new">' +
+            '<div class="champ-card-new__rank">' + rankBadge + '</div>' +
+            '<div class="champ-card-new__avatar">' + avatarHtml + '</div>' +
+            '<div class="champ-card-new__body">' +
+              '<div class="champ-card-new__season">' + esc(grp.typeLabel) + (grp.season ? ' · Season ' + esc(String(grp.season)) : '') + '</div>' +
+              '<h2 class="champ-card-new__team">' + esc(c.team || 'Unknown') + '</h2>' +
+              '<p class="champ-card-new__captain">' + esc(c.captain || '') + '</p>' +
+              '<p class="champ-card-new__meta">' + esc(c.institution || '') + (c.country ? ' · ' + esc(c.country) : '') + '</p>' +
+              '<div class="champ-card-new__stats">' +
+                '<div class="champ-card-new__score">' + esc(String(Math.round(c.score || 0))) + '<span>/1000</span></div>' +
+                (c.prize_won ? '<div class="champ-card-new__prize">💰 ' + fmt$(c.prize_won) + '</div>' : '') +
+              '</div>' +
+            '</div>' +
+            (isAdmin
+              ? '<button class="btn btn--danger btn--sm champ-card-new__revoke" onclick="revokeChampion(\'' + esc(c.id) + '\')">Revoke</button>'
+              : '') +
+          '</article>';
+      }
+      html += '</div>';
+    }
+
+    el.innerHTML = html;
 
   } catch(e) {
     el.innerHTML =
