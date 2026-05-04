@@ -5135,7 +5135,6 @@ async function doLogout() {
 // currentTeamId is set here — it must be set before renderDashboard() loads team data.
 async function afterLogin() {
   _renderLoggedInNav();
-  tbUpdateNavVisibility(); // show/hide textbook tab based on access
   // Run DB setup check for admins/professors once
   if (currentUser && (currentUser.is_admin || currentUser.role === 'professor')) {
     dbSetupDefaults();
@@ -5206,7 +5205,8 @@ function _renderLoggedInNav() {
 
   var dyn = document.getElementById('nav-dynamic-links');
   if (dyn) {
-    var html = '<a href="#" class="nav__tab" data-page="dashboard">Dashboard</a>';
+    var html = '<a href="#" class="nav__tab" data-page="textbook">📖 Textbook</a>';
+    html += '<a href="#" class="nav__tab" data-page="dashboard">Dashboard</a>';
     if (isAdmin || role === 'professor') {
       html += '<a href="#" class="nav__tab" data-page="admin">Admin</a>';
     }
@@ -16075,58 +16075,13 @@ window.addEventListener('message', function(evt) {
   }
 });
 
-// Inject/remove the textbook nav tab based on access
-var _tbNavUpdating = false;
+// Store tournament ID for progress tracking (called once after login)
 async function tbUpdateNavVisibility() {
-  if (_tbNavUpdating) return;
-  _tbNavUpdating = true;
-  var existing = document.getElementById('nav-textbook-tab');
-  var existingMob = document.getElementById('nav-textbook-mobile');
-  var access = await tbCheckAccess();
-
-  if (access) {
-    // Inject into nav-dynamic-links (same container as Dashboard/Admin tabs)
-    // so it appears in the right-hand authenticated nav, not the public nav
-    if (!existing) {
-      var dyn = document.getElementById('nav-dynamic-links');
-      if (dyn) {
-        var a = document.createElement('a');
-        a.href = '#'; a.className = 'nav__tab nav__tab--textbook';
-        a.setAttribute('data-page', 'textbook');
-        a.id = 'nav-textbook-tab';
-        a.textContent = '📖 Textbook';
-        a.addEventListener('click', function(e) {
-          e.preventDefault(); showPage('textbook');
-        });
-        // Insert before the first child (before Dashboard) so order is:
-        // Textbook | Dashboard | Admin
-        dyn.insertBefore(a, dyn.firstChild);
-      }
-    }
-    // Mobile menu
-    if (!existingMob) {
-      var mm = document.querySelector('.mobile-menu__links');
-      if (mm) {
-        var ml = document.createElement('a');
-        ml.href = '#'; ml.className = 'mobile-menu__link';
-        ml.setAttribute('data-page', 'textbook');
-        ml.id = 'nav-textbook-mobile';
-        ml.innerHTML = '<span class="mobile-menu__link-icon">📖</span>Textbook';
-        ml.addEventListener('click', function(e) {
-          e.preventDefault();
-          closeMobileMenu();
-          showPage('textbook');
-        });
-        mm.appendChild(ml);
-      }
-    }
-    window._tbTournId = (typeof access === 'object') ? access.tournId : null;
-  } else {
-    if (existing) existing.remove();
-    if (existingMob) existingMob.remove();
-  }
-  _tbNavUpdating = false;
-  return access;
+  if (!currentUser) return;
+  try {
+    var access = await tbCheckAccess();
+    window._tbTournId = (access && typeof access === 'object') ? access.tournId : null;
+  } catch(e) {}
 }
 
 // ─── PROGRESS SYNC ───────────────────────────────────────────────
