@@ -200,11 +200,11 @@ h1, h2, h3, h4, h5 {
   height: 100%;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.375rem;
   max-width: var(--max-w);
   margin-inline: auto;
   padding-inline: 1rem;
-  overflow: visible;
+  overflow: hidden;
   min-width: 0;
 }
 
@@ -218,25 +218,22 @@ h1, h2, h3, h4, h5 {
   gap: 0.125rem;
   flex: 1;
   min-width: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
+  overflow: hidden;
 }
-.nav__links::-webkit-scrollbar { display: none; }
 
 .nav__tab {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.375rem;
   height: 38px;
-  padding: 0 0.625rem;
+  padding: 0 0.875rem;
   border-radius: var(--radius-sm);
-  font-size: 0.8375rem;
+  font-size: 0.9rem;
   font-weight: 500;
   color: var(--text-500);
   transition: color var(--t-fast), background var(--t-fast);
   white-space: nowrap;
-  min-width: 0;
+  min-width: 44px;
   justify-content: center;
 }
 .nav__tab:hover {
@@ -275,7 +272,6 @@ h1, h2, h3, h4, h5 {
   margin-left: auto;
   padding-left: 0.375rem;
 }
-.nav__cta { flex-shrink: 0; }
 .nav__cta .btn { white-space: nowrap; flex-shrink: 0; }
 .nav__cta .nav-user-pill {
   display: flex;
@@ -1898,9 +1894,6 @@ h1, h2, h3, h4, h5 {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-
-
-
 /* ═══════════════════════════════════════════
    25. RESPONSIVE
 ═══════════════════════════════════════════ */
@@ -2997,66 +2990,7 @@ h1, h2, h3, h4, h5 {
   .lp-tiers-grid { grid-template-columns: 1fr; }
   .lp-prize-row { flex-direction: column; }
 }
-  
-/* ═══════════════════════════════════════════════════
-   TEXTBOOK PAGE
-═══════════════════════════════════════════════════ */
-/* Textbook nav tab — subtle book icon style */
-.nav__tab--textbook { }
-.page-textbook { flex-direction: column; height: calc(100vh - 64px); max-height: calc(100vh - 64px); overflow: hidden; }
-.page-textbook.on { display: flex !important; }
-.page-textbook .page-header { flex: 0 0 auto; padding: 1rem 2rem; }
-.page-textbook.on .page-textbook__layout { display: flex; flex: 1 1 auto; overflow: hidden; min-height: 0; height: 100%; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Sidebar */
-.tb-sidebar {
-  width: 260px; flex: 0 0 260px;
-  background: #0f172a; color: #e2e8f0;
-  display: flex; flex-direction: column;
-  overflow: hidden; min-height: 0; border-right: 1px solid rgba(255,255,255,0.06);
-}
-.tb-sidebar__header { padding: 1rem 1.125rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
-.tb-sidebar__progress-wrap { }
-.tb-sidebar__progress-label { display: flex; justify-content: space-between; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #94a3b8; margin-bottom: 0.375rem; }
-.tb-sidebar__progress-bar { background: rgba(255,255,255,0.08); border-radius: 999px; height: 6px; }
-.tb-sidebar__progress-fill { background: linear-gradient(90deg, #22c55e, #16a34a); border-radius: 999px; height: 6px; transition: width 0.4s ease; }
-.tb-sidebar__chapters { flex: 1 1 auto; overflow-y: auto; padding: 0.5rem 0; }
-.tb-sidebar__chapters::-webkit-scrollbar { width: 4px; }
-.tb-sidebar__chapters::-webkit-scrollbar-track { background: transparent; }
-.tb-sidebar__chapters::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 999px; }
-
-/* Sidebar part headers */
-.tb-sb-part { font-size: 0.5875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #475569; padding: 0.875rem 1.125rem 0.25rem; }
-/* Sidebar chapter buttons */
-.tb-sb-ch {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.5rem 1.125rem;
-  font-size: 0.8125rem; color: #94a3b8;
-  cursor: pointer; border: none; background: none; width: 100%; text-align: left;
-  border-left: 3px solid transparent;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  line-height: 1.35;
-}
-.tb-sb-ch:hover { background: rgba(255,255,255,0.05); color: #e2e8f0; }
-.tb-sb-ch.active { background: rgba(30,86,201,0.2); color: #93c5fd; border-left-color: #3b82f6; }
-.tb-sb-ch.done .tb-sb-ch__dot { background: #22c55e; }
-.tb-sb-ch__dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.15); flex: 0 0 7px; }
-.tb-sb-ch__num { font-size: 0.625rem; color: #475569; flex: 0 0 auto; font-family: 'JetBrains Mono', monospace; }
-.tb-sb-ch__title { flex: 1 1 auto; }
-
-/* Main iframe area */
-.tb-main { flex: 1 1 auto; overflow: hidden; background: #f8fafc; min-height: 0; display: flex; flex-direction: column; }
-
-/* Mobile: stack vertically, hide sidebar on small screens */
-@media (max-width: 768px) {
-  .page-textbook { height: auto; overflow: auto; }
-  .page-textbook__layout { flex-direction: column; overflow: visible; height: auto; }
-  .tb-sidebar { width: 100%; flex: 0 0 auto; height: auto; max-height: 220px; overflow-y: auto; }
-  .tb-main { height: 82vh; }
-}
-
-</style>
+  </style>
 </head>
 <body>
 
@@ -3114,7 +3048,7 @@ h1, h2, h3, h4, h5 {
       <a href="#" class="nav__tab" data-page="champions">Champions</a>
       <a href="#" class="nav__tab" data-page="about">About</a>
       <span class="nav__divider" aria-hidden="true"></span>
-      <a href="#" class="nav__tab nav__tab--how" data-page="how">How it works</a>
+      <a href="#" class="nav__tab nav__tab--how" data-page="how">How it works ↗</a>
     </nav>
 
     <!-- Desktop CTA -->
@@ -3200,7 +3134,6 @@ h1, h2, h3, h4, h5 {
       <span class="mobile-menu__link-icon">💡</span>
       How it works
     </a>
-
   </div>
 
   <div class="mobile-menu__cta">
@@ -3807,17 +3740,6 @@ h1, h2, h3, h4, h5 {
         </div>
         <div class="form-error" id="ct-error"></div>
 
-        <!-- Professor-only: textbook adoption -->
-        <div id="ct-textbook-wrap" style="display:none;margin-top:0.75rem;padding:1rem;background:var(--bg-subtle,#f8fafc);border-radius:var(--radius);border:1px solid var(--border);">
-          <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;">
-            <input type="checkbox" id="ct-textbook-enable" style="width:18px;height:18px;cursor:pointer;margin-top:2px;">
-            <div>
-              <div style="font-weight:600;font-size:0.9375rem;color:var(--text-700);">📖 Adopt Course Textbook</div>
-              <div style="font-size:0.8125rem;color:var(--text-500);margin-top:0.25rem;">Gives enrolled students access to <em>Applied Macroeconomics: From Theory to Policy Simulation</em>. Reading progress and quiz scores are tracked and visible in your professor dashboard. Only available alongside Global Tournament participation.</div>
-            </div>
-          </label>
-        </div>
-
         <!-- Professor-only: elect for global seasonal tournament -->
         <div id="ct-global-election-wrap" style="display:none;margin-top:0.5rem;">
           <div class="dash-alert dash-alert--info" style="margin-bottom:0.75rem;">
@@ -3930,51 +3852,6 @@ h1, h2, h3, h4, h5 {
     </div>
     <div class="container" style="padding-top:2.5rem;padding-bottom:4rem;">
       <div id="about-content"></div>
-    </div>
-  </div>
-
-
-  <!-- ── PAGE: TEXTBOOK ── -->
-  <div class="page page-textbook" id="page-textbook">
-    <div class="page-header" style="background:linear-gradient(135deg,#0f3d9e 0%,#1e56c9 100%);">
-      <div class="page-header__inner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
-        <div>
-          <h1 class="page-header__title">Applied Macroeconomics</h1>
-          <p class="page-header__sub">From Theory to Policy Simulation — by Amarendra Sharma, PhD · Binghamton University (SUNY)</p>
-        </div>
-        <div style="display:flex;gap:0.625rem;flex-wrap:wrap;">
-          <button class="btn btn--ghost btn--sm" style="border-color:rgba(255,255,255,0.35);color:#fff;" onclick="tbSetDifficulty('principles')">📘 Principles</button>
-          <button class="btn btn--ghost btn--sm" style="border-color:rgba(255,255,255,0.35);color:#fff;" onclick="tbSetDifficulty('intermediate')">📗 Intermediate</button>
-          <a href="macronations-textbook.html" target="_blank" class="btn btn--primary btn--sm" style="background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.4);">↗ Open Standalone ↗</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="page-textbook__layout">
-      <!-- Sidebar -->
-      <aside class="tb-sidebar" id="tb-sidebar">
-        <div class="tb-sidebar__header">
-          <div class="tb-sidebar__progress-wrap">
-            <div class="tb-sidebar__progress-label">
-              <span>Progress</span>
-              <span id="tb-sb-pct">0%</span>
-            </div>
-            <div class="tb-sidebar__progress-bar">
-              <div class="tb-sidebar__progress-fill" id="tb-sb-fill" style="width:0%"></div>
-            </div>
-          </div>
-        </div>
-        <div class="tb-sidebar__chapters" id="tb-sb-chapters"></div>
-      </aside>
-
-      <!-- Main: textbook content injected here -->
-      <main class="tb-main" id="tb-main">
-        <div id="tb-loading" style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:1rem;color:var(--text-400);">
-          <div style="width:40px;height:40px;border:3px solid #e2e8f0;border-top-color:#3b82f6;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-          <div style="font-size:0.9375rem;">Loading textbook…</div>
-        </div>
-        <div id="tb-content" style="display:none;height:100%;overflow-y:auto;"></div>
-      </main>
     </div>
   </div>
 
@@ -4236,7 +4113,6 @@ h1, h2, h3, h4, h5 {
         <li><a href="#" class="footer__link" onclick="openAuthModal('register');return false;">Professor Portal</a></li>
         <li><a href="#" class="footer__link" onclick="showPage('tournaments');return false;">Class Tournaments</a></li>
         <li><a href="#" class="footer__link" onclick="showPage('about');setTimeout(function(){var e=document.querySelector('[data-about-tab=\'curriculum\']');if(e){e.click();}},100);return false;">Curriculum Guide</a></li>
-        <li><a href="#" class="footer__link" onclick="showPage('textbook');return false;">📖 Course Textbook</a></li>
         <li><a href="/cdn-cgi/l/email-protection#d4a7a1a4a4bba6a094b9b5b7a6bbbab5a0bdbbbaa7fab7bbb9" class="footer__link">Contact Us</a></li>
       </ul>
     </div>
@@ -5200,8 +5076,7 @@ function _renderLoggedInNav() {
 
   var dyn = document.getElementById('nav-dynamic-links');
   if (dyn) {
-    var html = '<a href="#" class="nav__tab" data-page="textbook">📖 Textbook</a>';
-    html += '<a href="#" class="nav__tab" data-page="dashboard">Dashboard</a>';
+    var html = '<a href="#" class="nav__tab" data-page="dashboard">Dashboard</a>';
     if (isAdmin || role === 'professor') {
       html += '<a href="#" class="nav__tab" data-page="admin">Admin</a>';
     }
@@ -5251,8 +5126,7 @@ function _renderLoggedInNav() {
     var s = document.createElement('span');
     s.id = 'nav-dynamic-links';
     s.style.display = 'contents';
-    var divider = nl.querySelector('.nav__divider');
-    if (divider) { nl.insertBefore(s, divider); } else { nl.appendChild(s); }
+    nl.appendChild(s);
   }
 })();
 
@@ -9652,15 +9526,7 @@ function openCreateTournament(isClass) {
           // Reset fee to 0 when de-elected
           var feeField = document.getElementById('ct-fee');
           if (feeField) { feeField.value = '0'; }
-          // Hide textbook option when de-electing
-          var tbWrapOff = document.getElementById('ct-textbook-wrap');
-          if (tbWrapOff) { tbWrapOff.style.display = 'none'; }
-          var tbCheckOff = document.getElementById('ct-textbook-enable');
-          if (tbCheckOff) { tbCheckOff.checked = false; }
         }
-        // Show textbook option when electing global
-        var tbWrapOn = document.getElementById('ct-textbook-wrap');
-        if (tbWrapOn) { tbWrapOn.style.display = electBox.checked ? 'block' : 'none'; }
       };
     }
     // Hide the Stripe field from admins too (professors never see it)
@@ -9701,7 +9567,6 @@ async function doCreateTournament() {
   // Check global election FIRST — elected professors are allowed to charge WORLD_CUP_ENTRY_FEE
   var electBox  = document.getElementById('ct-global-elect');
   var isElected = electBox ? electBox.checked : false;
-  var textbookEnabled = isElected && (document.getElementById('ct-textbook-enable') ? document.getElementById('ct-textbook-enable').checked : false);
   if (isElected) {
     fee = WORLD_CUP_ENTRY_FEE; // enforce World Cup entry fee
     var profLink = document.getElementById('ct-stripe-link-prof');
@@ -9736,8 +9601,7 @@ async function doCreateTournament() {
       schedule:         schedule,
       playoff_teams:    [],
       playoff_bracket:  {},
-      is_global_elected: isElected,
-      textbook_enabled:  textbookEnabled
+      is_global_elected: isElected
     });
     if (!newTourn || newTourn.code) {
       _setFormErr('ct-error', (newTourn && newTourn.message) || 'Failed to create tournament.');
@@ -12965,17 +12829,14 @@ async function crownChampion(tournId) {
 
     // Insert champion record
     await sbPost('champions', {
-      season:          tourn.season_year,
-      team:            team.name || 'Unknown',
-      captain:         (captain && captain.name) ? captain.name : '',
-      country:         (captain && captain.country) ? captain.country : '',
-      institution:     (captain && captain.institution) ? captain.institution : '',
-      score:           bestScore,
-      year:            new Date().getFullYear(),
-      prize_won:       pp.winner,
-      tournament_id:   tournId,
-      tier:            tourn.tier || 'class',
-      tournament_name: tourn.name || ''
+      season:      tourn.season_year,
+      team:        team.name || 'Unknown',
+      captain:     (captain && captain.name) ? captain.name : '',
+      country:     (captain && captain.country) ? captain.country : '',
+      institution: (captain && captain.institution) ? captain.institution : '',
+      score:       bestScore,
+      year:        new Date().getFullYear(),
+      prize_won:   pp.winner
     });
 
     flash('Champion crowned: ' + (team.name || 'Team') + '!', 'success');
@@ -14697,13 +14558,13 @@ afterLogin = async function() {
 
 async function renderChampions() {
   var el = document.getElementById('champions-content');
-  if (!el) return;
+  if (!el) { return; }
   el.innerHTML =
     '<div class="empty-state"><div class="spinner" style="width:28px;height:28px;margin:0 auto 0.75rem;"></div>' +
-    '<div class="empty-state__title">Loading champions...</div></div>';
+    '<div class="empty-state__title">Loading champions…</div></div>';
 
   try {
-    var champs = await sbGetPublic('champions', 'order=year.desc,season.desc&limit=200');
+    var champs = await sbGetPublic('champions', 'order=year.desc,score.desc&limit=100');
     champs = champs || [];
 
     if (!champs.length) {
@@ -14714,135 +14575,77 @@ async function renderChampions() {
       return;
     }
 
-    // Profile images
+    // Fetch profile images — public endpoint, match by name case-insensitively
     var profileMap = {};
     try {
       var allUsers = await sbGetPublic('mn_users', 'select=id,name,profile_image_url&limit=500');
       if (allUsers) {
         for (var ui = 0; ui < allUsers.length; ui++) {
           var u = allUsers[ui];
-          if (u.name) {
+          if (u.name && u.profile_image_url) {
+            // Index by full name normalised
             profileMap[u.name.toLowerCase().trim()] = u;
-            var np = u.name.trim().split(/\s+/);
-            if (np.length > 2) { profileMap[(np[0]+' '+np[np.length-1]).toLowerCase()] = u; }
+            // Also index first+last only (handles middle names)
+            var parts = u.name.trim().split(/\s+/);
+            if (parts.length > 2) {
+              profileMap[(parts[0] + ' ' + parts[parts.length-1]).toLowerCase()] = u;
+            }
           }
         }
       }
     } catch(ex) {}
 
-    // Determine label from tier field (saved since this fix) or heuristic for old records
-    function getTierLabel(c) {
-      if (c.tier === 'global' || c.tier === 'open_championship') return 'Global Championship';
-      if (c.tier === 'university') return 'University Tournament';
-      if (c.tier === 'class') return 'Class Tournament';
-      // Old records without tier: large prize = global
-      if (c.prize_won && Number(c.prize_won) >= 500) return 'Global Championship';
-      return 'Class Tournament';
-    }
-
-    // Group: each unique season+tier combination = one tournament block
-    // Use tournament_id if available (new records), else season+tier
-    var groups = [];
-    var seen = {};
+    // Build grid
+    var cards = '';
     for (var i = 0; i < champs.length; i++) {
-      var c = champs[i];
-      var label = getTierLabel(c);
-      var groupKey = c.tournament_id
-        ? 'tid_' + String(c.tournament_id)
-        : String(c.year||'') + '_' + String(c.season||'') + '_' + label;
-      if (!(groupKey in seen)) {
-        seen[groupKey] = groups.length;
-        groups.push({
-          label: label,
-          season: c.season,
-          year:   c.year,
-          name:   c.tournament_name || '',
-          champs: []
-        });
-      }
-      groups[seen[groupKey]].champs.push(c);
-    }
+      var c    = champs[i];
+      var rank = i + 1;
+      var rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '<span style="font-size:1rem;font-weight:700;color:var(--text-400);">#' + rank + '</span>';
+      var userRec   = profileMap[(c.captain || '').toLowerCase().trim()] || profileMap[(c.team || '').toLowerCase().trim()] || null;
+      var imgUrl    = (userRec && userRec.profile_image_url) ? userRec.profile_image_url : '';
+      var nameParts = (c.captain || c.team || '?').split(' ');
+      var initials  = nameParts.length >= 2
+        ? nameParts[0][0] + nameParts[nameParts.length-1][0]
+        : (nameParts[0][0] || '?');
+      initials = initials.toUpperCase();
 
-    // Within each group, rank by score desc
-    for (var gi = 0; gi < groups.length; gi++) {
-      groups[gi].champs.sort(function(a,b){ return (b.score||0)-(a.score||0); });
-    }
+      var avatarHtml = imgUrl
+        ? '<img src="' + esc(imgUrl) + '" class="champ-card-new__avatar-img" alt="' + esc(c.captain || '') + '">'
+        : '<div class="champ-card-new__avatar-initials">' + esc(initials) + '</div>';
 
-    var isAdmin = currentUser && currentUser.is_admin;
-    var out = '';
+      var isAdmin = currentUser && currentUser.is_admin;
 
-    for (var gi = 0; gi < groups.length; gi++) {
-      var grp = groups[gi];
-      var icon = grp.label === 'Global Championship' ? '🏆' :
-                 grp.label === 'University Tournament' ? '🏛️' : '🏫';
-
-      out +=
-        '<div style="margin:2rem 0 1rem;padding-bottom:0.625rem;border-bottom:2px solid var(--border);">' +
-          '<div style="display:flex;align-items:center;gap:0.75rem;">' +
-            '<span style="font-size:1.5rem;">' + icon + '</span>' +
-            '<div>' +
-              '<div style="font-size:1rem;font-weight:700;color:var(--text-900);">' +
-                esc(grp.label) + (grp.name ? ' — ' + esc(grp.name) : '') +
-              '</div>' +
-              '<div style="font-size:0.8125rem;color:var(--text-400);">' +
-                (grp.season ? 'Season ' + esc(String(grp.season)) + '  ·  ' : '') +
-                esc(String(grp.year || '')) +
-              '</div>' +
+      cards +=
+        '<article class="champ-card-new">' +
+          '<div class="champ-card-new__rank">' + rankBadge + '</div>' +
+          '<div class="champ-card-new__avatar">' + avatarHtml + '</div>' +
+          '<div class="champ-card-new__body">' +
+            '<div class="champ-card-new__season">Season ' + esc(String(c.season || c.year || '')) + '</div>' +
+            '<h2 class="champ-card-new__team">' + esc(c.team || 'Unknown') + '</h2>' +
+            '<p class="champ-card-new__captain">' + esc(c.captain || '') + '</p>' +
+            '<p class="champ-card-new__meta">' + esc(c.institution || '') + (c.country ? ' · ' + esc(c.country) : '') + '</p>' +
+            '<div class="champ-card-new__stats">' +
+              '<div class="champ-card-new__score">' + esc(String(c.score || '—')) + '<span>/1000</span></div>' +
+              (c.prize_won ? '<div class="champ-card-new__prize">💰 ' + fmt$(c.prize_won) + '</div>' : '') +
             '</div>' +
           '</div>' +
-        '</div>' +
-        '<div class="champions-leaderboard">';
-
-      for (var ci = 0; ci < grp.champs.length; ci++) {
-        var c = grp.champs[ci];
-        var rank = ci + 1;
-        var rankBadge = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉'
-          : '<span style="font-size:1rem;font-weight:700;color:var(--text-400);">#' + rank + '</span>';
-        var userRec = profileMap[(c.captain||'').toLowerCase().trim()]
-                   || profileMap[(c.team||'').toLowerCase().trim()] || null;
-        var imgUrl  = (userRec && userRec.profile_image_url) ? userRec.profile_image_url : '';
-        var np2 = (c.captain||c.team||'?').split(' ');
-        var ini = (np2.length >= 2 ? np2[0][0]+np2[np2.length-1][0] : (np2[0][0]||'?')).toUpperCase();
-        var avatarHtml = imgUrl
-          ? '<img src="' + esc(imgUrl) + '" class="champ-card-new__avatar-img" alt="' + esc(c.captain||'') + '">'
-          : '<div class="champ-card-new__avatar-initials">' + esc(ini) + '</div>';
-
-        out +=
-          '<article class="champ-card-new">' +
-            '<div class="champ-card-new__rank">' + rankBadge + '</div>' +
-            '<div class="champ-card-new__avatar">' + avatarHtml + '</div>' +
-            '<div class="champ-card-new__body">' +
-              '<div class="champ-card-new__season">' + esc(grp.label) +
-                (grp.season ? ' · Season ' + esc(String(grp.season)) : '') + '</div>' +
-              '<h2 class="champ-card-new__team">' + esc(c.team||'Unknown') + '</h2>' +
-              '<p class="champ-card-new__captain">' + esc(c.captain||'') + '</p>' +
-              '<p class="champ-card-new__meta">' + esc(c.institution||'') +
-                (c.country ? ' · ' + esc(c.country) : '') + '</p>' +
-              '<div class="champ-card-new__stats">' +
-                '<div class="champ-card-new__score">' +
-                  esc(String(Math.round(c.score||0))) + '<span>/1000</span>' +
-                '</div>' +
-                (c.prize_won ? '<div class="champ-card-new__prize">💰 ' + fmt$(c.prize_won) + '</div>' : '') +
-              '</div>' +
-            '</div>' +
-            (isAdmin
-              ? '<button class="btn btn--danger btn--sm champ-card-new__revoke"' +
-                ' onclick="revokeChampion(\'' + esc(c.id) + '\')">Revoke</button>'
-              : '') +
-          '</article>';
-      }
-      out += '</div>';
+          (isAdmin
+            ? '<button class="btn btn--danger btn--sm champ-card-new__revoke" onclick="revokeChampion(\'' + esc(c.id) + '\')">Revoke</button>'
+            : '') +
+        '</article>';
     }
 
-    el.innerHTML = out;
+    el.innerHTML = '<div class="champions-leaderboard">' + cards + '</div>';
 
   } catch(e) {
     el.innerHTML =
       '<div class="empty-state"><div class="empty-state__icon">⚠️</div>' +
       '<div class="empty-state__title">Could not load champions</div>' +
-      '<div class="empty-state__desc">' + esc((e&&e.message)||'') + '</div></div>';
+      '<div class="empty-state__desc">' + esc((e && e.message) || '') + '</div></div>';
   }
 }
+
+// ── Mark user as champion when tournament completes ─────────────────
 var _origCrownChampion = crownChampion;
 crownChampion = async function(tournId) {
   await _origCrownChampion(tournId);
@@ -16063,425 +15866,6 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', ocInit);
 } else {
   ocInit();
-}
-
-
-
-// ═══════════════════════════════════════════════════════════════════
-//  TEXTBOOK SYSTEM — Access control, progress sync, prof dashboard
-// ═══════════════════════════════════════════════════════════════════
-
-// Check if the current user has textbook access:
-// Must be in a paid tournament that has textbook_enabled = true
-// OR be the professor who created such a tournament
-async function tbCheckAccess() {
-  if (!currentUser) return false;
-  var userId = currentUser.id;
-  var role   = currentUser.role || '';
-
-  // Admins and professors always have access
-  if (currentUser.is_admin || role === 'professor') {
-    // Try to find a relevant tournament for the progress dashboard
-    try {
-      var myT = await sbGet('tournaments', 'created_by=eq.' + userId + '&limit=1&select=id');
-      return { access: true, tournId: myT && myT.length ? myT[0].id : null };
-    } catch(e) {
-      return { access: true, tournId: null };
-    }
-  }
-
-  // Students: access if they have paid for any team in any tournament
-  try {
-    var capTeams = await sbGet('teams',
-      'captain_id=eq.' + userId + '&fee_paid=eq.true&limit=1&select=id,tournament_id');
-    if (capTeams && capTeams.length > 0) {
-      return { access: true, tournId: capTeams[0].tournament_id || null };
-    }
-  } catch(e) {}
-
-  // Also check if user is a member of any paid team
-  // Try the sbGetPublic route which works without auth
-  try {
-    var allTeams = await sbGetPublic('teams',
-      'fee_paid=eq.true&limit=500&select=id,tournament_id,captain_id,members');
-    if (allTeams) {
-      for (var i = 0; i < allTeams.length; i++) {
-        var t = allTeams[i];
-        var members = t.members || [];
-        if (t.captain_id === userId || members.indexOf(userId) >= 0) {
-          return { access: true, tournId: t.tournament_id || null };
-        }
-      }
-    }
-  } catch(e2) {}
-
-  return false;
-}
-
-// Listen for progress/navigation messages from the textbook iframe
-window.addEventListener('message', function(evt) {
-  if (!evt.data || typeof evt.data !== 'object') return;
-  if (evt.data.type === 'tb-progress' && currentUser) {
-    tbSaveProgress(currentUser.id, window._tbTournId || null, evt.data.ch, evt.data.scores || {});
-    tbReadProgress();
-    tbRenderSidebar();
-  }
-  if (evt.data.type === 'tb-navigate') {
-    TB_ACTIVE_CH = evt.data.ch || TB_ACTIVE_CH;
-    tbRenderSidebar();
-  }
-});
-
-// Store tournament ID for progress tracking (called once after login)
-async function tbUpdateNavVisibility() {
-  if (!currentUser) return;
-  try {
-    var access = await tbCheckAccess();
-    window._tbTournId = (access && typeof access === 'object') ? access.tournId : null;
-  } catch(e) {}
-}
-
-// ─── PROGRESS SYNC ───────────────────────────────────────────────
-// Called from textbook iframe via postMessage
-async function tbSaveProgress(userId, tournId, chapterId, quizScores) {
-  if (!userId || !chapterId) return;
-  var payload = {
-    user_id:      userId,
-    tournament_id: tournId || null,
-    chapter_id:   chapterId,
-    completed:    true,
-    quiz_scores:  quizScores || {},
-    updated_at:   new Date().toISOString()
-  };
-  try {
-    // Upsert: use POST with prefer=resolution=merge-duplicates header equivalent
-    // Supabase REST upsert: POST with on_conflict param
-    await fetch(SUPA_URL + '/rest/v1/mn_textbook_progress' +
-      '?on_conflict=user_id,tournament_id,chapter_id', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + (await _authToken()),
-        'apikey': SUPA_ANON,
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
-      },
-      body: JSON.stringify(payload)
-    });
-  } catch(e) { console.warn('tbSaveProgress error', e); }
-}
-
-// Listen for messages from the textbook iframe
-window.addEventListener('message', function(evt) {
-  if (!evt.data || typeof evt.data !== 'object') return;
-
-  if (evt.data.type === 'tb-progress' && currentUser) {
-    // Student completed a chapter or submitted quiz
-    var chId = evt.data.ch;
-    var scores = evt.data.scores || {};
-    tbSaveProgress(currentUser.id, window._tbTournId, chId, scores);
-    tbReadProgress();
-    tbRenderSidebar();
-  }
-  if (evt.data.type === 'tb-navigate') {
-    TB_ACTIVE_CH = evt.data.ch || TB_ACTIVE_CH;
-    tbRenderSidebar();
-  }
-});
-
-// ─── PROFESSOR PROGRESS DASHBOARD ────────────────────────────────
-async function tbRenderProfProgress(tournId) {
-  var el = document.getElementById('tb-prof-progress');
-  if (!el) return;
-  el.innerHTML = '<div style="color:var(--text-400);font-size:0.875rem;padding:1.5rem 0;">Loading student progress…</div>';
-
-  try {
-    // Fetch all teams in this tournament
-    var teams = await sbGet('teams',
-      'tournament_id=eq.' + tournId + '&fee_paid=eq.true&select=id,name,captain_id,members&limit=200');
-    if (!teams || teams.length === 0) {
-      el.innerHTML = '<div style="color:var(--text-400);font-size:0.875rem;padding:1.5rem 0;">No enrolled teams yet.</div>';
-      return;
-    }
-
-    // Collect all student user IDs
-    var userIds = [];
-    for (var i = 0; i < teams.length; i++) {
-      var t = teams[i];
-      if (t.captain_id) userIds.push(t.captain_id);
-      if (t.members && Array.isArray(t.members)) {
-        for (var j = 0; j < t.members.length; j++) {
-          if (t.members[j] && userIds.indexOf(t.members[j]) < 0) userIds.push(t.members[j]);
-        }
-      }
-    }
-
-    // Fetch progress records for all users in this tournament
-    var progress = await sbGet('mn_textbook_progress',
-      'tournament_id=eq.' + tournId + '&limit=5000&select=user_id,chapter_id,completed,quiz_scores,updated_at');
-
-    // Fetch user names
-    var userRows = await sbGet('mn_users',
-      'id=in.(' + userIds.slice(0,100).join(',') + ')&select=id,username,email&limit=100');
-    var userMap = {};
-    if (userRows) {
-      for (var u = 0; u < userRows.length; u++) {
-        userMap[userRows[u].id] = userRows[u];
-      }
-    }
-
-    // Build progress map: userId -> Set of completed chapter IDs
-    var progressMap = {};
-    var quizMap = {};
-    if (progress) {
-      for (var p = 0; p < progress.length; p++) {
-        var pr = progress[p];
-        if (!progressMap[pr.user_id]) progressMap[pr.user_id] = [];
-        if (pr.completed) progressMap[pr.user_id].push(pr.chapter_id);
-        if (pr.quiz_scores && Object.keys(pr.quiz_scores).length > 0) {
-          if (!quizMap[pr.user_id]) quizMap[pr.user_id] = {};
-          Object.assign(quizMap[pr.user_id], pr.quiz_scores);
-        }
-      }
-    }
-
-    var totalChs = TB_CHAPTERS.length;
-    var completedChs = TB_CHAPTERS.filter(function(c) {
-      return c.id !== 'ch23' && c.id !== 'ch24' && c.id !== 'ch25' && c.id !== 'ch26';
-    }).length; // only count published chapters
-
-    // Summary row
-    var avgPct = userIds.length > 0 ? Math.round(
-      userIds.reduce(function(sum, uid) {
-        return sum + ((progressMap[uid] || []).length / completedChs * 100);
-      }, 0) / userIds.length
-    ) : 0;
-
-    var html = '';
-    // Summary bar
-    html += '<div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1.5rem;">';
-    html += '<div style="flex:1;background:var(--bg-subtle);border-radius:var(--radius);padding:1rem;">' +
-      '<div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-400);margin-bottom:0.25rem;">Students Enrolled</div>' +
-      '<div style="font-size:1.75rem;font-weight:700;color:var(--text-900);">' + userIds.length + '</div>' +
-    '</div>';
-    html += '<div style="flex:1;background:var(--bg-subtle);border-radius:var(--radius);padding:1rem;">' +
-      '<div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-400);margin-bottom:0.25rem;">Published Chapters</div>' +
-      '<div style="font-size:1.75rem;font-weight:700;color:var(--text-900);">' + completedChs + '</div>' +
-    '</div>';
-    html += '<div style="flex:1;background:var(--bg-subtle);border-radius:var(--radius);padding:1rem;">' +
-      '<div style="font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-400);margin-bottom:0.25rem;">Avg. Completion</div>' +
-      '<div style="font-size:1.75rem;font-weight:700;color:' + (avgPct >= 70 ? '#16a34a' : avgPct >= 40 ? '#d97706' : '#dc2626') + ';">' + avgPct + '%</div>' +
-    '</div>';
-    html += '</div>';
-
-    // Chapter completion heatmap header
-    var pubChs = TB_CHAPTERS.filter(function(c){ return c.id !== 'ch23' && c.id !== 'ch24' && c.id !== 'ch25' && c.id !== 'ch26'; });
-
-    // Per-student table
-    html += '<div style="overflow-x:auto;">';
-    html += '<table style="width:100%;border-collapse:collapse;font-size:0.8125rem;">';
-    html += '<thead><tr style="background:var(--bg-subtle);">';
-    html += '<th style="text-align:left;padding:0.5rem 0.75rem;font-weight:600;color:var(--text-600);border-bottom:1px solid var(--border);min-width:140px;">Student</th>';
-    html += '<th style="text-align:center;padding:0.5rem 0.75rem;font-weight:600;color:var(--text-600);border-bottom:1px solid var(--border);white-space:nowrap;">Completed</th>';
-    html += '<th style="text-align:center;padding:0.5rem 0.75rem;font-weight:600;color:var(--text-600);border-bottom:1px solid var(--border);white-space:nowrap;">Quiz Score</th>';
-    html += '<th style="text-align:left;padding:0.5rem 0.75rem;font-weight:600;color:var(--text-600);border-bottom:1px solid var(--border);">Chapter Progress</th>';
-    html += '</tr></thead><tbody>';
-
-    for (var ui = 0; ui < userIds.length; ui++) {
-      var uid = userIds[ui];
-      var user = userMap[uid] || {};
-      var name = user.username || user.email || uid.slice(0,8);
-      var done = (progressMap[uid] || []).length;
-      var pct = Math.round(done / completedChs * 100);
-      var qs = quizMap[uid] || {};
-      var qKeys = Object.keys(qs);
-      var qAvg = qKeys.length > 0 ? Math.round(qKeys.reduce(function(s,k){ return s + (Number(qs[k]) || 0); },0) / qKeys.length) : null;
-      var rowBg = ui % 2 === 0 ? '' : 'background:var(--bg-subtle);';
-
-      html += '<tr style="' + rowBg + '">';
-      html += '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid var(--border);color:var(--text-700);font-weight:500;">' + name + '</td>';
-      html += '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid var(--border);text-align:center;">' +
-        '<span style="font-weight:600;color:' + (pct >= 70 ? '#16a34a' : pct >= 30 ? '#d97706' : '#94a3b8') + ';">' + done + '/' + completedChs + '</span>' +
-        ' <span style="color:var(--text-400);font-size:0.75rem;">(' + pct + '%)</span>' +
-      '</td>';
-      html += '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid var(--border);text-align:center;">' +
-        (qAvg !== null ? '<span style="font-weight:600;color:' + (qAvg >= 70 ? '#16a34a' : qAvg >= 50 ? '#d97706' : '#dc2626') + ';">' + qAvg + '%</span>' : '<span style="color:var(--text-300);">—</span>') +
-      '</td>';
-
-      // Chapter dot heatmap
-      html += '<td style="padding:0.5rem 0.75rem;border-bottom:1px solid var(--border);">';
-      html += '<div style="display:flex;flex-wrap:wrap;gap:3px;">';
-      for (var ci = 0; ci < pubChs.length; ci++) {
-        var chDone = (progressMap[uid] || []).indexOf(pubChs[ci].id) >= 0;
-        html += '<div title="Ch.' + pubChs[ci].num + ' ' + pubChs[ci].title.replace(/&amp;/g,'&') + '" style="width:14px;height:14px;border-radius:3px;background:' + (chDone ? '#16a34a' : '#e2e8f0') + ';"></div>';
-      }
-      html += '</div></td>';
-      html += '</tr>';
-    }
-
-    html += '</tbody></table></div>';
-    html += '<div style="font-size:0.75rem;color:var(--text-400);margin-top:0.75rem;">🟩 Chapter completed &nbsp; ⬜ Not yet completed. Progress updates as students read and complete quiz questions.</div>';
-
-    el.innerHTML = html;
-  } catch(e) {
-    el.innerHTML = '<div style="color:#dc2626;font-size:0.875rem;padding:1rem 0;">Error loading progress: ' + (e.message || e) + '</div>';
-    console.error('tbRenderProfProgress error', e);
-  }
-}
-
-// ─── TEXTBOOK FETCH + INJECT HELPERS ────────────────────────────
-var _tbLoaded = false;
-
-function tbGoChapter(chId) {
-  TB_ACTIVE_CH = chId;
-  tbRenderSidebar();
-  var frame = document.getElementById('tb-iframe');
-  if (!frame) return;
-  try {
-    if (frame.contentWindow && frame.contentWindow.showChapter) {
-      frame.contentWindow.showChapter(chId);
-    }
-  } catch(e) {}
-}
-
-function tbSetDifficulty(level) {
-  var frame = document.getElementById('tb-iframe');
-  if (!frame) return;
-  try {
-    if (frame.contentWindow && frame.contentWindow.setDifficulty) {
-      frame.contentWindow.setDifficulty(level);
-    }
-  } catch(e) {}
-}
-
-// ─── TEXTBOOK LOADER ─────────────────────────────────────────────
-function tbGetTextbookUrl() {
-  // Reliably resolve the textbook URL regardless of deployment pattern
-  var a = document.createElement('a');
-  a.href = 'macronations-textbook.html';  // browser resolves relative to current page
-  return a.href;
-}
-
-function tbLoadIframe() {
-  var main = document.getElementById('tb-main');
-  if (!main) return;
-
-  // Already have an iframe — just navigate it
-  var existing = document.getElementById('tb-iframe');
-  if (existing) {
-    try {
-      if (existing.contentWindow && existing.contentWindow.showChapter) {
-        if (existing.contentWindow.loadedCharts) existing.contentWindow.loadedCharts = {};
-        existing.contentWindow.showChapter(TB_ACTIVE_CH || 'ch1');
-      }
-    } catch(e) {}
-    tbRenderSidebar();
-    return;
-  }
-
-  var tbUrl = tbGetTextbookUrl();
-
-  // Simple full-height iframe — no position tricks needed
-  main.style.cssText = 'flex:1 1 auto;overflow:hidden;min-height:0;display:flex;flex-direction:column;';
-  main.innerHTML =
-    '<div id="tb-spinner" style="padding:3rem;text-align:center;color:#64748b;">' +
-      '<div style="width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#3b82f6;' +
-      'border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem;"></div>' +
-      '<div>Loading textbook...</div>' +
-      '<div style="margin-top:0.75rem;">' +
-        '<a href="' + tbUrl + '" target="_blank" style="color:#3b82f6;font-size:0.875rem;">Open in new tab if this takes too long ↗</a>' +
-      '</div>' +
-    '</div>' +
-    '<iframe id="tb-iframe" src="' + tbUrl + '" ' +
-      'style="flex:1;width:100%;border:none;display:none;" ' +
-      'title="Applied Macroeconomics Textbook"></iframe>';
-
-  var frame = document.getElementById('tb-iframe');
-  frame.addEventListener('load', function() {
-    var spinner = document.getElementById('tb-spinner');
-    if (spinner) spinner.style.display = 'none';
-    frame.style.display = 'block';
-    _tbLoaded = true;
-    tbRenderSidebar();
-    setTimeout(function() {
-      try {
-        if (frame.contentWindow && frame.contentWindow.showChapter) {
-          frame.contentWindow.showChapter(TB_ACTIVE_CH || 'ch1');
-        }
-      } catch(e) {}
-    }, 300);
-  });
-}
-
-// Keep old name as alias
-function tbFetchAndInject() { tbLoadIframe(); }
-
-// ─── PAGE LOADER — with access gating ────────────────────────────
-PAGE_LOADERS['textbook'] = function() {
-  tbReadProgress();
-  tbRenderSidebar();
-  // Reset _tbLoaded if iframe was destroyed by page navigation
-  if (_tbLoaded && !document.getElementById('tb-iframe')) {
-    _tbLoaded = false;
-  }
-
-  tbCheckAccess().then(function(access) {
-    var main = document.getElementById('tb-main');
-
-    if (!access) {
-      if (main) {
-        main.innerHTML =
-          '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:1.5rem;text-align:center;padding:3rem;">' +
-            '<div style="font-size:3rem;">🔒</div>' +
-            '<div style="font-size:1.25rem;font-weight:700;color:var(--text-700);">Textbook Access Required</div>' +
-            '<div style="font-size:0.9375rem;color:var(--text-500);max-width:480px;line-height:1.6;">Available to students in a paid tournament where the professor has adopted the textbook. Contact your professor or <a href="mailto:support@macronations.com">support@macronations.com</a>.</div>' +
-            '<button class="btn btn--primary" onclick="showPage(\'tournaments\')">Browse Tournaments</button>' +
-          '</div>';
-      }
-      var sb = document.getElementById('tb-sidebar');
-      if (sb) sb.style.display = 'none';
-      return;
-    }
-
-    // Show sidebar
-    var sb2 = document.getElementById('tb-sidebar');
-    if (sb2) sb2.style.display = 'flex';
-
-    // Professor progress panel
-    var isProfOrAdmin = currentUser && (currentUser.role === 'professor' || currentUser.is_admin);
-    var tournId = (typeof access === 'object') ? access.tournId : null;
-    window._tbTournId = tournId;
-
-    if (isProfOrAdmin && tournId && !document.getElementById('tb-prof-progress-wrap')) {
-      var sb3 = document.getElementById('tb-sidebar');
-      if (sb3) {
-        var wrap = document.createElement('div');
-        wrap.id = 'tb-prof-progress-wrap';
-        wrap.style.cssText = 'border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;';
-        wrap.innerHTML =
-          '<button onclick="tbToggleProfPanel()" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:0.75rem 1.125rem;background:none;border:none;color:#94a3b8;font-size:0.8125rem;font-weight:600;cursor:pointer;">' +
-            '<span>📊 Student Progress</span><span id="tb-prof-toggle-icon">▼</span>' +
-          '</button>' +
-          '<div id="tb-prof-progress-panel" style="display:none;background:#fff;border-top:1px solid var(--border);padding:1rem;overflow-y:auto;max-height:300px;">' +
-            '<div id="tb-prof-progress"></div>' +
-          '</div>';
-        sb3.appendChild(wrap);
-        window._tbProfTournId = tournId;
-      }
-    }
-
-    // Load textbook content
-    tbFetchAndInject();
-  });
-};
-
-function tbToggleProfPanel() {
-  var panel = document.getElementById('tb-prof-progress-panel');
-  var icon  = document.getElementById('tb-prof-toggle-icon');
-  if (!panel) return;
-  var open = panel.style.display !== 'none';
-  panel.style.display = open ? 'none' : 'block';
-  if (icon) icon.textContent = open ? '▼' : '▲';
-  if (!open && window._tbProfTournId) tbRenderProfProgress(window._tbProfTournId);
 }
 
 </script>
