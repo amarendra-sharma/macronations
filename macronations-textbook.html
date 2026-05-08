@@ -5490,6 +5490,9 @@ id="page-ch23" style="display:none;"><div class="tb-chapter-eyebrow">Chapter 23 
 //  CONSTANTS
 // ═══════════════════════════════════════════════════════════════
 var FRED_KEY  = 'd3f2de0d43a70d3d9f7e21de0fcb1aec';
+// Supabase Edge Function that proxies FRED API to bypass CORS
+// Deploy fred-proxy.ts to your Supabase project for this to work.
+var FRED_PROXY_URL = 'https://rtaiivegcqqmdchpguzn.supabase.co/functions/v1/fred-proxy';
 var FRED_BASE = 'https://api.stlouisfed.org/fred/series/observations';
 var CHAPTERS = ['cover','ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','ch9','ch10','ch11','ch12','ch13','ch14','ch15','ch16','ch17','ch18','ch19','ch20','ch21','ch22','ch23','ch24','ch25','ch26'];
 
@@ -5614,12 +5617,39 @@ var loadedCharts = {};
 
 async function fredFetch(series, limit, units) {
   limit = limit || 20; units = units || 'lin';
-  var url = FRED_BASE + '?series_id=' + series + '&api_key=' + FRED_KEY + '&file_type=json&sort_order=desc&limit=' + limit + '&units=' + units;
-  var r = await fetch(url);
-  if (!r.ok) { throw new Error('FRED API error: ' + r.status + ' for ' + series); }
-  var d = await r.json();
-  if (d.error_message) { throw new Error('FRED: ' + d.error_message); }
-  return (d.observations || []).reverse().filter(function(o) { return o.value !== '.'; });
+
+  // Strategy 1: Use our Supabase proxy (eliminates CORS issues)
+  try {
+    var proxyUrl = FRED_PROXY_URL + '?series_id=' + encodeURIComponent(series) +
+                   '&limit=' + limit + '&units=' + units;
+    var r = await fetch(proxyUrl);
+    if (r.ok) {
+      var d = await r.json();
+      if (d.observations) {
+        return d.observations.reverse().filter(function(o) { return o.value !== '.'; });
+      }
+      if (d.error_message) {
+        throw new Error('FRED: ' + d.error_message);
+      }
+    }
+  } catch(e1) {
+    // Proxy not deployed or error — try direct as fallback
+  }
+
+  // Strategy 2: Direct FRED call (only works if key has no allowlist AND CORS allows)
+  try {
+    var directUrl = FRED_BASE + '?series_id=' + series + '&api_key=' + FRED_KEY +
+                    '&file_type=json&sort_order=desc&limit=' + limit + '&units=' + units;
+    var r2 = await fetch(directUrl);
+    if (r2.ok) {
+      var d2 = await r2.json();
+      if (d2.observations) {
+        return d2.observations.reverse().filter(function(o) { return o.value !== '.'; });
+      }
+    }
+  } catch(e2) {}
+
+  throw new Error('FRED data unavailable for ' + series + '. Deploy the fred-proxy Supabase Edge Function (see fred-proxy.ts).');
 }
 
 function makeChart(canvasId, obs, label, color) {
@@ -5649,19 +5679,90 @@ function makeChart(canvasId, obs, label, color) {
 async function loadChartsForChapter(ch) {
   if (loadedCharts[ch]) { return; }
   loadedCharts[ch] = true;
-  // Show a notice if FRED API key needs updating
+
+  // ── DIAGNOSTIC: visible error reporting on the page ────────────
+  // Run a one-time test of FRED + each proxy and show the user
+  // EXACTLY what each one returns. This makes debugging easy.
   if (!window._fredKeyChecked) {
     window._fredKeyChecked = true;
+
+    var testQuery = 'series_id=UNRATE&api_key=' + FRED_KEY + '&file_type=json&limit=1';
+    var testUrl   = FRED_BASE + '?' + testQuery;
+    var proxyTestUrl = FRED_PROXY_URL + '?series_id=UNRATE&limit=1';
+    var results   = [];
+
+    // Test 0: Supabase proxy (preferred)
     try {
-      var testR = await fetch(FRED_BASE + '?series_id=UNRATE&api_key=' + FRED_KEY + '&file_type=json&limit=1');
-      if (!testR.ok) {
-        var notice = document.createElement('div');
-        notice.id = 'fred-notice';
-        notice.style.cssText = 'position:fixed;bottom:1rem;right:1rem;background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:0.75rem 1rem;font-size:0.8125rem;color:#92400e;max-width:320px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.1);';
-        notice.innerHTML = '<strong>📊 Live charts unavailable</strong><br>The FRED API key needs to be updated to allow requests from macronations.com. Charts will show placeholder messages. <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" style="color:#92400e;">Get a new key →</a> <button onclick="this.parentElement.remove()" style="float:right;background:none;border:none;cursor:pointer;color:#92400e;">✕</button>';
-        document.body.appendChild(notice);
-      }
-    } catch(e2) {}
+      var r0 = await fetch(proxyTestUrl);
+      var t0 = await r0.text();
+      var ok0 = false;
+      try { var j0 = JSON.parse(t0); ok0 = !!j0.observations; } catch(e){}
+      results.push({ name: 'Supabase proxy', status: r0.status, ok: ok0, body: t0.slice(0, 200) });
+    } catch(e) {
+      results.push({ name: 'Supabase proxy', status: 'ERROR', ok: false, body: String(e.message || e) });
+    }
+
+    // Test 1: direct
+    try {
+      var r1 = await fetch(testUrl);
+      var t1 = await r1.text();
+      var ok1 = false;
+      try { var j1 = JSON.parse(t1); ok1 = !!j1.observations; } catch(e){}
+      results.push({ name: 'Direct FRED', status: r1.status, ok: ok1, body: t1.slice(0, 200) });
+    } catch(e) {
+      results.push({ name: 'Direct FRED', status: 'ERROR', ok: false, body: String(e.message || e) });
+    }
+
+    // Test 2: corsproxy
+    try {
+      var r2 = await fetch('https://corsproxy.io/?' + encodeURIComponent(testUrl));
+      var t2 = await r2.text();
+      var ok2 = false;
+      try { var j2 = JSON.parse(t2); ok2 = !!j2.observations; } catch(e){}
+      results.push({ name: 'corsproxy.io', status: r2.status, ok: ok2, body: t2.slice(0, 200) });
+    } catch(e) {
+      results.push({ name: 'corsproxy.io', status: 'ERROR', ok: false, body: String(e.message || e) });
+    }
+
+    // Test 3: allorigins
+    try {
+      var r3 = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(testUrl));
+      var t3 = await r3.text();
+      var ok3 = false;
+      try { var w = JSON.parse(t3); var j3 = JSON.parse(w.contents); ok3 = !!j3.observations; } catch(e){}
+      results.push({ name: 'allorigins.win', status: r3.status, ok: ok3, body: t3.slice(0, 200) });
+    } catch(e) {
+      results.push({ name: 'allorigins.win', status: 'ERROR', ok: false, body: String(e.message || e) });
+    }
+
+    // If ANY worked, hide notice. Otherwise show all errors.
+    var anyWorked = results.some(function(r){ return r.ok; });
+    if (!anyWorked) {
+      var rowHtml = results.map(function(r) {
+        return '<div style="margin:0.5rem 0;padding:0.5rem;background:rgba(0,0,0,0.05);border-radius:4px;font-family:monospace;font-size:0.7rem;">' +
+          '<div><strong>' + r.name + ':</strong> HTTP ' + r.status + '</div>' +
+          '<div style="margin-top:0.25rem;color:#475569;word-break:break-all;">' + (r.body || '(empty)').replace(/</g,'&lt;') + '</div>' +
+        '</div>';
+      }).join('');
+
+      var notice = document.createElement('div');
+      notice.id = 'fred-notice';
+      notice.style.cssText = 'position:fixed;bottom:1rem;right:1rem;background:#fff;border:2px solid #f59e0b;border-radius:10px;padding:1rem 1.25rem;font-size:0.8125rem;color:#1e293b;max-width:480px;max-height:70vh;overflow-y:auto;z-index:99999;box-shadow:0 8px 32px rgba(0,0,0,0.2);line-height:1.5;';
+      notice.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:start;gap:0.5rem;margin-bottom:0.5rem;">' +
+          '<strong style="font-size:0.9rem;color:#92400e;">📊 FRED Diagnostic</strong>' +
+          '<button onclick="document.getElementById(\'fred-notice\').remove()" style="background:none;border:none;cursor:pointer;color:#64748b;font-size:1.25rem;line-height:1;padding:0;">✕</button>' +
+        '</div>' +
+        '<div style="margin-bottom:0.5rem;color:#475569;">All three FRED fetch strategies failed. Response details below — share this with support to diagnose:</div>' +
+        rowHtml +
+        '<div style="margin-top:0.75rem;padding-top:0.5rem;border-top:1px solid #e2e8f0;font-size:0.75rem;color:#64748b;">' +
+          'API key in use: <code>' + FRED_KEY.slice(0,8) + '…' + FRED_KEY.slice(-4) + '</code><br>' +
+          'If you see <em>"Host not in allowlist"</em>, the FRED key has IP/host restrictions enabled. ' +
+          'Visit <a href="https://fredaccount.stlouisfed.org/apikeys" target="_blank" style="color:#0f3d9e;">fredaccount.stlouisfed.org/apikeys</a>, ' +
+          'find this key, and remove any allowlist restrictions.' +
+        '</div>';
+      document.body.appendChild(notice);
+    }
   }
   try {
     if (ch === 'ch1') {
