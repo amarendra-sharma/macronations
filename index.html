@@ -5165,6 +5165,7 @@ async function afterLogin() {
 }
 
 function _renderLoggedOutNav() {
+  if (typeof _resetMobileMenuForLogout === 'function') _resetMobileMenuForLogout();
   var cta = document.querySelector('.nav__cta');
   if (!cta) { return; }
   cta.innerHTML =
@@ -5221,11 +5222,95 @@ function _renderLoggedInNav() {
     for (var i = 0; i < newTabs.length; i++) {
       (function(tab) {
         tab.addEventListener('click', function(e) {
+          if (tab.getAttribute('target') === '_blank') return;
           e.preventDefault();
           showPage(tab.getAttribute('data-page'));
         });
       })(newTabs[i]);
     }
+  }
+  // Update mobile menu with authenticated links
+  _updateMobileMenuForUser(isAdmin, role);
+}
+
+// Inject Textbook / Dashboard / Admin into the mobile menu after login
+function _updateMobileMenuForUser(isAdmin, role) {
+  var mm = document.querySelector('.mobile-menu__links');
+  if (!mm) return;
+
+  // Remove any previously injected authenticated links
+  var prev = mm.querySelectorAll('[data-mn-auth-link]');
+  for (var p = 0; p < prev.length; p++) prev[p].remove();
+
+  // Build new links
+  var items = [
+    { href: 'macronations-textbook.html', target: '_blank', icon: '📖', label: 'Textbook ↗' },
+    { page: 'dashboard', icon: '📊', label: 'Dashboard' }
+  ];
+  if (isAdmin || role === 'professor') {
+    items.push({ page: 'admin', icon: '⚙️', label: 'Admin' });
+  }
+
+  // Insert before the existing 'how' link if present, otherwise append
+  var howLink = mm.querySelector('[data-page="how"]');
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    var a = document.createElement('a');
+    a.href = it.href || '#';
+    a.className = 'mobile-menu__link';
+    a.setAttribute('data-mn-auth-link', '1');
+    if (it.target) { a.target = it.target; a.rel = 'noopener'; }
+    if (it.page) a.setAttribute('data-page', it.page);
+    a.innerHTML = '<span class="mobile-menu__link-icon">' + it.icon + '</span>' + it.label;
+    a.addEventListener('click', function(ev) {
+      // External link — let it open in new tab and just close menu
+      if (this.getAttribute('target') === '_blank') {
+        closeMobileMenu();
+        return;
+      }
+      ev.preventDefault();
+      var pg = this.getAttribute('data-page');
+      closeMobileMenu();
+      if (pg) showPage(pg);
+    });
+    if (howLink) {
+      mm.insertBefore(a, howLink);
+    } else {
+      mm.appendChild(a);
+    }
+  }
+
+  // Replace the mobile CTA buttons with a "Sign Out" when logged in
+  var cta = document.querySelector('.mobile-menu__cta');
+  if (cta && currentUser) {
+    cta.innerHTML =
+      '<div style="font-size:0.875rem;color:var(--text-500);text-align:center;margin-bottom:0.5rem;">' +
+        'Signed in as <strong style="color:var(--text-900);">' + (currentUser.name || currentUser.username || 'User') + '</strong>' +
+      '</div>' +
+      '<button class="btn btn--ghost btn--full btn--lg" id="mobile-btn-signout">Sign Out</button>';
+    var signOutBtn = document.getElementById('mobile-btn-signout');
+    if (signOutBtn) {
+      signOutBtn.addEventListener('click', function() { closeMobileMenu(); doLogout(); });
+    }
+  }
+}
+
+// Reset mobile menu to logged-out state
+function _resetMobileMenuForLogout() {
+  var mm = document.querySelector('.mobile-menu__links');
+  if (mm) {
+    var auth = mm.querySelectorAll('[data-mn-auth-link]');
+    for (var p = 0; p < auth.length; p++) auth[p].remove();
+  }
+  var cta = document.querySelector('.mobile-menu__cta');
+  if (cta) {
+    cta.innerHTML =
+      '<button class="btn btn--primary btn--full btn--lg" id="mobile-btn-join">Join Free</button>' +
+      '<button class="btn btn--ghost btn--full btn--lg" id="mobile-btn-signin">Sign In</button>';
+    var j = document.getElementById('mobile-btn-join');
+    var s = document.getElementById('mobile-btn-signin');
+    if (j) j.addEventListener('click', function() { closeMobileMenu(); openAuthModal('register'); });
+    if (s) s.addEventListener('click', function() { closeMobileMenu(); openAuthModal('login'); });
   }
 }
 
