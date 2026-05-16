@@ -10350,7 +10350,11 @@ function renderAdminTournaments(el) {
     var actions = _tournamentActionBtns(t);
     rows +=
       '<tr>' +
-      '<td><strong>' + esc(t.name || '') + '</strong><br>' +
+      '<td><strong>' + esc(t.name || '') + '</strong>' +
+        (_isAdmin() && t.textbook_enabled
+          ? ' <span class="badge badge--gold badge--no-dot" style="font-size:0.625rem;padding:2px 6px;vertical-align:middle;" title="Textbook access enabled — students in this tournament can read the textbook">📖 Textbook ON</span>'
+          : '') +
+        '<br>' +
         '<span style="font-size:0.75rem;color:var(--text-400);">' + esc(t.tier || '') + ' · Season ' + esc(String(t.season_year || '')) + '</span>' +
         (t.schedule && t.schedule._crisis_rounds
           ? '<br><span style="font-size:0.75rem;color:var(--warning);">⚡ Crisis rounds: ' + t.schedule._crisis_rounds.join(', ') + '</span>'
@@ -10378,6 +10382,37 @@ function renderAdminTournaments(el) {
     '</div>';
 }
 
+
+// ── Super-admin override: enable/disable textbook for any tournament ──
+// Admins can flip this on for ANY tournament (including free class tournaments)
+// to grant students textbook access without requiring a paid entry.
+async function doToggleTextbookEnabled(tournId) {
+  if (!_isAdmin()) { flash('Admin privileges required.', 'error'); return; }
+  var t = _getTournById(tournId);
+  if (!t) { flash('Tournament not found.', 'error'); return; }
+  var current = !!t.textbook_enabled;
+  var nextVal = !current;
+  var verb = nextVal ? 'enable' : 'disable';
+  var msg = nextVal
+    ? 'Enable textbook access for "' + (t.name || 'this tournament') + '"?\n\nAll students on every team in this tournament will gain access to the textbook — regardless of whether they paid an entry fee. This is intended for free class tournaments where you want to bundle the textbook as a courtesy.'
+    : 'Disable textbook access for "' + (t.name || 'this tournament') + '"?\n\nStudents currently relying on this admin override will lose textbook access. Students in paid tournaments retain their normal access.';
+  if (!confirm(msg)) { return; }
+  try {
+    var updated = await sbPatch('tournaments', 'id=eq.' + tournId, { textbook_enabled: nextVal });
+    // Update local cache
+    for (var i = 0; i < _adminTournaments.length; i++) {
+      if (_adminTournaments[i].id === tournId) {
+        _adminTournaments[i].textbook_enabled = nextVal;
+        break;
+      }
+    }
+    flash('Textbook access ' + (nextVal ? 'enabled' : 'disabled') + ' for "' + (t.name || 'tournament') + '".', 'success');
+    _renderAdminTab('tournaments');
+  } catch(e) {
+    flash('Could not ' + verb + ' textbook: ' + (e.message || 'unknown error'), 'error');
+  }
+}
+
 function _tournamentActionBtns(t) {
   var btns = '';
   var id   = t.id;
@@ -10403,6 +10438,14 @@ function _tournamentActionBtns(t) {
   if (_isAdmin()) {
     btns += '<button class="btn btn--ghost btn--sm" onclick="openIndividualCrisisModal(\'' + id + '\')" title="Assign crisis to individual team">⚡ Assign Crisis</button>';
     btns += '<button class="btn btn--ghost btn--sm" onclick="doSetCrisisRounds(\'' + id + '\')" title="Set crisis rounds">⚡ Crisis Rounds</button>';
+    // Super-admin override: enable/disable textbook access for ANY tournament (incl. free class)
+    var tbOn = !!t.textbook_enabled;
+    var tbBtnClass = tbOn ? 'btn btn--gold btn--sm' : 'btn btn--ghost btn--sm';
+    var tbBtnLabel = tbOn ? '📖 Textbook ON' : '📖 Enable Textbook';
+    var tbBtnTitle = tbOn
+      ? 'Textbook access is currently ON for this tournament. Click to disable.'
+      : 'Grant all students in this tournament free textbook access (admin override — works on free class tournaments too).';
+    btns += '<button class="' + tbBtnClass + '" onclick="doToggleTextbookEnabled(\'' + id + '\')" title="' + tbBtnTitle + '">' + tbBtnLabel + '</button>';
     btns += '<button class="btn btn--danger btn--sm" onclick="doDeleteTournament(\'' + id + '\')" title="Delete permanently">🗑</button>';
   }
   return btns || '<span class="text-muted text-sm">—</span>';
@@ -16854,7 +16897,8 @@ async function tbCheckAccess() {
     }
   }
 
-  // Students: access if they have paid for any team in any tournament
+  // Students: access if they have paid for any team OR are in any tournament
+  // where an admin has flipped on the textbook_enabled override.
   try {
     var capTeams = await sbGet('teams',
       'captain_id=eq.' + userId + '&fee_paid=eq.true&limit=1&select=id,tournament_id');
@@ -16878,6 +16922,32 @@ async function tbCheckAccess() {
       }
     }
   } catch(e2) {}
+
+  // ── Super-admin textbook override ──
+  // If the student is in ANY tournament (any team, paid or not) where
+  // textbook_enabled=true was set by an admin, grant access. This is the
+  // path for free class tournaments where the admin has activated textbook.
+  try {
+    var tbTourns = await sbGetPublic('tournaments',
+      'textbook_enabled=eq.true&limit=500&select=id');
+    if (tbTourns && tbTourns.length > 0) {
+      var tbIds = [];
+      for (var ti = 0; ti < tbTourns.length; ti++) { tbIds.push(tbTourns[ti].id); }
+      // Find any team in those tournaments that contains this user
+      var tournIdParam = tbIds.join(',');
+      var inTeams = await sbGetPublic('teams',
+        'tournament_id=in.(' + tournIdParam + ')&limit=500&select=id,tournament_id,captain_id,members');
+      if (inTeams) {
+        for (var ii = 0; ii < inTeams.length; ii++) {
+          var team = inTeams[ii];
+          var mems = team.members || [];
+          if (team.captain_id === userId || mems.indexOf(userId) >= 0) {
+            return { access: true, tournId: team.tournament_id || null };
+          }
+        }
+      }
+    }
+  } catch(e3) {}
 
   return false;
 }
