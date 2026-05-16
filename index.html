@@ -17739,66 +17739,81 @@ function sbxResetTeam() {
 // ── Student Step 2: Play a round (mini simulator) ──
 function sbxSceneStudPlay(state) {
   if (!state.student.joinedTournament) {
-    return '<div class="sbx-scene"><h2 class="sbx-scene__title">Join a tournament first</h2><button class="sbx-btn-primary" onclick="sbxGoToStep(1)">← Back to Step 1</button></div>';
+    return '<div class="sbx-scene"><h2 class="sbx-scene__title">Join a tournament first</h2><button class="sbx-btn-primary" onclick="sbxGoToStep(1)">\u2190 Back to Step 1</button></div>';
   }
   return '' +
     '<div class="sbx-scene">' +
-      '<h2 class="sbx-scene__title">Step 2 · Play a Round</h2>' +
+      '<h2 class="sbx-scene__title">Step 2 \u00B7 Play a Round</h2>' +
       '<div class="sbx-scene__hint">' +
-        '<span class="sbx-scene__hint-icon">💡</span>' +
-        '<strong>Each round:</strong> you set six policy levers, the engine simulates how your country performs across five pillars (GDP, Stability, Equality, Sustainability, Innovation), and you get scored out of 1,000.' +
+        '<span class="sbx-scene__hint-icon">\uD83D\uDCA1</span>' +
+        '<strong>Each round:</strong> you set all 10 policy levers \u2014 the same set used in the real tournament. The engine simulates how your country performs across the five pillars (GDP, Stability, Equality, Sustainability, Innovation), each worth up to 200 points. Total possible score: 1,000.' +
       '</div>' +
       '<div class="sbx-sim">' +
         '<div class="sbx-sim__panel">' +
-          '<div class="sbx-sim__panel-title">Your Policy Levers</div>' +
+          '<div class="sbx-sim__panel-title">Your 10 Policy Levers</div>' +
           '<div class="sbx-lever">' +
-            '<div class="sbx-lever__label"><span>Tax rate</span><span class="sbx-lever__value" id="sbx-v-tax">25%</span></div>' +
-            '<input type="range" id="sbx-l-tax" min="10" max="50" value="25">' +
+            '<div class="sbx-lever__label"><span>\uD83C\uDFE6 Interest rate</span><span class="sbx-lever__value" id="sbx-v-rate">4.5%</span></div>' +
+            '<input type="range" id="sbx-l-rate" min="0" max="20" step="0.5" value="4.5">' +
           '</div>' +
           '<div class="sbx-lever">' +
-            '<div class="sbx-lever__label"><span>Government spending</span><span class="sbx-lever__value" id="sbx-v-spend">30%</span></div>' +
-            '<input type="range" id="sbx-l-spend" min="15" max="50" value="30">' +
+            '<div class="sbx-lever__label"><span>\uD83C\uDFDB\uFE0F Government spending</span><span class="sbx-lever__value" id="sbx-v-spend">27%</span></div>' +
+            '<input type="range" id="sbx-l-spend" min="10" max="60" step="1" value="27">' +
           '</div>' +
           '<div class="sbx-lever">' +
-            '<div class="sbx-lever__label"><span>Interest rate</span><span class="sbx-lever__value" id="sbx-v-rate">3.0%</span></div>' +
-            '<input type="range" id="sbx-l-rate" min="0" max="10" step="0.5" value="3">' +
+            '<div class="sbx-lever__label"><span>\uD83D\uDCB0 Tax rate</span><span class="sbx-lever__value" id="sbx-v-tax">25%</span></div>' +
+            '<input type="range" id="sbx-l-tax" min="5" max="60" step="1" value="25">' +
           '</div>' +
           '<div class="sbx-lever">' +
-            '<div class="sbx-lever__label"><span>R&D investment</span><span class="sbx-lever__value" id="sbx-v-rd">3%</span></div>' +
-            '<input type="range" id="sbx-l-rd" min="0" max="10" step="0.5" value="3">' +
+            '<div class="sbx-lever__label"><span>\uD83C\uDF0D Trade openness</span><span class="sbx-lever__value" id="sbx-v-trade">65%</span></div>' +
+            '<input type="range" id="sbx-l-trade" min="0" max="100" step="5" value="65">' +
           '</div>' +
           '<div class="sbx-lever">' +
-            '<div class="sbx-lever__label"><span>Education spending</span><span class="sbx-lever__value" id="sbx-v-edu">5%</span></div>' +
-            '<input type="range" id="sbx-l-edu" min="0" max="15" step="0.5" value="5">' +
+            '<div class="sbx-lever__label"><span>\uD83D\uDD2C R&amp;D investment</span><span class="sbx-lever__value" id="sbx-v-rd">2%</span></div>' +
+            '<input type="range" id="sbx-l-rd" min="0" max="10" step="0.5" value="2">' +
           '</div>' +
           '<div class="sbx-lever">' +
-            '<div class="sbx-lever__label"><span>Green energy</span><span class="sbx-lever__value" id="sbx-v-green">2%</span></div>' +
-            '<input type="range" id="sbx-l-green" min="0" max="10" step="0.5" value="2">' +
+            '<div class="sbx-lever__label"><span>\uD83C\uDF31 Green energy mix</span><span class="sbx-lever__value" id="sbx-v-green">30%</span></div>' +
+            '<input type="range" id="sbx-l-green" min="0" max="100" step="5" value="30">' +
+          '</div>' +
+          '<div class="sbx-lever">' +
+            '<div class="sbx-lever__label"><span>\uD83E\uDD1D Welfare</span><span class="sbx-lever__value" id="sbx-v-welf">5%</span></div>' +
+            '<input type="range" id="sbx-l-welf" min="0" max="30" step="1" value="5">' +
+          '</div>' +
+          '<div class="sbx-lever">' +
+            '<div class="sbx-lever__label"><span>\u2696\uFE0F Regulation</span><span class="sbx-lever__value" id="sbx-v-reg">50%</span></div>' +
+            '<input type="range" id="sbx-l-reg" min="0" max="100" step="5" value="50">' +
+          '</div>' +
+          '<div class="sbx-lever">' +
+            '<div class="sbx-lever__label"><span>\u2708\uFE0F Foreign aid</span><span class="sbx-lever__value" id="sbx-v-aid">0.5%</span></div>' +
+            '<input type="range" id="sbx-l-aid" min="0" max="5" step="0.25" value="0.5">' +
+          '</div>' +
+          '<div class="sbx-lever">' +
+            '<div class="sbx-lever__label"><span>\uD83C\uDFD7\uFE0F Infrastructure</span><span class="sbx-lever__value" id="sbx-v-infra">5%</span></div>' +
+            '<input type="range" id="sbx-l-infra" min="0" max="20" step="1" value="5">' +
           '</div>' +
         '</div>' +
         '<div class="sbx-sim__panel">' +
-          '<div class="sbx-sim__panel-title">Your Pillar Scores</div>' +
+          '<div class="sbx-sim__panel-title">Your Pillar Scores (Max 200 each)</div>' +
           '<div class="sbx-pillars">' +
-            '<div class="sbx-pillar"><div class="sbx-pillar__name">GDP</div><div class="sbx-pillar__score" id="sbx-p-gdp">120</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-gdp" style="width:60%;"></div></div></div>' +
-            '<div class="sbx-pillar"><div class="sbx-pillar__name">Stability</div><div class="sbx-pillar__score" id="sbx-p-sta">130</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-sta" style="width:65%;"></div></div></div>' +
-            '<div class="sbx-pillar"><div class="sbx-pillar__name">Equality</div><div class="sbx-pillar__score" id="sbx-p-eq">110</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-eq" style="width:55%;"></div></div></div>' +
-            '<div class="sbx-pillar"><div class="sbx-pillar__name">Sustainability</div><div class="sbx-pillar__score" id="sbx-p-sus">100</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-sus" style="width:50%;"></div></div></div>' +
-            '<div class="sbx-pillar"><div class="sbx-pillar__name">Innovation</div><div class="sbx-pillar__score" id="sbx-p-inn">115</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-inn" style="width:58%;"></div></div></div>' +
-            '<div class="sbx-pillar"><div class="sbx-pillar__name">Bonus</div><div class="sbx-pillar__score" id="sbx-p-bon">25</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-bon" style="width:50%;"></div></div></div>' +
+            '<div class="sbx-pillar"><div class="sbx-pillar__name">GDP</div><div class="sbx-pillar__score" id="sbx-p-gdp">108</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-gdp" style="width:60%;"></div></div></div>' +
+            '<div class="sbx-pillar"><div class="sbx-pillar__name">Stability</div><div class="sbx-pillar__score" id="sbx-p-sta">124</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-sta" style="width:65%;"></div></div></div>' +
+            '<div class="sbx-pillar"><div class="sbx-pillar__name">Equality</div><div class="sbx-pillar__score" id="sbx-p-eq">115</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-eq" style="width:55%;"></div></div></div>' +
+            '<div class="sbx-pillar"><div class="sbx-pillar__name">Sustainability</div><div class="sbx-pillar__score" id="sbx-p-sus">79</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-sus" style="width:50%;"></div></div></div>' +
+            '<div class="sbx-pillar"><div class="sbx-pillar__name">Innovation</div><div class="sbx-pillar__score" id="sbx-p-inn">78</div><div class="sbx-pillar__bar"><div class="sbx-pillar__bar-fill" id="sbx-pb-inn" style="width:58%;"></div></div></div>' +
           '</div>' +
-          '<div class="sbx-total"><div class="sbx-total__label">Total Round Score</div><div class="sbx-total__value" id="sbx-p-total">600</div></div>' +
+          '<div class="sbx-total"><div class="sbx-total__label">Total Round Score (/ 1000)</div><div class="sbx-total__value" id="sbx-p-total">504</div></div>' +
         '</div>' +
       '</div>' +
       '<div class="sbx-callout">' +
-        '<strong>Move the sliders</strong> and watch the pillar scores update in real time. There is no single "right" answer — high taxes hurt GDP but help Equality; high R&amp;D helps Innovation but takes money away from other priorities. The challenge is finding a balance for your country profile.' +
+        '<strong>Move any slider</strong> and watch the pillar scores update in real time. There is no single "right" answer \u2014 high taxes hurt GDP but help Equality; high R&amp;D and green energy push up Sustainability and Innovation; high welfare improves equality but strains the budget. The challenge is finding a balance.' +
       '</div>' +
-      '<button class="sbx-btn-secondary" onclick="sbxGoToStep(1)">← Back</button> ' +
-      '<button class="sbx-btn-primary" onclick="sbxSubmitRound()">Submit Round →</button>' +
+      '<button class="sbx-btn-secondary" onclick="sbxGoToStep(1)">\u2190 Back</button> ' +
+      '<button class="sbx-btn-primary" onclick="sbxSubmitRound()">Submit Round \u2192</button>' +
     '</div>';
 }
 
 function sbxWireSim() {
-  var ids = ['tax','spend','rate','rd','edu','green'];
+  var ids = ['rate','spend','tax','trade','rd','green','welf','reg','aid','infra'];
   for (var i = 0; i < ids.length; i++) {
     var el = document.getElementById('sbx-l-' + ids[i]);
     if (el) { el.addEventListener('input', sbxComputeSim); }
@@ -17807,61 +17822,123 @@ function sbxWireSim() {
 }
 
 function sbxComputeSim() {
-  var tax    = parseFloat(document.getElementById('sbx-l-tax').value);
-  var spend  = parseFloat(document.getElementById('sbx-l-spend').value);
+  // Read all 10 levers
   var rate   = parseFloat(document.getElementById('sbx-l-rate').value);
+  var spend  = parseFloat(document.getElementById('sbx-l-spend').value);
+  var tax    = parseFloat(document.getElementById('sbx-l-tax').value);
+  var trade  = parseFloat(document.getElementById('sbx-l-trade').value);
   var rd     = parseFloat(document.getElementById('sbx-l-rd').value);
-  var edu    = parseFloat(document.getElementById('sbx-l-edu').value);
   var green  = parseFloat(document.getElementById('sbx-l-green').value);
+  var welf   = parseFloat(document.getElementById('sbx-l-welf').value);
+  var reg    = parseFloat(document.getElementById('sbx-l-reg').value);
+  var aid    = parseFloat(document.getElementById('sbx-l-aid').value);
+  var infra  = parseFloat(document.getElementById('sbx-l-infra').value);
 
   // Update value labels
-  document.getElementById('sbx-v-tax').textContent   = tax + '%';
-  document.getElementById('sbx-v-spend').textContent = spend + '%';
   document.getElementById('sbx-v-rate').textContent  = rate.toFixed(1) + '%';
+  document.getElementById('sbx-v-spend').textContent = spend + '%';
+  document.getElementById('sbx-v-tax').textContent   = tax + '%';
+  document.getElementById('sbx-v-trade').textContent = trade + '%';
   document.getElementById('sbx-v-rd').textContent    = rd + '%';
-  document.getElementById('sbx-v-edu').textContent   = edu + '%';
   document.getElementById('sbx-v-green').textContent = green + '%';
+  document.getElementById('sbx-v-welf').textContent  = welf + '%';
+  document.getElementById('sbx-v-reg').textContent   = reg + '%';
+  document.getElementById('sbx-v-aid').textContent   = aid.toFixed(2) + '%';
+  document.getElementById('sbx-v-infra').textContent = infra + '%';
 
-  // Simple but plausible scoring (max 200 per pillar)
-  // GDP: encouraged by low taxes, moderate spending, low rates, R&D, education
-  var gdp = 100 - (tax - 25) * 1.5 + (spend - 25) * 0.6 - (rate - 3) * 6 + rd * 6 + edu * 4;
-  // Stability: hurt by extreme rates, very low taxes (deficit), very high spending
-  var sta = 140 - Math.abs(rate - 3) * 8 - Math.abs(tax - 28) * 1.2 - Math.abs(spend - 30) * 1.0;
-  // Equality: helped by high taxes, education spending, gov spending
-  var eq  = 80 + (tax - 20) * 1.8 + edu * 5 + spend * 0.6;
-  // Sustainability: green energy, education, lower deficit
-  var sus = 60 + green * 10 + edu * 2 + (tax - spend) * 0.8;
-  // Innovation: R&D, education, low rates
-  var inn = 70 + rd * 9 + edu * 3.5 - rate * 4;
-  // Bonus: balance — penalize extremes
-  var bon = 50 - Math.max(0, (spend - tax) - 8) * 1.5;
+  // --- Scoring model (derived from real engine's qualitative relationships) ---
+  // Each pillar: 0 to 200. Base around 100, modified by levers.
 
-  // Clip each to [0, 200]
-  var pillars = { gdp:gdp, sta:sta, eq:eq, sus:sus, inn:inn, bon:bon };
-  var total = 0;
-  for (var k in pillars) {
-    var v = Math.max(0, Math.min(200, Math.round(pillars[k])));
-    pillars[k] = v;
-    total += v;
-  }
+  // GDP Performance
+  //   Hurt by rates too far from neutral (4%), Laffer (tax >40), regulation extremes
+  //   Helped by R&D, infrastructure, moderate spending, trade openness near 65, green energy (mild)
+  var gdp = 110
+    - Math.abs(rate - 4.0) * 4.5                // rates away from neutral
+    + (spend - 27) * 0.8                         // mild Keynesian boost; but offset via deficit
+    - Math.max(0, tax - 40) * 2.0                // Laffer penalty
+    - Math.max(0, 12 - tax) * 1.5                // underfunding penalty
+    - Math.abs(trade - 65) * 0.3                 // trade openness optimum ~65
+    + (rd - 2) * 5                               // R&D boosts potential growth
+    + (green - 30) * 0.15                        // green energy mild GDP through potential
+    + (infra - 5) * 4                            // infrastructure raises potential
+    - Math.abs(reg - 50) * 0.4                   // regulation optimum near 50
+    + (aid - 0.5) * 1                            // tiny aid effect
+    - Math.max(0, welf - 10) * 1.2;              // very high welfare crowds out
 
-  document.getElementById('sbx-p-gdp').textContent = pillars.gdp;
-  document.getElementById('sbx-p-sta').textContent = pillars.sta;
-  document.getElementById('sbx-p-eq').textContent  = pillars.eq;
-  document.getElementById('sbx-p-sus').textContent = pillars.sus;
-  document.getElementById('sbx-p-inn').textContent = pillars.inn;
-  document.getElementById('sbx-p-bon').textContent = pillars.bon;
-  document.getElementById('sbx-pb-gdp').style.width = (pillars.gdp / 2) + '%';
-  document.getElementById('sbx-pb-sta').style.width = (pillars.sta / 2) + '%';
-  document.getElementById('sbx-pb-eq').style.width  = (pillars.eq  / 2) + '%';
-  document.getElementById('sbx-pb-sus').style.width = (pillars.sus / 2) + '%';
-  document.getElementById('sbx-pb-inn').style.width = (pillars.inn / 2) + '%';
-  document.getElementById('sbx-pb-bon').style.width = (pillars.bon / 2) + '%';
+  // Stability (inflation, debt, deficits, financial health)
+  //   Helped by rates 2-6, balanced budget, moderate regulation
+  //   Hurt by extreme rates, deficits, very high debt
+  var deficit = spend - tax;                     // approx primary deficit
+  var sta = 130
+    - Math.abs(rate - 4.0) * 3.0                 // away from neutral hurts inflation control
+    - Math.max(0, rate - 10) * 4                 // very high rates hurt fin health
+    - Math.max(0, deficit - 0) * 2.2             // deficits raise debt risk
+    + Math.max(0, -deficit) * 1.0                // small benefit from surplus
+    - Math.abs(reg - 50) * 0.5                   // regulation away from 50 -> financial instability
+    - Math.max(0, spend - 45) * 1.5;             // very high spending strains stability
+
+  // Equality (Gini, unemployment, HDI)
+  //   Helped strongly by welfare; helped by progressive taxes (above 25); hurt by very low taxes
+  //   Helped a bit by R&D/welfare via HDI
+  var eq = 90
+    + welf * 4.5                                 // PRIMARY driver
+    + Math.max(0, tax - 25) * 0.9                // progressive taxes
+    - Math.max(0, 15 - tax) * 2.5                // regressive (very low tax) hurts
+    + (spend - 27) * 0.4                         // gov services help
+    + rd * 1.2                                   // R&D -> HDI
+    + (green - 30) * 0.05;                       // small HDI via green
+
+  // Sustainability (debt, HDI, long-run potential)
+  //   Helped strongly by green energy (PRIMARY), R&D, infrastructure, education-equivalent (welfare/HDI), foreign aid
+  //   Hurt by high debt risk (proxied via deficits)
+  var sus = 70
+    + (green - 30) * 1.2                         // PRIMARY driver: strong effect (was missing before)
+    + (rd - 2) * 6                               // R&D raises potential
+    + (infra - 5) * 3                            // infrastructure raises potential
+    + welf * 1.6                                 // welfare -> HDI -> sustainability
+    + aid * 6                                    // foreign aid -> HDI
+    - Math.max(0, deficit) * 1.2                 // deficits raise debt -> hurts sus
+    - Math.max(0, rate - 8) * 1.5                // extremely high rates can hurt fin/sustainability
+    + Math.max(0, 50 - trade) * (-0.1)           // very closed economies miss out on green tech transfer
+    + (trade - 65) * 0.05;                       // openness mild positive
+
+  // Innovation (productivity, HDI, financial health)
+  //   Helped strongly by R&D, infrastructure, trade openness (knowledge transfer)
+  //   Helped by green energy (transition push for new tech)
+  //   Hurt by very high regulation or very high rates (kill investment)
+  var inn = 75
+    + (rd - 2) * 9                               // PRIMARY driver
+    + (infra - 5) * 3.5                          // infrastructure -> productivity
+    + (green - 30) * 0.4                         // green transition -> new tech
+    + (trade - 65) * 0.25                        // openness -> knowledge transfer
+    - Math.max(0, reg - 65) * 1.8                // overregulation kills innovation
+    - Math.max(0, rate - 8) * 2.5                // very high rates kill investment
+    + welf * 0.5                                 // human capital
+    + (spend - 27) * 0.15;                       // public R&D channels
+
+  // Clip each pillar to [0, 200]
+  function clip(v) { return Math.max(0, Math.min(200, Math.round(v))); }
+  gdp = clip(gdp);
+  sta = clip(sta);
+  eq  = clip(eq);
+  sus = clip(sus);
+  inn = clip(inn);
+  var total = gdp + sta + eq + sus + inn;
+
+  document.getElementById('sbx-p-gdp').textContent = gdp;
+  document.getElementById('sbx-p-sta').textContent = sta;
+  document.getElementById('sbx-p-eq').textContent  = eq;
+  document.getElementById('sbx-p-sus').textContent = sus;
+  document.getElementById('sbx-p-inn').textContent = inn;
+  document.getElementById('sbx-pb-gdp').style.width = (gdp / 2) + '%';
+  document.getElementById('sbx-pb-sta').style.width = (sta / 2) + '%';
+  document.getElementById('sbx-pb-eq').style.width  = (eq  / 2) + '%';
+  document.getElementById('sbx-pb-sus').style.width = (sus / 2) + '%';
+  document.getElementById('sbx-pb-inn').style.width = (inn / 2) + '%';
   document.getElementById('sbx-p-total').textContent = total;
 }
 
 function sbxSubmitRound() {
-  // Capture current total
   var totalEl = document.getElementById('sbx-p-total');
   var total = totalEl ? parseInt(totalEl.textContent, 10) || 0 : 0;
   var state = sbxLoadState();
