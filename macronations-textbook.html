@@ -4792,242 +4792,465 @@ body.show-intermediate .tb-level.intermediate { display: block; }
 </div>
 
 <div id="page-ch13" style="display:none;">
-  <div class="tb-chapter-eyebrow">Chapter 13 · Part V: Open Economy</div>
-  <h1 class="tb-chapter-title">Open-Economy Macroeconomics</h1>
-  <p class="tb-chapter-subtitle">How trade flows, capital flows, and exchange rates connect economies worldwide — and the Mundell-Fleming model</p>
-  <hr class="tb-chapter-divider">
+<div class="tb-chapter-eyebrow">Chapter 13 · Part VI: The Macroeconomics of Open Economies</div>
+<h1 class="tb-chapter-title">Open-Economy Macroeconomics</h1>
+<p class="tb-chapter-subtitle">Why the exchange rate is the most consequential price in any economy that trades, why countries can't have everything they want in international finance, and how a single 4:30 AM announcement in Zurich erased $400 billion of value in 90 seconds</p>
+<hr class="tb-chapter-divider">
 
-  <h2 class="tb-section">13.1 The Open Economy: Key Concepts</h2>
-  <div class="tb-level principles">
-    <div class="tb-level-header">📘 Principles Level</div>
-    <div class="tb-level-body">
-      <p>In a <strong>closed economy</strong>, all output is consumed domestically — there is no trade with the rest of the world. The macroeconomic models of earlier chapters assumed a closed economy for simplicity. But virtually all modern economies are open: they trade goods, services, and financial assets with other countries.</p>
-      <p>The degree of openness matters enormously for policy. A small open economy (like Singapore or Switzerland) with a fixed exchange rate has virtually no monetary policy independence — it imports the monetary policy of the country to whose currency it is pegged. A large economy (like the U.S.) has more insulation, but still faces significant spillovers from global conditions.</p>
+<p>At 4:30 AM Eastern Time on Thursday, January 15, 2015, the Swiss National Bank issued a press release. The release was three sentences long. It announced that the SNB was abandoning the floor it had maintained for three and a half years that kept the Swiss franc from rising above 1.20 per euro. Within ninety seconds, the franc was up <strong>30% against the euro</strong> — the largest single-day move ever recorded for a major developed-country currency. By the end of the day, several large forex brokers were insolvent. Hedge funds had lost billions. Swiss watch maker Swatch's CEO called the move "a tsunami." Approximately $400 billion in market value had been redistributed in an event that lasted less than two minutes from announcement to peak.</p>
 
-      <div class="tb-keyterm">
-        <strong>Key Term: The Balance of Payments</strong>
-        <p>The balance of payments is a systematic record of all transactions between a country's residents and the rest of the world. It has two main accounts: the <strong>current account</strong> (goods, services, income, and transfers) and the <strong>capital and financial account</strong> (purchases and sales of financial assets). By accounting identity, these two accounts always sum to zero: a current account deficit must be financed by a capital account surplus (net capital inflows).</p>
-      </div>
+<p>What had the SNB been doing for the previous three and a half years? They had been printing Swiss francs to buy euros — millions per minute, billions per day — to prevent the franc from appreciating beyond their 1.20 floor. Why? Because Switzerland is a small open economy surrounded by the larger Eurozone, and during the European debt crisis (2010-2012), nervous capital had flooded into Switzerland as a safe haven, threatening to crush Swiss exporters by making their products too expensive abroad. By January 2015, the SNB owned <strong>foreign currency reserves equal to roughly 70% of Swiss GDP</strong> — an unprecedented balance sheet that grew every day it kept defending the floor. The decision to stop defending it was driven less by a sudden change in heart than by the looming European Central Bank announcement of a massive new quantitative easing program — which would have made defending the peg dramatically more expensive.</p>
 
-      <p>Two key open-economy variables:</p>
-      <p><strong>Net exports (NX) = Exports − Imports.</strong> Also called the <em>trade balance</em>. NX > 0 is a trade surplus; NX &lt; 0 is a trade deficit. The U.S. has run persistent trade deficits since the early 1980s — importing more goods and services than it exports each year.</p>
-      <p><strong>Net capital outflow (NCO)</strong> = domestic purchases of foreign assets − foreign purchases of domestic assets. When NCO > 0, the country is a net lender to the rest of the world. NCO &lt; 0 means foreigners are net buyers of domestic assets.</p>
-      <p>The fundamental open-economy identity: <strong>NX = NCO</strong>. A trade deficit (NX &lt; 0) is always matched by a capital account surplus — foreigners must be accumulating U.S. assets (lending to the U.S.) in equal measure.</p>
-    </div>
-  </div>
-  <div class="tb-level intermediate">
-    <div class="tb-level-header">📗 Intermediate Level — Open Economy National Accounting</div>
-    <div class="tb-level-body">
-      <p>From Y = C + I + G + NX and national saving S = Y − C − G:</p>
-      <div class="tb-formula">
-        <div class="formula-label">Open Economy National Accounting Identities</div>
-        Y = C + I + G + NX
-        S = Y − C − G = I + NX
-        → NX = S − I = NCO
-        <br><br>
-        Current Account ≈ NX + Net income from abroad + Transfers
-        Capital Account ≈ −NCO  (by definition, CA + KA = 0)
-        <br><br>
-        Trade deficit (NX &lt; 0) ↔ S &lt; I ↔ NCO &lt; 0
-        → Net capital inflow: foreigners buying domestic assets
-        <br><br>
-        U.S. case: persistent S &lt; I (low saving, high investment)
-        → persistent current account deficit (~−3% of GDP)
-        → financed by foreign capital inflows (foreigners buying
-          Treasuries, equities, real estate, corporate bonds)
-      </div>
-    </div>
-  </div>
+<p>This single event illustrates virtually every major concept in this chapter: <strong>capital flows</strong> driving currency movements; the <strong>impossible trinity</strong> that forces countries to choose two of three desirable policies; the <strong>balance sheet costs</strong> of currency intervention; the <strong>spillover effects</strong> of one country's monetary policy on another's; and the <strong>real-economy consequences</strong> of exchange rate changes (Swiss exports, hedge fund losses, real wages, tourism). By the end of this chapter you'll be able to read a news story about a currency crisis and understand exactly what is being traded, who is winning, who is losing, and what policy options the country has left.</p>
 
-  <h2 class="tb-section">13.2 The Market for Foreign Currency Exchange</h2>
-  <div class="tb-level principles">
-    <div class="tb-level-header">📘 Principles Level</div>
-    <div class="tb-level-body">
-      <p>To buy foreign goods or assets, domestic residents must first acquire foreign currency. The market where currencies are exchanged is the <strong>foreign exchange market</strong> — the world's largest financial market, with daily trading volume exceeding $7 trillion (Bank for International Settlements, 2022).</p>
-      <p>The price at which currencies exchange is the <strong>exchange rate</strong> — covered in detail in Chapter 14. What matters here is the <em>direction</em> of currency flows: demand for the dollar arises when foreigners buy U.S. exports or U.S. financial assets; supply of the dollar arises when Americans buy imports or foreign assets.</p>
-      <p>In equilibrium, the real exchange rate adjusts until the quantity of dollars supplied (for foreign transactions) equals the quantity demanded (by foreigners). This is the open-economy analog to market clearing in goods markets.</p>
-    </div>
-  </div>
+<div class="tb-insight">
+  <div class="tb-insight-label">✦ Sharma's Take</div>
+  <p>For decades, macroeconomics textbooks treated "open economy" topics as an afterthought — a chapter or two at the end, after the "real" material on growth, money, and business cycles. <strong>That treatment is wrong.</strong> Every country in the modern world is open in some meaningful sense. Capital flows globally. Goods cross borders. Currencies trade 24 hours a day with daily volumes exceeding $7.5 trillion — that's about $7.5 trillion <em>per day</em>, vastly larger than the underlying flow of goods trade and several times annual world GDP.</p>
+  <p>This chapter is short because the conceptual machinery is compact — half a dozen key concepts and one impossible-to-violate constraint (the trilemma). But the conceptual machinery is enormously powerful. Once you internalize how trade flows, capital flows, and exchange rates fit together, you can analyze nearly any open-economy policy question — from EU adoption to dollarization to currency wars to capital controls. The Switzerland 2015 case lets us walk through almost every concept with one vivid example.</p>
+  <div class="tb-insight-attribution">— A.S.</div>
+</div>
 
-  <h2 class="tb-section">13.3 The Mundell-Fleming Model</h2>
-  <div class="tb-level principles">
-    <div class="tb-level-header">📘 Principles Level — Intuition</div>
-    <div class="tb-level-body">
-      <p>The <strong>Mundell-Fleming model</strong> (Robert Mundell and Marcus Fleming, 1960s) extends the IS-LM framework to an open economy. It is the workhorse model for analyzing monetary and fiscal policy under different exchange rate regimes. Its central insight is the <strong>Mundell-Fleming trilemma</strong> (or "impossible trinity"):</p>
-      <p>A country cannot simultaneously have all three of the following: (1) <strong>fixed exchange rate</strong>, (2) <strong>free capital flows</strong>, and (3) <strong>independent monetary policy</strong>. It can have any two, but not all three. This constraint profoundly shapes modern macroeconomic policy.</p>
+<h2 class="tb-section">13.1 The Three Big Concepts: Trade, Capital, and Exchange Rates</h2>
 
-      <div class="tb-example">
-        <div class="tb-example-label">🌍 Real-World Examples of the Trilemma</div>
-        <p><strong>Eurozone:</strong> Free capital flows ✓ + Fixed rates (common currency) ✓ → No monetary policy independence ✗. Greece during 2010–2015 could not devalue or cut interest rates during its debt crisis — it had surrendered monetary sovereignty by joining the euro.</p>
-        <p><strong>China (pre-2015):</strong> Fixed exchange rate ✓ + Independent monetary policy ✓ → Capital controls ✗. China maintained its exchange rate peg and monetary independence by restricting capital flows.</p>
-        <p><strong>U.S., U.K., Canada:</strong> Free capital flows ✓ + Independent monetary policy ✓ → Floating exchange rate ✗. These countries accept exchange rate volatility in exchange for monetary independence and open capital markets.</p>
-      </div>
-
-      <p><strong>Policy effectiveness under Mundell-Fleming:</strong></p>
-      <p>Under <strong>floating exchange rates</strong> with free capital mobility:</p>
-      <p>• Fiscal expansion (G↑) → higher output → higher money demand → higher interest rates → capital inflow → currency appreciates → NX falls → fiscal multiplier is largely neutralized. <em>Fiscal policy is relatively ineffective at changing output</em> under floating rates and free capital flows.</p>
-      <p>• Monetary expansion (M↑) → lower interest rates → capital outflow → currency depreciates → NX rises → output increases. <em>Monetary policy is highly effective</em> under floating rates.</p>
-      <p>Under <strong>fixed exchange rates</strong>:</p>
-      <p>• Fiscal expansion raises output and interest rates → capital inflow puts upward pressure on the currency → central bank must sell currency to maintain the peg → money supply expands automatically → full fiscal multiplier is realized. <em>Fiscal policy is highly effective</em> under fixed rates.</p>
-      <p>• Monetary expansion → interest rate falls → capital outflow → currency depreciates → central bank must buy currency → money supply contracts back to original level. <em>Monetary policy is completely ineffective</em> under fixed rates with free capital flows.</p>
-    </div>
-  </div>
-  <div class="tb-level intermediate">
-    <div class="tb-level-header">📗 Intermediate Level — Mundell-Fleming Formally</div>
-    <div class="tb-level-body">
-      <p>The Mundell-Fleming model adds a Balance of Payments equilibrium condition (BP curve) to IS-LM:</p>
-      <div class="tb-formula">
-        <div class="formula-label">Mundell-Fleming Model (Small Open Economy)</div>
-        IS:  Y = C(Y−T) + I(r) + G + NX(e)     [goods market]
-        LM:  M/P = L(r, Y)                       [money market]
-        BP:  NX(e) + CF(r−r*) = 0               [balance of payments]
-        <br><br>
-        where: e = nominal exchange rate
-               r* = world interest rate (exogenous for small economy)
-               CF = capital flows (function of interest rate differential)
-        <br><br>
-        Perfect capital mobility: r = r* (interest parity condition)
-        → LM curve pins Y; IS and BP adjust via exchange rate
-        <br><br>
-        Floating rate: e adjusts freely → BP always satisfied automatically
-        Fixed rate: Central bank fixes e → M adjusts endogenously to
-                   maintain peg → cannot set independent r
-        <br><br>
-        Result: Under perfect capital mobility and floating rates:
-        ΔY/ΔG ≈ 0 (fiscal crowded out through exchange rate)
-        ΔY/ΔM > 0 (monetary effective through exchange rate channel)
-      </div>
-    </div>
-  </div>
-
-  <h2 class="tb-section">13.4 The U.S. Trade Deficit: Causes and Consequences</h2>
-  <div class="tb-level principles">
-    <div class="tb-level-header">📘 Principles Level</div>
-    <div class="tb-level-body">
-      <p>The United States has run a persistent current account deficit since the early 1980s — importing more than it exports every year. By 2023, the U.S. current account deficit was approximately $900 billion (about 3.5% of GDP). Is this a problem?</p>
-      <p>The national accounting identity reveals the root cause: NX = S − I. The U.S. deficit reflects the fact that domestic investment (I) consistently exceeds domestic saving (S). Foreigners bridge the gap by accumulating U.S. assets — U.S. Treasury bonds, real estate, equities, and corporate debt. The U.S. is, in effect, borrowing from the rest of the world to finance investment beyond what domestic saving can support.</p>
-      <p>Whether this is a problem depends on what the borrowed funds finance. If foreign capital finances productive investment (new factories, infrastructure, innovation), the future returns on those investments will service the external debt. If it finances consumption (lower taxes + higher spending = lower public saving), the external debt accumulates without generating future repayment capacity.</p>
-      <p>Ben Bernanke (2005) argued that the U.S. deficit largely reflected a "global savings glut" — excess saving in China, Germany, Japan, and oil exporters with limited domestic investment opportunities, seeking safe U.S. assets. On this view, the U.S. deficit was pulled by global demand for dollar assets, not just pushed by U.S. profligacy.</p>
-    </div>
-  </div>
-
-  <!-- FRED: Current Account -->
-  <div class="tb-chart-wrap">
-    <div class="tb-chart-title">U.S. Current Account Balance (Billions $) — Live from FRED</div>
-    <div class="tb-chart-box"><canvas id="chart-ch13-ca"></canvas></div>
-    <div class="tb-data-note">Source: U.S. BEA via FRED (Series: NETFI). The persistent U.S. current account deficit reflects S &lt; I — the U.S. saves less than it invests and imports capital from the rest of the world. Note the widening deficit during the COVID stimulus period (2020–2021) as government borrowing reduced national saving sharply.</div>
-  </div>
-
-  <!-- FRED: Trade Balance -->
-  <div class="tb-chart-wrap">
-    <div class="tb-chart-title">U.S. Trade Balance in Goods and Services (Billions $) — Live from FRED</div>
-    <div class="tb-chart-box"><canvas id="chart-ch13-nx"></canvas></div>
-    <div class="tb-data-note">Source: U.S. Census Bureau / BEA via FRED (Series: BOPGSTB). The goods deficit is large and persistent; the services surplus (financial services, education, tourism, software) partially offsets it. The U.S. runs a consistent surplus in services trade while running a large deficit in goods trade.</div>
-  </div>
-
-  <div class="tb-policy-link">
-    <div class="tb-policy-link-label">🎮 MacroNations Connection: Trade Openness and the Open Economy</div>
-    <p>The Mundell-Fleming model explains why your <strong>Trade Openness</strong> lever interacts with your <strong>Interest Rate</strong> lever in complex ways. In a high-openness economy, raising interest rates attracts foreign capital → your currency appreciates → your exports become more expensive and imports cheaper → NX falls → partially offsetting the rate increase's GDP impact. This is the exchange rate channel of monetary policy transmission. Your <strong>Trade Openness</strong> setting also determines how much of any fiscal stimulus leaks abroad through higher imports — the more open your economy, the smaller the domestic fiscal multiplier. Sophisticated teams account for these open-economy feedbacks when setting levers, especially in high-openness rounds.</p>
-  </div>
-
-  <!-- Quiz Ch 13 -->
-  <div class="tb-quiz">
-    <div class="tb-quiz-header"><h3>Chapter 13 Quiz</h3><span>Open economy, Mundell-Fleming, trade balances</span></div>
-    <div class="tb-quiz-body">
-      <div class="tb-quiz-section">
-        <div class="tb-quiz-section-label">Part A — Multiple Choice</div>
-
-        <div class="tb-q" id="q13-1">
-          <div class="tb-q-text"><span class="tb-q-num">1.</span> A country runs a current account deficit of $50 billion. By the balance of payments identity, this means:</div>
-          <div class="tb-options">
-            <div class="tb-option" onclick="selectMCQ('q13-1','a','c')"><span class="tb-option-key">A</span> The country is exporting $50 billion more than it imports</div>
-            <div class="tb-option" onclick="selectMCQ('q13-1','b','c')"><span class="tb-option-key">B</span> The country's government is running a $50 billion fiscal deficit</div>
-            <div class="tb-option" onclick="selectMCQ('q13-1','c','c')"><span class="tb-option-key">C</span> Foreigners are purchasing $50 billion more domestic assets than residents are purchasing foreign assets (net capital inflow)</div>
-            <div class="tb-option" onclick="selectMCQ('q13-1','d','c')"><span class="tb-option-key">D</span> The country's money supply is shrinking by $50 billion</div>
-          </div>
-          <div class="tb-feedback" id="fb-q13-1-correct">✓ Correct. CA + KA = 0 always. CA deficit of $50B → KA surplus of $50B → net capital inflow of $50B (foreigners accumulating domestic assets). NX = NCO: trade deficit = net capital inflow.</div>
-          <div class="tb-feedback" id="fb-q13-1-wrong">✗ The balance of payments identity: current account + capital account = 0. A CA deficit of $50B means a KA surplus of $50B — foreigners are buying $50B more of your assets than you are buying of theirs.</div>
-        </div>
-
-        <div class="tb-q" id="q13-2">
-          <div class="tb-q-text"><span class="tb-q-num">2.</span> According to the Mundell-Fleming model with floating exchange rates and perfect capital mobility, an expansionary fiscal policy (increase in G) will:</div>
-          <div class="tb-options">
-            <div class="tb-option" onclick="selectMCQ('q13-2','a','d')"><span class="tb-option-key">A</span> Strongly raise output because the exchange rate amplifies the fiscal multiplier</div>
-            <div class="tb-option" onclick="selectMCQ('q13-2','b','d')"><span class="tb-option-key">B</span> Raise output and lower interest rates through the money market</div>
-            <div class="tb-option" onclick="selectMCQ('q13-2','c','d')"><span class="tb-option-key">C</span> Have no effect on interest rates because the LM curve is horizontal</div>
-            <div class="tb-option" onclick="selectMCQ('q13-2','d','d')"><span class="tb-option-key">D</span> Largely crowd out net exports through currency appreciation, leaving output nearly unchanged</div>
-          </div>
-          <div class="tb-feedback" id="fb-q13-2-correct">✓ Correct. G↑ → Y↑ → money demand↑ → r rises above r* → capital inflow → currency appreciates → NX falls → crowding out through the exchange rate. Under perfect capital mobility and floating rates, fiscal policy has minimal output effect.</div>
-          <div class="tb-feedback" id="fb-q13-2-wrong">✗ Under floating rates with perfect capital mobility: G↑ raises interest rates → capital inflows → exchange rate appreciates → NX falls → the net exports decline offsets the government spending increase. Fiscal policy is largely ineffective.</div>
-        </div>
-
-        <div class="tb-q" id="q13-3">
-          <div class="tb-q-text"><span class="tb-q-num">3.</span> The "impossible trinity" (Mundell-Fleming trilemma) states that a country cannot simultaneously have:</div>
-          <div class="tb-options">
-            <div class="tb-option" onclick="selectMCQ('q13-3','a','b')"><span class="tb-option-key">A</span> Low inflation, full employment, and a balanced budget</div>
-            <div class="tb-option" onclick="selectMCQ('q13-3','b','b')"><span class="tb-option-key">B</span> A fixed exchange rate, free capital flows, and independent monetary policy</div>
-            <div class="tb-option" onclick="selectMCQ('q13-3','c','b')"><span class="tb-option-key">C</span> Trade surplus, capital account surplus, and balanced government budget</div>
-            <div class="tb-option" onclick="selectMCQ('q13-3','d','b')"><span class="tb-option-key">D</span> High growth, low unemployment, and low inflation simultaneously</div>
-          </div>
-          <div class="tb-feedback" id="fb-q13-3-correct">✓ Correct. The trilemma: you can have any two of (fixed exchange rate, free capital flows, independent monetary policy) but not all three. This is one of the most important results in international macroeconomics.</div>
-          <div class="tb-feedback" id="fb-q13-3-wrong">✗ The Mundell-Fleming trilemma: a country cannot simultaneously maintain a fixed exchange rate, free capital flows, AND independent monetary policy. It must sacrifice one of the three.</div>
-        </div>
-
-        <div class="tb-q" id="q13-4">
-          <div class="tb-q-text"><span class="tb-q-num">4.</span> If domestic saving falls (e.g., due to a larger government deficit), the effect on the current account is:</div>
-          <div class="tb-options">
-            <div class="tb-option" onclick="selectMCQ('q13-4','a','b')"><span class="tb-option-key">A</span> Current account improves (surplus rises) because lower saving raises interest rates and attracts capital</div>
-            <div class="tb-option" onclick="selectMCQ('q13-4','b','b')"><span class="tb-option-key">B</span> Current account worsens (deficit rises) because NX = S − I, and lower S reduces NX</div>
-            <div class="tb-option" onclick="selectMCQ('q13-4','c','b')"><span class="tb-option-key">C</span> No effect, because the exchange rate adjusts to keep NX constant</div>
-            <div class="tb-option" onclick="selectMCQ('q13-4','d','b')"><span class="tb-option-key">D</span> Current account improves because lower saving stimulates domestic consumption and reduces imports</div>
-          </div>
-          <div class="tb-feedback" id="fb-q13-4-correct">✓ Correct. NX = S − I. Lower S (with I unchanged) → NX falls → current account deficit widens. This is the "twin deficits" hypothesis: fiscal deficits (lower public saving) worsen the current account.</div>
-          <div class="tb-feedback" id="fb-q13-4-wrong">✗ From NX = S − I: if S falls and I is unchanged, NX must fall. The current account deficit widens. This is the "twin deficits" relationship: government budget deficits tend to widen current account deficits.</div>
-        </div>
-      </div>
-
-      <div class="tb-quiz-section">
-        <div class="tb-quiz-section-label">Part B — Short Answer</div>
-        <div class="tb-q">
-          <div class="tb-q-text"><span class="tb-q-num">5.</span> Greece joined the eurozone in 2001, giving up its own currency (the drachma). When the Greek debt crisis hit in 2010, Greece could not devalue its currency or cut interest rates. Using the Mundell-Fleming trilemma, explain why Greece lost these policy tools and what options it had left for economic adjustment.</div>
-          <textarea class="tb-sa-input" placeholder="Your answer..."></textarea>
-          <div style="font-size:0.75rem;color:var(--ink-faint);margin-top:0.375rem;">Model answer: By joining the euro, Greece chose: (1) fixed exchange rate (irrevocably fixed to the euro) + (2) free capital flows (EU single market). The trilemma dictates it must sacrifice (3) independent monetary policy — the ECB sets rates for the entire eurozone, not just Greece. Greece could not devalue (no national currency) and could not cut rates (no national central bank). Remaining adjustment tools: (a) Internal devaluation — reducing prices and wages to restore competitiveness without changing the nominal exchange rate. This is painful: wages are sticky downward, so internal devaluation requires prolonged recession and unemployment (Greek unemployment peaked at 27.5% in 2013). (b) Fiscal consolidation — reducing the primary deficit (required by Troika bailout conditions), though contractionary during a recession. (c) Structural reforms — improving productivity to regain competitiveness. The Greek crisis illustrates the costs of losing monetary sovereignty when the optimal monetary policy for one member (easy money, devaluation) diverges from the eurozone-wide optimal policy.</div>
-        </div>
-      </div>
-
-      <div class="tb-quiz-section">
-        <div class="tb-quiz-section-label">Part C — Policy Scenario (MacroNations)</div>
-        <div class="tb-q">
-          <div class="tb-policy-scenario">
-            <strong>Round 7 Scenario:</strong> MacroNation has Trade Openness set at 8/10. In this round, a global recession is reducing foreign demand — your exports have fallen 15%. Your current account deficit has widened to −4% of GDP. You are considering (A) sharply cutting interest rates to weaken your currency and boost exports, or (B) reducing Trade Openness to 4/10 to limit import penetration.
-          </div>
-          <div class="tb-q-text"><span class="tb-q-num">6.</span> Evaluate both options using the Mundell-Fleming framework and the NX = S − I identity. Which addresses the underlying causes of the deficit more effectively? What risks does each carry for your scoring pillars?</div>
-          <textarea class="tb-sa-input" style="min-height:110px;" placeholder="Write your policy recommendation..."></textarea>
-          <div style="font-size:0.75rem;color:var(--ink-faint);margin-top:0.375rem;">Model answer: Option A (cut rates): Lower rates → currency depreciates → exports become cheaper → NX rises. This is the Mundell-Fleming monetary channel. However, the root cause of your deficit widening is the global recession reducing foreign demand — not an overvalued currency. If foreign buyers simply have less income, making your exports cheaper helps only marginally. Additionally, rate cuts risk inflation (Stability pillar) and the NX = S − I identity says NX can only sustainably improve if S rises or I falls. A currency depreciation doesn't fix the S-I gap — it just temporarily shifts the exchange rate. Option B (reduce openness): Restricting imports directly reduces the trade deficit. But it also reduces the gains from trade, raises domestic prices (inflationary), and risks retaliation. Your GDP Performance pillar suffers from less specialization. NX = S − I: restricting trade changes NX mechanically but doesn't address the underlying saving-investment imbalance. Recommended approach: Neither option alone is optimal. The correct response to a global recession is to support domestic demand (moderate stimulus to maintain Y), accept a temporarily wider current account deficit (financed by capital inflows), and wait for the global recession to pass. Use rate cuts moderately to prevent recession at home, not primarily to manipulate the exchange rate. Keep Trade Openness high — the gains from trade persist even during a global slowdown.</div>
-        </div>
-      </div>
-    </div>
-    <div class="tb-quiz-footer">
-      <button class="btn-tb btn-tb-primary" onclick="checkQuiz('ch13')">Check MCQ Answers</button>
-    </div>
-  </div>
-
-  <div class="tb-references">
-    <h3>References</h3>
-    <p class="tb-ref">Mundell, R. A. (1963). Capital mobility and stabilization policy under fixed and flexible exchange rates. <em>Canadian Journal of Economics and Political Science, 29</em>(4), 475–485.</p>
-    <p class="tb-ref">Fleming, J. M. (1962). Domestic financial policies under fixed and under floating exchange rates. <em>IMF Staff Papers, 9</em>(3), 369–380.</p>
-    <p class="tb-ref">Obstfeld, M., &amp; Taylor, A. M. (2004). <em>Global capital markets: Integration, crisis, and growth</em>. Cambridge University Press.</p>
-    <p class="tb-ref">Bernanke, B. S. (2005). <em>The global saving glut and the U.S. current account deficit</em>. Remarks at the Sandridge Lecture, Virginia Association of Economists.</p>
-    <p class="tb-ref">Bank for International Settlements. (2022). <em>Triennial central bank survey of foreign exchange and OTC derivatives markets</em>. BIS.</p>
-    <p class="tb-ref">Bureau of Economic Analysis. (2024). <em>U.S. international transactions accounts</em>. <a href="https://www.bea.gov/data/intl-trade-investment/international-transactions" target="_blank">bea.gov</a></p>
-  </div>
-
-  <div class="tb-chapter-nav">
-    <button class="tb-chapter-nav-btn" onclick="showChapter('ch12')">← Previous</button>
-    <button class="tb-mark-complete" id="complete-ch13" onclick="markComplete('ch13')">Mark Complete ✓</button>
-    <button class="tb-chapter-nav-btn" onclick="showChapter('ch14')">Next: Exchange Rates →</button>
+<div class="tb-level principles">
+  <div class="tb-level-header">📘 Principles Level — The three flows that define an open economy</div>
+  <div class="tb-level-body">
+    <p>An open economy interacts with the rest of the world along three dimensions. <strong>Goods and services</strong> cross borders (exports and imports). <strong>Capital</strong> crosses borders (foreigners buying domestic assets; residents buying foreign assets). And the <strong>exchange rate</strong> — the price at which one currency converts into another — adjusts to make all of this possible.</p>
+    <p>These three flows are tightly linked. When American consumers buy more Japanese cars, they ultimately pay in yen, which means somebody is selling dollars for yen, which puts downward pressure on the dollar relative to the yen. When foreign investors decide American Treasury bonds are safer than European ones, they sell euros for dollars, pushing the dollar up. The exchange rate is the price that makes all of these markets clear simultaneously.</p>
   </div>
 </div>
+
+<div class="tb-defs">
+  <div class="tb-defs-label">📚 Key Terms — defined here, used throughout the chapter</div>
+  <dl>
+    <dt>Exports (X)</dt>
+    <dd>Goods and services <strong>produced domestically and sold to foreigners</strong>. A Boeing 737 sold to an Indian airline is a U.S. export. Includes both physical goods and services (consulting, software, tourism revenue from foreign visitors).</dd>
+    <dt>Imports (M)</dt>
+    <dd>Goods and services <strong>produced abroad and bought by domestic residents</strong>. A Toyota Camry assembled in Japan and sold in the U.S. is a U.S. import.</dd>
+    <dt>Net exports (NX)</dt>
+    <dd><code>NX = X − M</code>. The trade balance. Positive when a country exports more than it imports (<em>trade surplus</em>); negative when it imports more (<em>trade deficit</em>). The same NX from chapter 7's Y = C + I + G + NX.</dd>
+    <dt>Capital outflow (CO) / Net capital outflow (NCO)</dt>
+    <dd>The net amount of <strong>domestic residents buying foreign assets minus foreigners buying domestic assets</strong>. Positive when residents are net lenders to the world; negative when foreigners are net lenders to us. <em>A country running a trade deficit must, by accounting identity, be a net capital importer.</em></dd>
+    <dt>Nominal exchange rate (e)</dt>
+    <dd>The <strong>rate at which one currency converts into another</strong>. If 1 USD = 1.10 CHF, then e = 1.10 CHF/USD. There are two equivalent ways to quote this (CHF per USD, or USD per CHF), and you must always check which one is being used.</dd>
+    <dt>Real exchange rate (ε)</dt>
+    <dd>The nominal exchange rate <strong>adjusted for relative price levels</strong>: <code>ε = e × P / P*</code>, where P is the domestic price level and P* is the foreign price level. Measures the relative cost of <em>goods</em> across countries, not just currencies.</dd>
+    <dt>Appreciation / Depreciation</dt>
+    <dd>A currency <em>appreciates</em> when it can buy more foreign currency (gets stronger). It <em>depreciates</em> when it can buy less (gets weaker). Important: if quoted as "foreign per domestic" (e.g., CHF per USD), an appreciation means the number gets bigger; if quoted as "domestic per foreign" (e.g., USD per CHF), an appreciation means the number gets smaller. Always check which way the rate is quoted.</dd>
+    <dt>Pegged / floating exchange rate</dt>
+    <dd>A <em>pegged</em> rate is fixed by the central bank at a target value (e.g., Saudi riyal = 3.75/USD since 1986). A <em>floating</em> rate is determined by supply and demand in foreign-exchange markets (e.g., USD/JPY). Many countries operate in between (<em>managed float</em>): they let the rate move but intervene at extremes.</dd>
+  </dl>
+</div>
+
+<div class="tb-pitfall">
+  <div class="tb-pitfall-label">⚠ Common Pitfall — "A strong currency is always good"</div>
+  <p>Politicians often boast about a "strong dollar" or "strong yuan" as if currency appreciation were automatically beneficial. The reality is more nuanced. A strong currency:</p>
+  <ul style="font-size:0.9rem;color:#5c1a1a;margin-top:0.5rem;">
+    <li><strong>Helps consumers and importers</strong> — foreign goods become cheaper.</li>
+    <li><strong>Helps domestic residents traveling or buying foreign assets</strong> — their currency stretches further.</li>
+    <li><strong>Hurts exporters</strong> — their products become more expensive abroad, reducing competitiveness.</li>
+    <li><strong>Hurts domestic producers competing with imports</strong> — foreign rivals look relatively cheaper.</li>
+    <li><strong>Reduces nominal GDP growth indirectly</strong> through lower NX.</li>
+  </ul>
+  <p>Whether "strong" is good depends on which side of these trade-offs your economy is on. <em>Switzerland in 2015 illustrates the asymmetric pain</em>: the franc's 30% appreciation immediately devastated exporters (Swatch, Nestle, Roche) and the tourism industry, but it also dramatically lowered the cost of imported goods for Swiss consumers. The CHF rise was both blessing and curse — but the political pain came from the exporters, not from the consumers who benefitted silently.</p>
+</div>
+
+<h2 class="tb-section">13.2 The Balance of Payments: An Accounting Identity</h2>
+
+<div class="tb-level principles">
+  <div class="tb-level-header">📘 Principles Level — Every trade deficit is funded by a capital flow</div>
+  <div class="tb-level-body">
+    <p>One of the most elegant identities in macroeconomics says that, for any country, the trade balance must be offset by net capital flows. The intuition is straightforward. If Americans buy more goods from Japan than they sell to Japan, where do the extra yen come from? They come from selling dollar assets to Japanese investors (or borrowing from them). The country with a trade deficit is, by mathematical necessity, a country accumulating net liabilities to the rest of the world.</p>
+  </div>
+</div>
+
+<div class="tb-eqwalk">
+  <div class="tb-eqwalk-label">⚙ Equation Walkthrough — The Trade Balance / Capital Account Identity</div>
+  <div class="tb-eqwalk-formula">NX = NCO     (Trade Balance = Net Capital Outflow)</div>
+  <div class="tb-eqwalk-parts">
+    <div class="tb-eqwalk-key">NX</div>
+    <div class="tb-eqwalk-desc"><strong>Net exports</strong> (X − M). The current account balance (ignoring services and transfers, which we fold in here). Positive = trade surplus.</div>
+    <div class="tb-eqwalk-key">NCO</div>
+    <div class="tb-eqwalk-desc"><strong>Net capital outflow</strong>: domestic purchases of foreign assets minus foreign purchases of domestic assets. Positive = country is lending abroad on net.</div>
+    <div class="tb-eqwalk-key">NX = NCO</div>
+    <div class="tb-eqwalk-desc">An <strong>accounting identity</strong>. Not a behavioral claim. Forced by how the international accounts are constructed. A country running a trade surplus must be accumulating net foreign assets; a country running a trade deficit must be accumulating net foreign liabilities.</div>
+  </div>
+  <p style="margin-top:1rem;font-size:0.85rem;color:var(--ink-light);"><strong>Reading it in plain language:</strong> goods flow one way; payment flows the other way. If Americans send fewer dollars worth of goods abroad than the dollar value of goods they receive (trade deficit), the difference is the value of American assets (Treasuries, stocks, real estate, debt) that foreigners are accumulating in exchange. <em>The U.S. has run trade deficits for over 40 years, accumulating massive net foreign liabilities. This has been sustainable because the U.S. assets foreigners want to hold are large, deep, and trusted markets.</em></p>
+</div>
+
+<div class="tb-eqwalk">
+  <div class="tb-eqwalk-label">⚙ Equation Walkthrough — Saving, Investment, and the Trade Balance</div>
+  <div class="tb-eqwalk-formula">S − I = NX = NCO</div>
+  <div class="tb-eqwalk-parts">
+    <div class="tb-eqwalk-key">S</div>
+    <div class="tb-eqwalk-desc">National saving (per chapter 10). Total income not consumed.</div>
+    <div class="tb-eqwalk-key">I</div>
+    <div class="tb-eqwalk-desc">Domestic investment (real capital formation).</div>
+    <div class="tb-eqwalk-key">S − I</div>
+    <div class="tb-eqwalk-desc">The country's <strong>excess saving</strong> over domestic investment opportunities. When S &gt; I, the country invests the excess abroad (running a current account surplus). When S &lt; I, the country borrows from abroad to fund investment (current account deficit).</div>
+  </div>
+  <p style="margin-top:1rem;font-size:0.85rem;color:var(--ink-light);"><strong>The identity links chapter 10's loanable funds market to international flows.</strong> In a closed economy, S = I always. In an open economy, S need not equal I — the gap is exactly what flows across borders. The U.S. has S &lt; I and runs a persistent trade deficit (importing capital to fund excess investment over saving). Germany has S &gt; I and runs a persistent trade surplus (exporting capital because domestic investment opportunities are saturated). <em>Trade imbalances don't happen because of "unfair trade practices" — they happen because of saving-investment imbalances between countries.</em></p>
+</div>
+
+<div class="tb-worked">
+  <div class="tb-worked-label">📐 Worked Example 13.1 — From saving-investment to the trade balance</div>
+  <div class="tb-worked-q">An economy has the following: GDP = $25 trillion, C = $17T, I = $5T, G = $4.5T, T (net taxes) = $4T. (a) Compute private saving, public saving, and national saving. (b) Compute NX from the national accounts identity. (c) Verify that S − I = NX. (d) Comment on whether this country is a net borrower or lender to the rest of the world.</div>
+  <div class="tb-worked-step"><div class="tb-worked-step-num">1</div><div class="tb-worked-step-text"><strong>(a) Saving:</strong> Private = Y − T − C = 25 − 4 − 17 = $4T. Public = T − G = 4 − 4.5 = −$0.5T. National S = $4T + (−$0.5T) = <strong>$3.5T</strong>.</div></div>
+  <div class="tb-worked-step"><div class="tb-worked-step-num">2</div><div class="tb-worked-step-text"><strong>(b) NX from Y = C + I + G + NX:</strong> <code>NX = Y − C − I − G = 25 − 17 − 5 − 4.5 = −$1.5T</code> (trade deficit).</div></div>
+  <div class="tb-worked-step"><div class="tb-worked-step-num">3</div><div class="tb-worked-step-text"><strong>(c) Check S − I = NX:</strong> <code>$3.5T − $5T = −$1.5T = NX ✓</code></div></div>
+  <div class="tb-worked-step"><div class="tb-worked-step-num">4</div><div class="tb-worked-step-text"><strong>(d) This country is a net borrower from the rest of the world.</strong> Domestic investment ($5T) exceeds national saving ($3.5T) by $1.5T; the gap is filled by net capital inflows from abroad. The trade deficit ($1.5T) is the goods-side mirror of the same capital flow.</div></div>
+  <div class="tb-worked-answer"><strong>The U.S. has fit this pattern for over four decades.</strong> Persistent trade deficits ($1-1.5T per year recently) are funded by persistent net capital inflows — foreigners buying U.S. Treasuries, corporate bonds, stocks, and real estate. This is not inherently bad: the U.S. uses the imported capital to fund productive investment, and U.S. residents benefit from foreign products and foreign-owned investment domestically. But the situation does create vulnerabilities (chapter 22 explores these in depth).</div>
+</div>
+<h2 class="tb-section">13.3 How Exchange Rates Are Determined</h2>
+
+<div class="tb-level principles">
+  <div class="tb-level-header">📘 Principles Level — The forex market as supply and demand</div>
+  <div class="tb-level-body">
+    <p>In the long run, exchange rates are determined by the relative purchasing power of currencies — a doctrine called <strong>purchasing power parity</strong> (PPP). In the short run, exchange rates are determined by the supply of and demand for currencies in foreign-exchange markets, with capital flows mattering far more than trade flows on a day-to-day basis. Both stories matter, on different time horizons.</p>
+  </div>
+</div>
+
+<div class="tb-eqwalk">
+  <div class="tb-eqwalk-label">⚙ Equation Walkthrough — Purchasing Power Parity</div>
+  <div class="tb-eqwalk-formula">e = P / P*     (in the long run, the exchange rate equals the price ratio)</div>
+  <div class="tb-eqwalk-parts">
+    <div class="tb-eqwalk-key">e</div>
+    <div class="tb-eqwalk-desc">Nominal exchange rate, quoted as units of <strong>foreign currency per one unit of domestic currency</strong>.</div>
+    <div class="tb-eqwalk-key">P</div>
+    <div class="tb-eqwalk-desc">Domestic price level — the cost of a representative basket of goods at home.</div>
+    <div class="tb-eqwalk-key">P*</div>
+    <div class="tb-eqwalk-desc">Foreign price level — the cost of the same basket abroad, in foreign currency.</div>
+  </div>
+  <p style="margin-top:1rem;font-size:0.85rem;color:var(--ink-light);"><strong>Reading it in plain language:</strong> if the same basket costs $100 in the U.S. and 12,000 yen in Japan, then PPP says the exchange rate should be 120 yen per dollar (otherwise it would be cheaper to ship the basket from one country to the other and arbitrage the difference). PPP works reasonably well at long horizons (decades) but fails substantially in the short run, because many goods cannot be cheaply arbitraged (haircuts, hospital stays, real estate), and because exchange rates are also driven by capital flows that have nothing to do with goods prices.</p>
+  <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--ink-light);"><strong>The Economist's Big Mac Index</strong> tests PPP using the simplest possible "basket": the price of a Big Mac in different countries. As of 2025, a Big Mac costs $5.79 in the U.S. and roughly 25 yuan in China. PPP would imply an exchange rate of about 4.3 yuan/USD. The actual market rate is around 7.2 yuan/USD — meaning the yuan trades about 40% below its PPP value. The Big Mac Index is whimsical but conceptually revealing: <em>persistent deviations from PPP suggest persistent over- or undervaluation of currencies relative to their fundamentals</em>.</p>
+</div>
+
+<div class="tb-interactive">
+  <div class="tb-interactive-label">🎛 Interactive — The Foreign Exchange Market</div>
+  <h4>Drag the sliders; watch the equilibrium exchange rate adjust</h4>
+  <div style="background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:0.75rem;margin:0.75rem 0;">
+    <canvas id="fx-canvas" width="780" height="400" style="width:100%;max-width:780px;height:auto;display:block;margin:0 auto;"></canvas>
+  </div>
+  <div class="controls" style="grid-template-columns:1fr 1fr 1fr;">
+    <div>
+      <label>Export demand shift: <span class="val" id="fx-x-val">0</span></label>
+      <input type="range" id="fx-x-slider" min="-30" max="30" step="1" value="0">
+    </div>
+    <div>
+      <label>Foreign capital inflow: <span class="val" id="fx-k-val">0</span></label>
+      <input type="range" id="fx-k-slider" min="-30" max="30" step="1" value="0">
+    </div>
+    <div>
+      <label>Central bank intervention: <span class="val" id="fx-i-val">0</span></label>
+      <input type="range" id="fx-i-slider" min="-30" max="30" step="1" value="0">
+    </div>
+  </div>
+  <div class="output" id="fx-output"></div>
+  <p style="font-size:0.8rem;color:var(--ink-muted);margin-top:0.5rem;margin-bottom:0;">
+    <strong>What you're seeing:</strong> the <span style="color:#0f3d9e;font-weight:600;">blue line</span> is the supply of CHF (Swiss francs) to the forex market — slopes up because at higher CHF prices, more Swiss residents want to sell. The <span style="color:#dc2626;font-weight:600;">red line</span> is the demand for CHF — slopes down because at higher CHF prices, fewer foreigners can afford Swiss exports and assets. The <span style="color:#64748b;">gray dashed lines</span> show the original curves. Green dot = new equilibrium.
+  </p>
+  <p style="font-size:0.8rem;color:var(--ink-muted);margin-top:0.5rem;margin-bottom:0;">
+    <strong>Try:</strong> Set "Foreign capital inflow" to +20 (safe-haven inflows like 2011-2015). Watch CHF appreciate sharply. Now add "Central bank intervention" of −20 (SNB printing CHF to buy euros, keeping the rate down) — this is what the SNB did for three years. Then set intervention to 0 — that's January 15, 2015. The currency snaps to its market-clearing level.
+  </p>
+</div>
+
+<h2 class="tb-section">13.4 The Switzerland 2015 Case: Every Concept in One Event</h2>
+
+<div class="tb-case">
+  <div class="tb-case-meta">
+    <span class="tb-case-tag year">2011–2015</span>
+    <span class="tb-case-tag">Switzerland</span>
+    <span class="tb-case-tag">Currency intervention</span>
+  </div>
+  <h4>The Day the SNB Surrendered: 90 Seconds That Reshaped Forex Markets</h4>
+  <p>Between 2010 and 2011, the European debt crisis sent terrified capital fleeing the Eurozone in search of safe havens. Switzerland — small, politically stable, with a long tradition of monetary discipline and bank secrecy — became the destination of choice for trillions of euros of nervous money. By August 2011, the Swiss franc had appreciated nearly <strong>40%</strong> against the euro in just over a year, threatening to crush Swiss exporters and tourism. Watch makers, pharmaceutical companies, machinery exporters all complained that their products had become uncompetitive overnight. Deflation was looming. The Swiss National Bank had to act.</p>
+  <p>On <strong>September 6, 2011</strong>, the SNB announced an unprecedented commitment: it would buy foreign currency in unlimited quantities to prevent the franc from appreciating beyond <strong>1.20 per euro</strong>. This was not a guideline or a target — it was a hard floor. The SNB pledged to print as many francs as necessary, swap them for euros at 1.20, and absorb the resulting balance-sheet expansion. For three and a half years, the policy worked. The franc stayed close to 1.20. Swiss exports recovered. Tourism stabilized.</p>
+  <p>But the policy had costs. To defend the floor, the SNB had to keep buying euros — and the inflows kept coming. By December 2014, the SNB held foreign currency reserves of roughly <strong>500 billion CHF, equivalent to about 70% of Swiss GDP</strong>. To put that in perspective: imagine the Fed accumulating $20 trillion of foreign-currency reserves on its balance sheet, far exceeding U.S. annual output. The SNB's balance sheet had become a massive bet that the euro would not depreciate further. <em>And then, in early January 2015, signals from the European Central Bank suggested that a massive new round of euro-weakening quantitative easing was imminent.</em></p>
+  <p>The SNB faced two options: (1) continue defending the floor and watch its balance sheet grow indefinitely as Mario Draghi's ECB flooded the market with euros, eventually owning much of the eurozone's outstanding government debt; or (2) abandon the floor and accept a one-time massive franc appreciation. They chose option 2. On <strong>January 15, 2015 at 9:30 GMT</strong>, the floor was removed. Within ninety seconds the franc was up 30% — briefly trading as high as 0.85 CHF per euro before settling around 1.04. Simultaneously, the SNB cut the deposit rate to <strong>−0.75%</strong>, the lowest in history, to discourage further capital inflows.</p>
+  <p><strong>The damage was widespread.</strong> Several forex brokers, including FXCM, Alpari UK, and Excel Markets, became insolvent. Citibank, Deutsche Bank, and Barclays reported losses of $150-300 million each. Hedge funds with short-CHF positions were wiped out. Polish and Hungarian homeowners with Swiss-franc mortgages saw their effective debts jump 20-30% overnight. The Swiss stock market fell more than 10% in a single day. Swatch's CEO called it "a tsunami."</p>
+  <p><strong>The longer-term consequences were more nuanced.</strong> Swiss exports did suffer initially (about 1-2% of GDP impact), but the country avoided the Japan-style stagnation many had feared. Swiss companies cut costs, became more efficient, and pivoted toward higher-value products. By 2018, the franc had retreated somewhat toward 1.15-1.18 EUR/CHF. The SNB's reserves stabilized around 95% of GDP — extraordinary, but no longer growing.</p>
+  <p><em>What this case teaches</em>: A small open economy faced with massive capital inflows has only bad options. Intervention can defer the problem but accumulates fiscal risk (a giant central bank balance sheet bet against the home currency). Abandoning intervention triggers immediate trauma. There is no clean path. <strong>The single most important lesson is that currency intervention is profoundly asymmetric: easy to start, agonizing to stop, dangerous to maintain.</strong> This is exactly why most major central banks have moved away from explicit pegs and toward floating regimes with implicit guardrails.</p>
+</div>
+
+<div class="tb-reflect">
+  <strong>Stop and reflect:</strong> The SNB's three-and-a-half-year defense of the 1.20 floor accumulated foreign currency reserves equal to about 70% of Swiss GDP. If Swiss inflation had been low and ECB-style quantitative easing had not been expected, the SNB could have continued defending the floor indefinitely. Why didn't this option remain feasible? Think about what happens when a central bank holds enormous foreign assets denominated in a currency the foreign country's own central bank is trying to weaken.
+</div>
+<h2 class="tb-section">13.5 The Impossible Trinity (Trilemma): Three Things, Pick Two</h2>
+
+<div class="tb-level principles">
+  <div class="tb-level-header">📘 Principles Level — The hardest constraint in international finance</div>
+  <div class="tb-level-body">
+    <p>Every open economy faces a fundamental constraint articulated by Robert Mundell in the 1960s. A country can pursue at most <strong>two</strong> of the following three desirable policies — never all three at once:</p>
+    <ol>
+      <li><strong>A fixed exchange rate</strong> — a peg that lets businesses plan and protects against currency volatility.</li>
+      <li><strong>Free movement of capital</strong> — letting investment flow in and out without restrictions, which most modern economies value.</li>
+      <li><strong>An independent monetary policy</strong> — being able to set interest rates to fight domestic recession or inflation.</li>
+    </ol>
+    <p>This is the <strong>impossible trinity</strong> or <strong>trilemma</strong>. It is one of the most rigorously tested empirical regularities in macroeconomics, and it has shaped every major international monetary architecture from Bretton Woods (1944-1971) to the European Monetary Union to modern emerging-market debates over capital controls.</p>
+  </div>
+</div>
+
+<div class="tb-interactive">
+  <div class="tb-interactive-label">🎛 Interactive — The Trilemma Triangle</div>
+  <h4>Click a corner to choose your country's policy combination</h4>
+  <div style="background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:0.75rem;margin:0.75rem 0;">
+    <canvas id="tri-canvas" width="780" height="500" style="width:100%;max-width:780px;height:auto;display:block;margin:0 auto;"></canvas>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin:1rem 0;">
+    <button onclick="window._setTrilemma('fix-cap')" style="padding:0.625rem;background:#0f3d9e;color:#fff;border:none;border-radius:6px;font-size:0.875rem;cursor:pointer;font-family:inherit;">Fix + Capital flows<br><span style="font-size:0.7rem;opacity:0.85;">Gold standard era; Eurozone members</span></button>
+    <button onclick="window._setTrilemma('fix-indep')" style="padding:0.625rem;background:#7c3aed;color:#fff;border:none;border-radius:6px;font-size:0.875rem;cursor:pointer;font-family:inherit;">Fix + Independent policy<br><span style="font-size:0.7rem;opacity:0.85;">China pre-2015; Bretton Woods</span></button>
+    <button onclick="window._setTrilemma('cap-indep')" style="padding:0.625rem;background:#dc2626;color:#fff;border:none;border-radius:6px;font-size:0.875rem;cursor:pointer;font-family:inherit;">Free capital + Indep policy<br><span style="font-size:0.7rem;opacity:0.85;">US, UK, Japan, most modern economies</span></button>
+  </div>
+  <div class="output" id="tri-output"></div>
+  <p style="font-size:0.8rem;color:var(--ink-muted);margin-top:0.5rem;margin-bottom:0;">
+    <strong>What you're seeing:</strong> the three corners of the triangle are the three desirable policies. The colored side connecting two corners represents the policy combination a country chooses; the <em>opposite corner</em> is what gets sacrificed. There is no real-world economy that operates at the center — the trilemma forces a choice.
+  </p>
+</div>
+
+<table class="tb-table">
+  <caption>The trilemma in practice — how real countries make the trade-off</caption>
+  <thead><tr><th style="width:20%;">Country / regime</th><th style="width:30%;">Combination chosen</th><th>Cost of the sacrificed policy</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Eurozone members</strong></td>
+      <td>Fixed exchange rate (irrevocably, by adopting the euro) + free capital flows</td>
+      <td>No independent monetary policy. Greece can't devalue or cut its own interest rates during recessions. This was the central pain of the 2010-2012 Greek crisis.</td>
+    </tr>
+    <tr>
+      <td><strong>Hong Kong</strong></td>
+      <td>Fixed rate to USD (HKD pegged since 1983) + open capital markets</td>
+      <td>Hong Kong's interest rates effectively mirror U.S. interest rates. When the Fed raises rates, Hong Kong must raise too, even if its local economy doesn't warrant it.</td>
+    </tr>
+    <tr>
+      <td><strong>China (pre-2015)</strong></td>
+      <td>Fixed (pegged) rate + independent monetary policy</td>
+      <td>Heavy capital controls. Chinese citizens couldn't move money abroad without restrictions; foreign investors couldn't freely enter Chinese asset markets.</td>
+    </tr>
+    <tr>
+      <td><strong>U.S., UK, Japan, EU vs. world</strong></td>
+      <td>Free capital flows + independent monetary policy</td>
+      <td>Floating exchange rate. The dollar, pound, yen, and euro all swing significantly in response to shocks.</td>
+    </tr>
+    <tr>
+      <td><strong>Switzerland 2011–2015</strong></td>
+      <td>Tried for all three! Floor on the franc + capital openness + ability to cut rates</td>
+      <td>The trilemma caught up with them. By 2015, defending the floor against ECB easing required printing infinite francs. They had to abandon either the floor (which they did) or capital openness (politically unacceptable).</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="tb-insight">
+  <div class="tb-insight-label">✦ Sharma's Take — Why the trilemma is the most useful tool you'll learn in this chapter</div>
+  <p>The trilemma is what separates students who understand international macroeconomics from those who don't. Anyone can recite the equations of PPP and the balance of payments. The trilemma is harder because it forces you to think about which constraint binds in a given situation.</p>
+  <p>When you read a news article about a currency crisis, an emerging market in trouble, a central bank facing speculative pressure — always ask: "Which corner of the trilemma are they trying to live at? Why is it impossible to remain there? Which corner are they being forced toward?" Argentina in 2001, Mexico in 1994, Thailand in 1997, Britain in 1992, Russia in 1998, Switzerland in 2015 — every one of these crises was fundamentally a trilemma collision. Capital flows changed; the country could no longer simultaneously hold a peg, open capital markets, and an independent policy. Something had to give.</p>
+  <p>The trilemma also explains why the eurozone has been such a difficult experiment. Member countries gave up their independent monetary policy in exchange for the certainty of a fixed rate and open capital markets within the bloc. When asymmetric shocks hit (like the 2009-2012 sovereign debt crisis affecting Greece more than Germany), countries on the wrong end had no independent monetary policy to deploy. The solution had to come from fiscal transfers (which Germany resisted) or from the European Central Bank (which broke with its formal mandate to act). <em>The trilemma was the deep constraint shaping every policy decision in that crisis.</em></p>
+  <div class="tb-insight-attribution">— A.S.</div>
+</div>
+
+<h2 class="tb-section">13.6 Exchange Rate Regimes: A Spectrum of Choices</h2>
+
+<table class="tb-table">
+  <caption>Exchange rate regimes from rigid to flexible</caption>
+  <thead><tr><th style="width:22%;">Regime</th><th style="width:30%;">What it is</th><th>Examples / costs</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>Dollarization / Currency Union</strong></td>
+      <td>Country abandons its own currency entirely; adopts a foreign currency or shares one with neighbors.</td>
+      <td>Ecuador (USD since 2000), El Salvador (USD since 2001), Eurozone members. Permanent loss of monetary policy. Permanent gain of credibility.</td>
+    </tr>
+    <tr>
+      <td><strong>Hard peg (currency board)</strong></td>
+      <td>Domestic currency exists but is rigidly tied to a foreign anchor, with full reserve backing.</td>
+      <td>Hong Kong dollar (1983-present). Bulgaria's lev. Easier to abandon than dollarization but politically costly.</td>
+    </tr>
+    <tr>
+      <td><strong>Soft peg / adjustable peg</strong></td>
+      <td>Official target rate that can be changed in extremis. Central bank intervenes to defend it.</td>
+      <td>Pre-1971 Bretton Woods system. Modern: Saudi Arabia (riyal/USD), most Gulf states. Vulnerable to speculative attack when fundamentals diverge.</td>
+    </tr>
+    <tr>
+      <td><strong>Managed float</strong></td>
+      <td>Rate floats day-to-day but central bank intervenes at extremes or against destabilizing speculation.</td>
+      <td>China (post-2015), India, Brazil. The most common modern regime for emerging markets.</td>
+    </tr>
+    <tr>
+      <td><strong>Free float</strong></td>
+      <td>Exchange rate determined purely by markets. Central bank does not intervene.</td>
+      <td>U.S., UK, Japan, Eurozone (vs. outside world), Australia, Canada. Volatility but maximum monetary independence.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="tb-section">13.7 Why Trade Deficits Are Mostly Misunderstood</h2>
+
+<div class="tb-level principles">
+  <div class="tb-level-header">📘 Principles Level — A trade deficit is not a national debt</div>
+  <div class="tb-level-body">
+    <p>"Trade deficit" is one of the most consistently misused terms in political discourse. Treated as a kind of national scoreboard, it is invoked to justify tariffs, sanctions, and protectionist policy. Most of the rhetoric is wrong. A trade deficit is neither inherently bad nor inherently good — it depends on what's funding it and what the imported capital is being used for.</p>
+    <p>From section 13.2, recall: <code>S − I = NX</code>. A trade deficit (NX &lt; 0) means national saving falls short of domestic investment by an amount equal to the deficit. This can happen for two very different reasons:</p>
+    <ol style="font-size:0.9rem;color:var(--ink-light);">
+      <li><strong>Investment is unusually high</strong> (productive capital formation outpacing domestic saving). Foreign capital flows in to fund profitable opportunities. Examples: U.S. in the 1990s tech boom; Korea during its industrialization push. This kind of trade deficit is healthy — the foreign capital pays for future productive capacity.</li>
+      <li><strong>Saving is unusually low</strong> (consumption outpacing income). Foreign capital flows in to fund current consumption. Examples: Greece pre-2010 (importing German Mercedes and Italian wine on credit); U.S. mortgage borrowing 2003-2007. This kind of trade deficit is problematic — debts accumulate without productive capacity to service them.</li>
+    </ol>
+    <p>The trade deficit by itself doesn't tell you which case you're in. You need to look at what investment is being funded and whether it has decent returns.</p>
+  </div>
+</div>
+
+<div class="tb-pitfall">
+  <div class="tb-pitfall-label">⚠ Common Pitfall — "Trade deficits transfer jobs abroad"</div>
+  <p>A widespread political claim. It contains a kernel of truth — when Americans buy Chinese goods instead of American ones, some specific U.S. workers (in textiles, manufacturing) lose jobs. But the aggregate-level claim is largely wrong. The U.S. trade deficit has fluctuated between 3% and 6% of GDP for forty years, while U.S. unemployment has ranged from 3.5% to 10% over the same period — the two have essentially no correlation. <strong>Aggregate U.S. employment is determined by domestic factors (Fed policy, fiscal stance, structural conditions), not by the trade balance.</strong></p>
+  <p>This doesn't mean trade has no distributional effects: it does. Specific workers and regions lose; others gain. The mistake is treating the trade balance as the aggregate scoreboard rather than understanding it as a financial-flow consequence of saving and investment decisions. <em>Tariffs that try to "reduce the trade deficit" almost always fail to do so, because they don't change underlying saving-investment imbalances; they just shift which goods get imported.</em></p>
+</div>
+
+<div class="tb-policy-link">
+  <div class="tb-policy-link-label">🎮 MacroNations Connection — The Trilemma in the Simulation</div>
+  <p>In MacroNations, your <strong>Exchange Rate Regime</strong> lever lets you choose your trilemma combination: float (free capital + independent policy), peg (fixed + capital free, no independent policy), or managed (in-between). Your <strong>Capital Account Openness</strong> setting determines whether your country accepts free flows or imposes controls. Your <strong>Interest Rate</strong> is constrained by your regime choice — if you peg, your rate is forced to track your anchor country; if you float with controls, you can set rates more freely.</p>
+  <p>The Switzerland 2015-style scenario can play out in the simulation: pegging during a flight to safety triggers massive reserve accumulation, which can become unsustainable. Choosing to abandon the peg at the wrong moment costs Stability points (a one-time hit) but releases pressure. The simulation rewards strategies that match the regime to the country's economic structure: small open economies pegged to large stable trading partners benefit from low volatility but accept the discipline; large economies typically gain more from floating.</p>
+</div>
+
+<div class="tb-chart-wrap">
+  <div class="tb-chart-title">U.S. Trade-Weighted Dollar Index (Broad)</div>
+  <div class="tb-chart-box"><canvas id="chart-ch13-twd"></canvas></div>
+  <div class="tb-data-note">Source: Federal Reserve via FRED (Series: DTWEXBGS). The trade-weighted dollar index aggregates the dollar's value against a basket of U.S. trading partners' currencies, weighted by trade volumes. Note three big cycles: the early-1980s Volcker disinflation pushed the dollar up sharply; the late-1990s tech boom and 2014-2015 commodity collapse pushed it up again; the post-2020 period saw both inflation-driven weakness and rate-driven strength. Dollar movements of 10-20% can substantially affect U.S. inflation, exports, and emerging-market debt burdens.</div>
+</div>
+
+<div class="tb-chart-wrap">
+  <div class="tb-chart-title">U.S. Net Exports (% of GDP)</div>
+  <div class="tb-chart-box"><canvas id="chart-ch13-nx"></canvas></div>
+  <div class="tb-data-note">Source: BEA via FRED (Series: NETEXP, divided by GDP). The U.S. has run persistent trade deficits since the early 1980s, averaging around −3% of GDP, with the deficit widening to about −5% pre-2008 and narrowing during the GFC. This persistent deficit is the mirror of persistent net capital inflows — foreigners' demand for U.S. assets has consistently exceeded U.S. residents' demand for foreign assets, which keeps the dollar relatively strong and imports relatively cheap.</div>
+</div>
+
+<div class="tb-quiz">
+  <div class="tb-quiz-header"><h3>Chapter 13 Quiz</h3><span>Trade, capital flows, exchange rates, trilemma</span></div>
+  <div class="tb-quiz-body">
+
+    <div class="tb-quiz-section">
+      <div class="tb-quiz-section-label">Part A — Multiple Choice (Principles)</div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">1.</span> A country running a trade deficit of $500 billion must, by accounting identity, have:</div>
+        <div class="tb-options">
+          <div class="tb-option"><span class="tb-option-key">A</span> Net capital outflows of $500 billion (residents lending to the rest of the world)</div>
+          <div class="tb-option"><span class="tb-option-key">B</span> Net capital inflows of $500 billion (foreigners lending to the country)</div>
+          <div class="tb-option"><span class="tb-option-key">C</span> Net exports of $500 billion</div>
+          <div class="tb-option"><span class="tb-option-key">D</span> Zero capital flows</div>
+        </div>
+      </div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">2.</span> Purchasing power parity (PPP) implies that:</div>
+        <div class="tb-options">
+          <div class="tb-option"><span class="tb-option-key">A</span> Exchange rates are determined exclusively by central bank intervention</div>
+          <div class="tb-option"><span class="tb-option-key">B</span> In the long run, exchange rates adjust to equalize the cost of representative baskets of goods across countries</div>
+          <div class="tb-option"><span class="tb-option-key">C</span> Inflation rates must be the same in all countries</div>
+          <div class="tb-option"><span class="tb-option-key">D</span> Trade deficits are always corrected by exchange rate movements</div>
+        </div>
+      </div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">3.</span> The Swiss National Bank's January 15, 2015 decision had what immediate effect on the Swiss franc?</div>
+        <div class="tb-options">
+          <div class="tb-option"><span class="tb-option-key">A</span> Depreciated about 30% against the euro</div>
+          <div class="tb-option"><span class="tb-option-key">B</span> Appreciated about 30% against the euro</div>
+          <div class="tb-option"><span class="tb-option-key">C</span> No change in value</div>
+          <div class="tb-option"><span class="tb-option-key">D</span> Switched from convertible to inconvertible</div>
+        </div>
+      </div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">4.</span> The "impossible trinity" or trilemma states that an open economy cannot simultaneously have:</div>
+        <div class="tb-options">
+          <div class="tb-option"><span class="tb-option-key">A</span> Low inflation, low unemployment, and high growth</div>
+          <div class="tb-option"><span class="tb-option-key">B</span> A fixed exchange rate, free capital flows, and an independent monetary policy</div>
+          <div class="tb-option"><span class="tb-option-key">C</span> Free trade, balanced budgets, and price stability</div>
+          <div class="tb-option"><span class="tb-option-key">D</span> Open borders, fiscal sovereignty, and a national currency</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tb-quiz-section">
+      <div class="tb-quiz-section-label">Part B — Multiple Choice (Intermediate)</div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">5.</span> A Eurozone member country experiences a deep recession while Germany's economy is overheating. Under the trilemma, what tool is NOT available to the recession-hit country?</div>
+        <div class="tb-options">
+          <div class="tb-option"><span class="tb-option-key">A</span> Fiscal stimulus through tax cuts</div>
+          <div class="tb-option"><span class="tb-option-key">B</span> Government spending increases</div>
+          <div class="tb-option"><span class="tb-option-key">C</span> Currency devaluation to boost exports</div>
+          <div class="tb-option"><span class="tb-option-key">D</span> Labor market reforms</div>
+        </div>
+      </div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">6.</span> The U.S. has run persistent trade deficits for over 40 years. The corresponding capital-account counterpart is:</div>
+        <div class="tb-options">
+          <div class="tb-option"><span class="tb-option-key">A</span> Persistent net capital inflows from foreigners buying U.S. assets</div>
+          <div class="tb-option"><span class="tb-option-key">B</span> Persistent depletion of U.S. foreign reserves</div>
+          <div class="tb-option"><span class="tb-option-key">C</span> Persistent surpluses on the U.S. fiscal account</div>
+          <div class="tb-option"><span class="tb-option-key">D</span> No corresponding capital flow — the identity does not apply to large countries</div>
+        </div>
+      </div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">7.</span> Hong Kong has maintained a hard peg of the HKD to the USD since 1983. According to the trilemma, Hong Kong has sacrificed:</div>
+        <div class="tb-options">
+          <div class="tb-option"><span class="tb-option-key">A</span> Free capital flows</div>
+          <div class="tb-option"><span class="tb-option-key">B</span> A fixed exchange rate</div>
+          <div class="tb-option"><span class="tb-option-key">C</span> An independent monetary policy</div>
+          <div class="tb-option"><span class="tb-option-key">D</span> Free trade in goods</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tb-quiz-section">
+      <div class="tb-quiz-section-label">Part C — Numerical Problems</div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">8.</span> Country A's price level is 100 (in local currency); Country B's price level is 120 (in its local currency). The nominal exchange rate is 0.85 (units of B's currency per unit of A's currency). (a) Compute the real exchange rate, expressed as units of B's goods per unit of A's goods. (b) Is country A's currency overvalued or undervalued relative to PPP? By how much? (c) What would you expect to happen to the nominal rate in the long run if PPP holds?</div>
+        <textarea class="tb-sa-input" placeholder="Show all work."></textarea>
+        <div style="font-size:0.75rem;color:var(--ink-faint);margin-top:0.375rem;"><strong>Model answer:</strong> (a) Real exchange rate ε = e × P / P* = 0.85 × 100 / 120 = <strong>0.708</strong>. A unit of A's goods (when sold in B) is worth only 0.708 units of B's goods — A's goods are CHEAP relative to B's after accounting for the exchange rate. (b) PPP rate would be e = P*/P (rearranged to express foreign-per-domestic) = 120/100 = 1.20. Actual rate is 0.85, so A's currency is <strong>undervalued by about 29%</strong>: (1.20 − 0.85) / 1.20. (c) Long-run PPP predicts the nominal rate will rise from 0.85 toward 1.20 — A's currency will appreciate by about 41% to restore parity, OR A's prices will rise faster than B's, OR some combination. The Big Mac Index regularly identifies such divergences for currencies like the yuan, Indian rupee, and Argentine peso.</div>
+      </div>
+
+      <div class="tb-q">
+        <div class="tb-q-text"><span class="tb-q-num">9.</span> A small economy has GDP = $300B, C = $200B, I = $80B, G = $50B. (a) Compute NX directly from the national accounts identity. (b) The country also reports private saving of $60B and public saving of −$10B. Compute national saving. (c) Verify S − I = NX. (d) Is this country a net borrower or lender to the rest of the world?</div>
+        <textarea class="tb-sa-input" style="min-height:140px;" placeholder="Show calculations."></textarea>
+        <div style="font-size:0.75rem;color:var(--ink-faint);margin-top:0.375rem;"><strong>Model answer:</strong> (a) NX = Y − C − I − G = 300 − 200 − 80 − 50 = <strong>−$30B</strong> (trade deficit). (b) National saving S = $60B + (−$10B) = <strong>$50B</strong>. (c) S − I = $50B − $80B = −$30B = NX ✓. (d) Net <strong>borrower</strong>: investment exceeds saving by $30B, financed by net capital inflow of $30B. The trade deficit ($30B) and capital inflow ($30B) are two sides of the same accounting coin.</div>
+      </div>
+    </div>
+
+    <div class="tb-quiz-section">
+      <div class="tb-quiz-section-label">Part D — Policy Scenario</div>
+
+      <div class="tb-q">
+        <div class="tb-policy-scenario">
+          <strong>Scenario:</strong> A small open economy has pegged its currency to the euro for 8 years and enjoyed low inflation and stable trade with the EU. Now a regional crisis triggers massive capital inflows seeking safety. The central bank has accumulated foreign reserves equal to 50% of GDP defending the peg. The European Central Bank is signaling more easing, which will weaken the euro and require the small country's central bank to print even more local currency to defend the peg. Domestic inflation is starting to rise. Three options: (1) maintain the peg and accept rising inflation and balance-sheet risk; (2) abandon the peg and accept currency appreciation; (3) impose temporary capital controls to slow inflows while reassessing.
+        </div>
+        <div class="tb-q-text"><span class="tb-q-num">10.</span> Write a 250-word memo for the Finance Minister. Reference: the trilemma, the Swiss 2015 precedent, the costs and benefits of each option, and the political-economy dimensions. Take a clear position.</div>
+        <textarea class="tb-sa-input" style="min-height:160px;" placeholder="Write your memo..."></textarea>
+        <div style="font-size:0.75rem;color:var(--ink-faint);margin-top:0.375rem;"><strong>Model answer (sketch):</strong> The country has run into the trilemma. With open capital markets and a euro peg, monetary policy is constrained — the only way to defend the peg is unlimited reserve accumulation. <strong>Option 1 (maintain peg)</strong> defers the problem but worsens it. The 2015 Swiss precedent shows that defending a peg against persistent appreciation pressure leads to a balance sheet that eventually becomes politically unsustainable. Rising domestic inflation also signals the peg has become incompatible with domestic objectives. <strong>Option 2 (abandon peg)</strong> imposes immediate trauma — currency appreciation, exporter losses, possible recession — but releases the trilemma constraint. Switzerland survived the 2015 shock; the economy adapted within 2-3 years. The pain is concentrated and front-loaded. <strong>Option 3 (capital controls)</strong> shifts the trilemma sacrifice from monetary independence to capital openness. Temporary controls can buy time but signal regime instability and may trigger preemptive capital flight. <strong>Position:</strong> Adopt option 2 (abandon peg), but combine it with mitigating measures — temporary fiscal support for affected exporters, a moderate negative interest rate to dampen the appreciation, and a clear communication strategy framing the move as a chosen transition rather than a forced retreat. <strong>Do not maintain the peg.</strong> The Swiss case shows the longer you defend, the more catastrophic the eventual unwind. The trilemma is unforgiving, and the policy that works is to choose your sacrifice deliberately rather than have it imposed on you by markets.</div>
+      </div>
+    </div>
+
+  </div>
+  <div style="padding:1rem 1.5rem;background:var(--bg);border-top:1px solid var(--rule);font-size:0.8rem;color:var(--ink-muted);"><em>This is a preview — the live textbook auto-grades MCQs and stores progress.</em></div>
+</div>
+
+<div class="tb-references">
+  <h3>References</h3>
+  <p class="tb-ref">Auer, R., Burstein, A., &amp; Lein, S. M. (2021). Exchange rates and prices: Evidence from the 2015 Swiss franc appreciation. <em>American Economic Review</em>, 111(2), 652–686.</p>
+  <p class="tb-ref">Bordo, M. D., &amp; James, H. (2007). From 1907 to 1946: A happy childhood or a troubled adolescence? In B. Eichengreen &amp; M. D. Bordo (Eds.), <em>The Bretton Woods era reconsidered</em>. Princeton University Press.</p>
+  <p class="tb-ref">Cochrane, J. H. (2015, January 22). The Swiss franc shock. <em>The Grumpy Economist</em>.</p>
+  <p class="tb-ref">Krugman, P., Obstfeld, M., &amp; Melitz, M. (2022). <em>International economics: Theory and policy</em> (12th ed.). Pearson.</p>
+  <p class="tb-ref">Mundell, R. A. (1963). Capital mobility and stabilization policy under fixed and flexible exchange rates. <em>Canadian Journal of Economics</em>, 29(4), 475–485.</p>
+  <p class="tb-ref">Obstfeld, M., &amp; Rogoff, K. (1995). The mirage of fixed exchange rates. <em>Journal of Economic Perspectives</em>, 9(4), 73–96.</p>
+  <p class="tb-ref">Swiss National Bank. (2015, January 15). <em>Swiss National Bank discontinues minimum exchange rate and lowers interest rate to −0.75%</em>. Press release.</p>
+  <p class="tb-ref">Bank for International Settlements. (2025). <em>Triennial Central Bank Survey: Foreign exchange turnover in April 2025</em>. BIS.</p>
+</div>
+
+<!-- Chapter 13 chart loading, forex market interactive, and trilemma triangle handled by parent script -->
+
+</div>
+
 <div id="page-ch14" style="display:none;">
   <div class="tb-chapter-eyebrow">Chapter 14 · Part V: Open Economy</div>
   <h1 class="tb-chapter-title">Exchange Rates</h1>
@@ -7765,6 +7988,301 @@ function initCh12QuantityTheory() {
   update();
 }
 
+// Chapter 13 - Forex Market interactive canvas (Sharma edition)
+function initCh13Forex() {
+  var xS = document.getElementById('fx-x-slider');
+  var kS = document.getElementById('fx-k-slider');
+  var iS = document.getElementById('fx-i-slider');
+  if (!xS || !kS || !iS || xS._wired) return;
+  xS._wired = true;
+  var xV = document.getElementById('fx-x-val');
+  var kV = document.getElementById('fx-k-val');
+  var iV = document.getElementById('fx-i-val');
+  var out = document.getElementById('fx-output');
+  var canvas = document.getElementById('fx-canvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  var W = canvas.width, H = canvas.height;
+  var mL = 80, mR = 30, mT = 30, mB = 60;
+  var plotW = W - mL - mR, plotH = H - mT - mB;
+  var baseE = 1.20, baseQ = 100;
+  var eMin = 0.7, eMax = 1.6;
+  var qMin = 0, qMax = 200;
+  var slopeS = 50, slopeD = 50;
+
+  function qToX(q) { return mL + (q - qMin) / (qMax - qMin) * plotW; }
+  function eToY(e) { return mT + (1 - (e - eMin) / (eMax - eMin)) * plotH; }
+
+  function drawAxes() {
+    ctx.fillStyle = '#fafaf9';
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    for (var e = 0.7; e <= 1.6; e += 0.1) {
+      ctx.beginPath();
+      ctx.moveTo(mL, eToY(e));
+      ctx.lineTo(W - mR, eToY(e));
+      ctx.stroke();
+    }
+    for (var q = 0; q <= 200; q += 25) {
+      ctx.beginPath();
+      ctx.moveTo(qToX(q), mT);
+      ctx.lineTo(qToX(q), H - mB);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(mL, mT);
+    ctx.lineTo(mL, H - mB);
+    ctx.lineTo(W - mR, H - mB);
+    ctx.stroke();
+    ctx.fillStyle = '#334155';
+    ctx.font = '12px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Quantity of CHF traded (index)', mL + plotW / 2, H - 12);
+    ctx.save();
+    ctx.translate(20, mT + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Exchange rate (EUR per CHF)', 0, 0);
+    ctx.restore();
+    ctx.fillStyle = '#64748b';
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.textAlign = 'right';
+    for (var e = 0.8; e <= 1.6; e += 0.2) {
+      ctx.fillText(e.toFixed(2), mL - 6, eToY(e) + 3);
+    }
+    ctx.textAlign = 'center';
+    for (var q = 0; q <= 200; q += 50) {
+      ctx.fillText(q, qToX(q), H - mB + 14);
+    }
+  }
+
+  function drawSupply(intervention, color, dashed) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = dashed ? 1.5 : 2.5;
+    if (dashed) ctx.setLineDash([4, 3]); else ctx.setLineDash([]);
+    ctx.beginPath();
+    var first = true;
+    for (var e = eMin; e <= eMax; e += 0.01) {
+      var q = baseQ + slopeS * (e - baseE) + intervention;
+      var x = qToX(q), y = eToY(e);
+      if (q < qMin || q > qMax) continue;
+      if (first) { ctx.moveTo(x, y); first = false; } else { ctx.lineTo(x, y); }
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawDemand(xShift, kShift, color, dashed) {
+    var totalShift = xShift + kShift;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = dashed ? 1.5 : 2.5;
+    if (dashed) ctx.setLineDash([4, 3]); else ctx.setLineDash([]);
+    ctx.beginPath();
+    var first = true;
+    for (var e = eMin; e <= eMax; e += 0.01) {
+      var q = baseQ - slopeD * (e - baseE) + totalShift;
+      var x = qToX(q), y = eToY(e);
+      if (q < qMin || q > qMax) continue;
+      if (first) { ctx.moveTo(x, y); first = false; } else { ctx.lineTo(x, y); }
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawDot(x, y, color, label) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    if (label) {
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, x + 8, y - 6);
+    }
+  }
+
+  function drawCurveLabel(text, x, y, color) {
+    ctx.fillStyle = color;
+    ctx.font = 'bold 12px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(text, x, y);
+  }
+
+  function update() {
+    var xShift = parseFloat(xS.value);
+    var kShift = parseFloat(kS.value);
+    var intervention = parseFloat(iS.value);
+    var totalDemand = xShift + kShift;
+    var newE = baseE + (totalDemand - intervention) / (slopeS + slopeD);
+    var newQ = baseQ + slopeS * (newE - baseE) + intervention;
+
+    if (xV) xV.textContent = (xShift >= 0 ? '+' : '') + xShift;
+    if (kV) kV.textContent = (kShift >= 0 ? '+' : '') + kShift;
+    if (iV) iV.textContent = (intervention >= 0 ? '+' : '') + intervention;
+
+    drawAxes();
+    drawSupply(0, '#94a3b8', true);
+    drawDemand(0, 0, '#94a3b8', true);
+    drawDot(qToX(baseQ), eToY(baseE), '#94a3b8', '');
+    drawSupply(intervention, '#0f3d9e', false);
+    drawDemand(xShift, kShift, '#dc2626', false);
+
+    if (newE >= eMin && newE <= eMax && newQ >= qMin && newQ <= qMax) {
+      var moved = Math.abs(newE - baseE) > 0.01 || Math.abs(newQ - baseQ) > 1;
+      drawDot(qToX(newQ), eToY(newE), moved ? '#16a34a' : '#94a3b8',
+        'e* = ' + newE.toFixed(3) + ', Q* = ' + newQ.toFixed(0));
+    }
+
+    drawCurveLabel('Supply of CHF', qToX(qMax) - 110, eToY(eMax - 0.15), '#0f3d9e');
+    drawCurveLabel('Demand for CHF', qToX(qMax) - 130, eToY(eMin + 0.15), '#dc2626');
+
+    var verdict;
+    if (newE > 1.4) {
+      verdict = '<span style="color:#dc2626;">\u2717 CHF depreciation - franc has fallen sharply.</span>';
+    } else if (newE > baseE + 0.05) {
+      verdict = '<span style="color:#d97706;">~ CHF depreciation - moderate weakening.</span>';
+    } else if (newE > baseE - 0.05) {
+      verdict = '<span style="color:#16a34a;">\u2713 Roughly stable around baseline.</span>';
+    } else if (newE > 0.9) {
+      verdict = '<span style="color:#d97706;">~ CHF appreciation - moderate strengthening.</span>';
+    } else {
+      verdict = '<span style="color:#dc2626;">\u2717 Sharp CHF appreciation - Swiss-style safe-haven dynamic.</span>';
+    }
+    if (out) out.innerHTML =
+      'Equilibrium exchange rate (EUR per CHF): <strong>' + newE.toFixed(3) + '</strong> (baseline: 1.200)<br>' +
+      'Equilibrium quantity: <strong>' + newQ.toFixed(0) + '</strong> (baseline: 100)<br>' +
+      'Change in rate: <strong>' + ((newE - baseE) >= 0 ? '+' : '') + (newE - baseE).toFixed(3) + '</strong><br><br>' +
+      verdict;
+  }
+  xS.addEventListener('input', update);
+  kS.addEventListener('input', update);
+  iS.addEventListener('input', update);
+  update();
+}
+
+// Chapter 13 - Trilemma Triangle interactive canvas (Sharma edition)
+function initCh13Trilemma() {
+  var canvas = document.getElementById('tri-canvas');
+  if (!canvas || canvas._wired) return;
+  canvas._wired = true;
+  var ctx = canvas.getContext('2d');
+  var out = document.getElementById('tri-output');
+  var W = canvas.width, H = canvas.height;
+  var topX = W / 2, topY = 60;
+  var leftX = 110, leftY = H - 80;
+  var rightX = W - 110, rightY = H - 80;
+  var active = 'cap-indep';
+
+  function draw() {
+    ctx.fillStyle = '#fafaf9';
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(topX, topY);
+    ctx.lineTo(leftX, leftY);
+    ctx.lineTo(rightX, rightY);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.lineWidth = 5;
+    if (active === 'fix-cap') {
+      ctx.strokeStyle = '#0f3d9e';
+      ctx.beginPath();
+      ctx.moveTo(topX, topY); ctx.lineTo(leftX, leftY);
+      ctx.stroke();
+    } else if (active === 'fix-indep') {
+      ctx.strokeStyle = '#7c3aed';
+      ctx.beginPath();
+      ctx.moveTo(topX, topY); ctx.lineTo(rightX, rightY);
+      ctx.stroke();
+    } else if (active === 'cap-indep') {
+      ctx.strokeStyle = '#dc2626';
+      ctx.beginPath();
+      ctx.moveTo(leftX, leftY); ctx.lineTo(rightX, rightY);
+      ctx.stroke();
+    }
+    function drawCorner(x, y, label, sublabel, isSelected, isSacrificed, anchor) {
+      var color = isSacrificed ? '#94a3b8' : (isSelected ? '#0f172a' : '#334155');
+      ctx.fillStyle = isSacrificed ? '#fafaf9' : (isSelected ? '#dbeafe' : '#fafaf9');
+      ctx.strokeStyle = isSacrificed ? '#cbd5e1' : (isSelected ? '#0f3d9e' : '#334155');
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, y, 22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      if (isSacrificed) {
+        ctx.strokeStyle = '#dc2626';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(x - 16, y - 16);
+        ctx.lineTo(x + 16, y + 16);
+        ctx.stroke();
+      }
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      var lx = x, ly = y;
+      if (anchor === 'top') { ly = y - 40; }
+      else if (anchor === 'left') { lx = x - 70; ly = y + 6; }
+      else { lx = x + 70; ly = y + 6; }
+      ctx.fillText(label, lx, ly);
+      if (sublabel) {
+        ctx.font = '10px Inter, sans-serif';
+        ctx.fillStyle = color === '#0f172a' ? '#334155' : color;
+        ctx.fillText(sublabel, lx, ly + 14);
+      }
+    }
+    var topSel = (active === 'fix-cap' || active === 'fix-indep');
+    var leftSel = (active === 'fix-cap' || active === 'cap-indep');
+    var rightSel = (active === 'fix-indep' || active === 'cap-indep');
+    drawCorner(topX, topY, 'Fixed Exchange Rate', '(pegged currency)', topSel, !topSel, 'top');
+    drawCorner(leftX, leftY, 'Free Capital Flows', '(open capital account)', leftSel, !leftSel, 'left');
+    drawCorner(rightX, rightY, 'Independent Monetary Policy', '(set own interest rates)', rightSel, !rightSel, 'right');
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    var midX, midY, edgeLabel, edgeColor;
+    if (active === 'fix-cap') {
+      midX = (topX + leftX) / 2 - 50; midY = (topY + leftY) / 2;
+      edgeLabel = 'Eurozone, gold standard, HKD';
+      edgeColor = '#0f3d9e';
+    } else if (active === 'fix-indep') {
+      midX = (topX + rightX) / 2 + 50; midY = (topY + rightY) / 2;
+      edgeLabel = 'China pre-2015, Bretton Woods';
+      edgeColor = '#7c3aed';
+    } else {
+      midX = (leftX + rightX) / 2; midY = leftY + 30;
+      edgeLabel = 'US, UK, Japan, modern EZ vs world';
+      edgeColor = '#dc2626';
+    }
+    ctx.fillStyle = edgeColor;
+    ctx.fillText(edgeLabel, midX, midY);
+  }
+  window._setTrilemma = function(combo) {
+    active = combo;
+    var sacrificeText;
+    var keepText;
+    if (combo === 'fix-cap') {
+      keepText = 'Fixed exchange rate + Free capital flows';
+      sacrificeText = '<strong style="color:#dc2626;">Sacrificed: independent monetary policy</strong>';
+    } else if (combo === 'fix-indep') {
+      keepText = 'Fixed exchange rate + Independent monetary policy';
+      sacrificeText = '<strong style="color:#dc2626;">Sacrificed: free capital flows (must impose capital controls)</strong>';
+    } else {
+      keepText = 'Free capital flows + Independent monetary policy';
+      sacrificeText = '<strong style="color:#dc2626;">Sacrificed: fixed exchange rate (must let currency float)</strong>';
+    }
+    if (out) out.innerHTML =
+      'Selected combination: <strong>' + keepText + '</strong><br>' +
+      sacrificeText;
+    draw();
+  };
+  window._setTrilemma('cap-indep');
+}
+
 async function loadChartsForChapter(ch) {
   if (loadedCharts[ch]) { return; }
   loadedCharts[ch] = true;
@@ -7927,10 +8445,13 @@ async function loadChartsForChapter(ch) {
       setTimeout(initCh12QuantityTheory, 100);
     }
     if (ch === 'ch13') {
-      var obs13a = await fredFetch('NETFI', 60);
-      makeChart('chart-ch13-ca', obs13a, 'Current Account Balance (Billions $)', '#dc2626');
-      var obs13b = await fredFetch('BOPGSTB', 60);
-      makeChart('chart-ch13-nx', obs13b, 'Trade Balance in Goods & Services (Billions $)', '#7c3aed');
+      var obs13a = await fredFetch('DTWEXBGS', 60);
+      makeChart('chart-ch13-twd', obs13a, 'Trade-Weighted USD Index (Broad)', '#0f3d9e');
+      var obs13b = await fredFetch('NETEXP', 60);
+      makeChart('chart-ch13-nx', obs13b, 'Net Exports (Billions $)', '#dc2626');
+      // Wire up the forex market and trilemma interactives
+      setTimeout(initCh13Forex, 100);
+      setTimeout(initCh13Trilemma, 100);
     }
     if (ch === 'ch14') {
       var obs14a = await fredFetch('RTWEXBGS', 60);
