@@ -10244,11 +10244,17 @@ function renderAdminOverview(el) {
   for (var j = 0; j < _adminTeams.length; j++) {
     var tm = _adminTeams[j];
     totalTeams++;
-    if (tm.fee_paid) { paidTeams++; }
-    // Find entry fee
+    if (!tm.fee_paid) { continue; }
+    // Only count teams in tournaments with a positive entry fee. Teams in free
+    // tournaments are auto-flagged fee_paid=true at creation so non-payment
+    // gates do not block them, but they did not pay any money.
     for (var k = 0; k < _adminTournaments.length; k++) {
-      if (_adminTournaments[k].id === tm.tournament_id && tm.fee_paid) {
-        revenue += Number(_adminTournaments[k].entry_fee) || 0;
+      if (_adminTournaments[k].id === tm.tournament_id) {
+        var ef = Number(_adminTournaments[k].entry_fee) || 0;
+        if (ef > 0) {
+          paidTeams++;
+          revenue += ef;
+        }
         break;
       }
     }
@@ -13207,12 +13213,19 @@ async function renderAdminAnalytics(el) {
   }
 
   // Teams + revenue
+  // A team is "actually paid" only when fee_paid=true AND its tournament has
+  // a positive entry fee. Teams in FREE tournaments are auto-flagged
+  // fee_paid=true at creation (so non-payment gates do not block them), but
+  // they did not pay any money and should not be counted as paid teams.
   var paidTeams = 0, totalRevenue = 0;
   for (var tj = 0; tj < allTeams.length; tj++) {
     if (allTeams[tj].fee_paid) {
-      paidTeams++;
       var tt = _getTournById(allTeams[tj].tournament_id);
-      if (tt) { totalRevenue += Number(tt.entry_fee) || 0; }
+      var fee = tt ? (Number(tt.entry_fee) || 0) : 0;
+      if (fee > 0) {
+        paidTeams++;
+        totalRevenue += fee;
+      }
     }
   }
   var paidTeamPct = allTeams.length ? Math.round(paidTeams / allTeams.length * 100) : 0;
@@ -13369,7 +13382,12 @@ async function renderAdminAnalytics(el) {
   }
   var recentSignups = allUsers.slice().sort(_byCreatedAtDesc).slice(0, 10);
   var recentTournaments = allTournaments.slice().sort(_byCreatedAtDesc).slice(0, 10);
-  var recentPaidTeams = allTeams.slice().filter(function(t){ return t.fee_paid; }).sort(_byCreatedAtDesc).slice(0, 10);
+  // Recent Paid Teams — same filter logic as above: must have actually paid money.
+  var recentPaidTeams = allTeams.slice().filter(function(t) {
+    if (!t.fee_paid) { return false; }
+    var rpt = _getTournById(t.tournament_id);
+    return rpt && (Number(rpt.entry_fee) || 0) > 0;
+  }).sort(_byCreatedAtDesc).slice(0, 10);
 
   // ── Build HTML ────────────────────────────────────────────────────
   function pct(x) { return Math.round(x * 100) / 100 + '%'; }
