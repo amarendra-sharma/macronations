@@ -13940,6 +13940,117 @@ async function exportCSV() {
     ]);
   }
 
+  // ─── Sheet 3: Textbook Progress (one row per student per chapter) ───
+  // Fetches mn_textbook_progress rows for all teams in the professor's
+  // tournaments. Each chapter quiz score plus completion timestamp is
+  // included so professors can use this for participation/quiz grading.
+  var tbProgress = [];
+  if (tids.length) {
+    try {
+      // Collect student user IDs from the teams
+      var studentIds = [];
+      for (var tpi = 0; tpi < _adminTeams.length; tpi++) {
+        var tpm = _adminTeams[tpi];
+        if (tpm.captain_id && studentIds.indexOf(tpm.captain_id) < 0) studentIds.push(tpm.captain_id);
+        if (tpm.members && tpm.members.length) {
+          for (var tpj = 0; tpj < tpm.members.length; tpj++) {
+            if (tpm.members[tpj] && studentIds.indexOf(tpm.members[tpj]) < 0) studentIds.push(tpm.members[tpj]);
+          }
+        }
+      }
+      if (studentIds.length) {
+        // Supabase REST: use in.(...) for the user filter
+        var userParam = studentIds.slice(0, 500).join(',');
+        tbProgress = await sbGet('mn_textbook_progress',
+          'tournament_id=in.(' + tids.join(',') + ')&user_id=in.(' + userParam + ')' +
+          '&order=user_id.asc,chapter_id.asc&limit=5000' +
+          '&select=user_id,tournament_id,chapter_id,completed,quiz_scores,updated_at') || [];
+      }
+    } catch(e) { tbProgress = []; }
+  }
+
+  // Sheet 3 header — textbook completion + quiz performance
+  if (tbProgress.length) {
+    rows.push(['','','','','','','','','','','','','']);
+    rows.push(['TEXTBOOK CHAPTER PROGRESS & QUIZ SCORES','','','','','','','','','','','','']);
+    rows.push(['Student User ID','Student Name','Student Email','Team','Tournament','Chapter','Completed','Quiz Answered','Quiz Total','Quiz Correct','Quiz %','Updated At']);
+    // Build user and team lookup maps
+    var userLookup = {};
+    for (var ui = 0; ui < _adminUsers.length; ui++) {
+      userLookup[_adminUsers[ui].id] = _adminUsers[ui];
+    }
+    var teamLookup = {};
+    for (var teamI = 0; teamI < _adminTeams.length; teamI++) {
+      var tmrec = _adminTeams[teamI];
+      // Index by captain_id and each member id
+      if (tmrec.captain_id) { teamLookup[tmrec.captain_id] = tmrec; }
+      if (tmrec.members) {
+        for (var tj = 0; tj < tmrec.members.length; tj++) {
+          if (tmrec.members[tj] && !teamLookup[tmrec.members[tj]]) {
+            teamLookup[tmrec.members[tj]] = tmrec;
+          }
+        }
+      }
+    }
+    for (var pgi = 0; pgi < tbProgress.length; pgi++) {
+      var pg = tbProgress[pgi];
+      var pguser  = userLookup[pg.user_id] || {};
+      var pgteam  = teamLookup[pg.user_id] || {};
+      var pgtourn = tournMap[pg.tournament_id] || {};
+      var qs      = pg.quiz_scores || {};
+      // quiz_scores stored as { answered, total, correct, pct }
+      rows.push([
+        pg.user_id || '',
+        pguser.name || pguser.username || '',
+        pguser.email || '',
+        pgteam.name || '',
+        pgtourn.name || '',
+        pg.chapter_id || '',
+        pg.completed ? 'yes' : 'no',
+        (qs.answered !== undefined) ? qs.answered : '',
+        (qs.total    !== undefined) ? qs.total    : '',
+        (qs.correct  !== undefined) ? qs.correct  : '',
+        (qs.pct      !== undefined) ? qs.pct + '%' : '',
+        pg.updated_at || ''
+      ]);
+    }
+
+    // Sheet 3b: per-student textbook summary (one row per student)
+    rows.push(['','','','','','','','','','','','','']);
+    rows.push(['TEXTBOOK SUMMARY PER STUDENT (FOR GRADEBOOK)','','','','','','','','','','','','']);
+    rows.push(['Student User ID','Student Name','Student Email','Team','Tournament','Chapters Completed','Total Quiz Questions Answered','Total Correct','Overall Quiz %']);
+    var summary = {};
+    for (var pgs = 0; pgs < tbProgress.length; pgs++) {
+      var s = tbProgress[pgs];
+      var uid = s.user_id;
+      if (!summary[uid]) {
+        summary[uid] = { tournament_id: s.tournament_id, completed: 0, answered: 0, correct: 0 };
+      }
+      if (s.completed) { summary[uid].completed++; }
+      var sq = s.quiz_scores || {};
+      if (sq.answered) { summary[uid].answered += sq.answered; }
+      if (sq.correct)  { summary[uid].correct  += sq.correct; }
+    }
+    for (var suid in summary) {
+      var srec = summary[suid];
+      var suser = userLookup[suid] || {};
+      var steam = teamLookup[suid] || {};
+      var stourn = tournMap[srec.tournament_id] || {};
+      var spct = srec.answered ? Math.round(srec.correct / srec.answered * 100) : 0;
+      rows.push([
+        suid,
+        suser.name || suser.username || '',
+        suser.email || '',
+        steam.name || '',
+        stourn.name || '',
+        srec.completed,
+        srec.answered,
+        srec.correct,
+        spct + '%'
+      ]);
+    }
+  }
+
   var csv = rows.map(function(r){
     return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(',');
   }).join('\n');
