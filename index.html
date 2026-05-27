@@ -14627,11 +14627,29 @@ async function renderRankings() {
       if (!globalEntries.length) {
         globalRows = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.4);">No teams yet in Season ' + curYear + '. Teams appear here when global elected tournaments are completed.</td></tr>';
       }
+      // Status semantics — be honest about what's locked in:
+      //   "Qualified" = the team's source tournament is complete, so their SCORE is final.
+      //   "Live"      = source tournament still active, score can still move.
+      //   Top 8 is ALWAYS provisional during the season because:
+      //     - Live teams can still climb above them
+      //     - Tournaments that complete later can enter teams with higher scores
+      //   The Top 8 lock-in happens only when the season closes and the playoff bracket is seeded.
+      // So during the season we show "Provisional Top 8" for everyone currently in slots 1-8.
+      // After season close (handled elsewhere via playoff seeding), the gold "Top 8" badge applies.
       for (var gri = 0; gri < globalEntries.length; gri++) {
         var gr    = globalEntries[gri];
         var isMe  = currentUser && gr.captainId && (gr.captainId === currentUser.id);
         var inTop8 = gri < 8;
         var medal = gri === 0 ? '🥇' : gri === 1 ? '🥈' : gri === 2 ? '🥉' : '<span class="rank-num">' + (gri+1) + '</span>';
+        var statusBadges = '';
+        if (gr.qualified) {
+          statusBadges += '<span class="badge badge--green badge--no-dot" style="margin-right:4px;" title="Source tournament complete — score is final">Score Locked</span>';
+        } else {
+          statusBadges += '<span class="badge badge--subtle badge--no-dot" style="margin-right:4px;" title="Source tournament still active — score may still change">Live</span>';
+        }
+        if (inTop8) {
+          statusBadges += '<span class="badge badge--subtle badge--no-dot" style="color:#FFD700;border-color:rgba(255,215,0,0.4);" title="Currently in a playoff-qualifying position. Final Top 8 is determined when the season closes.">Provisional Top 8</span>';
+        }
         globalRows +=
           '<tr class="' + (isMe ? 'rank-my-row' : '') + '">' +
           '<td>' + medal + '</td>' +
@@ -14642,10 +14660,7 @@ async function renderRankings() {
             '<br><span class="text-muted" style="font-size:0.75rem;">' + esc(gr.tournament) + '</span>' +
           '</td>' +
           '<td><span class="rank-score">' + gr.score + '</span> / 1000</td>' +
-          '<td>' +
-            (gr.qualified ? '<span class="badge badge--green badge--no-dot" style="margin-right:4px;">Qualified</span>' : '<span class="badge badge--subtle badge--no-dot" style="margin-right:4px;">Live</span>') +
-            (inTop8 ? '<span class="badge badge--gold">Top 8</span>' : '') +
-          '</td>' +
+          '<td>' + statusBadges + '</td>' +
           '</tr>';
       }
 
@@ -14664,8 +14679,9 @@ async function renderRankings() {
             '<div>' +
               '<h2 style="font-family:\'DM Serif Display\',serif;font-size:1.25rem;color:#FFD700;margin-bottom:0.125rem;">MacroNations World Cup · Season ' + curYear + '</h2>' +
               '<span style="font-size:0.8125rem;color:rgba(255,255,255,0.6);">Global Championship Standings · Top 8 qualify for year-end playoff · ' +
-                '<span style="color:#6EE7B7;">Qualified</span> = locked in · ' +
-                '<span style="color:rgba(255,255,255,0.5);">Live</span> = active tournament</span>' +
+                '<span style="color:#6EE7B7;">Score Locked</span> = tournament complete · ' +
+                '<span style="color:rgba(255,255,255,0.5);">Live</span> = tournament active · ' +
+                'All Top 8 positions are provisional until the season closes</span>' +
             '</div>' +
             '<span class="badge badge--gold">🏆 Global</span>' +
           '</div>' +
@@ -14677,7 +14693,7 @@ async function renderRankings() {
                 '<tbody>' + globalRows + '</tbody>' +
               '</table>' +
             '</div>' +
-            '<p class="text-sm text-muted" style="margin-top:0.75rem;">Award fund seeded by MacroNations LLC, supplemented by entry fees at management discretion. Qualified teams locked in from completed tournaments. Live teams still competing.</p>' +
+            '<p class="text-sm text-muted" style="margin-top:0.75rem;">Award fund seeded by MacroNations LLC, supplemented by entry fees at management discretion. Standings update as more tournaments complete. Final Top 8 playoff bracket is seeded at season close.</p>' +
           '</div>' +
         '</div>';
     }
@@ -18410,7 +18426,7 @@ function sbxSceneProfMonitor(state) {
         rows +
       '</div>' +
       '<div class="sbx-callout" style="margin-top:1.25rem;">' +
-        '<strong>At the end of the season</strong>, you can elect to advance your top team(s) into the MacroNations Global Championship for an additional fee — or just certify your class winners and call it done. Both options take a single click in your dashboard.' +
+        '<strong>When you create a tournament</strong>, you can elect to enter it into the MacroNations Global Championship season (entry fee applies) — your class plays the same way either way, but elected tournaments compete for season standings and Top-8 playoff qualification. When the season ends, click <strong>Mark Complete</strong> to auto-generate certificates for all participants. Both setups take a single click in your dashboard.' +
       '</div>' +
       '<button class="sbx-btn-secondary" onclick="sbxGoToStep(2)">← Back</button> ' +
       '<button class="sbx-btn-primary" onclick="sbxFinishProf()">Got it — try the student side →</button>' +
