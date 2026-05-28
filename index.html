@@ -4111,7 +4111,7 @@ body.sandbox-mode {
                   <div style="font-size:1.25rem;flex-shrink:0;line-height:1.2;">📖</div>
                   <div>
                     <div style="font-size:0.8125rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">Course Textbook Included</div>
-                    <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);line-height:1.5;"><em>Applied Macroeconomics: From Theory to Policy Simulation</em>, by Amarendra Sharma, PhD — both Principles and Intermediate levels, free with your entry fee.</div>
+                    <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);line-height:1.5;"><em>Applied Macroeconomics: From Theory to Policy Simulation</em>, by Amarendra Sharma, PhD (Binghamton University) — both Principles and Intermediate levels, free with your entry fee.</div>
                   </div>
                 </div>
               </div>
@@ -4139,7 +4139,7 @@ body.sandbox-mode {
               <div class="step__num" aria-hidden="true">1</div>
               <div>
                 <h3 class="step__title">Register Your Team</h3>
-                <p class="step__desc">Form a team of up to 5 players using any valid email. No affiliation required for the Open Championship. Professors selecting professor access need a .edu address.</p>
+                <p class="step__desc">Form a team of up to 5 players using any valid email. No affiliation required for the Open Championship. Professors selecting professor access need an institutional academic email (.edu, .ac.in, .ac.uk, .edu.au, etc.).</p>
               </div>
             </div>
             <div class="step">
@@ -4701,7 +4701,7 @@ body.sandbox-mode {
         <div class="form-field">
           <label class="form-label form-label--required" for="reg-email">Email Address</label>
           <input type="email" id="reg-email" class="form-input" placeholder="you@email.com" autocomplete="email">
-          <div class="form-hint">Use any valid email. Professors selecting the professor role need a .edu address to access professor features.</div>
+          <div class="form-hint">Use any valid email. Professors selecting the professor role need an institutional academic email (e.g. .edu, .ac.in, .ac.uk, .edu.au) to access professor features.</div>
         </div>
         <div class="form-field">
           <label class="form-label form-label--required" for="reg-institution">Institution</label>
@@ -5623,6 +5623,38 @@ function _showResetModal() {
   openModal('modal-reset-password');
 }
 
+// Recognizes institutional academic email domains worldwide.
+// US uses .edu; most other countries use a second-level academic domain
+// such as .ac.in / .edu.in (India), .ac.uk (UK), .edu.au (Australia), etc.
+function _isAcademicEmail(email) {
+  var e = (email || '').toLowerCase().trim();
+  var at = e.indexOf('@');
+  if (at === -1) return false;
+  var domain = e.slice(at + 1);
+  if (!domain) return false;
+  var suffixes = [
+    '.edu',                                   // US + some private intl institutions
+    '.ac.in', '.edu.in', '.res.in',           // India
+    '.ac.uk',                                 // United Kingdom
+    '.edu.au',                                // Australia
+    '.ac.nz',                                 // New Zealand
+    '.ac.jp', '.edu.cn', '.edu.sg',           // Japan, China, Singapore
+    '.ac.za', '.edu.pk', '.edu.bd',           // South Africa, Pakistan, Bangladesh
+    '.ac.kr', '.edu.my', '.ac.ir',            // South Korea, Malaysia, Iran
+    '.edu.tr', '.ac.ae', '.edu.sa',           // Turkey, UAE, Saudi Arabia
+    '.ac.id', '.edu.ph', '.edu.vn',           // Indonesia, Philippines, Vietnam
+    '.ac.th', '.edu.hk', '.edu.tw',           // Thailand, Hong Kong, Taiwan
+    '.ac.il', '.edu.eg', '.ac.ke',            // Israel, Egypt, Kenya
+    '.edu.ng', '.edu.mx', '.edu.br',          // Nigeria, Mexico, Brazil
+    '.edu.co', '.edu.ar', '.edu.pe'           // Colombia, Argentina, Peru
+  ];
+  for (var i = 0; i < suffixes.length; i++) {
+    var s = suffixes[i];
+    if (domain.length >= s.length && domain.slice(-s.length) === s) return true;
+  }
+  return false;
+}
+
 async function doRegister() {
   _setFormErr('register-error','');
   var name     = (document.getElementById('reg-name').value || '').trim();
@@ -5639,11 +5671,11 @@ async function doRegister() {
   if (username.length < 3) { _setFormErr('register-error','Username must be at least 3 characters.'); return; }
   if (!/^[a-z0-9_]+$/.test(username)) { _setFormErr('register-error','Username may only contain letters, numbers, and underscores.'); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { _setFormErr('register-error','Please enter a valid email address.'); return; }
-  // Professor role requires .edu — auto-downgrade to student if not .edu
+  // Professor role requires an institutional academic email — auto-downgrade to student otherwise
   if (role === 'professor') {
-    if (!email.match(/^[^\s@]+@[^\s@]+\.edu$/i) && !email.match(/^[^\s@]+@[^\s@]+\.edu\.[a-z]{2}$/i)) {
+    if (!_isAcademicEmail(email)) {
       role = 'student';
-      flash('Professor access requires a .edu email. You have been registered as a student. Contact support to upgrade.', 'info');
+      flash('Professor access requires an institutional academic email (e.g. .edu, .ac.in, .ac.uk, .edu.au). You have been registered as a student. Contact support to upgrade.', 'info');
     }
   }
 
@@ -10591,9 +10623,12 @@ async function doCreateTournament() {
     closeModal('modal-create-tournament');
 
     // Show post-creation instructions to professor
+    // Class/university tournaments enforce a student<->creator domain match
+    // for ALL institutions (not just .edu), so the note must reflect that.
     var profDomain  = (currentUser && currentUser.email) ? currentUser.email.split('@')[1] : '';
-    var isDotEdu    = profDomain && profDomain.toLowerCase().endsWith('.edu');
-    var emailNote   = isDotEdu
+    var isClassTier = (newTourn.tier === 'class' || newTourn.tier === 'university');
+    var showDomainNote = isClassTier && profDomain;
+    var emailNote   = showDomainNote
       ? 'Important: This tournament is linked to your ' + profDomain + ' domain. ' +
         'Ask your students to register on MacroNations using their @' + profDomain + ' email address. ' +
         'Students who register with a personal email (Gmail, Outlook, etc.) will not be able to join this tournament.'
@@ -10620,7 +10655,7 @@ async function doCreateTournament() {
             '<li>One student per team clicks <strong>Join</strong> to create the team and gets an invite code</li>' +
             '<li>Teammates enter the 8-character invite code to join the team</li>' +
           '</ol>' +
-          (isDotEdu
+          (showDomainNote
             ? '<div class="dash-alert dash-alert--info">' +
                 '<div class="dash-alert__icon">&#9432;</div>' +
                 '<div class="dash-alert__body"><div class="dash-alert__title">Email address requirement</div>' +
@@ -15154,7 +15189,7 @@ function _aboutHowItWorks() {
       '<div class="card__header"><span class="card__title">🎓 For Students</span></div>' +
       '<div class="card__body">' +
         '<div class="steps">' +
-          _step('1','Register & Join','Create a free account with any valid email. Professors who want to create class tournaments need a .edu address. Open Championship is open to everyone — no university or institutional affiliation required. Go to Tournaments, find a competition open for registration, and create or join a team with an 8-character invite code. Teams have up to 5 members.') +
+          _step('1','Register & Join','Create a free account with any valid email. Professors who want to create class tournaments need an institutional academic email (.edu, .ac.in, .ac.uk, .edu.au, etc.). Open Championship is open to everyone — no university or institutional affiliation required. Go to Tournaments, find a competition open for registration, and create or join a team with an 8-character invite code. Teams have up to 5 members.') +
           _step('2','Pay the Entry Fee (if applicable)','For paid tournaments, go to Dashboard → Payment to pay the entry fee via Stripe. Your policy submissions are locked until payment is confirmed by the admin.') +
           _step('3','Set Your 10 Policy Levers','Every round, go to Dashboard → Policy. Adjust your 10 macroeconomic levers: Interest Rate, Government Spending, Tax Rate, Trade Openness, R&D Investment, Green Energy Mix, Welfare Spending, Regulation, Foreign Aid, and Infrastructure. Write a brief rationale and hit Submit Final Decision before the round deadline.') +
           _step('4','Respond to Crises','Some rounds trigger an economic crisis (banking crash, pandemic, trade war, debt crisis). Go to Crisis tab first — choose your response option — then separately submit your policy. These are two independent steps. If you skip the crisis response, the full unmitigated shock applies to your economy.') +
@@ -18285,7 +18320,7 @@ function sbxSceneProfCreate(state) {
       '<h2 class="sbx-scene__title">Step 1 · Create a Class Tournament</h2>' +
       '<div class="sbx-scene__hint">' +
         '<span class="sbx-scene__hint-icon">💡</span>' +
-        '<strong>What you would do in real life:</strong> sign in with your .edu email, head to the Professor Dashboard, and click "Create Tournament." Here in the sandbox you get to do the same thing — without any email or signup.' +
+        '<strong>What you would do in real life:</strong> sign in with your institutional academic email, head to the Professor Dashboard, and click "Create Tournament." Here in the sandbox you get to do the same thing — without any email or signup.' +
       '</div>';
   if (!created) {
     html +=
@@ -18449,7 +18484,7 @@ function sbxSceneStudJoin(state) {
       '<h2 class="sbx-scene__title">Step 1 · Join with a Code</h2>' +
       '<div class="sbx-scene__hint">' +
         '<span class="sbx-scene__hint-icon">💡</span>' +
-        '<strong>How students get in:</strong> on the real platform they would sign up (any valid email — .edu is only required for professor accounts), go to Tournaments, click "Join with code", and enter the code their professor posted.' +
+        '<strong>How students get in:</strong> on the real platform they would sign up (any valid email — an institutional academic email is only required for professor accounts), go to Tournaments, click "Join with code", and enter the code their professor posted.' +
       '</div>';
   if (!joined) {
     html +=
