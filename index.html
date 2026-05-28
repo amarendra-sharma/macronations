@@ -4028,7 +4028,7 @@ body.sandbox-mode {
               <li>Year-long season standings</li>
               <li>Participation certificates for all · Winner certificate for champion</li>
               <li>Cash awards — top finalists share the fund</li>
-              <li>📖 <strong>Free textbook access</strong> — <em>Applied Macroeconomics</em>, both Principles &amp; Intermediate levels</li>
+              <li>📖 <strong>Free textbook access</strong> — <em>Applied Macroeconomics</em> by Amarendra Sharma, PhD, both Principles &amp; Intermediate levels</li>
             </ul>
             <button class="btn btn--gold" style="margin-top:1.25rem;width:100%;" onclick="openAuthModal('register')">Join the Championship</button>
           </div>
@@ -4076,7 +4076,7 @@ body.sandbox-mode {
               <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">2</span><span><strong>Submit Round 1</strong> — once fee is confirmed, your 10-day clock starts on first submission</span></li>
               <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">3</span><span><strong>Complete 10 rounds</strong> — one every 24 hours, auto-advancing</span></li>
               <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">4</span><span><strong>Qualify for the World Cup</strong> — finish by Nov 30 to enter the playoff bracket</span></li>
-              <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">📖</span><span><strong>Free textbook access</strong> — <em>Applied Macroeconomics: From Theory to Policy Simulation</em> at both Principles and Intermediate levels, included with your entry fee</span></li>
+              <li style="display:flex;gap:0.75rem;align-items:flex-start;"><span style="color:#FFD700;font-weight:700;font-size:1.125rem;flex-shrink:0;">📖</span><span><strong>Free textbook access</strong> — <em>Applied Macroeconomics: From Theory to Policy Simulation</em>, by Amarendra Sharma, PhD, at both Principles and Intermediate levels, included with your entry fee</span></li>
             </ul>
             <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
               <button class="btn btn--gold" onclick="ocLandingRegister()">Register for Open Championship</button>
@@ -4111,7 +4111,7 @@ body.sandbox-mode {
                   <div style="font-size:1.25rem;flex-shrink:0;line-height:1.2;">📖</div>
                   <div>
                     <div style="font-size:0.8125rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">Course Textbook Included</div>
-                    <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);line-height:1.5;"><em>Applied Macroeconomics: From Theory to Policy Simulation</em> — both Principles and Intermediate levels, free with your entry fee.</div>
+                    <div style="font-size:0.75rem;color:rgba(255,255,255,0.7);line-height:1.5;"><em>Applied Macroeconomics: From Theory to Policy Simulation</em>, by Amarendra Sharma, PhD — both Principles and Intermediate levels, free with your entry fee.</div>
                   </div>
                 </div>
               </div>
@@ -4568,9 +4568,9 @@ body.sandbox-mode {
     <div style="background:var(--bg-white);border-bottom:1px solid var(--border);">
       <div class="container" style="padding-top:0;padding-bottom:0;">
         <div class="admin-tabs" role="tablist" style="border-bottom:none;margin-bottom:0;overflow-x:auto;">
-          <button class="admin-tab active" data-about-tab="how"        onclick="showAbout('how')">How It Works</button>
+          <button class="admin-tab active" data-about-tab="founder"    onclick="showAbout('founder')">Founder</button>
+          <button class="admin-tab"        data-about-tab="how"        onclick="showAbout('how')">How It Works</button>
           <button class="admin-tab"        data-about-tab="curriculum" onclick="showAbout('curriculum')">Curriculum Guide</button>
-          <button class="admin-tab"        data-about-tab="founder"    onclick="showAbout('founder')">Founder</button>
           <button class="admin-tab"        data-about-tab="legal"      onclick="showAbout('legal')">Legal</button>
         </div>
       </div>
@@ -14925,7 +14925,7 @@ PAGE_LOADERS['legal'] = function() { showLegal('terms'); };
 //  ABOUT PAGE (How It Works, Founder, Legal)
 // ═══════════════════════════════════════════════════════════════════
 
-PAGE_LOADERS['about'] = function() { showAbout('how'); };
+PAGE_LOADERS['about'] = function() { showAbout('founder'); };
 
 function showAbout(tab) {
   // Update tab active state
