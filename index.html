@@ -3973,6 +3973,64 @@ body.sandbox-mode {
 .mobile-menu__link--research { display: none; }
 .res-on .mobile-menu__link--research { display: flex; }
 
+
+/* ===== RESEARCH MODULE PHASE 2 ===== */
+.res2-panel { background:#fff; border:1px solid #e8e2d2; border-left:4px solid var(--gold); border-radius:10px; padding:1.25rem 1.4rem; margin:1rem 0; }
+.res2-panel__title { font-family:var(--font-serif); font-size:1.2rem; color:var(--navy-900); margin:0 0 0.5rem; }
+.res2-panel__body { color:var(--text-700); font-size:0.94rem; line-height:1.6; }
+.res2-task-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.7rem 0; border-bottom:1px solid #f0eadd; }
+.res2-task-row:last-child { border-bottom:none; }
+.res2-task-row__label { font-size:0.93rem; color:var(--text-800); }
+.res2-task-row__status { font-size:0.78rem; font-weight:600; padding:0.2rem 0.6rem; border-radius:999px; }
+.res2-s-done { background:#d1fae5; color:#065f46; }
+.res2-s-open { background:#dbeafe; color:#1e40af; }
+.res2-s-locked { background:#f3f4f6; color:#6b7280; }
+.res2-s-wait { background:#fef3c7; color:#92400e; }
+
+/* Assessment runner */
+.res2-test-overlay { position:fixed; inset:0; background:rgba(10,20,40,0.97); z-index:9999; overflow-y:auto; padding:0; }
+.res2-test-wrap { max-width:760px; margin:0 auto; padding:1.5rem 1.25rem 4rem; color:#1a1a1a; }
+.res2-test-bar { position:sticky; top:0; background:var(--navy-900); color:#fff; padding:0.85rem 1.25rem; display:flex; justify-content:space-between; align-items:center; border-radius:0 0 10px 10px; margin-bottom:1.5rem; z-index:2; box-shadow:0 2px 12px rgba(0,0,0,0.25); }
+.res2-timer { font-family:var(--font-mono,monospace); font-size:1.15rem; font-weight:700; }
+.res2-timer--warn { color:#fca5a5; }
+.res2-progress { font-size:0.85rem; opacity:0.85; }
+.res2-q { background:#fff; border:1px solid #e2ddcf; border-radius:10px; padding:1.25rem 1.4rem; margin-bottom:1rem; }
+.res2-q__num { font-family:var(--font-mono,monospace); font-size:0.72rem; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.4rem; }
+.res2-q__stem { font-size:1rem; color:#1a1a1a; line-height:1.55; margin-bottom:0.9rem; font-weight:500; }
+.res2-opt { display:block; padding:0.7rem 0.9rem; border:1.5px solid #e2ddcf; border-radius:8px; margin-bottom:0.5rem; cursor:pointer; font-size:0.94rem; line-height:1.45; transition:all 0.12s; }
+.res2-opt:hover { border-color:var(--gold); background:#fdfaf2; }
+.res2-opt--sel { border-color:var(--navy-700); background:#eef2fb; font-weight:500; }
+.res2-opt__letter { display:inline-block; font-weight:700; color:var(--navy-800); margin-right:0.5rem; }
+.res2-test-foot { display:flex; justify-content:space-between; gap:1rem; margin-top:1.5rem; }
+
+/* Case study track */
+.res2-case { background:#fff; border:1px solid #e8e2d2; border-radius:10px; padding:1.4rem 1.6rem; margin-bottom:1rem; }
+.res2-case__num { font-family:var(--font-mono,monospace); font-size:0.72rem; color:var(--gold); letter-spacing:0.1em; text-transform:uppercase; }
+.res2-case__title { font-family:var(--font-serif); font-size:1.3rem; color:var(--navy-900); margin:0.3rem 0 0.75rem; }
+.res2-case__scenario { font-size:0.93rem; color:var(--text-700); line-height:1.65; margin-bottom:0.9rem; }
+.res2-case__prompt { font-size:0.93rem; color:#1a1a1a; line-height:1.6; background:#faf8f2; border-radius:8px; padding:0.9rem 1.1rem; margin-bottom:0.9rem; }
+.res2-wordcount { font-size:0.8rem; color:var(--text-500); text-align:right; margin-top:0.3rem; }
+.res2-wordcount--ok { color:#065f46; }
+.res2-textarea { width:100%; min-height:180px; border:1.5px solid #e2ddcf; border-radius:8px; padding:0.85rem; font-family:inherit; font-size:0.94rem; line-height:1.6; resize:vertical; box-sizing:border-box; }
+.res2-textarea:focus { outline:none; border-color:var(--gold); }
+
+/* Likert */
+.res2-likert-row { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.65rem 0; border-bottom:1px solid #f0eadd; }
+.res2-likert-q { font-size:0.92rem; color:var(--text-800); flex:1; }
+.res2-likert-opts { display:flex; gap:0.3rem; }
+.res2-likert-opt { width:2.1rem; height:2.1rem; border:1.5px solid #e2ddcf; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.85rem; font-weight:600; color:var(--text-600); transition:all 0.12s; }
+.res2-likert-opt--sel { background:var(--navy-800); border-color:var(--navy-800); color:#fff; }
+
+/* Instructor section mgmt */
+.res2-sec-card { background:#fff; border:1px solid #e8e2d2; border-radius:10px; padding:1.25rem 1.4rem; margin-bottom:1rem; }
+.res2-sec-code { font-family:var(--font-mono,monospace); font-size:1.3rem; font-weight:700; color:var(--navy-900); letter-spacing:0.1em; background:#f4f0e6; padding:0.4rem 0.9rem; border-radius:8px; display:inline-block; }
+.res2-gate-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:0.6rem; margin-top:0.85rem; }
+.res2-gate { border:1px solid #e8e2d2; border-radius:8px; padding:0.7rem 0.85rem; font-size:0.85rem; }
+.res2-gate__name { font-weight:600; color:var(--navy-900); margin-bottom:0.35rem; }
+.res2-stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:0.75rem; margin:0.85rem 0; }
+.res2-stat { background:#faf8f2; border-radius:8px; padding:0.75rem; text-align:center; }
+.res2-stat__num { font-size:1.6rem; font-weight:700; color:var(--navy-900); font-family:var(--font-mono,monospace); }
+.res2-stat__lbl { font-size:0.72rem; color:var(--text-500); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem; }
 </style>
 </head>
 <body>
@@ -4632,6 +4690,9 @@ body.sandbox-mode {
 
     <!-- Tab panels -->
     <div class="container" style="padding-top:2rem;padding-bottom:3rem;">
+      <!-- Research participation panel (Phase 2) -->
+      <div id="res2-student-panel"></div>
+
       <!-- Not logged in / no team -->
       <div id="dash-no-team" style="display:none;">
         <div class="empty-state">
@@ -4639,6 +4700,7 @@ body.sandbox-mode {
           <div class="empty-state__title">No active team</div>
           <div class="empty-state__desc">Join or create a team in a tournament to access your dashboard.</div>
           <button class="btn btn--primary btn--lg" onclick="showPage('tournaments')">Browse Tournaments</button>
+          <button class="btn btn--ghost btn--lg" onclick="res2_promptEnroll()" style="margin-top:0.6rem;">Join a Research Section</button>
         </div>
       </div>
 
@@ -8226,6 +8288,8 @@ var PILLARS = [
 // read these globals WITHOUT re-fetching. If renderDashboard() has not run, all tabs show defaults.
 // Do NOT clear or reassign _dash* globals outside of renderDashboard() or tab data will desync.
 async function renderDashboard() {
+  if (typeof res2_loadEnrollment === "function") { try { await res2_loadEnrollment(); } catch(_re){} }
+  if (typeof res2_renderStudentPanel === "function") { try { res2_renderStudentPanel(); } catch(_re2){} }
   if (!currentUser) { openAuthModal('login'); return; }
 
   var noTeamEl  = document.getElementById('dash-no-team');
@@ -19441,6 +19505,10 @@ async function res_renderDashboard() {
       '<h2 class="res-section__title" style="font-size:1.25rem;margin:1.5rem 0 0.85rem;">Onboarding Steps</h2>' +
       '<div id="res-steps">' + steps + '</div>' +
 
+      ((currentUser && currentUser.research_status === 'verified')
+        ? '<div id="res2-instructor-sections" style="margin-top:2.25rem;"></div>'
+        : '') +
+
       '<h2 class="res-section__title" style="font-size:1.25rem;margin:2.25rem 0 0.85rem;">Document Library</h2>' +
       '<div id="res-docs"><div class="res-empty">Loading documents…</div></div>' +
     '</div>';
@@ -19450,6 +19518,10 @@ async function res_renderDashboard() {
   res_initStepInteraction();
   // Load documents asynchronously
   res_loadDocuments();
+  // Phase 2: instructor section management for verified researchers
+  if (currentUser && currentUser.research_status === 'verified' && typeof res2_renderInstructorSections === 'function') {
+    try { res2_renderInstructorSections(); } catch (_rie) {}
+  }
 }
 
 function res_buildSteps(canAct) {
@@ -19993,6 +20065,852 @@ PAGE_LOADERS['research'] = res_renderLanding;
 })();
 
 // ════════════════════════════════════════════════════════════════════════════
+
+
+// ════════════════════════════════════════════════════════════════════════════
+// RESEARCH MODULE — Phase 2: Instruments & Data Capture
+// Prefix res2_ / _res2. Self-contained; reads gating from mn_research_sections.
+// ════════════════════════════════════════════════════════════════════════════
+
+var _res2Consent   = null;   // current user's consent row (or null)
+var _res2Section   = null;   // the section they're enrolled in
+var _res2Site      = null;   // the site (for salt)
+var _res2Test      = null;   // active assessment runner state
+
+// SHA-256 hex (browser SubtleCrypto). Used for de-identified research_id.
+async function res2_sha256(str) {
+  var enc = new TextEncoder();
+  var buf = await crypto.subtle.digest('SHA-256', enc.encode(str));
+  var bytes = Array.prototype.slice.call(new Uint8Array(buf));
+  var hex = '';
+  for (var i = 0; i < bytes.length; i++) {
+    var h = bytes[i].toString(16);
+    if (h.length === 1) { h = '0' + h; }
+    hex += h;
+  }
+  return hex;
+}
+
+function res2_countWords(s) {
+  s = (s || '').trim();
+  if (!s) { return 0; }
+  return s.split(/\s+/).length;
+}
+
+// Load the current user's research enrollment (consent + section + site).
+async function res2_loadEnrollment() {
+  _res2Consent = null; _res2Section = null; _res2Site = null;
+  if (!currentUser) { return; }
+  try {
+    var consents = await sbGet('mn_research_consents',
+      'user_id=eq.' + currentUser.id + '&order=consented_at.desc&limit=1');
+    if (consents && consents.length) {
+      _res2Consent = consents[0];
+      var secs = await sbGet('mn_research_sections', 'id=eq.' + _res2Consent.section_id + '&limit=1');
+      if (secs && secs.length) {
+        _res2Section = secs[0];
+        var sites = await sbGet('mn_research_sites', 'id=eq.' + _res2Section.site_id + '&limit=1');
+        if (sites && sites.length) { _res2Site = sites[0]; }
+      }
+    }
+  } catch (e) { /* non-fatal */ }
+}
+
+// ─── Student: enroll via section code ──────────────────────────────────────
+function res2_promptEnroll() {
+  if (!currentUser) { flash('Please sign in first.', 'info'); return; }
+  var code = prompt('Enter the research section enrollment code provided by your instructor:');
+  if (!code) { return; }
+  res2_doEnroll(code.trim().toUpperCase());
+}
+
+async function res2_doEnroll(code) {
+  try {
+    var secs = await sbGet('mn_research_sections',
+      'enrollment_code=eq.' + encodeURIComponent(code) + '&limit=1');
+    if (!secs || !secs.length) {
+      flash('No research section found with that code.', 'error');
+      return;
+    }
+    var section = secs[0];
+    // Already enrolled?
+    var existing = await sbGet('mn_research_consents',
+      'user_id=eq.' + currentUser.id + '&section_id=eq.' + section.id + '&limit=1');
+    if (existing && existing.length) {
+      flash('You are already enrolled in this section.', 'info');
+      _res2Consent = existing[0]; _res2Section = section;
+      res2_renderStudentPanel();
+      return;
+    }
+    // Show consent modal
+    res2_showConsentModal(section);
+  } catch (e) {
+    flash('Enrollment error: ' + (e.message || 'unknown'), 'error');
+  }
+}
+
+function res2_showConsentModal(section) {
+  var html =
+    '<div class="modal-overlay on" id="res2-consent-modal" style="z-index:9998;">' +
+      '<div class="modal" style="max-width:640px;">' +
+        '<div class="modal__header"><h2 class="modal__title">Research Participation Consent</h2></div>' +
+        '<div class="modal__body" style="max-height:60vh;overflow-y:auto;font-size:0.92rem;line-height:1.6;">' +
+          '<p><strong>Study:</strong> Does Competitive Simulation Improve Learning in Macroeconomics? A Multi-Site Randomized Controlled Trial.</p>' +
+          '<p>You are invited to take part in an educational research study run through this platform. If you consent:</p>' +
+          '<ul style="padding-left:1.2rem;">' +
+            '<li>You will take a short macroeconomics assessment near the start and end of the course.</li>' +
+            '<li>You will be assigned to a team that is randomly placed in either the tournament or a parallel case-study track (both count equally toward your course).</li>' +
+            '<li>You will complete a brief written policy task and an endline survey.</li>' +
+            '<li>Your responses and de-identified course scores will be used for research.</li>' +
+          '</ul>' +
+          '<p><strong>Your privacy:</strong> Your name and email are never included in the research dataset. You are identified only by a one-way cryptographic code.</p>' +
+          '<p><strong>Voluntary:</strong> Participation is voluntary and does not affect your grade. If you decline, you still complete all course activities; your data simply are not used for research. You may withdraw at any time.</p>' +
+          '<p>By clicking \u201cI Consent\u201d you confirm you are at least 18 years old and voluntarily agree to participate.</p>' +
+        '</div>' +
+        '<div class="modal__footer" style="display:flex;gap:0.6rem;justify-content:flex-end;">' +
+          '<button class="btn btn--ghost" onclick="res2_recordConsent(false)">Decline (course only)</button>' +
+          '<button class="btn btn--primary" onclick="res2_recordConsent(true)">I Consent</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  var holder = document.createElement('div');
+  holder.id = 'res2-consent-holder';
+  holder.innerHTML = html;
+  document.body.appendChild(holder);
+  _res2PendingSection = section;
+}
+var _res2PendingSection = null;
+
+async function res2_recordConsent(consented) {
+  var section = _res2PendingSection;
+  var holder = document.getElementById('res2-consent-holder');
+  if (holder) { holder.parentNode.removeChild(holder); }
+  if (!section) { return; }
+  try {
+    var site = null;
+    var sites = await sbGet('mn_research_sites', 'id=eq.' + section.site_id + '&limit=1');
+    if (sites && sites.length) { site = sites[0]; }
+    var salt = (site && site.de_id_salt) ? site.de_id_salt : section.site_id;
+    var rid = await res2_sha256(currentUser.id + ':' + salt);
+    var row = await sbPost('mn_research_consents', {
+      user_id: currentUser.id,
+      section_id: section.id,
+      consent_given: !!consented,
+      consent_version: 'v1.0-2026',
+      research_id: rid
+    });
+    _res2Consent = row; _res2Section = section; _res2Site = site;
+    if (consented) {
+      flash('Thank you \u2014 you are enrolled in the study.', 'success');
+    } else {
+      flash('Recorded. You will take part in course activities without contributing research data.', 'info');
+    }
+    showPage('dashboard');
+    renderDashboard();
+  } catch (e) {
+    flash('Could not record consent: ' + (e.message || 'error'), 'error');
+  }
+}
+
+// ─── Student: research panel on dashboard ──────────────────────────────────
+async function res2_renderStudentPanel() {
+  var mount = document.getElementById('res2-student-panel');
+  if (!mount) { return; }
+  if (!_res2Consent) { mount.innerHTML = ''; return; }
+  if (!_res2Consent.consent_given) {
+    mount.innerHTML =
+      '<div class="res2-panel"><div class="res2-panel__title">Research (declined)</div>' +
+      '<div class="res2-panel__body">You chose not to contribute research data. You can still participate fully in all course activities.</div></div>';
+    return;
+  }
+
+  var sec = _res2Section || {};
+  var rid = _res2Consent.research_id;
+
+  // Find arm assignment and completion states
+  var arm = null, preDone = false, postDone = false, prDone = false, endDone = false;
+  try {
+    var arms = await sbGet('mn_research_arms', 'section_id=eq.' + sec.id + '&team_id=eq.' + encodeURIComponent(rid) + '&limit=1');
+    if (arms && arms.length) { arm = arms[0].arm; }
+    var admins = await sbGet('mn_assessment_administrations', 'research_id=eq.' + encodeURIComponent(rid) + '&limit=10');
+    if (admins && admins.length) {
+      for (var i = 0; i < admins.length; i++) {
+        if (admins[i].phase === 'pre'  && admins[i].is_complete) { preDone = true; }
+        if (admins[i].phase === 'post' && admins[i].is_complete) { postDone = true; }
+      }
+    }
+    var prs = await sbGet('mn_policy_reasoning_responses', 'research_id=eq.' + encodeURIComponent(rid) + '&limit=1');
+    if (prs && prs.length) { prDone = true; }
+    var ends = await sbGet('mn_endline_surveys', 'research_id=eq.' + encodeURIComponent(rid) + '&limit=1');
+    if (ends && ends.length) { endDone = true; }
+  } catch (e) {}
+
+  function row(label, status, action) {
+    var sCls = 'res2-s-locked', sTxt = 'Locked';
+    if (status === 'done') { sCls = 'res2-s-done'; sTxt = 'Complete'; }
+    else if (status === 'open') { sCls = 'res2-s-open'; sTxt = 'Available'; }
+    else if (status === 'wait') { sCls = 'res2-s-wait'; sTxt = 'Waiting'; }
+    return '<div class="res2-task-row"><div class="res2-task-row__label">' + esc(label) +
+      (action ? ' &nbsp; ' + action : '') +
+      '</div><div class="res2-task-row__status ' + sCls + '">' + sTxt + '</div></div>';
+  }
+
+  var html = '<div class="res2-panel">' +
+    '<div class="res2-panel__title">\uD83D\uDD2C Research Participation</div>' +
+    '<div class="res2-panel__body">' +
+      '<p style="margin:0 0 0.5rem;">Section: <strong>' + esc(sec.section_label || '') + '</strong>' +
+      (arm ? ' &middot; Your track: <strong>' + (arm === 'treatment' ? 'Tournament' : 'Case Studies') + '</strong>' : ' &middot; Awaiting team assignment') +
+      '</p>';
+
+  // Pre-test
+  if (preDone) { html += row('Pre-test (macroeconomics assessment)', 'done'); }
+  else if (sec.pretest_open) { html += row('Pre-test (45 min, ~40 questions)', 'open', '<button class="btn btn--primary btn--sm" onclick="res2_startTest(\'pre\')">Start Pre-Test</button>'); }
+  else { html += row('Pre-test', 'wait'); }
+
+  // Arm-specific mid-term activity
+  if (arm === 'treatment') {
+    html += row('Tournament participation (see Tournaments tab)', 'open');
+  } else if (arm === 'control') {
+    if (sec.casestudy_open) { html += row('Case study track (5 written cases)', 'open', '<button class="btn btn--primary btn--sm" onclick="res2_openCaseTrack()">Open Case Studies</button>'); }
+    else { html += row('Case study track', 'wait'); }
+  }
+
+  // Post-test
+  if (postDone) { html += row('Post-test (macroeconomics assessment)', 'done'); }
+  else if (sec.posttest_open) { html += row('Post-test (45 min, ~40 questions)', 'open', '<button class="btn btn--primary btn--sm" onclick="res2_startTest(\'post\')">Start Post-Test</button>'); }
+  else { html += row('Post-test', 'locked'); }
+
+  // Policy reasoning
+  if (prDone) { html += row('Policy-reasoning task', 'done'); }
+  else if (sec.policy_task_open) { html += row('Policy-reasoning task (written)', 'open', '<button class="btn btn--primary btn--sm" onclick="res2_openPolicyTask()">Open Task</button>'); }
+  else { html += row('Policy-reasoning task', 'locked'); }
+
+  // Endline
+  if (endDone) { html += row('Endline survey', 'done'); }
+  else if (sec.endline_open) { html += row('Endline survey (~3 min)', 'open', '<button class="btn btn--primary btn--sm" onclick="res2_openEndline()">Open Survey</button>'); }
+  else { html += row('Endline survey', 'locked'); }
+
+  html += '</div></div>';
+  mount.innerHTML = html;
+}
+
+// ─── Assessment runner (pre/post MKRA) ─────────────────────────────────────
+async function res2_startTest(phase) {
+  if (!_res2Consent || !_res2Section) { return; }
+  var rid = _res2Consent.research_id;
+  // Guard: already complete?
+  try {
+    var done = await sbGet('mn_assessment_administrations',
+      'research_id=eq.' + encodeURIComponent(rid) + '&phase=eq.' + phase + '&is_complete=eq.true&limit=1');
+    if (done && done.length) { flash('You have already completed this assessment.', 'info'); return; }
+  } catch (e) {}
+
+  // Load items for active form
+  var form = String((_resSettings && _resSettings.mkra_form_id) ? _resSettings.mkra_form_id : 'A');
+  var items = [];
+  try {
+    items = await sbGet('mn_assessment_items',
+      'form=eq.' + form + '&is_active=eq.true&order=position.asc&limit=100');
+  } catch (e) {}
+  if (!items || !items.length) { flash('Assessment items are not yet loaded. Contact your instructor.', 'error'); return; }
+
+  // Randomize item order (Fisher-Yates)
+  var order = items.slice();
+  for (var i = order.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = order[i]; order[i] = order[j]; order[j] = t;
+  }
+
+  _res2Test = {
+    phase: phase, items: order, answers: {},
+    startMs: Date.now(), durationSec: 45 * 60,
+    rid: rid, form: form, sectionId: _res2Section.id
+  };
+  res2_renderTest();
+  res2_tickTimer();
+}
+
+function res2_renderTest() {
+  var t = _res2Test;
+  if (!t) { return; }
+  var answered = 0;
+  for (var k in t.answers) { if (t.answers.hasOwnProperty(k)) { answered++; } }
+
+  var qhtml = '';
+  for (var i = 0; i < t.items.length; i++) {
+    var it = t.items[i];
+    var sel = t.answers[it.id];
+    qhtml += '<div class="res2-q"><div class="res2-q__num">Question ' + (i + 1) + ' of ' + t.items.length + '</div>' +
+      '<div class="res2-q__stem">' + esc(it.stem) + '</div>';
+    var letters = ['A','B','C','D'];
+    var choices = [it.choice_a, it.choice_b, it.choice_c, it.choice_d];
+    for (var c = 0; c < 4; c++) {
+      var isSel = (sel === letters[c]);
+      qhtml += '<label class="res2-opt' + (isSel ? ' res2-opt--sel' : '') + '" onclick="res2_answer(\'' + it.id + '\',\'' + letters[c] + '\')">' +
+        '<span class="res2-opt__letter">' + letters[c] + '</span>' + esc(choices[c]) + '</label>';
+    }
+    qhtml += '</div>';
+  }
+
+  var html =
+    '<div class="res2-test-overlay" id="res2-test-overlay"><div class="res2-test-wrap">' +
+      '<div class="res2-test-bar">' +
+        '<div><strong>' + (t.phase === 'pre' ? 'Pre-Test' : 'Post-Test') + '</strong> &middot; Macroeconomic Knowledge &amp; Reasoning</div>' +
+        '<div><span class="res2-progress" id="res2-progress">' + answered + '/' + t.items.length + ' answered</span> &nbsp; ' +
+        '<span class="res2-timer" id="res2-timer">45:00</span></div>' +
+      '</div>' +
+      qhtml +
+      '<div class="res2-test-foot">' +
+        '<div style="font-size:0.85rem;color:var(--text-500);">Your answers are saved as you go. Submit when finished.</div>' +
+        '<button class="btn btn--primary" onclick="res2_submitTest(false)">Submit Assessment</button>' +
+      '</div>' +
+    '</div></div>';
+
+  var holder = document.getElementById('res2-test-holder');
+  if (!holder) { holder = document.createElement('div'); holder.id = 'res2-test-holder'; document.body.appendChild(holder); }
+  holder.innerHTML = html;
+}
+
+function res2_answer(itemId, letter) {
+  if (!_res2Test) { return; }
+  _res2Test.answers[itemId] = letter;
+  // Update just the progress count + selection styling without full re-render
+  res2_renderTest();
+}
+
+function res2_tickTimer() {
+  if (!_res2Test) { return; }
+  var t = _res2Test;
+  var elapsed = Math.floor((Date.now() - t.startMs) / 1000);
+  var remain = t.durationSec - elapsed;
+  var el = document.getElementById('res2-timer');
+  if (remain <= 0) {
+    if (el) { el.textContent = '0:00'; }
+    res2_submitTest(true);
+    return;
+  }
+  if (el) {
+    var m = Math.floor(remain / 60), s = remain % 60;
+    el.textContent = m + ':' + (s < 10 ? '0' + s : s);
+    if (remain <= 300) { el.classList.add('res2-timer--warn'); }
+  }
+  if (document.getElementById('res2-test-overlay')) {
+    setTimeout(res2_tickTimer, 1000);
+  }
+}
+
+async function res2_submitTest(auto) {
+  var t = _res2Test;
+  if (!t) { return; }
+  if (!auto) {
+    var answered = 0; for (var k in t.answers) { if (t.answers.hasOwnProperty(k)) { answered++; } }
+    if (answered < t.items.length) {
+      if (!confirm('You have answered ' + answered + ' of ' + t.items.length + ' questions. Submit anyway? Unanswered questions are marked incorrect.')) { return; }
+    }
+  }
+  _res2Test = null; // stop timer
+  var holder = document.getElementById('res2-test-holder');
+  if (holder) { holder.innerHTML = '<div class="res2-test-overlay"><div class="res2-test-wrap"><div class="res2-test-bar"><div>Submitting\u2026</div></div></div></div>'; }
+
+  try {
+    // Score
+    var raw = 0, recall = 0, application = 0;
+    for (var i = 0; i < t.items.length; i++) {
+      var it = t.items[i];
+      var sel = t.answers[it.id] || null;
+      var correct = (sel === it.correct_answer);
+      if (correct) {
+        raw++;
+        if ((it.cognitive_level || '').toLowerCase() === 'recall') { recall++; } else { application++; }
+      }
+    }
+    var timeSpent = Math.floor((Date.now() - t.startMs) / 1000);
+    var orderIds = t.items.map(function(x) { return x.id; });
+
+    // Create administration row
+    var admin = await sbPost('mn_assessment_administrations', {
+      research_id: t.rid, section_id: t.sectionId, form: t.form, phase: t.phase,
+      submitted_at: new Date().toISOString(), time_spent_seconds: timeSpent,
+      score_raw: raw, score_recall: recall, score_application: application,
+      is_complete: true, item_order: orderIds
+    });
+
+    // Store per-item responses
+    if (admin && admin.id) {
+      for (var r = 0; r < t.items.length; r++) {
+        var rit = t.items[r];
+        var rsel = t.answers[rit.id] || null;
+        try {
+          await sbPost('mn_assessment_responses', {
+            administration_id: admin.id, item_id: rit.id,
+            selected_answer: rsel, is_correct: (rsel === rit.correct_answer),
+            item_order_position: (r + 1)
+          });
+        } catch (re) { /* continue */ }
+      }
+    }
+
+    if (holder) { holder.innerHTML = ''; }
+    flash('Assessment submitted. Thank you!', 'success');
+    renderDashboard();
+  } catch (e) {
+    if (holder) { holder.innerHTML = ''; }
+    flash('Could not submit: ' + (e.message || 'error') + '. Please try again.', 'error');
+  }
+}
+
+// ─── Case study track ──────────────────────────────────────────────────────
+async function res2_openCaseTrack() {
+  if (!_res2Consent) { return; }
+  var rid = _res2Consent.research_id;
+  var cases = [], responses = {};
+  try {
+    cases = await sbGet('mn_case_study_assignments', 'is_active=eq.true&order=position.asc&limit=20');
+    var resp = await sbGet('mn_case_study_responses', 'research_id=eq.' + encodeURIComponent(rid) + '&limit=20');
+    if (resp) { for (var i = 0; i < resp.length; i++) { responses[resp[i].assignment_id] = resp[i]; } }
+  } catch (e) {}
+  if (!cases || !cases.length) { flash('No case studies available.', 'info'); return; }
+
+  var html = '<div class="res2-test-overlay" id="res2-case-overlay"><div class="res2-test-wrap">' +
+    '<div class="res2-test-bar"><div><strong>Case Study Track</strong> &middot; Control Arm</div>' +
+    '<button class="btn btn--ghost btn--sm" onclick="res2_closeCaseTrack()" style="color:#fff;border-color:rgba(255,255,255,0.4);">Close</button></div>';
+  for (var c = 0; c < cases.length; c++) {
+    var cs = cases[c];
+    var existing = responses[cs.id];
+    var done = !!existing;
+    html += '<div class="res2-case"><div class="res2-case__num">Case ' + cs.position + (done ? ' \u00b7 Submitted' : '') + '</div>' +
+      '<div class="res2-case__title">' + esc(cs.title) + '</div>' +
+      '<div class="res2-case__scenario">' + esc(cs.scenario_text) + '</div>' +
+      '<div class="res2-case__prompt">' + esc(cs.prompt_text) + '</div>';
+    if (done) {
+      html += '<div style="font-size:0.9rem;color:#065f46;">\u2713 Submitted (' + (existing.word_count || 0) + ' words). Responses are final once submitted.</div>';
+    } else {
+      html += '<textarea class="res2-textarea" id="res2-case-' + cs.id + '" oninput="res2_caseWordCount(\'' + cs.id + '\')" placeholder="Write your 200-300 word response here\u2026"></textarea>' +
+        '<div class="res2-wordcount" id="res2-case-wc-' + cs.id + '">0 words</div>' +
+        '<button class="btn btn--primary btn--sm" onclick="res2_submitCase(\'' + cs.id + '\',' + cs.position + ')">Submit Case ' + cs.position + '</button>';
+    }
+    html += '</div>';
+  }
+  html += '</div></div>';
+  var holder = document.getElementById('res2-case-holder');
+  if (!holder) { holder = document.createElement('div'); holder.id = 'res2-case-holder'; document.body.appendChild(holder); }
+  holder.innerHTML = html;
+}
+function res2_closeCaseTrack() { var h = document.getElementById('res2-case-holder'); if (h) { h.innerHTML = ''; } }
+function res2_caseWordCount(id) {
+  var ta = document.getElementById('res2-case-' + id);
+  var wc = document.getElementById('res2-case-wc-' + id);
+  if (!ta || !wc) { return; }
+  var n = res2_countWords(ta.value);
+  wc.textContent = n + ' words';
+  wc.className = 'res2-wordcount' + (n >= 200 && n <= 320 ? ' res2-wordcount--ok' : '');
+}
+async function res2_submitCase(id, position) {
+  var ta = document.getElementById('res2-case-' + id);
+  if (!ta) { return; }
+  var text = (ta.value || '').trim();
+  var n = res2_countWords(text);
+  if (n < 100) { flash('Your response is quite short (' + n + ' words). Aim for 200-300 words.', 'info'); return; }
+  if (!confirm('Submit your response to Case ' + position + '? Submissions are final.')) { return; }
+  try {
+    await sbPost('mn_case_study_responses', {
+      research_id: _res2Consent.research_id, section_id: _res2Section.id,
+      assignment_id: id, response_text: text, word_count: n
+    });
+    flash('Case ' + position + ' submitted.', 'success');
+    res2_openCaseTrack();
+  } catch (e) {
+    flash('Could not submit: ' + (e.message || 'error'), 'error');
+  }
+}
+
+// ─── Policy-reasoning task ─────────────────────────────────────────────────
+async function res2_openPolicyTask() {
+  if (!_res2Consent) { return; }
+  var tasks = [];
+  try { tasks = await sbGet('mn_policy_reasoning_tasks', 'is_active=eq.true&order=created_at.asc&limit=1'); } catch (e) {}
+  if (!tasks || !tasks.length) { flash('No policy task is available.', 'info'); return; }
+  var task = tasks[0];
+  var html = '<div class="res2-test-overlay" id="res2-pr-overlay"><div class="res2-test-wrap">' +
+    '<div class="res2-test-bar"><div><strong>Policy-Reasoning Task</strong></div>' +
+    '<button class="btn btn--ghost btn--sm" onclick="res2_closePolicyTask()" style="color:#fff;border-color:rgba(255,255,255,0.4);">Close</button></div>' +
+    '<div class="res2-case"><div class="res2-case__title">' + esc(task.task_label) + '</div>' +
+    '<div class="res2-case__scenario">' + esc(task.scenario_text) + '</div>' +
+    '<div class="res2-case__prompt">' + esc(task.prompt_text) + '</div>' +
+    '<textarea class="res2-textarea" id="res2-pr-text" oninput="res2_prWordCount()" style="min-height:260px;" placeholder="Write your 250-500 word response here\u2026"></textarea>' +
+    '<div class="res2-wordcount" id="res2-pr-wc">0 words</div>' +
+    '<button class="btn btn--primary" onclick="res2_submitPolicyTask(\'' + task.id + '\')">Submit Response</button>' +
+    '</div></div></div>';
+  var holder = document.getElementById('res2-pr-holder');
+  if (!holder) { holder = document.createElement('div'); holder.id = 'res2-pr-holder'; document.body.appendChild(holder); }
+  holder.innerHTML = html;
+}
+function res2_closePolicyTask() { var h = document.getElementById('res2-pr-holder'); if (h) { h.innerHTML = ''; } }
+function res2_prWordCount() {
+  var ta = document.getElementById('res2-pr-text'); var wc = document.getElementById('res2-pr-wc');
+  if (!ta || !wc) { return; }
+  var n = res2_countWords(ta.value);
+  wc.textContent = n + ' words';
+  wc.className = 'res2-wordcount' + (n >= 250 && n <= 520 ? ' res2-wordcount--ok' : '');
+}
+async function res2_submitPolicyTask(taskId) {
+  var ta = document.getElementById('res2-pr-text');
+  if (!ta) { return; }
+  var text = (ta.value || '').trim();
+  var n = res2_countWords(text);
+  if (n < 100) { flash('Your response is quite short (' + n + ' words). Aim for 250-500 words.', 'info'); return; }
+  if (!confirm('Submit your policy-reasoning response? This is final.')) { return; }
+  try {
+    await sbPost('mn_policy_reasoning_responses', {
+      research_id: _res2Consent.research_id, section_id: _res2Section.id,
+      task_id: taskId, response_text: text, word_count: n
+    });
+    res2_closePolicyTask();
+    flash('Policy-reasoning response submitted.', 'success');
+    renderDashboard();
+  } catch (e) {
+    flash('Could not submit: ' + (e.message || 'error'), 'error');
+  }
+}
+
+// ─── Endline survey ────────────────────────────────────────────────────────
+var RES2_SE_ITEMS = [
+  'I am confident I can apply macroeconomic concepts to real-world situations.',
+  'I understand how monetary and fiscal policy affect the economy.',
+  'I can interpret macroeconomic data and indicators.',
+  'I feel prepared to discuss economic policy trade-offs.',
+  'I can reason about the likely effects of a policy change.',
+  'I am confident explaining macroeconomic ideas to others.',
+  'I enjoy analyzing macroeconomic problems.',
+  'I see myself using economics in my future studies or career.'
+];
+var _res2EndlineState = {};
+function res2_openEndline() {
+  _res2EndlineState = {};
+  var html = '<div class="res2-test-overlay" id="res2-end-overlay"><div class="res2-test-wrap">' +
+    '<div class="res2-test-bar"><div><strong>Endline Survey</strong></div>' +
+    '<button class="btn btn--ghost btn--sm" onclick="res2_closeEndline()" style="color:#fff;border-color:rgba(255,255,255,0.4);">Close</button></div>' +
+    '<div class="res2-case"><div class="res2-case__title">Your experience in this course</div>' +
+    '<p style="font-size:0.9rem;color:var(--text-600);">For each statement, select 1 (strongly disagree) to 5 (strongly agree).</p>';
+  for (var i = 0; i < RES2_SE_ITEMS.length; i++) {
+    html += '<div class="res2-likert-row"><div class="res2-likert-q">' + esc(RES2_SE_ITEMS[i]) + '</div><div class="res2-likert-opts">';
+    for (var v = 1; v <= 5; v++) {
+      html += '<div class="res2-likert-opt" id="res2-se-' + i + '-' + v + '" onclick="res2_setLikert(' + i + ',' + v + ')">' + v + '</div>';
+    }
+    html += '</div></div>';
+  }
+  html += '<div class="res2-likert-row"><div class="res2-likert-q">How likely are you to take another economics course? (1 = very unlikely, 5 = very likely)</div><div class="res2-likert-opts">';
+  for (var p = 1; p <= 5; p++) {
+    html += '<div class="res2-likert-opt" id="res2-pi-' + p + '" onclick="res2_setPersist(' + p + ')">' + p + '</div>';
+  }
+  html += '</div></div>' +
+    '<div style="margin-top:1rem;"><label style="font-size:0.9rem;color:var(--text-700);">Any comments on your experience (optional):</label>' +
+    '<textarea class="res2-textarea" id="res2-end-fb" style="min-height:90px;margin-top:0.4rem;"></textarea></div>' +
+    '<button class="btn btn--primary" style="margin-top:1rem;" onclick="res2_submitEndline()">Submit Survey</button>' +
+    '</div></div></div>';
+  var holder = document.getElementById('res2-end-holder');
+  if (!holder) { holder = document.createElement('div'); holder.id = 'res2-end-holder'; document.body.appendChild(holder); }
+  holder.innerHTML = html;
+}
+function res2_closeEndline() { var h = document.getElementById('res2-end-holder'); if (h) { h.innerHTML = ''; } }
+function res2_setLikert(idx, val) {
+  _res2EndlineState['se_' + idx] = val;
+  for (var v = 1; v <= 5; v++) {
+    var el = document.getElementById('res2-se-' + idx + '-' + v);
+    if (el) { if (v === val) { el.classList.add('res2-likert-opt--sel'); } else { el.classList.remove('res2-likert-opt--sel'); } }
+  }
+}
+function res2_setPersist(val) {
+  _res2EndlineState['persist'] = val;
+  for (var v = 1; v <= 5; v++) {
+    var el = document.getElementById('res2-pi-' + v);
+    if (el) { if (v === val) { el.classList.add('res2-likert-opt--sel'); } else { el.classList.remove('res2-likert-opt--sel'); } }
+  }
+}
+async function res2_submitEndline() {
+  var seItems = {}, seSum = 0, answered = 0;
+  for (var i = 0; i < RES2_SE_ITEMS.length; i++) {
+    var v = _res2EndlineState['se_' + i];
+    if (v) { seItems['q' + (i + 1)] = v; seSum += v; answered++; }
+  }
+  if (answered < RES2_SE_ITEMS.length) { flash('Please answer all self-efficacy statements.', 'info'); return; }
+  if (!_res2EndlineState['persist']) { flash('Please answer the persistence-intent question.', 'info'); return; }
+  var fbEl = document.getElementById('res2-end-fb');
+  try {
+    await sbPost('mn_endline_surveys', {
+      research_id: _res2Consent.research_id, section_id: _res2Section.id,
+      self_efficacy_score: seSum, self_efficacy_items: seItems,
+      persistence_intent_score: _res2EndlineState['persist'],
+      general_feedback: fbEl ? (fbEl.value || '').trim() : ''
+    });
+    res2_closeEndline();
+    flash('Survey submitted. Thank you for participating in the study!', 'success');
+    renderDashboard();
+  } catch (e) {
+    flash('Could not submit: ' + (e.message || 'error'), 'error');
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// INSTRUCTOR (Site PI) — section management & randomization
+// Rendered inside the research dashboard (Phase 1) when verified.
+// ════════════════════════════════════════════════════════════════════════════
+
+function res2_genCode() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var code = '';
+  for (var i = 0; i < 7; i++) { code += chars.charAt(Math.floor(Math.random() * chars.length)); }
+  return code;
+}
+
+async function res2_createSection() {
+  if (!_resCurrentSite) { flash('Register your research site first (step 4).', 'info'); return; }
+  if (_resCurrentSite.verification_status !== 'verified') { flash('Your site must be verified by the Lead PI before creating sections.', 'info'); return; }
+  var label = prompt('Section label (e.g., "Econ 162 Section 1, Fall 2026"):');
+  if (!label) { return; }
+  var roundsStr = prompt('Number of tournament rounds for the treatment arm (5-10):', '5');
+  var rounds = parseInt(roundsStr, 10); if (!rounds || rounds < 1) { rounds = 5; }
+  var code = res2_genCode();
+  try {
+    await sbPost('mn_research_sections', {
+      site_id: _resCurrentSite.id, section_label: label.trim(),
+      protocol_rounds: rounds, enrollment_code: code, enrollment_open: true
+    });
+    flash('Section created. Enrollment code: ' + code, 'success');
+    res2_renderInstructorSections();
+  } catch (e) {
+    flash('Could not create section: ' + (e.message || 'error'), 'error');
+  }
+}
+
+async function res2_renderInstructorSections() {
+  var mount = document.getElementById('res2-instructor-sections');
+  if (!mount) { return; }
+  if (!_resCurrentSite) { mount.innerHTML = ''; return; }
+  mount.innerHTML = '<div class="res-empty">Loading sections\u2026</div>';
+  var secs = [];
+  try { secs = await sbGet('mn_research_sections', 'site_id=eq.' + _resCurrentSite.id + '&order=created_at.desc&limit=50'); } catch (e) {}
+
+  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;">' +
+    '<h2 class="res-section__title" style="font-size:1.25rem;margin:0;">Your Research Sections</h2>' +
+    '<button class="btn btn--primary btn--sm" onclick="res2_createSection()">+ New Section</button></div>';
+
+  if (!secs || !secs.length) {
+    html += '<div class="res-empty">No sections yet. Create one to get an enrollment code for your students.</div>';
+    mount.innerHTML = html; return;
+  }
+
+  for (var i = 0; i < secs.length; i++) {
+    var s = secs[i];
+    // Counts
+    var consents = [], armed = [], pre = 0, post = 0;
+    try {
+      consents = await sbGet('mn_research_consents', 'section_id=eq.' + s.id + '&limit=500');
+      armed    = await sbGet('mn_research_arms', 'section_id=eq.' + s.id + '&limit=500');
+      var admins = await sbGet('mn_assessment_administrations', 'section_id=eq.' + s.id + '&is_complete=eq.true&limit=1000');
+      if (admins) { for (var a = 0; a < admins.length; a++) { if (admins[a].phase === 'pre') { pre++; } if (admins[a].phase === 'post') { post++; } } }
+    } catch (e) {}
+    var consented = 0; if (consents) { for (var ci = 0; ci < consents.length; ci++) { if (consents[ci].consent_given) { consented++; } } }
+    var nTreat = 0, nCtrl = 0; if (armed) { for (var ai = 0; ai < armed.length; ai++) { if (armed[ai].arm === 'treatment') { nTreat++; } else { nCtrl++; } } }
+    var randomized = (armed && armed.length > 0);
+
+    html += '<div class="res2-sec-card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;">' +
+        '<div><div style="font-weight:600;color:var(--navy-900);font-size:1.05rem;">' + esc(s.section_label) + '</div>' +
+        '<div style="font-size:0.83rem;color:var(--text-500);margin-top:0.2rem;">' + s.protocol_rounds + ' rounds &middot; enrollment code:</div>' +
+        '<div class="res2-sec-code" style="margin-top:0.3rem;">' + esc(s.enrollment_code || '\u2014') + '</div></div>' +
+      '</div>' +
+      '<div class="res2-stat-grid">' +
+        '<div class="res2-stat"><div class="res2-stat__num">' + consented + '</div><div class="res2-stat__lbl">Consented</div></div>' +
+        '<div class="res2-stat"><div class="res2-stat__num">' + pre + '</div><div class="res2-stat__lbl">Pre-test done</div></div>' +
+        '<div class="res2-stat"><div class="res2-stat__num">' + (randomized ? (nTreat + '/' + nCtrl) : '\u2014') + '</div><div class="res2-stat__lbl">Treat/Control</div></div>' +
+        '<div class="res2-stat"><div class="res2-stat__num">' + post + '</div><div class="res2-stat__lbl">Post-test done</div></div>' +
+      '</div>';
+
+    // Gates
+    html += '<div class="res2-gate-grid">' +
+      res2_gateToggle(s, 'pretest_open',   'Pre-test') +
+      res2_gateToggle(s, 'casestudy_open', 'Case studies') +
+      res2_gateToggle(s, 'posttest_open',  'Post-test') +
+      res2_gateToggle(s, 'policy_task_open','Policy task') +
+      res2_gateToggle(s, 'endline_open',   'Endline survey') +
+      '</div>';
+
+    // Randomize button
+    if (!randomized) {
+      html += '<div style="margin-top:0.85rem;"><button class="btn btn--primary btn--sm" onclick="res2_randomize(\'' + s.id + '\')">Form Teams &amp; Randomize</button> ' +
+        '<span style="font-size:0.82rem;color:var(--text-500);">Run after pre-tests are in. Forms balanced teams and assigns arms.</span></div>';
+    } else {
+      html += '<div style="margin-top:0.85rem;font-size:0.85rem;color:#065f46;">\u2713 Randomized: ' + nTreat + ' treatment, ' + nCtrl + ' control students.</div>';
+    }
+
+    // Exam upload
+    html += '<div style="margin-top:0.6rem;"><button class="btn btn--ghost btn--sm" onclick="res2_examUpload(\'' + s.id + '\')">Upload Exam Scores (CSV)</button></div>';
+
+    html += '</div>';
+  }
+  mount.innerHTML = html;
+}
+
+function res2_gateToggle(section, field, label) {
+  var on = !!section[field];
+  return '<div class="res2-gate"><div class="res2-gate__name">' + esc(label) + '</div>' +
+    '<button class="btn ' + (on ? 'btn--primary' : 'btn--ghost') + ' btn--sm" onclick="res2_toggleGate(\'' + section.id + '\',\'' + field + '\',' + (on ? 'false' : 'true') + ')">' +
+    (on ? 'Open' : 'Closed') + '</button></div>';
+}
+
+async function res2_toggleGate(sectionId, field, newVal) {
+  try {
+    var patch = {}; patch[field] = newVal;
+    await sbPatch('mn_research_sections', 'id=eq.' + sectionId, patch);
+    res2_renderInstructorSections();
+  } catch (e) {
+    flash('Could not update: ' + (e.message || 'error'), 'error');
+  }
+}
+
+// Randomization: balanced team formation + arm assignment.
+async function res2_randomize(sectionId) {
+  if (!confirm('Form teams and randomize this section now? This is done once and recorded immutably. Run only after pre-tests are substantially complete.')) { return; }
+  try {
+    var sec = null;
+    var ss = await sbGet('mn_research_sections', 'id=eq.' + sectionId + '&limit=1');
+    if (ss && ss.length) { sec = ss[0]; }
+    if (!sec) { flash('Section not found.', 'error'); return; }
+
+    // Gather consented students with pre-test scores
+    var consents = await sbGet('mn_research_consents', 'section_id=eq.' + sectionId + '&consent_given=eq.true&limit=1000');
+    if (!consents || consents.length < 4) { flash('Need at least 4 consented students to form teams.', 'info'); return; }
+
+    var admins = await sbGet('mn_assessment_administrations',
+      'section_id=eq.' + sectionId + '&phase=eq.pre&is_complete=eq.true&limit=1000');
+    var scoreByRid = {};
+    if (admins) { for (var i = 0; i < admins.length; i++) { scoreByRid[admins[i].research_id] = admins[i].score_raw || 0; } }
+
+    // Build student list (research_id + score); students without pretest get median later
+    var students = [];
+    for (var c = 0; c < consents.length; c++) {
+      var rid = consents[c].research_id;
+      students.push({ rid: rid, uid: consents[c].user_id, score: (scoreByRid.hasOwnProperty(rid) ? scoreByRid[rid] : -1) });
+    }
+    // Replace missing scores (-1) with median of known scores
+    var known = students.filter(function(s){return s.score>=0;}).map(function(s){return s.score;}).sort(function(a,b){return a-b;});
+    var median = known.length ? known[Math.floor(known.length/2)] : 0;
+    students.forEach(function(s){ if (s.score < 0) { s.score = median; } });
+
+    // Sort by score, snake-draft into teams of 4 (balances mean score across teams)
+    students.sort(function(a,b){ return b.score - a.score; });
+    var teamSize = 4;
+    var nTeams = Math.max(2, Math.ceil(students.length / teamSize));
+    var teams = []; for (var t = 0; t < nTeams; t++) { teams.push([]); }
+    var dir = 1, ti = 0;
+    for (var si = 0; si < students.length; si++) {
+      teams[ti].push(students[si]);
+      ti += dir;
+      if (ti === nTeams) { ti = nTeams - 1; dir = -1; }
+      else if (ti < 0) { ti = 0; dir = 1; }
+    }
+
+    // Randomly assign teams to arms (~half each), seeded
+    var seed = 'seed-' + sectionId + '-' + Date.now();
+    var teamIdx = []; for (var k = 0; k < teams.length; k++) { teamIdx.push(k); }
+    for (var z = teamIdx.length - 1; z > 0; z--) { var j = Math.floor(Math.random()*(z+1)); var tmp=teamIdx[z]; teamIdx[z]=teamIdx[j]; teamIdx[j]=tmp; }
+    var halfT = Math.floor(teams.length / 2);
+    var armOfTeam = {};
+    for (var m = 0; m < teamIdx.length; m++) { armOfTeam[teamIdx[m]] = (m < halfT) ? 'treatment' : 'control'; }
+
+    // Persist: one mn_research_arms row per student (team_id = research_id for student-level tracking)
+    // Also create real tournament teams for treatment groups when section has a tournament.
+    var tournId = sec.tournament_id || null;
+    for (var tm = 0; tm < teams.length; tm++) {
+      var arm = armOfTeam[tm];
+      var group = teams[tm];
+      var realTeamId = null;
+
+      if (arm === 'treatment' && tournId) {
+        try {
+          var members = group.map(function(g){ return g.uid; });
+          var inviteCode = (typeof _genInviteCode === 'function') ? _genInviteCode() : ('R' + Math.random().toString(36).slice(2,8).toUpperCase());
+          var teamRow = await sbPost('teams', {
+            name: 'Research Team ' + (tm + 1),
+            tournament_id: tournId,
+            captain_id: group[0].uid,
+            members: members,
+            invite_code: inviteCode,
+            fee_paid: true
+          });
+          if (teamRow && teamRow.id) {
+            realTeamId = teamRow.id;
+            if (typeof defaultEconomy === 'function') {
+              try {
+                await sbPost('economies', {
+                  team_id: teamRow.id, tournament_id: tournId,
+                  current: defaultEconomy(), snapshots: [], current_round: 0, scores_history: []
+                });
+              } catch (ee) {}
+            }
+          }
+        } catch (te) { /* continue; arm rows still recorded */ }
+      }
+
+      for (var g = 0; g < group.length; g++) {
+        try {
+          await sbPost('mn_research_arms', {
+            section_id: sectionId, team_id: group[g].rid, arm: arm, assignment_seed: seed
+          });
+        } catch (ae) {}
+      }
+    }
+
+    await sbPatch('mn_research_sections', 'id=eq.' + sectionId, {
+      randomization_seed: seed, randomization_completed_at: new Date().toISOString()
+    });
+
+    flash('Randomization complete: ' + teams.length + ' teams formed and assigned to arms.', 'success');
+    res2_renderInstructorSections();
+  } catch (e) {
+    flash('Randomization failed: ' + (e.message || 'error'), 'error');
+  }
+}
+
+// Exam score upload (CSV paste): research_id or student email, midterm, final, common, grade
+async function res2_examUpload(sectionId) {
+  var help = 'Paste CSV rows, one student per line, in this format:\n\n' +
+    'student_email, midterm_score, final_score, common_items_subscore, course_grade\n\n' +
+    'Example:\n  jdoe@uni.edu, 82, 88, 9, B+\n\n' +
+    'Scores are matched to consented students by email and stored de-identified.';
+  var csv = prompt(help);
+  if (!csv) { return; }
+  var lines = csv.split('\n');
+  var ok = 0, fail = 0;
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (!line) { continue; }
+    var parts = line.split(',');
+    if (parts.length < 2) { fail++; continue; }
+    var email = parts[0].trim().toLowerCase();
+    var mid = parts[1] ? parseFloat(parts[1]) : null;
+    var fin = parts[2] ? parseFloat(parts[2]) : null;
+    var common = parts[3] ? parseFloat(parts[3]) : null;
+    var grade = parts[4] ? parts[4].trim() : null;
+    try {
+      // Find user by email, then their consent (research_id) in this section
+      var users = await sbGetPublic('mn_users', 'email=eq.' + encodeURIComponent(email) + '&select=id&limit=1');
+      if (!users || !users.length) { fail++; continue; }
+      var cons = await sbGet('mn_research_consents',
+        'user_id=eq.' + users[0].id + '&section_id=eq.' + sectionId + '&limit=1');
+      if (!cons || !cons.length) { fail++; continue; }
+      await sbPost('mn_course_exam_uploads', {
+        research_id: cons[0].research_id, section_id: sectionId,
+        midterm_score: mid, final_score: fin, common_items_subscore: common,
+        course_grade: grade, uploaded_by: currentUser.id
+      });
+      ok++;
+    } catch (e) { fail++; }
+  }
+  flash('Exam upload: ' + ok + ' saved, ' + fail + ' skipped.', ok ? 'success' : 'info');
+}
+
 // END RESEARCH MODULE — Phase 1
 // ════════════════════════════════════════════════════════════════════════════
 
