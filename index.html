@@ -7829,7 +7829,7 @@ async function _renderWCBanner() {
     var sched = (season && season.playoff_bracket && season.playoff_bracket.schedule)
       ? season.playoff_bracket.schedule
       : [
-          { label: 'Qualifying period',    date: 'Jan 1 – Nov 30, ' + curYear,  note: 'Paid teams in elected tournaments and Open Championship qualifiers' },
+          { label: 'Qualifying period',    date: 'Jan 1 – Nov 30, ' + curYear,  note: (mnIsFreeMode() ? 'Every team that plays this season qualifies' : 'Paid teams in elected tournaments and Open Championship qualifiers') },
           { label: 'Qualification cutoff', date: 'Nov 30, ' + curYear,          note: 'Elected tournaments must complete by this date' },
           { label: 'Quarterfinals',        date: 'Dec 7, ' + curYear,           note: 'Top 8 teams compete' },
           { label: 'Semifinals',           date: 'Dec 14, ' + curYear,          note: 'Top 4 advance' },
@@ -13969,7 +13969,7 @@ async function renderAdminGlobalSeasons(el) {
         var champSched = (seas.playoff_bracket && seas.playoff_bracket.schedule)
           ? seas.playoff_bracket.schedule
           : [
-              { label: 'Qualifying period',    date: 'Jan 1 – Nov 30, ' + seas.year, note: 'All paid teams in elected tournaments qualify' },
+              { label: 'Qualifying period',    date: 'Jan 1 – Nov 30, ' + seas.year, note: (mnIsFreeMode() ? 'All teams that play this season qualify' : 'All paid teams in elected tournaments qualify') },
               { label: 'Qualification cutoff', date: 'Nov 30, ' + seas.year,         note: 'Elected tournaments must complete by this date' },
               { label: 'Quarterfinals',        date: 'Dec 7, ' + seas.year,          note: 'Top 8 teams compete' },
               { label: 'Semifinals',           date: 'Dec 14, ' + seas.year,         note: 'Top 4 advance' },
