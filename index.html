@@ -7089,8 +7089,12 @@ function _applyPlatformModeUI() {
         var liveSeed = Number(pb.award_seed);
         if (liveSeed >= 0) { AWARD_SEED = liveSeed; }
       }
-      // Platform mode: 'free' converts the whole platform to Open Season.
-      if (pb.platform_mode === 'free') {
+      // Platform mode: Open Season is the default. Only an explicit
+      // 'tiered' setting switches the platform to Competitive mode;
+      // anything else (including unset or 'free') stays Open Season.
+      if (pb.platform_mode === 'tiered') {
+        PLATFORM_FREE_MODE = false;   // fees already loaded from pb.entry_fee above
+      } else {
         PLATFORM_FREE_MODE = true;
         mnApplyFreeModeToFees();
       }
@@ -10014,7 +10018,7 @@ var AWARD_SEED           = 1000;  // Seed contribution — overridden by global_
 //  The tiered fee is preserved in playoff_bracket.tiered_entry_fee so it
 //  can be restored intact when the super admin switches back.
 // ═══════════════════════════════════════════════════════════════════
-var PLATFORM_FREE_MODE = false;
+var PLATFORM_FREE_MODE = true;   // Open Season is the DEFAULT mode — only an explicit 'tiered' setting turns it off
 
 function mnIsFreeMode() { return !!PLATFORM_FREE_MODE; }
 
@@ -10026,6 +10030,7 @@ function mnApplyFreeModeToFees() {
     if (typeof OC_ENTRY_FEE !== 'undefined') { OC_ENTRY_FEE = 0; }
   }
 }
+mnApplyFreeModeToFees();   // start zeroed-out / Open Season by default
 
 function renderDashPayment() {
   var el = document.getElementById('dash-panel-payment');
