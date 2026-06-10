@@ -7841,6 +7841,23 @@ async function _renderWCBanner() {
           { label: 'Prize announcement',  date: 'Dec 22, ' + curYear,           note: 'Winners announced and prize distributed' }
         ];
 
+    // Keep schedule notes in sync with the active platform mode. A schedule
+    // saved in the database may carry stale "paid"/"elected" wording, so we
+    // override the qualification-related notes here regardless of source.
+    for (var sni = 0; sni < sched.length; sni++) {
+      var sit = sched[sni];
+      if (!sit || !sit.label) { continue; }
+      if (sit.label === 'Qualifying period') {
+        sit.note = mnIsFreeMode()
+          ? 'Every team that plays this season qualifies'
+          : 'Paid teams in elected tournaments and Open Championship qualifiers';
+      } else if (sit.label === 'Qualification cutoff') {
+        sit.note = mnIsFreeMode()
+          ? 'All season tournaments must complete by this date'
+          : 'Elected tournaments must complete by this date';
+      }
+    }
+
     // Prize pool — seed + paid teams in global elected tournaments only
     var prizePool = 1000; // seed minimum
     try {
@@ -13975,7 +13992,7 @@ async function renderAdminGlobalSeasons(el) {
           ? seas.playoff_bracket.schedule
           : [
               { label: 'Qualifying period',    date: 'Jan 1 – Nov 30, ' + seas.year, note: (mnIsFreeMode() ? 'All teams that play this season qualify' : 'All paid teams in elected tournaments qualify') },
-              { label: 'Qualification cutoff', date: 'Nov 30, ' + seas.year,         note: 'Elected tournaments must complete by this date' },
+              { label: 'Qualification cutoff', date: 'Nov 30, ' + seas.year,         note: (mnIsFreeMode() ? 'All season tournaments must complete by this date' : 'Elected tournaments must complete by this date') },
               { label: 'Quarterfinals',        date: 'Dec 7, ' + seas.year,          note: 'Top 8 teams compete' },
               { label: 'Semifinals',           date: 'Dec 14, ' + seas.year,         note: 'Top 4 advance' },
               { label: 'Final',               date: 'Dec 21, ' + seas.year,          note: 'Championship match' },
