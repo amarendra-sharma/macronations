@@ -3047,6 +3047,12 @@ body.on-portal .nav__links,
 body.on-portal .nav__cta,
 body.on-portal .nav__hamburger,
 body.on-portal .footer { display: none; }
+
+/* Context-aware footer: macro footer on course pages, general platform
+   footer on the portal-level About page. */
+.footer--platform { display: none; }
+body.on-pabout .footer--macro { display: none; }
+body.on-pabout .footer--platform { display: block; }
 .portal {
   min-height: calc(100vh - var(--nav-h));
   display: flex;
@@ -3118,6 +3124,12 @@ body.on-portal .footer { display: none; }
   .portal__grid { grid-template-columns: 1fr; }
   .portal__wordmark { font-size: 2.1rem; }
 }
+.portal__about { margin-top: 2rem; text-align: center; }
+.portal__about a {
+  font-size: 0.8125rem; color: var(--text-400); text-decoration: none;
+  border-bottom: 1px solid transparent; transition: color 0.15s ease, border-color 0.15s ease;
+}
+.portal__about a:hover { color: var(--blue); border-bottom-color: var(--blue); }
 
 /* ── Free (Open Season) mode: hide fee/payment-only surfaces ── */
 body.mn-free-mode [data-dash-tab="payment"],
@@ -4394,9 +4406,38 @@ body.sandbox-mode {
             </span>
           </div>
         </div>
+        <div class="portal__about">
+          <a href="#" onclick="showPage('pabout');return false;">About MacroNations</a>
+        </div>
       </div>
     </div>
   </div><!-- /page-portal -->
+
+  <!-- ── PAGE: PLATFORM ABOUT (portal-level) ── -->
+  <div class="page page-pabout" id="page-pabout">
+    <div class="page-header">
+      <div class="page-header__inner">
+        <div>
+          <h1 class="page-header__title">About MacroNations</h1>
+          <p class="page-header__sub">Learn economics by playing it — one platform, many disciplines.</p>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--bg-white);border-bottom:1px solid var(--border);">
+      <div class="container" style="padding-top:0;padding-bottom:0;">
+        <div class="admin-tabs" role="tablist" style="border-bottom:none;margin-bottom:0;overflow-x:auto;">
+          <button class="admin-tab active" data-pabout-tab="platform" onclick="showPAbout('platform')">Platform</button>
+          <button class="admin-tab"        data-pabout-tab="courses"  onclick="showPAbout('courses')">Courses</button>
+          <button class="admin-tab"        data-pabout-tab="how"      onclick="showPAbout('how')">How It Works</button>
+          <button class="admin-tab"        data-pabout-tab="founder"  onclick="showPAbout('founder')">Founder</button>
+          <button class="admin-tab"        data-pabout-tab="legal"    onclick="showPAbout('legal')">Legal</button>
+        </div>
+      </div>
+    </div>
+    <div class="container" style="padding-top:2.5rem;padding-bottom:4rem;">
+      <div id="pabout-content"></div>
+    </div>
+  </div><!-- /page-pabout -->
 
 
   <div class="page page-home" id="page-home">
@@ -5180,8 +5221,7 @@ body.sandbox-mode {
     <div style="background:var(--bg-white);border-bottom:1px solid var(--border);">
       <div class="container" style="padding-top:0;padding-bottom:0;">
         <div class="admin-tabs" role="tablist" style="border-bottom:none;margin-bottom:0;overflow-x:auto;">
-          <button class="admin-tab active" data-about-tab="founder"    onclick="showAbout('founder')">Founder</button>
-          <button class="admin-tab"        data-about-tab="how"        onclick="showAbout('how')">How It Works</button>
+          <button class="admin-tab active" data-about-tab="how"        onclick="showAbout('how')">How It Works</button>
           <button class="admin-tab"        data-about-tab="curriculum" onclick="showAbout('curriculum')">Curriculum Guide</button>
           <button class="admin-tab"        data-about-tab="legal"      onclick="showAbout('legal')">Legal</button>
         </div>
@@ -5508,7 +5548,7 @@ body.sandbox-mode {
   </div><!-- /page-sandbox -->
 
 
-<footer class="footer" role="contentinfo">
+<footer class="footer footer--macro" role="contentinfo">
   <div class="footer__main">
 
     <div>
@@ -5581,6 +5621,54 @@ body.sandbox-mode {
       <a href="#" class="footer__legal-link">Privacy</a>
       <a href="#" class="footer__legal-link">Terms</a>
       <a href="#" class="footer__legal-link">Rules</a>
+    </nav>
+  </div>
+</footer>
+
+<footer class="footer footer--platform" role="contentinfo">
+  <div class="footer__main">
+    <div>
+      <a href="#" class="wordmark wordmark--footer" aria-label="MacroNations course portal" onclick="showPage('portal');return false;">
+        <span class="wordmark__text"><em>Macro</em>Nations</span>
+      </a>
+      <p class="footer__brand-desc">
+        Learn economics by playing it. One platform, many disciplines — each pairing an interactive course with a full textbook, for students and the professors who teach them.
+      </p>
+    </div>
+
+    <div>
+      <div class="footer__col-title">Courses</div>
+      <ul class="footer__links">
+        <li><a href="#" class="footer__link" onclick="enterCourse('macro');return false;">Macroeconomics</a></li>
+        <li><a href="#" class="footer__link" onclick="enterCourse('gametheory');return false;">Game Theory</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('portal');return false;">All courses</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer__col-title">Platform</div>
+      <ul class="footer__links">
+        <li><a href="#" class="footer__link" onclick="showPage('pabout');return false;">About MacroNations</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;how\&quot;]');if(e){e.click();}},80);return false;">How it Works</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;founder\&quot;]');if(e){e.click();}},80);return false;">Founder</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer__col-title">Legal</div>
+      <ul class="footer__links">
+        <li><a href="#" class="footer__link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Terms of Service</a></li>
+        <li><a href="#" class="footer__link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Privacy Policy</a></li>
+        <li><a href="mailto:support@macronations.com" class="footer__link">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
+    <nav class="footer__legal-links" aria-label="Legal links">
+      <a href="#" class="footer__legal-link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Privacy</a>
+      <a href="#" class="footer__legal-link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Terms</a>
     </nav>
   </div>
 </footer>
@@ -5836,6 +5924,7 @@ function setLoading(btnId, bool, label) {
 
 function showPage(id) {
   document.body.classList.toggle('on-portal', id === 'portal');
+  document.body.classList.toggle('on-pabout', id === 'pabout');
   var pages = document.querySelectorAll('.page');
   for (var i = 0; i < pages.length; i++) {
     if (pages[i].id === 'page-' + id) { pages[i].classList.add('on'); }
@@ -7005,6 +7094,7 @@ function _applyPlatformModeUI() {
         PLATFORM_FREE_MODE = true;
         mnApplyFreeModeToFees();
       }
+      if (pb.founder_bio) { FOUNDER_BIO = pb.founder_bio; }
     }
   } catch(feeErr) { /* keep hardcoded defaults */ }
   _updateFeeDisplays();
@@ -15955,6 +16045,61 @@ var LEGAL_CONTENT = {
   }
 };
 
+// General, platform-wide legal — covers all courses (not tournament-specific).
+// Used by the portal-level About page. The course-specific LEGAL_CONTENT
+// (with tournament Award Rules) stays in the Macroeconomics course.
+var PLATFORM_LEGAL = {
+  terms: {
+    title: 'Terms of Service',
+    updated: 'June 2026',
+    sections: [
+      { h: 'Agreement to Terms', p: 'By accessing or using the MacroNations platform at macronations.com, you agree to be bound by these Terms of Service. MacroNations is operated by MacroNations LLC, a New York Limited Liability Company, and offers a growing range of economics courses, each combining an interactive learning experience with course materials. If you do not agree to these terms, please do not use the platform.' },
+      { h: 'Eligibility', p: 'MacroNations is open to everyone worldwide. Students may join and use any course; educators may create and manage course spaces for their classes; and independent learners may use the platform without any institutional affiliation. By registering, you affirm that the information you provide is accurate and complete.' },
+      { h: 'User Accounts', p: 'You are responsible for maintaining the confidentiality of your login credentials and for activity under your account. Notify us immediately of any unauthorized access at support@macronations.com. MacroNations LLC is not liable for losses resulting from unauthorized account use.' },
+      { h: 'Acceptable Use & Academic Integrity', p: 'You agree to use the platform and its courses honestly and in good faith. Collusion, exploiting software defects, reverse-engineering scoring or simulation logic, sharing answers where prohibited, or any other conduct inconsistent with academic integrity may result in suspension or removal from the platform. Individual courses may publish additional rules that apply to that course.' },
+      { h: 'Platform Availability', p: 'MacroNations LLC makes no warranty that the platform will be available at all times. We reserve the right to suspend, modify, or discontinue any course or the platform as a whole at any time.' },
+      { h: 'Limitation of Liability', p: 'To the maximum extent permitted by applicable law, MacroNations LLC shall not be liable for any indirect, incidental, special, consequential, or punitive damages. Our total liability arising from your use of the platform shall not exceed the total amounts, if any, you paid to MacroNations LLC in the twelve (12) months preceding the claim.' },
+      { h: 'Governing Law', p: 'These Terms are governed by the laws of the State of New York, without regard to its conflict-of-law provisions. Any dispute arising from these terms shall be resolved exclusively in the state or federal courts of New York County, New York, and you waive any objection to personal jurisdiction there.' },
+      { h: 'Changes to Terms', p: 'We may modify these terms at any time. Continued use of the platform after changes constitutes acceptance of the revised terms. We will notify registered users of material changes via email.' }
+    ]
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    updated: 'June 2026',
+    sections: [
+      { h: 'Information We Collect', p: 'We collect: (1) registration information such as name, email address, affiliation (if any), and country; (2) course activity data such as your progress, submissions, and results within the courses you use; and (3) technical data such as browser type, IP address, and usage patterns. We do not collect payment card information directly — any payment processing is handled by third-party services.' },
+      { h: 'How We Use Your Information', p: 'Your information is used to operate the platform and its courses, record and display your progress and results, send relevant notifications, populate public leaderboards or recognition listings where a course provides them, enforce eligibility and integrity, and improve the platform.' },
+      { h: 'Public Information', p: 'Where a course includes public results (such as a leaderboard or roll of achievement), your name and results for that course may be displayed. Your email address is not displayed publicly. If you prefer anonymity, contact support@macronations.com to discuss options.' },
+      { h: 'Data Storage', p: 'Data is stored on Supabase infrastructure hosted in the United States. We implement industry-standard security measures including encryption in transit and access controls, and retain your data for the duration of your account and for a reasonable period thereafter for record-keeping.' },
+      { h: 'Your Rights', p: 'Under applicable law, you may have rights to access, correct, or delete your personal data. To exercise these rights, email support@macronations.com; we will respond within 30 days. Certain records (such as public results) may be retained even after account deletion as part of the public record.' },
+      { h: 'Governing Law', p: 'This Privacy Policy is governed by the laws of the State of New York and applicable federal privacy law, including the New York SHIELD Act. For users in the European Economic Area, additional rights may apply under the GDPR.' },
+      { h: 'Contact', p: 'For privacy inquiries, contact MacroNations LLC at support@macronations.com. As a New York Limited Liability Company, we are subject to New York State jurisdiction.' }
+    ]
+  },
+  disclaimer: {
+    title: 'Disclaimer',
+    updated: 'June 2026',
+    sections: [
+      { h: 'Educational Purpose', p: 'MacroNations is an educational platform. Its courses use simplified interactive simulations and games designed for teaching and learning. They do not constitute financial, investment, legal, or economic advice, and outcomes within a course do not predict real-world results.' },
+      { h: 'No Warranty', p: 'The platform and its courses are provided "as is" without warranty of any kind, express or implied. MacroNations LLC makes no warranties regarding the accuracy of any course model, the availability of the platform, or fitness for any particular purpose.' },
+      { h: 'Model & Content Accuracy', p: 'Each course incorporates simplified representations of real-world relationships for pedagogical purposes. These are approximations; real systems are substantially more complex and uncertain. Learners should not rely on course outcomes as predictions of real-world behavior.' },
+      { h: 'Third-Party Services', p: 'The platform integrates with third-party services including Supabase (database), Anthropic (AI features), and payment processors. MacroNations LLC is not responsible for the availability, accuracy, or privacy practices of these third-party services.' }
+    ]
+  },
+  copyright: {
+    title: 'Copyright & Intellectual Property',
+    updated: 'June 2026',
+    sections: [
+      { h: 'Ownership', p: 'MacroNations, the MacroNations logo and navy shield crest, the course content, simulations, games, scoring logic, website design, and all associated materials are the exclusive intellectual property of MacroNations LLC, a New York Limited Liability Company. All rights reserved.' },
+      { h: 'Limited License', p: 'Registered users are granted a limited, non-exclusive, non-transferable license to access and use the platform and its courses for personal learning and authorized classroom use. This license does not include the right to copy, reproduce, distribute, modify, or create derivative works from any MacroNations content.' },
+      { h: 'Prohibited Uses', p: 'You may not: (1) reproduce or distribute any course engine, simulation, or scoring logic; (2) use the MacroNations name or logo without written permission; (3) reverse-engineer, decompile, or disassemble any portion of the platform; (4) frame or mirror any part of the platform on another site; or (5) use automated means to access the platform.' },
+      { h: 'User Content', p: 'Submissions and other content you enter remain your intellectual property. By submitting content, you grant MacroNations LLC a non-exclusive, royalty-free license to display it on the platform (including any public results or recognition listings).' },
+      { h: 'DMCA', p: 'If you believe any content on the platform infringes your copyright, send a notice to support@macronations.com identifying the work, the allegedly infringing material, and your contact information. MacroNations LLC will respond in accordance with the Digital Millennium Copyright Act.' },
+      { h: 'Contact for Permissions', p: 'For licensing inquiries, partnership proposals, or academic-use permissions, contact MacroNations LLC at support@macronations.com. We welcome educational partnerships and can discuss appropriate licensing for classroom use.' }
+    ]
+  }
+};
+
 function showLegal(section) {
   // Update tab active state
   var tabs = document.querySelectorAll('[data-legal]');
@@ -16041,7 +16186,7 @@ PAGE_LOADERS['legal'] = function() { showLegal('terms'); };
 //  ABOUT PAGE (How It Works, Founder, Legal)
 // ═══════════════════════════════════════════════════════════════════
 
-PAGE_LOADERS['about'] = function() { showAbout('founder'); };
+PAGE_LOADERS['about'] = function() { showAbout('how'); };
 
 function showAbout(tab) {
   // Update tab active state
@@ -16542,7 +16687,249 @@ showPage = function(id) {
     if (!activeLegal) { showLegal('terms'); }
     else { showLegal(activeLegal.getAttribute('data-legal')); }
   }
+  if (id === 'pabout') {
+    var activePA = document.querySelector('[data-pabout-tab].active');
+    showPAbout(activePA ? activePA.getAttribute('data-pabout-tab') : 'platform');
+  }
 };
+
+// ═══════════════════════════════════════════════════════════════════
+//  PLATFORM ABOUT PAGE (portal-level: Platform · Courses · How It Works
+//  · Founder · Legal). Separate from the Macroeconomics course About so
+//  that page is left intact. Founder bio is generalized and editable by
+//  the super admin; the photo reuses the existing profile-image upload.
+// ═══════════════════════════════════════════════════════════════════
+var FOUNDER_BIO_DEFAULT =
+  'MacroNations grew out of a simple idea: economics is learned best by doing it. ' +
+  'What started as an experiential, competitive way to teach macroeconomics is becoming a broader platform ' +
+  'where every area of economics — from macro and game theory to microeconomics and beyond — can be learned by playing it.' +
+  '\n\n' +
+  'Dr. Sharma is an economist and educator focused on bridging classroom theory and real-world reasoning through ' +
+  'interactive simulation and game-based learning, building tools that work for both students and the professors who teach them.';
+var FOUNDER_BIO = (function() { try { return localStorage.getItem('mn_founder_bio') || FOUNDER_BIO_DEFAULT; } catch(e) { return FOUNDER_BIO_DEFAULT; } })();
+
+function showPAbout(tab) {
+  var tabs = document.querySelectorAll('[data-pabout-tab]');
+  for (var i = 0; i < tabs.length; i++) {
+    if (tabs[i].getAttribute('data-pabout-tab') === tab) { tabs[i].classList.add('active'); }
+    else { tabs[i].classList.remove('active'); }
+  }
+  var el = document.getElementById('pabout-content');
+  if (!el) { return; }
+  if (tab === 'platform')   { el.innerHTML = _pAboutPlatform(); }
+  if (tab === 'courses')    { el.innerHTML = _pAboutCourses(); }
+  if (tab === 'how')        { el.innerHTML = _pAboutHow(); }
+  if (tab === 'founder')    { el.innerHTML = _pAboutFounder(); _pAboutFounderMount(); }
+  if (tab === 'legal')      { el.innerHTML = _pAboutLegal(); }
+  window.scrollTo(0, 0);
+}
+
+function _pAboutPlatform() {
+  return '' +
+    '<div style="max-width:760px;margin:0 auto;">' +
+      '<div style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);">Our mission</div>' +
+      '<h2 style="font-family:\'DM Serif Display\',serif;font-weight:400;font-size:1.875rem;color:var(--text-900);line-height:1.2;margin:0.4rem 0 0;">A new way to learn economics.</h2>' +
+      '<p style="font-size:1rem;color:var(--text-500);line-height:1.8;margin:1rem 0 0;">MacroNations turns economics into something you <em>do</em>, not just read. Each discipline pairs an interactive simulation or game with a full course and textbook, so students learn by making decisions and seeing the consequences — and professors get a ready-to-teach, ready-to-assign platform. It began with macroeconomics and is growing, one discipline at a time.</p>' +
+      '<div style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin:2rem 0 0.75rem;">Disciplines on the platform</div>' +
+      '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;">' +
+        _paChip('📈', 'Macroeconomics', 'live') +
+        _paChip('♟️', 'Game Theory', 'live') +
+        _paChip('🛒', 'Microeconomics', 'soon') +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.75rem;">' +
+        '<div class="card"><div class="card__body"><h3 style="margin:0 0 0.25rem;font-size:1rem;color:var(--text-900);">For students</h3><p style="margin:0;font-size:0.875rem;color:var(--text-500);line-height:1.6;">Play, compete, and learn the theory behind every decision you make.</p></div></div>' +
+        '<div class="card"><div class="card__body"><h3 style="margin:0 0 0.25rem;font-size:1rem;color:var(--text-900);">For professors</h3><p style="margin:0;font-size:0.875rem;color:var(--text-500);line-height:1.6;">Run a course, set assignments, and follow your whole class in one place.</p></div></div>' +
+      '</div>' +
+    '</div>';
+}
+function _paChip(icon, label, status) {
+  var badge = status === 'live'
+    ? '<span style="font-size:0.6875rem;color:var(--success);background:var(--success-bg);padding:1px 8px;border-radius:5px;">Live</span>'
+    : '<span style="font-size:0.6875rem;color:var(--text-500);background:var(--bg-subtle);padding:1px 8px;border-radius:5px;">Soon</span>';
+  var muted = status === 'live' ? '' : 'color:var(--text-400);';
+  return '<span style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-white);border:1px solid var(--border);border-radius:9px;padding:0.5rem 0.85rem;font-size:0.875rem;' + muted + '">' + icon + ' ' + label + ' ' + badge + '</span>';
+}
+
+function _pAboutCourses() {
+  function ccard(icon, name, status, desc) {
+    var live = status === 'live';
+    var badge = live
+      ? '<span style="font-size:0.6875rem;color:var(--success);background:var(--success-bg);padding:1px 8px;border-radius:5px;">Live</span>'
+      : '<span style="font-size:0.6875rem;color:var(--text-500);background:var(--bg-subtle);padding:1px 8px;border-radius:5px;">' + (status === 'soon' ? 'Soon' : 'Planned') + '</span>';
+    return '<div class="card"' + (live ? ' style="border:1.5px solid var(--blue-dark);"' : '') + '>' +
+      '<div class="card__body">' +
+        '<div style="width:42px;height:42px;border-radius:10px;background:' + (live ? 'var(--gold-light)' : 'var(--bg-subtle)') + ';display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:0.6rem;">' + icon + '</div>' +
+        '<h3 style="margin:0 0 0.3rem;font-size:1rem;color:' + (live ? 'var(--text-900)' : 'var(--text-400)') + ';">' + name + ' &nbsp;' + badge + '</h3>' +
+        '<p style="margin:0;font-size:0.875rem;color:var(--text-500);line-height:1.6;">' + desc + '</p>' +
+      '</div>' +
+    '</div>';
+  }
+  return '' +
+    '<div style="max-width:760px;margin:0 auto;">' +
+      '<div style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);">The catalog</div>' +
+      '<h2 style="font-family:\'DM Serif Display\',serif;font-weight:400;font-size:1.75rem;color:var(--text-900);margin:0.4rem 0 0;">Courses on MacroNations.</h2>' +
+      '<p style="font-size:1rem;color:var(--text-500);line-height:1.75;margin:0.75rem 0 1.5rem;max-width:600px;">A growing library of economics disciplines. New courses join the platform as we build them — each with its own simulation, course, and textbook.</p>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">' +
+        ccard('📈', 'Macroeconomics', 'live', 'Govern a national economy across growth, stability, equality, sustainability and innovation.') +
+        ccard('♟️', 'Game Theory', 'live', 'Strategic-reasoning arenas — equilibria, auctions, bargaining and repeated games.') +
+        ccard('🛒', 'Microeconomics', 'soon', 'Markets, firms and consumer choice, explored through interactive models.') +
+        ccard('➕', 'And beyond', 'planned', 'Econometrics, trade, development and behavioral economics as the platform grows.') +
+      '</div>' +
+    '</div>';
+}
+
+function _pAboutHow() {
+  function step(n, title, body) {
+    return '<div style="display:flex;gap:1rem;padding:1.1rem 0;border-top:1px solid var(--border);">' +
+      '<span class="text-mono" style="color:var(--gold);font-size:0.9375rem;width:26px;flex-shrink:0;">' + n + '</span>' +
+      '<div><h3 style="margin:0;font-size:1rem;color:var(--text-900);">' + title + '</h3>' +
+      '<p style="margin:0.2rem 0 0;font-size:0.875rem;color:var(--text-500);line-height:1.6;">' + body + '</p></div>' +
+    '</div>';
+  }
+  return '' +
+    '<div style="max-width:680px;margin:0 auto;">' +
+      '<div style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);">Getting started</div>' +
+      '<h2 style="font-family:\'DM Serif Display\',serif;font-weight:400;font-size:1.75rem;color:var(--text-900);margin:0.4rem 0 1rem;">How the platform works.</h2>' +
+      '<div style="border-bottom:1px solid var(--border);">' +
+        step('01', 'Choose a course', 'Everyone enters through the portal and picks a discipline — Macroeconomics, Game Theory, and more to come.') +
+        step('02', 'Learn by playing', 'Each course is an interactive simulation or game paired with a full textbook, so the theory lands while you make real decisions.') +
+        step('03', 'Students &amp; professors together', 'Students join and play; professors create their course space, assign work, and watch their class progress.') +
+        step('04', 'Track progress &amp; earn recognition', 'Each course has its own way to measure learning and celebrate achievement.') +
+      '</div>' +
+      '<p style="font-size:0.8125rem;color:var(--text-400);line-height:1.6;margin-top:1.1rem;">Course-specific details (e.g., tournaments, scoring, and curriculum) live inside each course\'s own About page.</p>' +
+    '</div>';
+}
+
+function _pAboutFounder() {
+  var cached = _founderPhotoCache || '';
+  var photoHtml = cached
+    ? '<img src="' + cached + '" style="width:150px;height:150px;border-radius:12px;object-fit:cover;display:block;" alt="Amarendra Sharma">'
+    : '<div id="pabout-photo-slot" style="width:150px;height:150px;border-radius:12px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;"><div class="spinner" style="width:24px;height:24px;"></div></div>';
+
+  var bioParas = (FOUNDER_BIO || FOUNDER_BIO_DEFAULT).split('\n\n').map(function(p) {
+    return '<p style="color:var(--text-500);line-height:1.8;margin:0 0 0.9rem;">' + esc(p) + '</p>';
+  }).join('');
+
+  var adminBar = '';
+  if (typeof _isAdmin === 'function' && _isAdmin()) {
+    adminBar =
+      '<div style="margin-top:1.5rem;padding:0.9rem 1rem;background:var(--bg-white);border:1px dashed var(--gold);border-radius:10px;">' +
+        '<div style="display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;">' +
+          '<span style="font-size:0.6875rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--gold);">Admin only</span>' +
+          '<button class="btn btn--gold btn--sm" onclick="_pAboutToggleUploader()">Change photo</button>' +
+          '<button class="btn btn--ghost btn--sm" onclick="doEditFounderBio()">Edit bio</button>' +
+          '<span style="font-size:0.75rem;color:var(--text-400);">Photo uses your profile upload; bio is saved to the platform.</span>' +
+        '</div>' +
+        '<div id="pabout-photo-uploader" style="display:none;margin-top:1rem;"></div>' +
+      '</div>';
+  }
+
+  return '' +
+    '<div style="max-width:720px;margin:0 auto;">' +
+      '<div class="card"><div class="card__body" style="padding:2rem;">' +
+        '<div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">' +
+          '<div style="flex-shrink:0;text-align:center;min-width:150px;">' + photoHtml + '</div>' +
+          '<div style="flex:1;min-width:240px;">' +
+            '<h2 style="font-family:\'DM Serif Display\',serif;font-weight:400;font-size:1.625rem;margin:0 0 0.2rem;">Amarendra Sharma, PhD</h2>' +
+            '<p style="color:var(--blue);font-weight:600;margin:0 0 1rem;">Founder &amp; Director, MacroNations LLC</p>' +
+            bioParas +
+            '<p style="color:var(--text-400);font-size:0.875rem;margin-top:0.4rem;">📧 <a href="mailto:support@macronations.com">support@macronations.com</a> &nbsp;&middot;&nbsp; 🌐 macronations.com</p>' +
+          '</div>' +
+        '</div>' +
+        adminBar +
+      '</div></div>' +
+    '</div>';
+}
+
+// Load the founder photo into the slot after mount (mirrors the macro About)
+function _pAboutFounderMount() {
+  if (_founderPhotoCache) { return; }
+  setTimeout(function() {
+    var slot = document.getElementById('pabout-photo-slot');
+    if (!slot) { return; }
+    _loadFounderPhoto().then(function(url) {
+      var s = document.getElementById('pabout-photo-slot');
+      if (!s) { return; }
+      if (url) {
+        var img = document.createElement('img');
+        img.src = url; img.alt = 'Amarendra Sharma';
+        img.style.cssText = 'width:150px;height:150px;border-radius:12px;object-fit:cover;display:block;';
+        s.parentNode.replaceChild(img, s);
+      } else {
+        s.innerHTML = '<div style="width:150px;height:150px;border-radius:12px;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:2.4rem;font-weight:700;">AS</div>';
+        s.id = '';
+      }
+    });
+  }, 60);
+}
+
+// Reveal the existing profile-image uploader (reuses the working feature)
+function _pAboutToggleUploader() {
+  var box = document.getElementById('pabout-photo-uploader');
+  if (!box) { return; }
+  if (box.style.display === 'none' || !box.style.display) {
+    box.style.display = 'block';
+    if (typeof renderProfileUploader === 'function') { renderProfileUploader(box); }
+    _founderPhotoCache = null; // force a fresh load next time the tab opens
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+// Super-admin: edit the (platform-wide) founder bio. Saved to the season
+// config JSON + localStorage so it loads on next visit.
+async function doEditFounderBio() {
+  if (!(typeof _isAdmin === 'function' && _isAdmin())) { flash('Super-admin only.', 'error'); return; }
+  var current = FOUNDER_BIO || FOUNDER_BIO_DEFAULT;
+  var next = window.prompt('Edit the founder bio. Separate paragraphs with a blank line.\n', current);
+  if (next === null) { return; }
+  next = next.trim();
+  if (!next) { return; }
+  FOUNDER_BIO = next;
+  try { localStorage.setItem('mn_founder_bio', next); } catch(e) {}
+  try {
+    var year = new Date().getFullYear();
+    await _ensureGlobalSeason(year);
+    var rows = await sbGet('global_seasons', 'year=eq.' + year + '&limit=1') || [];
+    var bracket = (rows.length && rows[0].playoff_bracket) ? rows[0].playoff_bracket : {};
+    bracket.founder_bio = next;
+    await sbPatch('global_seasons', 'year=eq.' + year, { playoff_bracket: bracket });
+    flash('Founder bio updated.', 'success');
+  } catch(err) {
+    flash('Saved locally; cloud save failed: ' + (err.message || ''), 'info');
+  }
+  showPAbout('founder');
+}
+
+// Platform-level legal — shared MacroNations LLC policies. Excludes the
+// course-specific Award Rules (those stay in the Macroeconomics About).
+function _pAboutLegal() {
+  var sections = ['terms','privacy','disclaimer','copyright'];
+  var labels   = ['Terms of Service','Privacy Policy','Disclaimer','Copyright'];
+  var tabs = '<div class="admin-tabs" style="border-bottom:2px solid var(--border);margin-bottom:2rem;overflow-x:auto;">';
+  for (var i = 0; i < sections.length; i++) {
+    tabs += '<button class="admin-tab' + (i===0?' active':'') + '" onclick="(function(s,b){' +
+      'var all=document.querySelectorAll(\'.pabout-legal-panel\');for(var j=0;j<all.length;j++){all[j].style.display=\'none\';}' +
+      'var panel=document.getElementById(\'pabout-legal-\'+s);if(panel){panel.style.display=\'block\';}' +
+      'var btns=b.closest(\'.admin-tabs\').querySelectorAll(\'.admin-tab\');for(var k=0;k<btns.length;k++){btns[k].classList.remove(\'active\');}' +
+      'b.classList.add(\'active\');' +
+    '})(\''+sections[i]+'\',this)">' + labels[i] + '</button>';
+  }
+  tabs += '</div>';
+  var panels = '';
+  for (var pi = 0; pi < sections.length; pi++) {
+    var data = PLATFORM_LEGAL[sections[pi]];
+    if (!data) { continue; }
+    var html = '<div style="margin-bottom:0.25rem;font-size:0.8125rem;color:var(--text-400);">Last updated: ' + esc(data.updated) + '</div>';
+    if (data.highlight) { html += '<div class="legal-highlight">' + esc(data.highlight) + '</div>'; }
+    var secs = data.sections || [];
+    for (var si = 0; si < secs.length; si++) {
+      html += '<h2>' + esc(secs[si].h) + '</h2><p>' + esc(secs[si].p) + '</p>';
+    }
+    panels += '<div class="pabout-legal-panel legal-body" id="pabout-legal-' + sections[pi] + '" style="' + (pi===0?'':'display:none;') + '">' + html + '</div>';
+  }
+  return '<div style="max-width:720px;margin:0 auto;">' + tabs + panels + '</div>';
+}
 
 // ═══════════════════════════════════════════════════════════════════
 //  CERTIFICATE — Signature fix (professor name + admin name)
