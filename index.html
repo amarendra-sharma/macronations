@@ -4401,21 +4401,22 @@ body.sandbox-mode {
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
 
-          <div class="portal-card portal-card--soon" aria-disabled="true">
-            <span class="portal-card__chip portal-card__chip--muted">🛒</span>
+          <button class="portal-card portal-card--active" onclick="enterCourse('microeconomics')" aria-label="Open the Microeconomics course">
+            <span class="portal-card__chip">🛒</span>
             <span class="portal-card__body">
               <span class="portal-card__row">
                 <span class="portal-card__name">Microeconomics</span>
-                <span class="portal-card__badge">Soon</span>
+                <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Markets, firms and consumer choice.</span>
             </span>
-          </div>
+            <span class="portal-card__arrow" aria-hidden="true">→</span>
+          </button>
 
           <div class="portal-card portal-card--more" aria-disabled="true">
             <span class="portal-card__chip portal-card__chip--muted">＋</span>
             <span class="portal-card__body">
-              <span class="portal-card__desc portal-card__desc--more">More disciplines as we build them — econometrics, trade, development and beyond.</span>
+              <span class="portal-card__desc portal-card__desc--more">More disciplines as we build them — trade, development and beyond.</span>
             </span>
           </div>
         </div>
@@ -5655,6 +5656,7 @@ body.sandbox-mode {
         <li><a href="#" class="footer__link" onclick="enterCourse('macro');return false;">Macroeconomics</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('gametheory');return false;">Game Theory</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('econometrics');return false;">Econometrics</a></li>
+        <li><a href="#" class="footer__link" onclick="enterCourse('microeconomics');return false;">Microeconomics</a></li>
         <li><a href="#" class="footer__link" onclick="showPage('portal');return false;">All courses</a></li>
       </ul>
     </div>
@@ -6009,6 +6011,19 @@ function enterCourse(courseId) {
       window.location.href = edest;
     } else {
       flash('Econometrics course URL is not set yet.', 'info');
+    }
+    return;
+  }
+  if (courseId === 'microeconomics') {
+    mnTrackEvent('microeconomics', 'open');
+    if (MICROECONOMICS_URL && MICROECONOMICS_URL.indexOf('http') === 0) {
+      var msid = '';
+      try { msid = sessionStorage.getItem('mn_sid') || ''; } catch(e) {}
+      var msep = MICROECONOMICS_URL.indexOf('?') === -1 ? '?' : '&';
+      var mdest = msid ? (MICROECONOMICS_URL + msep + 'mn_sid=' + encodeURIComponent(msid)) : MICROECONOMICS_URL;
+      window.location.href = mdest;
+    } else {
+      flash('Microeconomics course URL is not set yet.', 'info');
     }
     return;
   }
@@ -10118,6 +10133,14 @@ var GAME_THEORY_URL = 'https://amarendra-sharma.github.io/strategyarena/';
 // Econometrics course → served at its own macronations.com subdomain
 // (GitHub Pages custom domain; the repo's CNAME file maps it to this host).
 var ECONOMETRICS_URL = 'https://econometrics.macronations.com/';
+
+// Introduction to Microeconomics course → served at its own macronations.com
+// subdomain (GitHub Pages custom domain; the repo's CNAME file maps it to this
+// host, exactly like Econometrics above).
+// NOTE: this must not go live until microeconomics.macronations.com resolves
+// and serves HTTPS. Until then the working address is the GitHub Pages one:
+//   https://amarendra-sharma.github.io/microeconomics/
+var MICROECONOMICS_URL = 'https://microeconomics.macronations.com/';
 
 // Dynamic Stripe Checkout — creates a session with team metadata so webhook can auto-mark paid
 async function doStripeCheckout(teamId, tournamentId, amountDollars, teamName) {
