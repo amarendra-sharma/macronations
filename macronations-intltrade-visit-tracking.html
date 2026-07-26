@@ -1,0 +1,55 @@
+<!-- =====================================================================
+     International Trade — visit tracking for the MacroNations Analytics
+     ---------------------------------------------------------------------
+     Logs one "visit" per page load into the shared page_views table, tagged
+     course:'intltrade'. This is what makes "International Trade Visits (app)"
+     populate in the super-admin Analytics → Traffic by Course panel, exactly
+     like Game Theory (StrategyArena) and Econometrics.
+
+     The landing page and this course share the SAME Supabase project, so no
+     new keys are needed — these are the same public values already in the
+     International Trade index.html.
+
+     HOW TO INSTALL
+     Paste this whole <script> block into the International Trade index.html,
+     just before the closing </body> tag (or anywhere after the page loads).
+     It is fire-and-forget and never blocks the page.
+
+     For the Microeconomics app, paste the same block but change
+       course:'intltrade'   →   course:'microeconomics'
+     ===================================================================== -->
+<script>
+(function () {
+  var SUPA_URL  = 'https://rtaiivegcqqmdchpguzn.supabase.co';
+  var SUPA_ANON = 'sb_publishable_KCPCMiKYQoEUgG45DVF5uA_ke-UxQKm';
+  try {
+    // Reuse the portal session id (passed as ?mn_sid=... when a student clicks
+    // the course card) so the visit ties to the same funnel; else make one.
+    var sid = null;
+    try { sid = sessionStorage.getItem('mn_sid'); } catch (e) {}
+    var q = null;
+    try { q = new URLSearchParams(window.location.search).get('mn_sid'); } catch (e) {}
+    if (q) { sid = q; try { sessionStorage.setItem('mn_sid', sid); } catch (e) {} }
+    if (!sid) {
+      sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      try { sessionStorage.setItem('mn_sid', sid); } catch (e) {}
+    }
+    fetch(SUPA_URL + '/rest/v1/page_views', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPA_ANON,
+        'Authorization': 'Bearer ' + SUPA_ANON
+      },
+      body: JSON.stringify({
+        session_id: sid,
+        user_id:    null,
+        referrer:   document.referrer ? document.referrer.slice(0, 500) : null,
+        visited_at: new Date().toISOString(),
+        course:     'intltrade',
+        event_type: 'visit'
+      })
+    }).catch(function () {});
+  } catch (e) {}
+})();
+</script>
