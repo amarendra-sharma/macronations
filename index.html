@@ -10223,10 +10223,10 @@ var INTLTRADE_URL = 'https://internationaltrade.macronations.com/';
 // Economics & Film course → hosted like the others (GitHub Pages, optionally
 // mapped to a macronations.com subdomain via a CNAME file). Update THIS ONE
 // constant and the Economics & Film portal card + footer link route there.
-// GitHub Pages working address (use until a subdomain resolves over HTTPS):
-//   https://amarendra-sharma.github.io/econfilm/
-// Subdomain option once it resolves: https://econfilm.macronations.com/
-var ECONFILM_URL = 'https://amarendra-sharma.github.io/econfilm/';
+// Live at its macronations.com subdomain (GitHub Pages custom domain via CNAME):
+//   https://econfilm.macronations.com/
+// GitHub Pages fallback address: https://amarendra-sharma.github.io/econfilm/
+var ECONFILM_URL = 'https://econfilm.macronations.com/';
 
 // Dynamic Stripe Checkout — creates a session with team metadata so webhook can auto-mark paid
 async function doStripeCheckout(teamId, tournamentId, amountDollars, teamName) {
