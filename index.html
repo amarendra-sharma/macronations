@@ -4443,6 +4443,18 @@ body.sandbox-mode {
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
 
+          <button class="portal-card portal-card--active" onclick="enterCourse('econfilm')" aria-label="Open the Economics & Film course">
+            <span class="portal-card__chip">🎬</span>
+            <span class="portal-card__body">
+              <span class="portal-card__row">
+                <span class="portal-card__name">Economics &amp; Film</span>
+                <span class="portal-card__badge portal-card__badge--live">Live</span>
+              </span>
+              <span class="portal-card__desc">The economics behind thirteen films, from the commons to the crash.</span>
+            </span>
+            <span class="portal-card__arrow" aria-hidden="true">→</span>
+          </button>
+
           <div class="portal-card portal-card--more" aria-disabled="true">
             <span class="portal-card__chip portal-card__chip--muted">＋</span>
             <span class="portal-card__body">
@@ -5688,6 +5700,7 @@ body.sandbox-mode {
         <li><a href="#" class="footer__link" onclick="enterCourse('econometrics');return false;">Econometrics</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('microeconomics');return false;">Microeconomics</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('intltrade');return false;">International Trade</a></li>
+        <li><a href="#" class="footer__link" onclick="enterCourse('econfilm');return false;">Economics &amp; Film</a></li>
         <li><a href="#" class="footer__link" onclick="showPage('portal');return false;">All courses</a></li>
       </ul>
     </div>
@@ -6068,6 +6081,19 @@ function enterCourse(courseId) {
       window.location.href = tdest;
     } else {
       flash('International Trade course URL is not set yet.', 'info');
+    }
+    return;
+  }
+  if (courseId === 'econfilm') {
+    mnTrackEvent('econfilm', 'open');
+    if (ECONFILM_URL && ECONFILM_URL.indexOf('http') === 0) {
+      var fsid = '';
+      try { fsid = sessionStorage.getItem('mn_sid') || ''; } catch(e) {}
+      var fsep = ECONFILM_URL.indexOf('?') === -1 ? '?' : '&';
+      var fdest = fsid ? (ECONFILM_URL + fsep + 'mn_sid=' + encodeURIComponent(fsid)) : ECONFILM_URL;
+      window.location.href = fdest;
+    } else {
+      flash('Economics & Film course URL is not set yet.', 'info');
     }
     return;
   }
@@ -10193,6 +10219,14 @@ var MICROECONOMICS_URL = 'https://microeconomics.macronations.com/';
 //   https://amarendra-sharma.github.io/international-trade/
 // Subdomain option once it resolves: https://internationaltrade.macronations.com/
 var INTLTRADE_URL = 'https://internationaltrade.macronations.com/';
+
+// Economics & Film course → hosted like the others (GitHub Pages, optionally
+// mapped to a macronations.com subdomain via a CNAME file). Update THIS ONE
+// constant and the Economics & Film portal card + footer link route there.
+// GitHub Pages working address (use until a subdomain resolves over HTTPS):
+//   https://amarendra-sharma.github.io/econfilm/
+// Subdomain option once it resolves: https://econfilm.macronations.com/
+var ECONFILM_URL = 'https://amarendra-sharma.github.io/econfilm/';
 
 // Dynamic Stripe Checkout — creates a session with team metadata so webhook can auto-mark paid
 async function doStripeCheckout(teamId, tournamentId, amountDollars, teamName) {
