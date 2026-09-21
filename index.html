@@ -4182,7 +4182,12 @@ body.sandbox-mode {
 .res2-stat__lbl { font-size:0.72rem; color:var(--text-500); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem; }
 </style>
 </head>
-<body>
+<!-- on-portal is set in the markup because #page-portal is the page that is
+     visible at first paint. Without it the tournament nav links, sign-in
+     buttons and footer render until init() finishes its network calls and
+     showPage('portal') adds the class, then vanish. showPage() still owns
+     the class from then on. -->
+<body class="on-portal">
 
 <!-- ════════════════════════════════════════
      TOAST AREA
@@ -4383,14 +4388,26 @@ body.sandbox-mode {
         <p class="portal__tagline" style="font-size:0.9rem;color:var(--text-400);max-width:580px;margin:0.45rem auto 0;">Interactive books, games, and tournaments. Simulate economies, run real regressions, grade derivations, AI-proof proctored exams &mdash; and a gradebook that understands the subject. Choose a course below.</p>
 
         <div class="portal__grid">
-          <button class="portal-card portal-card--active" onclick="enterCourse('macro')" aria-label="Open the Macroeconomics course">
+          <button class="portal-card portal-card--active" onclick="enterCourse('microeconomics')" aria-label="Open the Microeconomics course">
+            <span class="portal-card__chip">🛒</span>
+            <span class="portal-card__body">
+              <span class="portal-card__row">
+                <span class="portal-card__name">Microeconomics</span>
+                <span class="portal-card__badge portal-card__badge--live">Live</span>
+              </span>
+              <span class="portal-card__desc">Markets, firms and consumer choice.</span>
+            </span>
+            <span class="portal-card__arrow" aria-hidden="true">→</span>
+          </button>
+
+          <button class="portal-card portal-card--active" onclick="enterCourse('macroeconomics')" aria-label="Open the Macroeconomics course">
             <span class="portal-card__chip">📈</span>
             <span class="portal-card__body">
               <span class="portal-card__row">
                 <span class="portal-card__name">Macroeconomics</span>
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
-              <span class="portal-card__desc">Govern a national economy across five pillars.</span>
+              <span class="portal-card__desc">Output, inflation, money and stabilization policy.</span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
@@ -4415,18 +4432,6 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Run real regressions in your browser, lab by lab.</span>
-            </span>
-            <span class="portal-card__arrow" aria-hidden="true">→</span>
-          </button>
-
-          <button class="portal-card portal-card--active" onclick="enterCourse('microeconomics')" aria-label="Open the Microeconomics course">
-            <span class="portal-card__chip">🛒</span>
-            <span class="portal-card__body">
-              <span class="portal-card__row">
-                <span class="portal-card__name">Microeconomics</span>
-                <span class="portal-card__badge portal-card__badge--live">Live</span>
-              </span>
-              <span class="portal-card__desc">Markets, firms and consumer choice.</span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
@@ -4467,12 +4472,17 @@ body.sandbox-mode {
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
 
-          <div class="portal-card portal-card--more" aria-disabled="true">
-            <span class="portal-card__chip portal-card__chip--muted">＋</span>
+          <button class="portal-card portal-card--active" onclick="enterCourse('tournament')" aria-label="Open the MacroNations Tournament">
+            <span class="portal-card__chip">🏆</span>
             <span class="portal-card__body">
-              <span class="portal-card__desc portal-card__desc--more">More disciplines as we build them — development and beyond.</span>
+              <span class="portal-card__row">
+                <span class="portal-card__name">MacroNations Tournament</span>
+                <span class="portal-card__badge portal-card__badge--live">Live</span>
+              </span>
+              <span class="portal-card__desc">Govern a national economy across five pillars.</span>
             </span>
-          </div>
+            <span class="portal-card__arrow" aria-hidden="true">→</span>
+          </button>
         </div>
         <div class="portal__about">
           <a href="#" onclick="showPage('pabout');return false;">About MacroNations</a>
@@ -5707,13 +5717,14 @@ body.sandbox-mode {
     <div>
       <div class="footer__col-title">Courses</div>
       <ul class="footer__links">
-        <li><a href="#" class="footer__link" onclick="enterCourse('macro');return false;">Macroeconomics</a></li>
+        <li><a href="#" class="footer__link" onclick="enterCourse('microeconomics');return false;">Microeconomics</a></li>
+        <li><a href="#" class="footer__link" onclick="enterCourse('macroeconomics');return false;">Macroeconomics</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('gametheory');return false;">Game Theory</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('econometrics');return false;">Econometrics</a></li>
-        <li><a href="#" class="footer__link" onclick="enterCourse('microeconomics');return false;">Microeconomics</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('intltrade');return false;">International Trade</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('econfilm');return false;">Economics &amp; Film</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('finance');return false;">Finance</a></li>
+        <li><a href="#" class="footer__link" onclick="enterCourse('tournament');return false;">MacroNations Tournament</a></li>
         <li><a href="#" class="footer__link" onclick="showPage('portal');return false;">All courses</a></li>
       </ul>
     </div>
@@ -6041,9 +6052,10 @@ function mnTrackEvent(course, eventType) {
 }
 
 // Course portal router — a course tile routes into that course.
-// 'macro' opens the in-app MacroNations landing; 'gametheory' navigates
-// to the externally hosted StrategyArena platform. Each click is logged
-// so the super-admin Analytics tab can show the portal funnel.
+// Every course is an externally hosted app reached with ?mn_sid= session
+// stitching; 'tournament' is the one in-app destination (the MacroNations
+// Tournament landing, page-home). Each click is logged so the super-admin
+// Analytics tab can show the portal funnel.
 function enterCourse(courseId) {
   if (courseId === 'gametheory') {
     mnTrackEvent('gametheory', 'open');
@@ -6123,8 +6135,22 @@ function enterCourse(courseId) {
     }
     return;
   }
-  // default: Macroeconomics → the current MacroNations experience
-  mnTrackEvent('macroeconomics', 'open');
+  if (courseId === 'macroeconomics' || courseId === 'macro') {
+    mnTrackEvent('macroeconomics', 'open');
+    if (MACROECONOMICS_URL && MACROECONOMICS_URL.indexOf('http') === 0) {
+      var asid = '';
+      try { asid = sessionStorage.getItem('mn_sid') || ''; } catch(e) {}
+      var asep = MACROECONOMICS_URL.indexOf('?') === -1 ? '?' : '&';
+      var adest = asid ? (MACROECONOMICS_URL + asep + 'mn_sid=' + encodeURIComponent(asid)) : MACROECONOMICS_URL;
+      window.location.href = adest;
+    } else {
+      flash('Macroeconomics course URL is not set yet.', 'info');
+    }
+    return;
+  }
+  // 'tournament' (and any unrecognised id, as before) → the in-app
+  // MacroNations Tournament landing.
+  mnTrackEvent('tournament', 'open');
   showPage('home');
 }
 
@@ -10254,6 +10280,12 @@ var INTLTRADE_URL = 'https://internationaltrade.macronations.com/';
 // GitHub Pages fallback address: https://amarendra-sharma.github.io/econfilm/
 var ECONFILM_URL = 'https://econfilm.macronations.com/';
 var FINANCE_URL = 'https://finance.macronations.com/';  // ← Cloudflare Pages custom domain for the finance course
+
+// Macroeconomics course (the LMS console) → GitHub Pages repo `Macroeconomics-`.
+// No custom subdomain yet; if macroeconomics.macronations.com is added via a
+// CNAME file, change this one constant. The MacroNations Tournament is NOT
+// this URL — it lives in this file and opens with enterCourse('tournament').
+var MACROECONOMICS_URL = 'https://amarendra-sharma.github.io/Macroeconomics-/';
 
 // Dynamic Stripe Checkout — creates a session with team metadata so webhook can auto-mark paid
 async function doStripeCheckout(teamId, tournamentId, amountDollars, teamName) {
@@ -14879,14 +14911,22 @@ async function renderAdminAnalytics(el) {
 
   // Section 1b: Traffic by Course (portal funnel + cross-app visits)
   var cPortal = 0, cMacroOpen = 0, cGtOpen = 0, cGtVisit = 0, cEcoOpen = 0, cEcoVisit = 0,
-      cMicroOpen = 0, cMicroVisit = 0, cIntlOpen = 0, cIntlVisit = 0, cUntagged = 0;
+      cMicroOpen = 0, cMicroVisit = 0, cIntlOpen = 0, cIntlVisit = 0,
+      cFilmOpen = 0, cFilmVisit = 0, cFinOpen = 0, cFinVisit = 0,
+      cMacroVisit = 0, cTournOpen = 0,
+      cUntagged = 0, cOther = 0;
   for (var cv = 0; cv < allViews.length; cv++) {
     var row = allViews[cv];
     var crs = row.course || '';
     var evt = row.event_type || 'visit';
     if (!crs)                                   { cUntagged++; }
     else if (crs === 'portal')                  { cPortal++; }
-    else if (crs === 'macroeconomics')          { cMacroOpen++; }
+    // NOTE: before the Macroeconomics card pointed at the LMS console,
+    // 'macroeconomics'/'open' rows were Tournament entries — so historical
+    // Macroeconomics Opens include tournament traffic.
+    else if (crs === 'macroeconomics' && evt === 'open') { cMacroOpen++; }
+    else if (crs === 'macroeconomics')          { cMacroVisit++; }
+    else if (crs === 'tournament')              { cTournOpen++; }
     else if (crs === 'gametheory' && evt === 'open')  { cGtOpen++; }
     else if (crs === 'gametheory')              { cGtVisit++; }
     else if (crs === 'econometrics' && evt === 'open') { cEcoOpen++; }
@@ -14895,6 +14935,14 @@ async function renderAdminAnalytics(el) {
     else if (crs === 'microeconomics')          { cMicroVisit++; }
     else if (crs === 'intltrade' && evt === 'open') { cIntlOpen++; }
     else if (crs === 'intltrade')               { cIntlVisit++; }
+    else if (crs === 'econfilm' && evt === 'open')  { cFilmOpen++; }
+    else if (crs === 'econfilm')                { cFilmVisit++; }
+    else if (crs === 'finance' && evt === 'open')   { cFinOpen++; }
+    else if (crs === 'finance')                 { cFinVisit++; }
+    // Catch-all: a course tag we don't have a counter for yet. Without
+    // this branch a new course's traffic is silently dropped from the
+    // dashboard instead of showing up as unrecognised.
+    else                                        { cOther++; }
   }
   html +=
     '<div class="card" style="margin-bottom:1.25rem;">' +
@@ -14902,7 +14950,9 @@ async function renderAdminAnalytics(el) {
       '<div class="card__body">' +
         '<div class="admin-metric-grid">' +
           _metricCard('🚪', cPortal,     'Portal Visits') +
-          _metricCard('📈', cMacroOpen,  'Macroeconomics Opens') +
+          _metricCard('📈', cMacroOpen,  'Macroeconomics Opens (from portal)') +
+          _metricCard('📘', cMacroVisit, 'Macroeconomics Visits (app)') +
+          _metricCard('🏆', cTournOpen,  'Tournament Opens (from portal)') +
           _metricCard('♟️', cGtOpen,     'Game Theory Opens (from portal)') +
           _metricCard('🎲', cGtVisit,    'Game Theory Visits (StrategyArena)') +
           _metricCard('📊', cEcoOpen,    'Econometrics Opens (from portal)') +
@@ -14911,7 +14961,12 @@ async function renderAdminAnalytics(el) {
           _metricCard('🏬', cMicroVisit, 'Microeconomics Visits (app)') +
           _metricCard('🌐', cIntlOpen,   'International Trade Opens (from portal)') +
           _metricCard('🚢', cIntlVisit,  'International Trade Visits (app)') +
+          _metricCard('🎬', cFilmOpen,   'Economics & Film Opens (from portal)') +
+          _metricCard('🍿', cFilmVisit,  'Economics & Film Visits (app)') +
+          _metricCard('💰', cFinOpen,    'Finance Opens (from portal)') +
+          _metricCard('🏦', cFinVisit,   'Finance Visits (app)') +
           (cUntagged ? _metricCard('🗂️', cUntagged, 'Untagged (legacy visits)') : '') +
+          (cOther ? _metricCard('❓', cOther, 'Unrecognised course tag') : '') +
         '</div>' +
         '<p style="font-size:0.8125rem;color:var(--text-400);margin-top:0.875rem;">' +
           '“Opens” count clicks from the course portal; “Visits” are sessions logged by each course app into this same table. Legacy rows recorded before course tagging show as untagged.' +
@@ -15095,7 +15150,7 @@ async function renderAdminAnalytics(el) {
           '<button class="btn btn--ghost" onclick="exportJSON()">📦 Export JSON Snapshot</button>' +
           '<button class="btn btn--ghost" onclick="exportAnalyticsCSV()">📊 Export Visitor Analytics (CSV)</button>' +
         '</div>' +
-        '<p style="font-size:0.8125rem;color:var(--text-400);margin-top:0.875rem;">Grades CSV includes team scores, pillar breakdowns, rankings, and round rationale. JSON includes full economy snapshots. Visitor Analytics CSV exports the raw page_views data including geo info.</p>' +
+        '<p style="font-size:0.8125rem;color:var(--text-400);margin-top:0.875rem;">Grades CSV includes team scores, pillar breakdowns, rankings, and round rationale. JSON includes full economy snapshots. Visitor Analytics CSV exports the raw page_views data including geo info and, for signed-in visitors, their name and email.</p>' +
       '</div>' +
     '</div>';
 
@@ -15303,15 +15358,33 @@ async function exportAnalyticsCSV() {
   try {
     var views = await sbGet('page_views', 'order=visited_at.desc&limit=10000') || [];
     if (!views.length) { flash('No visitor data to export.', 'info'); return; }
-    var rows = [['visited_at','course','event_type','session_id','user_id','country','country_code','city','region','referrer']];
+
+    // Resolve user_id -> name/email so the export identifies the person,
+    // not just a UUID. Reuses the admin cache when the Users tab has
+    // already loaded it; otherwise pulls a lean projection. Rows with no
+    // user_id are genuine anonymous visitors and stay blank.
+    var userById = {};
+    try {
+      var uList = (typeof _adminUsers !== 'undefined' && _adminUsers && _adminUsers.length)
+        ? _adminUsers
+        : (await sbGet('mn_users', 'select=id,name,email&limit=5000') || []);
+      for (var un = 0; un < uList.length; un++) {
+        if (uList[un] && uList[un].id) { userById[String(uList[un].id)] = uList[un]; }
+      }
+    } catch(uErr) { /* names are a nicety — export still succeeds without them */ }
+
+    var rows = [['visited_at','course','event_type','session_id','user_id','user_name','user_email','country','country_code','city','region','referrer']];
     for (var i = 0; i < views.length; i++) {
       var v = views[i];
+      var who = v.user_id ? userById[String(v.user_id)] : null;
       rows.push([
         v.visited_at || '',
         v.course     || '',
         v.event_type || '',
         v.session_id || '',
         v.user_id    || '',
+        (who && who.name  ? who.name  : ''),
+        (who && who.email ? who.email : ''),
         (v.country || '').replace(/"/g, '""'),
         v.country_code || '',
         (v.city    || '').replace(/"/g, '""'),
@@ -17089,14 +17162,13 @@ function _pAboutCourses() {
       '<h2 style="font-family:\'DM Serif Display\',serif;font-weight:400;font-size:1.75rem;color:var(--text-900);margin:0.4rem 0 0;">Courses on MacroNations.</h2>' +
       '<p style="font-size:1rem;color:var(--text-500);line-height:1.75;margin:0.75rem 0 1.5rem;max-width:600px;">A growing library of economics disciplines &mdash; each a full course on a dedicated LMS: an interactive textbook, a simulation or game, an AI-proof assessment engine, proctored exams, and a gradebook that understands the subject.</p>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">' +
-        ccard('📈', 'Macroeconomics', 'live', 'Govern a national economy across growth, stability, equality, sustainability and innovation &mdash; a full course with an interactive textbook and the season tournament. The LMS assessment toolkit &mdash; auto-reseeding exam banks, proctored AI-graded exams, and a gradebook &mdash; is rolling out.') +
+        ccard('📈', 'Macroeconomics', 'live', 'An 18-chapter course &mdash; output, inflation, money, and fiscal and monetary policy &mdash; with an interactive textbook, 16 browser-based arenas, auto-reseeding exam banks, proctored AI-graded assessments, and a gradebook. The MacroNations Tournament, where students govern a national economy across five pillars, serves as its capstone.') +
         ccard('♟️', 'Game Theory', 'live', 'Strategic-reasoning arenas &mdash; equilibria, auctions, bargaining and repeated games &mdash; in the StrategyArena, with an interactive textbook, auto-reseeding exam banks, proctored AI-graded assessments, and a gradebook.') +
         ccard('📊', 'Econometrics', 'live', 'A 17-chapter interactive textbook and 14 browser-based labs that run real regressions &mdash; OLS, IV, panel/GMM, difference-in-differences, regression discontinuity, and logit/probit &mdash; with auto-reseeding exam banks and proctored, AI-graded assessments.') +
         ccard('🛒', 'Microeconomics', 'live', 'Markets, firms and consumer choice &mdash; demand and elasticity, cost and production, competition, monopoly and oligopoly, externalities and market failure &mdash; taught through interactive arenas and sandboxes, with an interactive textbook, auto-reseeding exam banks, proctored AI-graded assessments, and a gradebook.') +
         ccard('🌐', 'International Trade', 'live', 'A live, data-driven interactive textbook and 13 browser-based strategy arenas &mdash; comparative advantage, the Ricardian and Heckscher&ndash;Ohlin models, tariffs and trade policy, exchange rates and development &mdash; with auto-reseeding quiz banks and proctored, AI-graded assessments.') +
         ccard('🎬', 'Economics &amp; Film', 'live', 'The economics behind thirteen films &mdash; from the tragedy of the commons to the financial crash &mdash; each screening paired with the theory it dramatises and the coursework to assess it.') +
         ccard('💰', 'Finance', 'live', 'The time value of money, risk and return, market structure, company valuation and building wealth &mdash; an interactive course in how finance actually works.') +
-        ccard('➕', 'And beyond', 'planned', 'Development and behavioral economics as the platform grows.') +
       '</div>' +
     '</div>';
 }
