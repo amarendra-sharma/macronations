@@ -6834,7 +6834,9 @@ async function afterLogin() {
     // Pre-load all user teams so tournament cards show joined state immediately
     await _loadUserTeams();
   } catch(e) {}
-  showPage('dashboard');
+  var _mnRoutedAfterLogin = false;
+  try { _mnRoutedAfterLogin = await mnCourseRoute(); } catch (_mnr2) {}
+  if (!_mnRoutedAfterLogin) { showPage('dashboard'); }
 }
 
 function _renderLoggedOutNav() {
@@ -7200,7 +7202,186 @@ function _applyPlatformModeUI() {
   if (heroStatVal) { heroStatVal.textContent = 'Free'; }
 }
 
+// ═══════════════════════════════════════════════════════════════════
+//  COURSE LINK — arriving from a MacroNations course console
+//
+//  The macro course console (and any course that uses the tournament as a
+//  capstone) opens this page as:
+//
+//      https://macronations.com/?gest=<tournament id>&from=<course url>#mnh=<token>
+//
+//  gest  the class tournament the student's course is linked to
+//  from  where "Back to your course" should return (allow-listed hosts only)
+//  mnh   a ONE-TIME sign-in token minted by the ma-gest-handoff edge function
+//        for the student who clicked. It is in the #fragment, so it is never
+//        sent to a server or written to an access log, and it is removed from
+//        the address bar before anything else runs.
+//
+//  The result: a student who is signed in to their course lands signed in
+//  here, on their class tournament, with no second login and no hunting
+//  through the tournament list.
+// ═══════════════════════════════════════════════════════════════════
+var _mnCourseTournId  = null;   // tournament the course verifiably links this student to
+var _mnCoursePending  = null;   // { tid, from } still to be routed
+var MN_COURSE_RETURN_HOSTS = ['amarendra-sharma.github.io', 'macronations.com'];
+
+function _mnCourseSafeReturn(u) {
+  if (!u) { return ''; }
+  try {
+    var x = new URL(u);
+    if (x.protocol !== 'https:') { return ''; }
+    var h = x.hostname.toLowerCase();
+    for (var i = 0; i < MN_COURSE_RETURN_HOSTS.length; i++) {
+      var ok = MN_COURSE_RETURN_HOSTS[i];
+      if (h === ok || h.slice(-(ok.length + 1)) === '.' + ok) { return x.href; }
+    }
+  } catch (e) {}
+  return '';
+}
+
+// Step 1 — runs FIRST in init(), before the saved session is restored.
+async function mnCourseHandoff() {
+  var q    = new URLSearchParams(window.location.search);
+  var tid  = q.get('gest');
+  var from = _mnCourseSafeReturn(q.get('from') || '');
+  var hm   = (window.location.hash || '').match(/[#&]mnh=([^&]+)/);
+  if (!tid && !hm) { return; }
+
+  // Clear the address bar before any network call, so the token is gone from
+  // history even if everything below fails.
+  try { window.history.replaceState({}, '', window.location.pathname); } catch (e) {}
+
+  _mnCoursePending = { tid: (tid && tid !== 'list') ? tid : null, from: from };
+  if (from) { try { sessionStorage.setItem('mn_course_return', from); } catch (e) {} }
+  if (!hm) { return; }
+
+  try {
+    var th = decodeURIComponent(hm[1]);
+    var _verify = async function (type) {
+      var r = await fetch(SUPA_URL + '/auth/v1/verify', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPA_ANON },
+        body:    JSON.stringify({ type: type, token_hash: th })
+      });
+      return r.json();
+    };
+    // 'email' is the current name for this token type; older auth servers
+    // only know 'magiclink'. A type mismatch does not consume the token.
+    var auth = await _verify('email');
+    if (!auth || !auth.access_token) { auth = await _verify('magiclink'); }
+    if (!auth || !auth.access_token || !auth.user) { _mnCoursePending.authFailed = true; return; }
+
+    var sess = { access_token: auth.access_token, refresh_token: auth.refresh_token,
+                 expires_at: Date.now() + ((auth.expires_in || 3600) * 1000) };
+    currentSession = sess;
+    var rows = null;
+    try { rows = await sbGet('mn_users', 'id=eq.' + auth.user.id + '&limit=1'); } catch (e1) {}
+    if ((!rows || !rows.length) && auth.user.email) {
+      try { rows = await sbGet('mn_users', 'email=eq.' + encodeURIComponent(String(auth.user.email).toLowerCase()) + '&limit=1'); } catch (e2) {}
+    }
+    if (rows && rows.length) {
+      // A different account may have been signed in on this browser; the
+      // course hand-off wins, because it is the person who just clicked.
+      _saveSession(sess, rows[0]);
+    } else {
+      currentSession = null;
+      _mnCoursePending.authFailed = true;
+    }
+  } catch (e) {
+    currentSession = null;
+    _mnCoursePending.authFailed = true;
+  }
+}
+
+// Is this tournament linked to a course the signed-in student is enrolled in?
+// Asked of the database (ma_gest_course_tournaments), not taken from the URL.
+async function _mnCourseLinkedIds() {
+  try {
+    await _ensureFreshToken();
+    var r = await fetch(SUPA_URL + '/rest/v1/rpc/ma_gest_course_tournaments', {
+      method: 'POST', headers: _restHeaders(), body: '{}'
+    });
+    if (!r.ok) { return []; }
+    var d = await r.json();
+    return (d || []).map(function (x) { return String(x.tournament_id || x); });
+  } catch (e) { return []; }
+}
+
+function mnCourseExempt(tid) {
+  return !!(_mnCourseTournId && tid && String(tid) === String(_mnCourseTournId));
+}
+
+function _mnRenderCourseReturn() {
+  var from = '';
+  try { from = sessionStorage.getItem('mn_course_return') || ''; } catch (e) {}
+  from = _mnCourseSafeReturn(from);
+  if (!from || document.getElementById('mn-course-return')) { return; }
+  var a = document.createElement('a');
+  a.id = 'mn-course-return';
+  a.href = from;
+  a.textContent = '← Back to your course';
+  a.setAttribute('style',
+    'position:fixed;left:16px;bottom:16px;z-index:9999;background:#0f3d9e;color:#fff;' +
+    'padding:10px 16px;border-radius:999px;font-weight:600;font-size:14px;text-decoration:none;' +
+    'box-shadow:0 6px 18px rgba(15,61,158,.35);');
+  document.body.appendChild(a);
+}
+
+// Step 2 — runs LAST in init() (and after a manual sign-in). Returns true when
+// it has chosen the page, so init() does not then show the portal.
+async function mnCourseRoute() {
+  var p = _mnCoursePending;
+  if (!p) { return false; }
+  _mnRenderCourseReturn();
+
+  if (!currentUser) {
+    // The one-time token was missing, used, or expired. Keep the destination
+    // and ask for a normal sign-in; afterLogin() comes back here.
+    showPage('tournaments');
+    openAuthModal('login');
+    flash(p.authFailed
+      ? 'Your course sign-in link has expired. Sign in with your course email and password to continue.'
+      : 'Sign in with your course email and password to open your class tournament.', 'info');
+    return true;
+  }
+  _mnCoursePending = null;
+
+  if (!p.tid) { showPage('tournaments'); return true; }
+
+  var linked = await _mnCourseLinkedIds();
+  if (linked.indexOf(String(p.tid)) !== -1) { _mnCourseTournId = String(p.tid); }
+
+  try { await _loadUserTeams(); } catch (e) {}
+  var team = _userTeams[p.tid];
+  if (team) {
+    currentTeamId       = team.id;
+    currentTournamentId = team.tournament_id;
+    showPage('dashboard');
+    return true;
+  }
+
+  // No team yet: open the class tournament straight onto "create or join".
+  showPage('tournaments');
+  try {
+    var t = await sbGetPublic('tournaments', 'id=eq.' + encodeURIComponent(p.tid) + '&limit=1');
+    if (t && t.length) {
+      var have = false;
+      for (var i = 0; i < _allTournaments.length; i++) { if (String(_allTournaments[i].id) === String(p.tid)) { have = true; break; } }
+      if (!have) { _allTournaments.push(t[0]); }
+      openTeamModal(t[0].id);
+      flash('Welcome to ' + esc(t[0].name || 'your class tournament') +
+            '. Create a team, or enter a classmate’s invite code to join theirs.', 'info');
+    } else {
+      flash('Your course’s tournament could not be found. Ask your instructor to check the capstone link.', 'error');
+    }
+  } catch (e) {
+    flash('Could not open your class tournament. Pick it from the list below.', 'error');
+  }
+  return true;
+}
+
 (async function init() {
+  try { await mnCourseHandoff(); } catch (_mnh) {}
   var sess = _loadSession();
   var user = _loadUser();
 
@@ -7312,7 +7493,9 @@ function _applyPlatformModeUI() {
   // before the first page render.
   try { await res_loadSettings(); } catch(_resE) { /* non-fatal */ }
 
-  showPage('portal');
+  var _mnRouted = false;
+  try { _mnRouted = await mnCourseRoute(); } catch (_mnr) { _mnRouted = false; }
+  if (!_mnRouted) { showPage('portal'); }
 })();
 
 
@@ -8636,8 +8819,9 @@ async function doCreateTeam() {
       return;
     }
 
-    // Email domain check for class/university tournaments
-    if (tourn.tier === 'class' || tourn.tier === 'university') {
+    // Email domain check for class/university tournaments (not for a
+    // student sent here by their linked course -- see mnCourseExempt)
+    if ((tourn.tier === 'class' || tourn.tier === 'university') && !mnCourseExempt(tourn.id)) {
       var studentDomain = (currentUser.email || '').split('@')[1] || '';
       var creatorEmail  = '';
       try {
@@ -8829,8 +9013,9 @@ async function doJoinTeam() {
   setLoading('btn-do-join-team', true, 'Joining…');
 
   try {
-    // Email domain check for class/university tournaments
-    if (tourn && (tourn.tier === 'class' || tourn.tier === 'university')) {
+    // Email domain check for class/university tournaments (not for a
+    // student sent here by their linked course -- see mnCourseExempt)
+    if (tourn && (tourn.tier === 'class' || tourn.tier === 'university') && !mnCourseExempt(tourn.id)) {
       var jStudentDomain = (currentUser.email || '').split('@')[1] || '';
       var jCreatorEmail  = '';
       try {
