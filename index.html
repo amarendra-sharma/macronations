@@ -1824,6 +1824,11 @@ h1, h2, h3, h4, h5 {
   transition: color var(--t-fast);
 }
 .footer__legal-link:hover { color: rgba(255,255,255,0.7); text-decoration: none; }
+/* Saath: sister product, small pill in the footer bottom row */
+.footer__saath { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 600;
+  color: rgba(255,255,255,0.72); border: 1px solid rgba(255,215,0,0.35); border-radius: 999px; padding: 0.2rem 0.65rem; }
+.footer__saath:hover { color: #FFD700; border-color: rgba(255,215,0,0.7); text-decoration: none; }
+.footer__saath small { font-weight: 400; color: rgba(255,255,255,0.45); }
 
 /* ═══════════════════════════════════════════
    23. EMPTY STATES
@@ -3133,6 +3138,7 @@ body.on-pabout .footer--platform { display: block; }
   border-bottom: 1px solid transparent; transition: color 0.15s ease, border-color 0.15s ease;
 }
 .portal__about a:hover { color: var(--blue); border-bottom-color: var(--blue); }
+.portal__about .portal__sep { color: var(--text-400); opacity: 0.6; margin: 0 0.6rem; font-size: 0.8125rem; }
 
 /* ── Free (Open Season) mode: hide fee/payment-only surfaces ── */
 body.mn-free-mode [data-dash-tab="payment"],
@@ -4485,7 +4491,7 @@ body.sandbox-mode {
           </button>
         </div>
         <div class="portal__about">
-          <a href="#" onclick="showPage('pabout');return false;">About MacroNations</a>
+          <a href="#" onclick="showPage('pabout');return false;">About MacroNations</a><span class="portal__sep" aria-hidden="true">·</span><a href="https://saath.macronations.com/about.html?utm_source=macronations&amp;utm_medium=portal" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Saath, also from MacroNations (opens in a new tab)" onclick="openSaath('portal');return false;">Saath ↗</a>
         </div>
       </div>
     </div>
@@ -5696,6 +5702,7 @@ body.sandbox-mode {
   <div class="footer__bottom">
     <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
     <nav class="footer__legal-links" aria-label="Legal links">
+      <a href="https://saath.macronations.com/about.html?utm_source=macronations&amp;utm_medium=footer" class="footer__saath" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Saath, also from MacroNations (opens in a new tab)" onclick="openSaath('footer');return false;">Saath <small>· also from MacroNations ↗</small></a>
       <a href="#" class="footer__legal-link">Privacy</a>
       <a href="#" class="footer__legal-link">Terms</a>
       <a href="#" class="footer__legal-link">Rules</a>
@@ -5751,6 +5758,7 @@ body.sandbox-mode {
   <div class="footer__bottom">
     <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
     <nav class="footer__legal-links" aria-label="Legal links">
+      <a href="https://saath.macronations.com/about.html?utm_source=macronations&amp;utm_medium=footer" class="footer__saath" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Saath, also from MacroNations (opens in a new tab)" onclick="openSaath('footer');return false;">Saath <small>· also from MacroNations ↗</small></a>
       <a href="#" class="footer__legal-link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Privacy</a>
       <a href="#" class="footer__legal-link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Terms</a>
     </nav>
@@ -6049,6 +6057,22 @@ function mnTrackEvent(course, eventType) {
       })
     }).catch(function() {});
   } catch(e) {}
+}
+
+// Saath (sister product, footer button). Logged like a course open so the
+// Analytics tab counts it; the MacroNations session id rides along so Saath's
+// own visit log can be matched to this click. Opens in a new tab.
+var SAATH_URL = 'https://saath.macronations.com/about.html';
+function openSaath(where) {
+  mnTrackEvent('saath', 'open');
+  var sid = '';
+  try { sid = sessionStorage.getItem('mn_sid') || ''; } catch(e) {}
+  var url = SAATH_URL + '?utm_source=macronations&utm_medium=' + encodeURIComponent(where || 'footer') +
+            (sid ? '&mn_sid=' + encodeURIComponent(sid) : '');
+  // (window.open with 'noopener' always returns null, so detach the opener by hand instead)
+  var w = window.open(url, '_blank');
+  if (w) { try { w.opener = null; } catch(e) {} }
+  else { window.location.href = url; }   // pop-up blocked: open it here instead
 }
 
 // Course portal router — a course tile routes into that course.
@@ -15125,7 +15149,7 @@ async function renderAdminAnalytics(el) {
   var cPortal = 0, cMacroOpen = 0, cGtOpen = 0, cGtVisit = 0, cEcoOpen = 0, cEcoVisit = 0,
       cMicroOpen = 0, cMicroVisit = 0, cIntlOpen = 0, cIntlVisit = 0,
       cFilmOpen = 0, cFilmVisit = 0, cFinOpen = 0, cFinVisit = 0,
-      cMacroVisit = 0, cTournOpen = 0,
+      cMacroVisit = 0, cTournOpen = 0, cSaathOpen = 0,
       cUntagged = 0, cOther = 0;
   for (var cv = 0; cv < allViews.length; cv++) {
     var row = allViews[cv];
@@ -15151,6 +15175,7 @@ async function renderAdminAnalytics(el) {
     else if (crs === 'econfilm')                { cFilmVisit++; }
     else if (crs === 'finance' && evt === 'open')   { cFinOpen++; }
     else if (crs === 'finance')                 { cFinVisit++; }
+    else if (crs === 'saath')                   { cSaathOpen++; }
     // Catch-all: a course tag we don't have a counter for yet. Without
     // this branch a new course's traffic is silently dropped from the
     // dashboard instead of showing up as unrecognised.
@@ -15177,6 +15202,7 @@ async function renderAdminAnalytics(el) {
           _metricCard('🍿', cFilmVisit,  'Economics & Film Visits (app)') +
           _metricCard('💰', cFinOpen,    'Finance Opens (from portal)') +
           _metricCard('🏦', cFinVisit,   'Finance Visits (app)') +
+          _metricCard('🤝', cSaathOpen,  'Saath Opens (footer button)') +
           (cUntagged ? _metricCard('🗂️', cUntagged, 'Untagged (legacy visits)') : '') +
           (cOther ? _metricCard('❓', cOther, 'Unrecognised course tag') : '') +
         '</div>' +
