@@ -1824,7 +1824,7 @@ h1, h2, h3, h4, h5 {
   transition: color var(--t-fast);
 }
 .footer__legal-link:hover { color: rgba(255,255,255,0.7); text-decoration: none; }
-/* Saath: sister product, small pill in the footer bottom row */
+/* Bengu (formerly Saath): sister product, small pill in the footer bottom row */
 .footer__saath { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 600;
   color: rgba(255,255,255,0.72); border: 1px solid rgba(255,215,0,0.35); border-radius: 999px; padding: 0.2rem 0.65rem; }
 .footer__saath:hover { color: #FFD700; border-color: rgba(255,215,0,0.7); text-decoration: none; }
@@ -4491,7 +4491,7 @@ body.sandbox-mode {
           </button>
         </div>
         <div class="portal__about">
-          <a href="#" onclick="showPage('pabout');return false;">About MacroNations</a><span class="portal__sep" aria-hidden="true">·</span><a href="https://saath.macronations.com/about.html?utm_source=macronations&amp;utm_medium=portal" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Saath, also from MacroNations (opens in a new tab)" onclick="openSaath('portal');return false;">Saath ↗</a>
+          <a href="#" onclick="showPage('pabout');return false;">About MacroNations</a><span class="portal__sep" aria-hidden="true">·</span><a href="https://bengu.macronations.com/about.html?utm_source=macronations&amp;utm_medium=portal" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Bengu, also from MacroNations (opens in a new tab)" onclick="openSaath('portal');return false;">Bengu ↗</a>
         </div>
       </div>
     </div>
@@ -5702,7 +5702,7 @@ body.sandbox-mode {
   <div class="footer__bottom">
     <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
     <nav class="footer__legal-links" aria-label="Legal links">
-      <a href="https://saath.macronations.com/about.html?utm_source=macronations&amp;utm_medium=footer" class="footer__saath" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Saath, also from MacroNations (opens in a new tab)" onclick="openSaath('footer');return false;">Saath <small>· also from MacroNations ↗</small></a>
+      <a href="https://bengu.macronations.com/about.html?utm_source=macronations&amp;utm_medium=footer" class="footer__saath" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Bengu, also from MacroNations (opens in a new tab)" onclick="openSaath('footer');return false;">Bengu <small>· also from MacroNations ↗</small></a>
       <a href="#" class="footer__legal-link">Privacy</a>
       <a href="#" class="footer__legal-link">Terms</a>
       <a href="#" class="footer__legal-link">Rules</a>
@@ -5758,7 +5758,7 @@ body.sandbox-mode {
   <div class="footer__bottom">
     <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
     <nav class="footer__legal-links" aria-label="Legal links">
-      <a href="https://saath.macronations.com/about.html?utm_source=macronations&amp;utm_medium=footer" class="footer__saath" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Saath, also from MacroNations (opens in a new tab)" onclick="openSaath('footer');return false;">Saath <small>· also from MacroNations ↗</small></a>
+      <a href="https://bengu.macronations.com/about.html?utm_source=macronations&amp;utm_medium=footer" class="footer__saath" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Bengu, also from MacroNations (opens in a new tab)" onclick="openSaath('footer');return false;">Bengu <small>· also from MacroNations ↗</small></a>
       <a href="#" class="footer__legal-link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Privacy</a>
       <a href="#" class="footer__legal-link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Terms</a>
     </nav>
@@ -6059,10 +6059,10 @@ function mnTrackEvent(course, eventType) {
   } catch(e) {}
 }
 
-// Saath (sister product, footer button). Logged like a course open so the
-// Analytics tab counts it; the MacroNations session id rides along so Saath's
+// Bengu, formerly Saath (sister product, footer button). Logged like a course open so the
+// Analytics tab counts it; the MacroNations session id rides along so Bengu's
 // own visit log can be matched to this click. Opens in a new tab.
-var SAATH_URL = 'https://saath.macronations.com/about.html';
+var SAATH_URL = 'https://bengu.macronations.com/about.html';
 function openSaath(where) {
   mnTrackEvent('saath', 'open');
   var sid = '';
@@ -15202,7 +15202,7 @@ async function renderAdminAnalytics(el) {
           _metricCard('🍿', cFilmVisit,  'Economics & Film Visits (app)') +
           _metricCard('💰', cFinOpen,    'Finance Opens (from portal)') +
           _metricCard('🏦', cFinVisit,   'Finance Visits (app)') +
-          _metricCard('🤝', cSaathOpen,  'Saath Opens (footer button)') +
+          _metricCard('🤝', cSaathOpen,  'Bengu Opens (footer button)') +
           (cUntagged ? _metricCard('🗂️', cUntagged, 'Untagged (legacy visits)') : '') +
           (cOther ? _metricCard('❓', cOther, 'Unrecognised course tag') : '') +
         '</div>' +
