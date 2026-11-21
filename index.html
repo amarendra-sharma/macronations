@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MacroNations — The LMS Where Economics Is Taught, Played &amp; Assessed</title>
-  <meta name="description" content="Seven economics courses — macroeconomics, microeconomics, game theory, econometrics, international trade, economics &amp; film, and finance — each pairing an interactive textbook with a simulation or game and a full assessment engine.">
+  <meta name="description" content="Eight economics courses — macroeconomics, microeconomics, game theory, econometrics, international trade, economics &amp; film, finance, and financial derivatives — each pairing an interactive textbook with a simulation or game and a full assessment engine.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
@@ -4478,6 +4478,18 @@ body.sandbox-mode {
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
 
+          <button class="portal-card portal-card--active" onclick="enterCourse('derivatives')" aria-label="Open the Financial Derivatives course">
+            <span class="portal-card__chip">📉</span>
+            <span class="portal-card__body">
+              <span class="portal-card__row">
+                <span class="portal-card__name">Financial Derivatives</span>
+                <span class="portal-card__badge portal-card__badge--live">Live</span>
+              </span>
+              <span class="portal-card__desc">Forwards, futures, swaps and options &mdash; pricing, hedging and risk.</span>
+            </span>
+            <span class="portal-card__arrow" aria-hidden="true">→</span>
+          </button>
+
           <button class="portal-card portal-card--active" onclick="enterCourse('tournament')" aria-label="Open the MacroNations Tournament">
             <span class="portal-card__chip">🏆</span>
             <span class="portal-card__body">
@@ -5731,6 +5743,7 @@ body.sandbox-mode {
         <li><a href="#" class="footer__link" onclick="enterCourse('intltrade');return false;">International Trade</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('econfilm');return false;">Economics &amp; Film</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('finance');return false;">Finance</a></li>
+        <li><a href="#" class="footer__link" onclick="enterCourse('derivatives');return false;">Financial Derivatives</a></li>
         <li><a href="#" class="footer__link" onclick="enterCourse('tournament');return false;">MacroNations Tournament</a></li>
         <li><a href="#" class="footer__link" onclick="showPage('portal');return false;">All courses</a></li>
       </ul>
@@ -6156,6 +6169,19 @@ function enterCourse(courseId) {
       window.location.href = ndest;
     } else {
       flash('Finance course URL is not set yet.', 'info');
+    }
+    return;
+  }
+  if (courseId === 'derivatives') {
+    mnTrackEvent('derivatives', 'open');
+    if (DERIVATIVES_URL && DERIVATIVES_URL.indexOf('http') === 0) {
+      var dsid = '';
+      try { dsid = sessionStorage.getItem('mn_sid') || ''; } catch(e) {}
+      var dsep = DERIVATIVES_URL.indexOf('?') === -1 ? '?' : '&';
+      var ddest = dsid ? (DERIVATIVES_URL + dsep + 'mn_sid=' + encodeURIComponent(dsid)) : DERIVATIVES_URL;
+      window.location.href = ddest;
+    } else {
+      flash('Financial Derivatives course URL is not set yet.', 'info');
     }
     return;
   }
@@ -10515,6 +10541,7 @@ var INTLTRADE_URL = 'https://internationaltrade.macronations.com/';
 //   https://econfilm.macronations.com/
 // GitHub Pages fallback address: https://amarendra-sharma.github.io/econfilm/
 var ECONFILM_URL = 'https://econfilm.macronations.com/';
+var DERIVATIVES_URL = 'https://derivatives.macronations.com/';  // GitHub Pages custom domain for the Financial Derivatives course
 var FINANCE_URL = 'https://finance.macronations.com/';  // ← Cloudflare Pages custom domain for the finance course
 
 // Macroeconomics course (the LMS console) → GitHub Pages repo `Macroeconomics-`.
@@ -15148,7 +15175,7 @@ async function renderAdminAnalytics(el) {
   // Section 1b: Traffic by Course (portal funnel + cross-app visits)
   var cPortal = 0, cMacroOpen = 0, cGtOpen = 0, cGtVisit = 0, cEcoOpen = 0, cEcoVisit = 0,
       cMicroOpen = 0, cMicroVisit = 0, cIntlOpen = 0, cIntlVisit = 0,
-      cFilmOpen = 0, cFilmVisit = 0, cFinOpen = 0, cFinVisit = 0,
+      cFilmOpen = 0, cFilmVisit = 0, cFinOpen = 0, cFinVisit = 0, cDerOpen = 0, cDerVisit = 0,
       cMacroVisit = 0, cTournOpen = 0, cSaathOpen = 0,
       cUntagged = 0, cOther = 0;
   for (var cv = 0; cv < allViews.length; cv++) {
@@ -15175,6 +15202,8 @@ async function renderAdminAnalytics(el) {
     else if (crs === 'econfilm')                { cFilmVisit++; }
     else if (crs === 'finance' && evt === 'open')   { cFinOpen++; }
     else if (crs === 'finance')                 { cFinVisit++; }
+    else if (crs === 'derivatives' && evt === 'open') { cDerOpen++; }
+    else if (crs === 'derivatives')             { cDerVisit++; }
     else if (crs === 'saath')                   { cSaathOpen++; }
     // Catch-all: a course tag we don't have a counter for yet. Without
     // this branch a new course's traffic is silently dropped from the
@@ -15202,6 +15231,8 @@ async function renderAdminAnalytics(el) {
           _metricCard('🍿', cFilmVisit,  'Economics & Film Visits (app)') +
           _metricCard('💰', cFinOpen,    'Finance Opens (from portal)') +
           _metricCard('🏦', cFinVisit,   'Finance Visits (app)') +
+          _metricCard('📉', cDerOpen,    'Financial Derivatives Opens (from portal)') +
+          _metricCard('🧮', cDerVisit,   'Financial Derivatives Visits (app)') +
           _metricCard('🤝', cSaathOpen,  'Bengu Opens (footer button)') +
           (cUntagged ? _metricCard('🗂️', cUntagged, 'Untagged (legacy visits)') : '') +
           (cOther ? _metricCard('❓', cOther, 'Unrecognised course tag') : '') +
@@ -17352,7 +17383,7 @@ function _pAboutPlatform() {
     '<div style="max-width:760px;margin:0 auto;">' +
       '<div style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);">Our mission</div>' +
       '<h2 style="font-family:\'DM Serif Display\',serif;font-weight:400;font-size:1.875rem;color:var(--text-900);line-height:1.2;margin:0.4rem 0 0;">The dedicated LMS where economics is taught, played, and assessed.</h2>' +
-      '<p style="font-size:1rem;color:var(--text-500);line-height:1.8;margin:1rem 0 0;">MacroNations turns economics into something you <em>do</em>, not just read &mdash; and runs the whole course around it. Each discipline pairs an interactive simulation or game with a full textbook, then adds the parts a course actually needs: an assessment engine with AI-proof, auto-reseeding question banks; automatic and AI-assisted grading of free-response and derivations; soft-proctored exams; a gradebook, accommodations, and progress tracking. In short, it is a learning-management system built for one subject &mdash; economics. It began with macroeconomics and now spans seven disciplines &mdash; macroeconomics, microeconomics, game theory, econometrics, international trade, economics &amp; film, and finance &mdash; growing one discipline at a time.</p>' +
+      '<p style="font-size:1rem;color:var(--text-500);line-height:1.8;margin:1rem 0 0;">MacroNations turns economics into something you <em>do</em>, not just read &mdash; and runs the whole course around it. Each discipline pairs an interactive simulation or game with a full textbook, then adds the parts a course actually needs: an assessment engine with AI-proof, auto-reseeding question banks; automatic and AI-assisted grading of free-response and derivations; soft-proctored exams; a gradebook, accommodations, and progress tracking. In short, it is a learning-management system built for one subject &mdash; economics. It began with macroeconomics and now spans eight disciplines &mdash; macroeconomics, microeconomics, game theory, econometrics, international trade, economics &amp; film, finance, and financial derivatives &mdash; growing one discipline at a time.</p>' +
       '<div style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin:2rem 0 0.75rem;">Disciplines on the platform</div>' +
       '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;">' +
         _paChip('📈', 'Macroeconomics', 'live') +
@@ -17362,6 +17393,7 @@ function _pAboutPlatform() {
         _paChip('🌐', 'International Trade', 'live') +
         _paChip('🎬', 'Economics &amp; Film', 'live') +
         _paChip('💰', 'Finance', 'live') +
+        _paChip('📉', 'Financial Derivatives', 'live') +
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.75rem;">' +
         '<div class="card"><div class="card__body"><h3 style="margin:0 0 0.25rem;font-size:1rem;color:var(--text-900);">For students</h3><p style="margin:0;font-size:0.875rem;color:var(--text-500);line-height:1.6;">Play, compete, run real regressions in the browser, and learn the theory behind every decision you make.</p></div></div>' +
@@ -17407,6 +17439,7 @@ function _pAboutCourses() {
         ccard('🌐', 'International Trade', 'live', 'A live, data-driven interactive textbook and 13 browser-based strategy arenas &mdash; comparative advantage, the Ricardian and Heckscher&ndash;Ohlin models, tariffs and trade policy, exchange rates and development &mdash; with auto-reseeding quiz banks and proctored, AI-graded assessments.') +
         ccard('🎬', 'Economics &amp; Film', 'live', 'The economics behind thirteen films &mdash; from the tragedy of the commons to the financial crash &mdash; each screening paired with the theory it dramatises and the coursework to assess it.') +
         ccard('💰', 'Finance', 'live', 'The time value of money, risk and return, market structure, company valuation and building wealth &mdash; an interactive course in how finance actually works.') +
+        ccard('📉', 'Financial Derivatives', 'live', 'An 18-chapter course at the level of an advanced undergraduate or MBA class &mdash; forwards, futures, swaps, options, the binomial and Black&ndash;Scholes&ndash;Merton models, the Greeks, volatility surfaces, credit derivatives and exotics &mdash; with an interactive textbook and 3-D figures, 16 graded arenas, auto-reseeding exam banks, and Asha, the AI instructor, who can also teach the whole course as a self-study class on the student\'s own schedule.') +
       '</div>' +
     '</div>';
 }
@@ -17424,7 +17457,7 @@ function _pAboutHow() {
       '<div style="font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);">Getting started</div>' +
       '<h2 style="font-family:\'DM Serif Display\',serif;font-weight:400;font-size:1.75rem;color:var(--text-900);margin:0.4rem 0 1rem;">How the platform works.</h2>' +
       '<div style="border-bottom:1px solid var(--border);">' +
-        step('01', 'Choose a course', 'Everyone enters through the portal and picks one of seven disciplines — Macroeconomics, Microeconomics, Game Theory, Econometrics, International Trade, Economics &amp; Film, or Finance.') +
+        step('01', 'Choose a course', 'Everyone enters through the portal and picks one of eight disciplines — Macroeconomics, Microeconomics, Game Theory, Econometrics, International Trade, Economics &amp; Film, Finance, or Financial Derivatives.') +
         step('02', 'Learn by playing', 'Each course is an interactive simulation or game paired with a full textbook, so the theory lands while you make real decisions.') +
         step('03', 'Students &amp; professors together', 'Students join and play; professors create their course space, assign work, and watch their class progress.') +
         step('04', 'Track progress &amp; earn recognition', 'Each course has its own way to measure learning and celebrate achievement.') +
