@@ -3127,6 +3127,9 @@ body.on-pabout .footer--platform { display: block; }
 .portal-card--soon .portal-card__name, .portal-card--soon .portal-card__desc { color: var(--text-400); }
 .portal-card__desc--more { margin-top: 0; color: var(--text-400); }
 .portal-card__arrow { color: var(--gold); font-size: 1.1rem; flex-shrink: 0; }
+.portal__since { text-align: center; font-size: 0.78rem; color: var(--text-400); margin-top: 1.25rem; letter-spacing: 0.03em; }
+.portal-card__since { display: block; font-size: 0.72rem; color: var(--text-400); margin-top: 0.3rem; letter-spacing: 0.02em; }
+.portal-card__since time { font-variant-numeric: tabular-nums; }
 @media (max-width: 560px) {
   .portal__grid { grid-template-columns: 1fr; }
   .portal__wordmark { font-size: 2.1rem; }
@@ -4402,6 +4405,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Markets, firms and consumer choice.</span>
+              <span class="portal-card__since">Since <time datetime="2026-07-10">July 10, 2026</time></span>
               <span class="portal-card__desc" role="link" tabindex="0" style="color:var(--gold);font-weight:600;margin-top:0.35rem;" onclick="event.stopPropagation();window.location.href=MICROECONOMICS_URL+'self-study.html';" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();this.click();}">New: self-study with Asha, the AI professor &rarr;</span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
@@ -4415,6 +4419,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Output, inflation, money and stabilization policy.</span>
+              <span class="portal-card__since">Since <time datetime="2026-09-12">September 12, 2026</time></span>
               <span class="portal-card__desc" role="link" tabindex="0" style="color:var(--gold);font-weight:600;margin-top:0.35rem;" onclick="event.stopPropagation();window.location.href=MACROECONOMICS_URL+'self-study.html';" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();this.click();}">New: self-study with Asha, the AI professor &rarr;</span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
@@ -4428,6 +4433,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Strategy arenas against classmates and AI.</span>
+              <span class="portal-card__since">Since <time datetime="2026-06-03">June 3, 2026</time></span>
               <span class="portal-card__desc" role="link" tabindex="0" style="color:var(--gold);font-weight:600;margin-top:0.35rem;" onclick="event.stopPropagation();window.location.href=GAME_THEORY_URL.split('?')[0].replace(/[^\/]*$/,'')+'self-study.html';" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();this.click();}">New: self-study with Asha, the AI professor &rarr;</span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
@@ -4441,6 +4447,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Run real regressions in your browser, lab by lab.</span>
+              <span class="portal-card__since">Since <time datetime="2026-06-14">June 14, 2026</time></span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
@@ -4453,6 +4460,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Comparative advantage, tariffs and the global economy.</span>
+              <span class="portal-card__since">Since <time datetime="2026-07-20">July 20, 2026</time></span>
               <span class="portal-card__desc" role="link" tabindex="0" style="color:var(--gold);font-weight:600;margin-top:0.35rem;" onclick="event.stopPropagation();window.location.href=INTLTRADE_URL+'self-study.html';" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();this.click();}">New: self-study with Asha, the AI professor &rarr;</span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
@@ -4466,6 +4474,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">The economics behind thirteen films, from the commons to the crash.</span>
+              <span class="portal-card__since">Since <time datetime="2026-08-23">August 23, 2026</time></span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
@@ -4478,6 +4487,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">The time value of money, markets, company valuation and building wealth.</span>
+              <span class="portal-card__since">Since <time datetime="2026-08-30">August 30, 2026</time></span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
@@ -4490,6 +4500,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Forwards, futures, swaps and options &mdash; pricing, hedging and risk.</span>
+              <span class="portal-card__since">Since <time datetime="2026-11-14">November 14, 2026</time></span>
               <span class="portal-card__desc" role="link" tabindex="0" style="color:var(--gold);font-weight:600;margin-top:0.35rem;" onclick="event.stopPropagation();window.location.href='https://derivatives.macronations.com/self-study.html';" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();this.click();}">New: self-study with Asha, the AI professor &rarr;</span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
@@ -4503,6 +4514,7 @@ body.sandbox-mode {
                 <span class="portal-card__badge portal-card__badge--live">Live</span>
               </span>
               <span class="portal-card__desc">Govern a national economy across five pillars.</span>
+              <span class="portal-card__since">Since <time datetime="2026-03-21">March 21, 2026</time></span>
             </span>
             <span class="portal-card__arrow" aria-hidden="true">→</span>
           </button>
@@ -4510,6 +4522,7 @@ body.sandbox-mode {
         <div class="portal__about">
           <a href="#" onclick="showPage('pabout');return false;">About MacroNations</a><span class="portal__sep" aria-hidden="true">·</span><a href="https://bengu.macronations.com/about.html?utm_source=macronations&amp;utm_medium=portal" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Bengu, also from MacroNations (opens in a new tab)" onclick="openSaath('portal');return false;">Bengu ↗</a>
         </div>
+        <p class="portal__since">MacroNations &middot; Operational since <time datetime="2026-03-21">March 21, 2026</time></p>
       </div>
     </div>
   </div><!-- /page-portal -->
@@ -5717,7 +5730,7 @@ body.sandbox-mode {
   </div>
 
   <div class="footer__bottom">
-    <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
+    <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved. · Operational since <time datetime="2026-03-21">March 21, 2026</time></p>
     <nav class="footer__legal-links" aria-label="Legal links">
       <a href="https://bengu.macronations.com/about.html?utm_source=macronations&amp;utm_medium=footer" class="footer__saath" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Bengu, also from MacroNations (opens in a new tab)" onclick="openSaath('footer');return false;">Bengu <small>· also from MacroNations ↗</small></a>
       <a href="#" class="footer__legal-link">Privacy</a>
@@ -5774,7 +5787,7 @@ body.sandbox-mode {
   </div>
 
   <div class="footer__bottom">
-    <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved.</p>
+    <p class="footer__copy">© 2026 MacroNations LLC · A New York Limited Liability Company · All rights reserved. · Operational since <time datetime="2026-03-21">March 21, 2026</time></p>
     <nav class="footer__legal-links" aria-label="Legal links">
       <a href="https://bengu.macronations.com/about.html?utm_source=macronations&amp;utm_medium=footer" class="footer__saath" target="_blank" rel="noopener" title="Also from MacroNations: share costs with family and friends" aria-label="Bengu, also from MacroNations (opens in a new tab)" onclick="openSaath('footer');return false;">Bengu <small>· also from MacroNations ↗</small></a>
       <a href="#" class="footer__legal-link" onclick="showPage('pabout');setTimeout(function(){var e=document.querySelector('[data-pabout-tab=\&quot;legal\&quot;]');if(e){e.click();}},80);return false;">Privacy</a>
